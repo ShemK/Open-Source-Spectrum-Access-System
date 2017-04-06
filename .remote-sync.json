@@ -1,0 +1,16 @@
+{
+  "uploadOnSave": false,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "128.173.221.40",
+  "port": "7008",
+  "target": "/users/shemk/crts/",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "shemk",
+  "password": "Yusufu",
+  "watch": [],
+  "transport": "scp"
+}
