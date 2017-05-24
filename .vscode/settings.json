@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.ipp": "cpp",
+        "system_error": "cpp",
+        "condition_variable": "cpp"
+    }
+}

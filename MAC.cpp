@@ -25,7 +25,7 @@ MAC::MAC(char *mac_address) {
   pthread_mutex_init(&tx_mutex, NULL);        // transmitter mutex
   pthread_create(&tx_process, NULL, MAC_tx_worker, (void *)this);
   pthread_mutex_init(&rx_mutex, NULL);        // receiver mutex
-//  pthread_create(&rx_process, NULL, MAC_rx_worker, (void *)this);
+  pthread_create(&rx_process, NULL, MAC_rx_worker, (void *)this);
   pthread_exit(NULL);
 }
 
@@ -42,16 +42,16 @@ MAC::~MAC() {
 
 void *MAC_tx_worker(void *_arg) {
   MAC *mac = (MAC *) _arg;
-  std::string message;
+  std::string message = "Hello";
   char *max_message = new char[MAX_BUF];
   while(!mac->stop_tx) {
     if(mac->tx_channel_state == mac->FREE) {
-      std::getline(std::cin,message);
+    //  std::getline(std::cin,message);
       strncpy(max_message,message.c_str(),sizeof(message));
 
       pthread_mutex_lock(&mac->tx_mutex);
 
-      int status = mq_send(mac->phy_tx_queue, message.c_str(), strlen(message.c_str())+1, 0);
+      int status = mq_send(mac->phy_tx_queue, max_message, strlen(message.c_str())+1, 0);
       if (status == -1) {
         perror("mq_send failure\n");
       }
@@ -60,6 +60,7 @@ void *MAC_tx_worker(void *_arg) {
       }
       pthread_mutex_unlock(&mac->tx_mutex);
     }
+    //usleep(200);
   }
   pthread_exit(NULL);
 }
@@ -90,7 +91,9 @@ void *MAC_rx_worker(void *_arg) {
       printf("Message Received\n");
       printf("%s\n", buf);
       printf("------------------------------------\n");
+      memset(buf,0,MAX_BUF);
     }
+    
   }
   pthread_exit(NULL);
 }

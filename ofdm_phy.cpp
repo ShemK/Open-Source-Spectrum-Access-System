@@ -360,9 +360,11 @@ void *PHY_tx_worker(void *_arg)
       if (status == -1)
       {
         if (errno != ETIMEDOUT)
-        {
-          perror("Failed to read queue");
-          exit(0);
+        { 
+          if(PHY->tx_state != TX_STOPPED){
+           perror("Failed to write to queue");
+           exit(0);
+          }
         }
       }
       else
@@ -1042,14 +1044,16 @@ int rxCallback(unsigned char *_header, int _header_valid,
   printf("Received %d bytes\n", _payload_len);
   if (_header_valid == 1)
   {
-
+    timespec timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_nsec = 100;
     /////
     ///// TODO: Add writing to tuntap interface
     /////
     /////
-    int status = mq_send(PHY->phy_rx_queue,(char*) _payload, _payload_len+1, 0);
+    int status = mq_timedsend(PHY->phy_rx_queue,(char*) _payload, _payload_len, 0,&timeout);
     if (status == -1) {
-      perror("mq_send failure\n");
+      perror("Queue is full\n");
     }
     else {
       dprintf("mq_send successful\n");
