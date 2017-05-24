@@ -1,6 +1,6 @@
 #include "MAC.hpp"
 
 int main() {
-  MAC newMac("ACACSCSAC");
+  MAC newMac((char*)"AAAAAA");
   pthread_exit(NULL);
 }
