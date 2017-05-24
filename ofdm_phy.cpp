@@ -129,7 +129,8 @@ PhyLayer::PhyLayer()
   attr_rx.mq_msgsize = MAX_BUF;
 
   phy_tx_queue = mq_open("/mac2phy", O_RDONLY | O_CREAT, PMODE, &attr_tx);
-//  phy_rx_queue = mq_open("/phy2mac", O_WRONLY | O_CREAT, PMODE, &attr_rx);
+  phy_rx_queue = mq_open("/phy2mac", O_WRONLY | O_CREAT, PMODE, &attr_rx);
+
 }
 
 // Destructor
@@ -139,6 +140,11 @@ PhyLayer::~PhyLayer()
   dprintf("Stopping transceiver\n");
   stop_rx();
   stop_tx();
+
+  mq_close(phy_tx_queue);
+  mq_close(phy_rx_queue);
+  mq_unlink("/mac2phy");
+  mq_unlink("/phy2mac");
 
   // sleep so tx/rx threads are ready for signal
   usleep(1e4);
@@ -344,7 +350,9 @@ void *PHY_tx_worker(void *_arg)
       ///// TODO: Add reading from tuntap interface
       /////
       /////
-
+      /*
+      // getting information from the mac
+      */
       timespec timeout;
       timeout.tv_sec = 0;
       timeout.tv_nsec = 100;
@@ -1039,14 +1047,14 @@ int rxCallback(unsigned char *_header, int _header_valid,
     ///// TODO: Add writing to tuntap interface
     /////
     /////
-
-    for (int i = 0; i < _payload_len; i++)
-    {
-      //   printf("%x", _payload[i]);
+    int status = mq_send(PHY->phy_rx_queue,(char*) _payload, _payload_len+1, 0);
+    if (status == -1) {
+      perror("mq_send failure\n");
     }
-    //  printf("\n");
+    else {
+      dprintf("mq_send successful\n");
+    }
   }
-
   return 0;
 }
 // set receiver frequency

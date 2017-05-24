@@ -35,8 +35,8 @@ MAC::~MAC() {
   stop_tx = true;
   mq_close(phy_tx_queue);
   mq_close(phy_rx_queue);
-  mq_unlink("/loopback");
-  //mq_unlink("/phy2mac");
+  mq_unlink("/mac2phy");
+  mq_unlink("/phy2mac");
 }
 
 
