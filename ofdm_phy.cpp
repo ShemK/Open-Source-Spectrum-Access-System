@@ -130,7 +130,6 @@ PhyLayer::PhyLayer()
 
   phy_tx_queue = mq_open("/mac2phy", O_RDONLY | O_CREAT, PMODE, &attr_tx);
   phy_rx_queue = mq_open("/phy2mac", O_WRONLY | O_CREAT, PMODE, &attr_rx);
-
 }
 
 // Destructor
@@ -360,23 +359,30 @@ void *PHY_tx_worker(void *_arg)
       if (status == -1)
       {
         if (errno != ETIMEDOUT)
-        { 
-          if(PHY->tx_state != TX_STOPPED){
-           perror("Failed to write to queue");
-           exit(0);
+        {
+          if (PHY->tx_state != TX_STOPPED)
+          {
+            perror("Failed to read from queue");
+            exit(0);
           }
         }
       }
       else
       {
         payload_len = strlen(buffer);
-      //  strncpy((char*)payload, buffer, payload_len);
-        memcpy(payload,(unsigned char *)buffer,sizeof(buffer));
+        //  strncpy((char*)payload, buffer, payload_len);
+        memcpy(payload, (unsigned char *)buffer, payload_len);
         PHY->tx_frame_counter++;
         time_t t = time(0);
         struct tm *now = localtime(&t);
         log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
+        for (int i = 0; i < 6; i++)
+        {
+          printf("%02x:", (unsigned char)payload[0]);
+        }
+        printf("\n");
         PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
+        memset(buffer, 0, buffer_len);
       }
       // change state to stopped once all frames have been transmitted
       // or max transmission time has passed when in burst mode
@@ -434,7 +440,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
   // dprintf("Transmitting Frame!!!!\n");
   printf("-----------------Transmitting--------------\n");
-  printf("Frame_num transmitted: %d\n", frame_num - 1);
+  printf("Frame_num transmitted: %d with %d bytes\n", frame_num - 1, _payload_len);
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
@@ -1051,11 +1057,13 @@ int rxCallback(unsigned char *_header, int _header_valid,
     ///// TODO: Add writing to tuntap interface
     /////
     /////
-    int status = mq_timedsend(PHY->phy_rx_queue,(char*) _payload, _payload_len, 0,&timeout);
-    if (status == -1) {
+    int status = mq_timedsend(PHY->phy_rx_queue, (char *)_payload, _payload_len, 0, &timeout);
+    if (status == -1)
+    {
       perror("Queue is full\n");
     }
-    else {
+    else
+    {
       dprintf("mq_send successful\n");
     }
   }
