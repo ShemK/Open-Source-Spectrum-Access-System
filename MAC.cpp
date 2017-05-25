@@ -84,9 +84,9 @@ void *MAC_tx_worker(void *_arg)
     }
     else
     {
-      printf("Channel Busy\n");
+      //printf("TX Channel Busy\n");
     }
-    //usleep(200);
+    usleep(1000);
   }
   pthread_exit(NULL);
 }
@@ -157,10 +157,13 @@ void *MAC_rx_worker(void *_arg)
   char buf[MAX_BUF];
   while (!mac->stop_rx)
   {
-    timespec timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_nsec = 500;
+    //mac->tx_channel_state = mac->FREE;
+    struct timespec timeout;
+    timeout.tv_sec = time(NULL)+1;
+    timeout.tv_nsec = 0;
+    
     int status = mq_timedreceive(mac->phy_rx_queue, buf, MAX_BUF, 0, &timeout);
+    
     if (status == -1)
     {
       if (errno == ETIMEDOUT)
@@ -169,7 +172,7 @@ void *MAC_rx_worker(void *_arg)
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
           mac->tx_channel_state = mac->FREE;
-          // printf("Channel Free\n");
+          //printf("Channel Free\n");
         }
       }
       else
@@ -180,7 +183,7 @@ void *MAC_rx_worker(void *_arg)
     }
     else
     {
-
+     // pthread_mutex_lock(&mac->rx_mutex);
       printf("Message Received\n");
       mac->recv_header = mac->getMACHeader(buf);
       mac->recv_payload = mac->getPayLoad(buf, status);
@@ -195,11 +198,14 @@ void *MAC_rx_worker(void *_arg)
 
       if (strncmp(mac->mac_address, sourceMAC, 6) != 0)
       {
+        
         mac->tx_channel_state = mac->BUSY;
         printf("Channel Busy %u\n", strncmp(mac->mac_address, sourceMAC, 6));
+       
       }
       else
       {
+        mac->tx_channel_state = mac->FREE;
         int frame_num = buffToInteger(mac->recv_header+8);
         frames_received++;
         printf("Frame_num received: %d\n", frame_num);
@@ -207,9 +213,10 @@ void *MAC_rx_worker(void *_arg)
         printf("%s\n", mac->recv_payload);
         printf("------------------------------------\n");
       }
-
+     // pthread_mutex_unlock(&mac->rx_mutex);
       memset(buf, 0, MAX_BUF);
     }
+    
   }
   pthread_exit(NULL);
 }
