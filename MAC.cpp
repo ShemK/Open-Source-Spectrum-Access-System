@@ -4,7 +4,7 @@ MAC::MAC(char *mac_address)
 {
   strncpy(this->mac_address, mac_address, sizeof(mac_address));
   tx_channel_state = FREE;
-      // generate random_mac
+  // generate random_mac
   this->mac_address = random_byte_generator();
   printf("My MAC Address: ");
   for (int i = 0; i < 6; i++)
@@ -48,31 +48,41 @@ MAC::~MAC()
 
 void *MAC_tx_worker(void *_arg)
 {
-  MAC *mac = (MAC *)_arg;
-  std::string message; // = "Hello";
-  char *frame = new char[MAX_BUF];
 
+  MAC *mac = (MAC *)_arg;
+  std::string message = "Hello";
+  char *frame = new char[MAX_BUF];
+  int frame_num = 0;
   while (!mac->stop_tx)
   {
     if (mac->tx_channel_state == mac->FREE)
     {
-      std::getline(std::cin, message);
+      //std::getline(std::cin, message);
       strncpy(frame, message.c_str(), message.length());
-      int frame_len =  message.length() + CONTROL_FRAME_LEN;
-      std::cout << "Frame Len: " << strlen(frame) << "\n";
+      int frame_len = message.length() + CONTROL_FRAME_LEN;
+   
       mac->create_frame(frame, strlen(frame), mac->DATA, mac->RTS);
       pthread_mutex_lock(&mac->tx_mutex);
-      int status = mq_send(mac->phy_tx_queue, frame, frame_len, 0);
+      memset(frame + 1, frame_num, 1);
+      unsigned int conv_frame_num = htonl(frame_num);
+      memcpy(frame+8,&conv_frame_num,4);
+         std::cout << "Frame Len: " << strlen(frame) << "\n";
+      int status = mq_send(mac->phy_tx_queue, frame, frame_len, 5);
       if (status == -1)
       {
         perror("mq_send failure\n");
       }
       else
       {
-        printf("mq_send successful\n");
+        printf("mq_send successful with frame_num: %d\n", frame_num);
+        frame_num++;
       }
       pthread_mutex_unlock(&mac->tx_mutex);
-      memset(frame,0,frame_len);
+      memset(frame, 0, frame_len);
+    }
+    else
+    {
+      printf("Channel Busy\n");
     }
     //usleep(200);
   }
@@ -104,7 +114,7 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
 char *MAC::getControlFrame(FrameControl temp)
 {
   char *control_frame = new char[CONTROL_FRAME_LEN];
-  //memset(control_frame, 0, sizeof(control_frame));
+  memset(control_frame, 0, sizeof(control_frame));
   char *offset = control_frame;
   int temp_frame_control = htons(((temp.frame_protocol_type << 12) | (temp.frame_protocol_subtype << 8)));
   char *temp_offset = (char *)&temp_frame_control;
@@ -114,8 +124,6 @@ char *MAC::getControlFrame(FrameControl temp)
   memcpy(offset, mac_address, 6);
   offset = offset + 6;
 
-  // remove any zeros msq has issues with zeros
-  memset(control_frame+1,1,1);
   return control_frame;
 }
 
@@ -148,7 +156,7 @@ void *MAC_rx_worker(void *_arg)
   {
     timespec timeout;
     timeout.tv_sec = 0;
-    timeout.tv_nsec = 100;
+    timeout.tv_nsec = 500;
     int status = mq_timedreceive(mac->phy_rx_queue, buf, MAX_BUF, 0, &timeout);
     if (status == -1)
     {
@@ -158,6 +166,7 @@ void *MAC_rx_worker(void *_arg)
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
           mac->tx_channel_state = mac->FREE;
+          // printf("Channel Free\n");
         }
       }
       else
@@ -184,10 +193,16 @@ void *MAC_rx_worker(void *_arg)
       if (strncmp(mac->mac_address, sourceMAC, 6) != 0)
       {
         mac->tx_channel_state = mac->BUSY;
-        printf("Channel Busy %d\n", strncmp(mac->mac_address, sourceMAC, 6));
+        printf("Channel Busy %u\n", strncmp(mac->mac_address, sourceMAC, 6));
       }
-      printf("%s\n", mac->recv_payload);
-      printf("------------------------------------\n");
+      else
+      {
+        int frame_num = buffToInteger(mac->recv_header+8);
+        printf("Frame_num received: %d\n", frame_num);
+        printf("%s\n", mac->recv_payload);
+        printf("------------------------------------\n");
+      }
+
       memset(buf, 0, MAX_BUF);
     }
   }
@@ -204,4 +219,14 @@ char *random_byte_generator()
     *(random_bytes + i) = rand() % 256;
   }
   return random_bytes;
+}
+
+int buffToInteger(char * buffer)
+{
+  // from https://stackoverflow.com/questions/34943835/convert-four-bytes-to-integer-using-c
+    int a = static_cast<int>(static_cast<unsigned char>(buffer[0]) << 24 |
+        static_cast<unsigned char>(buffer[1]) << 16 | 
+        static_cast<unsigned char>(buffer[2]) << 8 | 
+        static_cast<unsigned char>(buffer[3]));
+    return a;
 }

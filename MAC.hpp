@@ -12,7 +12,7 @@
 typedef unsigned short uint16;
 
 #define MAX_BUF 1500
-#define CONTROL_FRAME_LEN 8
+#define CONTROL_FRAME_LEN 12
 
 #define PMODE 0777
 
@@ -94,3 +94,4 @@ public:
 void *MAC_tx_worker(void *_arg);
 void *MAC_rx_worker(void *_arg);
 char *random_byte_generator();
+int buffToInteger(char * buffer);

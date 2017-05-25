@@ -369,7 +369,7 @@ void *PHY_tx_worker(void *_arg)
       }
       else
       {
-        payload_len = strlen(buffer);
+        payload_len = status;
         //  strncpy((char*)payload, buffer, payload_len);
         memcpy(payload, (unsigned char *)buffer, payload_len);
         PHY->tx_frame_counter++;
