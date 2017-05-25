@@ -1,7 +1,7 @@
 #include "MAC.hpp"
 
 MAC::MAC(char *mac_address)
-{
+{ 
   strncpy(this->mac_address, mac_address, sizeof(mac_address));
   tx_channel_state = FREE;
   // generate random_mac
@@ -48,7 +48,7 @@ MAC::~MAC()
 
 void *MAC_tx_worker(void *_arg)
 {
-
+  int frames_sent = 0;
   MAC *mac = (MAC *)_arg;
   std::string message = "Hello";
   char *frame = new char[MAX_BUF];
@@ -74,8 +74,10 @@ void *MAC_tx_worker(void *_arg)
       }
       else
       {
-        printf("mq_send successful with frame_num: %d\n", frame_num);
+        printf("mq_send successful with frame_num: %d\n", frame_num );
         frame_num++;
+        frames_sent++;
+        printf("Frames Sent: %d\n",frames_sent);
       }
       pthread_mutex_unlock(&mac->tx_mutex);
       memset(frame, 0, frame_len);
@@ -150,6 +152,7 @@ char *MAC::getPayLoad(char *frame, int payload_len)
 
 void *MAC_rx_worker(void *_arg)
 {
+  int frames_received = 0;
   MAC *mac = (MAC *)_arg;
   char buf[MAX_BUF];
   while (!mac->stop_rx)
@@ -198,7 +201,9 @@ void *MAC_rx_worker(void *_arg)
       else
       {
         int frame_num = buffToInteger(mac->recv_header+8);
+        frames_received++;
         printf("Frame_num received: %d\n", frame_num);
+        printf("Frames received: %d\n",frames_received);
         printf("%s\n", mac->recv_payload);
         printf("------------------------------------\n");
       }
