@@ -8,6 +8,7 @@
 #include <time.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <iomanip>
 
 typedef unsigned short uint16;
 
@@ -18,7 +19,7 @@ typedef unsigned short uint16;
 #define IP_FLAG_POS 0 //13
 #define PMODE 0777
 #define DIFS_TIME 50
-#define SLOT_TIME 50
+#define SLOT_TIME 1000
 
 
 class MAC{
@@ -41,6 +42,7 @@ public:
   bool stop_rx = false;
   bool stop_tx = false;
 
+  int start_time = 0;
   char *dest_address;
   uint16 seq_num;
   int checksum;

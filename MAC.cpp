@@ -56,19 +56,21 @@ MAC::~MAC()
 */
 void *MAC_tx_worker(void *_arg)
 {
+  
   int frames_sent = 0;
   MAC *mac = (MAC *)_arg;
   std::string message = "Hello";
   char *frame = new char[MAX_BUF];
   int frame_num = 0;
   bool new_transmission = true;
+  mac->start_time = time(NULL);
   while (!mac->stop_tx)
   {
     if (mac->tx_channel_state == mac->FREE)
     {
       bool last_segment = false;
-      std::getline(std::cin, message);
-      if(frame_num%3 == 0){
+      //std::getline(std::cin, message);
+      if(frame_num%5 == 0){
         message = "11111111111111111111111";
       } else{
         message = "00000000000000000000000";
@@ -92,6 +94,7 @@ void *MAC_tx_worker(void *_arg)
          std::cout << "Frame Len: " << strlen(frame) << "\n";
       if(last_segment){
         memset(frame + 1, 1, 1);
+        printf("Last Frame: %d\n", frame[1]);
         if(new_transmission){
           printf("New Transmission1\n");
           mac->myState = mac->BACKING_OFF;
@@ -129,7 +132,7 @@ void *MAC_tx_worker(void *_arg)
     {
       //printf("TX Channel Busy\n");
     }
-    //usleep(1000);
+   // usleep(1000);
   }
   pthread_exit(NULL);
 }
@@ -263,7 +266,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len){
   recv_payload = getPayLoad(buf, buf_len);
   char *sourceMAC = extractSourceMAC(recv_header);
   printf("Source MAC Address: ");
-
+  double frame_error_rate = 0;
   for (int i = 0; i < 6; i++)
   {
     printf("%02x:", (unsigned char)sourceMAC[i]);
@@ -272,11 +275,12 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len){
 
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
-    if(!isLastAlienFrame(sourceMAC)){
+    if(!isLastAlienFrame(recv_header)){
       tx_channel_state = BUSY;
       printf("Channel Busy %u\n", strncmp(mac_address, sourceMAC, 6));
     } else{
       tx_channel_state = FREE;
+      printf("Channel free %u\n", strncmp(mac_address, sourceMAC, 6));
     }
   }
   else
@@ -284,8 +288,19 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len){
     tx_channel_state = FREE;
     int frame_num = buffToInteger(recv_header+8);
     frames_received++;
+    frame_error_rate = (frame_num+1 - (float)frames_received)/((float)frame_num+1);
+    int time_dif = (time(NULL) - start_time);
+    int bitrate = 0;
+    if(time_dif > 0) {
+      bitrate = (buf_len*8)*frames_received/time_dif;
+    }
+    
     printf("Frame_num received: %d\n", frame_num);
     printf("Frames received: %d\n",frames_received);
+    std::cout << std::fixed;
+    std::cout << "Frame Error Rate: " << 
+            std::setprecision(5) << frame_error_rate << '\n';
+    printf("Bitrate: %d\n",bitrate);
     printf("%s\n", recv_payload);
     printf("------------------------------------\n");
   }
@@ -304,7 +319,7 @@ bool MAC::isLastsegment(char *segment) {
 }
 
 bool MAC::isLastAlienFrame(char *frame){
-  if(frame[1] == '1'){
+  if(frame[1] == 1){
     return true;
   } else{
     return false;
