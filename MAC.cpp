@@ -1,9 +1,10 @@
 #include "MAC.hpp"
 
 MAC::MAC(char *mac_address)
-{ 
+{
   strncpy(this->mac_address, mac_address, sizeof(mac_address));
   tx_channel_state = FREE;
+  frames_received = 0;
   // generate random_mac
   this->mac_address = random_byte_generator();
   printf("My MAC Address: ");
@@ -46,6 +47,13 @@ MAC::~MAC()
   mq_unlink("/phy2mac");
 }
 
+
+/*
+//  Transmission worker thread
+//  TODO:: Get signals on when to transmit or not
+//  TODO:: Check with the receiver first before Transmission
+//  TODO:: Get
+*/
 void *MAC_tx_worker(void *_arg)
 {
   int frames_sent = 0;
@@ -53,20 +61,55 @@ void *MAC_tx_worker(void *_arg)
   std::string message = "Hello";
   char *frame = new char[MAX_BUF];
   int frame_num = 0;
+  bool new_transmission = true;
   while (!mac->stop_tx)
   {
     if (mac->tx_channel_state == mac->FREE)
     {
-      //std::getline(std::cin, message);
+      bool last_segment = false;
+      std::getline(std::cin, message);
+      if(frame_num%3 == 0){
+        message = "11111111111111111111111";
+      } else{
+        message = "00000000000000000000000";
+      }
       strncpy(frame, message.c_str(), message.length());
-      int frame_len = message.length() + CONTROL_FRAME_LEN;
-   
+      int segment_len = message.length();
+      // check ip flags set
+      if(mac->isLastsegment(frame)) {
+        last_segment = true;
+      } else{
+        last_segment = false;
+      }
+
+      int frame_len = segment_len + CONTROL_FRAME_LEN;
+
       mac->create_frame(frame, strlen(frame), mac->DATA, mac->RTS);
       pthread_mutex_lock(&mac->tx_mutex);
-      memset(frame + 1, frame_num, 1);
+
       unsigned int conv_frame_num = htonl(frame_num);
       memcpy(frame+8,&conv_frame_num,4);
          std::cout << "Frame Len: " << strlen(frame) << "\n";
+      if(last_segment){
+        memset(frame + 1, 1, 1);
+        if(new_transmission){
+          printf("New Transmission1\n");
+          mac->myState = mac->BACKING_OFF;
+          mac->backOff();
+        } else{
+          printf("Transmission Continuation1\n");
+          new_transmission = true;
+        }
+      } else{
+        if(new_transmission){
+          printf("New Transmission2\n");
+          mac->myState = mac->BACKING_OFF;
+          mac->backOff();
+        }else {
+          printf("Transmission Continuation2\n");
+        }
+        new_transmission = false;
+      }
       int status = mq_send(mac->phy_tx_queue, frame, frame_len, 5);
       if (status == -1)
       {
@@ -86,10 +129,15 @@ void *MAC_tx_worker(void *_arg)
     {
       //printf("TX Channel Busy\n");
     }
-    usleep(1000);
+    //usleep(1000);
   }
   pthread_exit(NULL);
 }
+
+/*
+//  Combines the control_frame(header) with the payload
+//  TODO:: Type of frames to be used
+*/
 
 void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
                        ProtocolSubtype newSubType)
@@ -112,6 +160,10 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
   }
   data = temp_frame;
 }
+/*  Creates a control frame header for any payload to be transmitted
+**  TODO:: Need to improve on which type of information is needed in
+**         the control frame
+*/
 
 char *MAC::getControlFrame(FrameControl temp)
 {
@@ -120,21 +172,27 @@ char *MAC::getControlFrame(FrameControl temp)
   char *offset = control_frame;
   int temp_frame_control = htons(((temp.frame_protocol_type << 12) | (temp.frame_protocol_subtype << 8)));
   char *temp_offset = (char *)&temp_frame_control;
-  memcpy(offset, temp_offset, 2);
-  printf("Control Frame: %x\n", control_frame[0]);
+  memcpy(offset, temp_offset, 2); // TODO:: test by removing temp_offset. temp_offset provides a frame_protocol_type
+  //printf("Control Frame: %x\n", control_frame[0]);
   offset = offset + 2;
-  memcpy(offset, mac_address, 6);
+  memcpy(offset, mac_address, 6); // add mac address to the control_frame
   offset = offset + 6;
 
   return control_frame;
 }
 
+// extracts control_frame(mac header) from any given payload
+// control_frame size will always remain constant as specified by CONTROL_FRAME_LEN
 char *MAC::getMACHeader(char *frame)
 {
   char *temp = new char[CONTROL_FRAME_LEN];
   memcpy(temp, frame, CONTROL_FRAME_LEN);
   return temp;
 }
+
+// Assumes that the MAC address of the source of the payload is 2 bytes
+// from the start of the header
+// TODO:: need to create a variable for the position of the mac header
 
 char *MAC::extractSourceMAC(char *header)
 {
@@ -144,12 +202,16 @@ char *MAC::extractSourceMAC(char *header)
   memcpy(temp, header + 2, 6);
   return temp;
 }
-
+//
+//  Extracts payload at position right after the control frame length
+//
 char *MAC::getPayLoad(char *frame, int payload_len)
 {
   return frame + CONTROL_FRAME_LEN;
 }
 
+
+// The worker for the receiver thread
 void *MAC_rx_worker(void *_arg)
 {
   int frames_received = 0;
@@ -161,17 +223,18 @@ void *MAC_rx_worker(void *_arg)
     struct timespec timeout;
     timeout.tv_sec = time(NULL)+1;
     timeout.tv_nsec = 0;
-    
+
     int status = mq_timedreceive(mac->phy_rx_queue, buf, MAX_BUF, 0, &timeout);
-    
+
     if (status == -1)
     {
       if (errno == ETIMEDOUT)
       {
-        mac->myState = mac->IDLE;
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
-          mac->tx_channel_state = mac->FREE;
+          if(mac->myState == mac->IDLE){
+            mac->tx_channel_state = mac->FREE;
+          }
           //printf("Channel Free\n");
         }
       }
@@ -184,43 +247,85 @@ void *MAC_rx_worker(void *_arg)
     else
     {
      // pthread_mutex_lock(&mac->rx_mutex);
-      printf("Message Received\n");
-      mac->recv_header = mac->getMACHeader(buf);
-      mac->recv_payload = mac->getPayLoad(buf, status);
-      char *sourceMAC = mac->extractSourceMAC(mac->recv_header);
-      printf("Source MAC Address: ");
-
-      for (int i = 0; i < 6; i++)
-      {
-        printf("%02x:", (unsigned char)sourceMAC[i]);
-      }
-      printf("\n");
-
-      if (strncmp(mac->mac_address, sourceMAC, 6) != 0)
-      {
-        
-        mac->tx_channel_state = mac->BUSY;
-        printf("Channel Busy %u\n", strncmp(mac->mac_address, sourceMAC, 6));
-       
-      }
-      else
-      {
-        mac->tx_channel_state = mac->FREE;
-        int frame_num = buffToInteger(mac->recv_header+8);
-        frames_received++;
-        printf("Frame_num received: %d\n", frame_num);
-        printf("Frames received: %d\n",frames_received);
-        printf("%s\n", mac->recv_payload);
-        printf("------------------------------------\n");
-      }
+      mac->analyzeReceivedFrame(buf,status);
      // pthread_mutex_unlock(&mac->rx_mutex);
       memset(buf, 0, MAX_BUF);
     }
-    
+
   }
   pthread_exit(NULL);
 }
 
+// Analyze any received frame to make decisions on the state of the channel
+void MAC::analyzeReceivedFrame(char *buf, int buf_len){
+  printf("Message Received\n");
+  recv_header = getMACHeader(buf);
+  recv_payload = getPayLoad(buf, buf_len);
+  char *sourceMAC = extractSourceMAC(recv_header);
+  printf("Source MAC Address: ");
+
+  for (int i = 0; i < 6; i++)
+  {
+    printf("%02x:", (unsigned char)sourceMAC[i]);
+  }
+  printf("\n");
+
+  if (strncmp(mac_address, sourceMAC, 6) != 0)
+  {
+    if(!isLastAlienFrame(sourceMAC)){
+      tx_channel_state = BUSY;
+      printf("Channel Busy %u\n", strncmp(mac_address, sourceMAC, 6));
+    } else{
+      tx_channel_state = FREE;
+    }
+  }
+  else
+  {
+    tx_channel_state = FREE;
+    int frame_num = buffToInteger(recv_header+8);
+    frames_received++;
+    printf("Frame_num received: %d\n", frame_num);
+    printf("Frames received: %d\n",frames_received);
+    printf("%s\n", recv_payload);
+    printf("------------------------------------\n");
+  }
+}
+
+
+/*
+// check if the tcp segment is the last segment
+*/
+
+bool MAC::isLastsegment(char *segment) {
+  unsigned char flag;
+  memcpy(&flag,segment+IP_HEADER_LEN+IP_FLAG_POS,1);
+  return (isBitSet(flag,0) | isBitSet(flag,1)
+            | isBitSet(flag,2) |isBitSet(flag,3));
+}
+
+bool MAC::isLastAlienFrame(char *frame){
+  if(frame[1] == '1'){
+    return true;
+  } else{
+    return false;
+  }
+}
+
+void MAC::backOff(){
+  for(int i = 0; i < cw; i++){
+    if(tx_channel_state==BUSY){
+      if(i > 0) {
+        i--;
+      }
+    } else{
+      usleep(SLOT_TIME);
+    }
+  }
+  myState = IDLE;
+}
+//
+// Generate random_bytes for the MAC. Probability of using the same value = (1/256)^6
+//
 char *random_byte_generator()
 {
   char *random_bytes = new char[6];
@@ -233,12 +338,19 @@ char *random_byte_generator()
   return random_bytes;
 }
 
+//
+//  converts the received interger values in the frame
+//
 int buffToInteger(char * buffer)
 {
   // from https://stackoverflow.com/questions/34943835/convert-four-bytes-to-integer-using-c
     int a = static_cast<int>(static_cast<unsigned char>(buffer[0]) << 24 |
-        static_cast<unsigned char>(buffer[1]) << 16 | 
-        static_cast<unsigned char>(buffer[2]) << 8 | 
+        static_cast<unsigned char>(buffer[1]) << 16 |
+        static_cast<unsigned char>(buffer[2]) << 8 |
         static_cast<unsigned char>(buffer[3]));
     return a;
+}
+//
+bool isBitSet (unsigned char c, int n) {
+  return (1 & (c >> n));
 }
