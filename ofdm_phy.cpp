@@ -378,7 +378,7 @@ void *PHY_tx_worker(void *_arg)
         log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
         for (int i = 0; i < 6; i++)
         {
-          printf("%02x:", (unsigned char)payload[0]);
+          printf("%02x:", (unsigned char)payload[i]);
         }
         printf("\n");
         PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);

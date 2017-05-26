@@ -14,7 +14,7 @@
 typedef unsigned short uint16;
 
 #define MAX_BUF 2000 // maximum buffer tx frame
-#define MTU 1500
+#define MTU 288
 #define CONTROL_FRAME_LEN 12
 #define IP_HEADER_LEN 0 //20
 #define IP_FLAG_POS 0 //13

@@ -59,7 +59,7 @@ void *MAC_tx_worker(void *_arg)
   
   int frames_sent = 0;
   MAC *mac = (MAC *)_arg;
-  std::string message = "Hello";
+  std::string message = "";
   char *frame = new char[MAX_BUF];
   int frame_num = 0;
   bool new_transmission = true;
@@ -68,12 +68,18 @@ void *MAC_tx_worker(void *_arg)
   {
     if (mac->tx_channel_state == mac->FREE)
     {
+      int tmp_len = MTU;
+      message = "";
       bool last_segment = false;
       //std::getline(std::cin, message);
       if(frame_num%10 == 0){
-        message = "11111111111111111111111";
+        for(int i = 0; i < tmp_len ; i++){
+          message = message + "1";
+        }
       } else{
-        message = "00000000000000000000000";
+        for(int i = 0; i < tmp_len ; i++){
+          message = message + "0";
+        }
       }
       strncpy(frame, message.c_str(), message.length());
       int segment_len = message.length();
@@ -92,8 +98,6 @@ void *MAC_tx_worker(void *_arg)
      
       unsigned int conv_frame_num = htonl(frame_num);
       memcpy(frame+8,&conv_frame_num,4);
-         std::cout << "Frame Len: " << strlen(frame) << "\n";
-
       
       // FIXME:: Need to look into what state the MAC should be in
       // if only one segment is received
@@ -101,27 +105,28 @@ void *MAC_tx_worker(void *_arg)
         memset(frame + 1, 1, 1);
         printf("Last Frame: %d\n", frame[1]);
         if(new_transmission){
-          printf("New Transmission1\n");
+          //printf("New Transmission1\n");
           mac->myState = mac->BACKING_OFF;
           mac->backOff();
          // mac->myState = mac->TRANSMITTING;
         } else{
-          printf("Transmission Continuation1\n");
+          //printf("Transmission Continuation1\n");
           new_transmission = true;
           mac->myState = mac->IDLE;
         }
       } else{
         if(new_transmission){
-          printf("New Transmission2\n");
+        //  printf("New Transmission2\n");
           mac->myState = mac->BACKING_OFF;
           mac->backOff();
           mac->myState = mac->TRANSMITTING;
         }else {
-          printf("Transmission Continuation2\n");
+          //printf("Transmission Continuation2\n");
         }
         new_transmission = false;
       }
       mac->addCRC(frame,frame_len);
+      std::cout << "Frame Len: " << frame_len << "\n";
       int status = mq_send(mac->phy_tx_queue, frame, frame_len, 5);
       if (status == -1)
       {
@@ -321,7 +326,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len){
     std::cout << "Frame Error Rate: " << 
             std::setprecision(5) << frame_error_rate << '\n';
     printf("Bitrate: %d\n",bitrate);
-    printf("%s\n", recv_payload);
+  //  printf("%s\n", recv_payload);
     printf("------------------------------------\n");
   }
 }
@@ -354,7 +359,7 @@ void MAC::backOff(){
      //   printf("BACK OFF PAUSED \n");
       }
     } else{
-      printf("BACK OFF RESUMED \n");
+     // printf("BACK OFF RESUMED \n");
       usleep(SLOT_TIME);
     }
   }

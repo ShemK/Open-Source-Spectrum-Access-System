@@ -101,14 +101,14 @@ void initialize_node_parameters(struct node_parameters *np)
 
   np->tx_freq = 1000e6;
   np->tx_rate = 2e6;
-  np->tx_gain = 20.0;
+  np->tx_gain = 10.0;
 
   // initial liquid OFDM settings
   np->tx_gain_soft = 0;
-  np->tx_modulation = LIQUID_MODEM_QAM8;
+  np->tx_modulation = LIQUID_MODEM_QAM4;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_HAMMING128;
-  np->tx_fec1 = LIQUID_FEC_HAMMING74;
+  np->tx_fec1 = LIQUID_FEC_SECDED7264;//LIQUID_FEC_HAMMING74;
   np->tx_cp_len = 16;
   np->rx_cp_len = 16;
   np->tx_taper_len = 4;
