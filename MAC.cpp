@@ -70,7 +70,7 @@ void *MAC_tx_worker(void *_arg)
     {
       bool last_segment = false;
       //std::getline(std::cin, message);
-      if(frame_num%5 == 0){
+      if(frame_num%10 == 0){
         message = "11111111111111111111111";
       } else{
         message = "00000000000000000000000";
@@ -88,10 +88,15 @@ void *MAC_tx_worker(void *_arg)
 
       mac->create_frame(frame, strlen(frame), mac->DATA, mac->RTS);
       pthread_mutex_lock(&mac->tx_mutex);
-
+   
+     
       unsigned int conv_frame_num = htonl(frame_num);
       memcpy(frame+8,&conv_frame_num,4);
          std::cout << "Frame Len: " << strlen(frame) << "\n";
+
+      
+      // FIXME:: Need to look into what state the MAC should be in
+      // if only one segment is received
       if(last_segment){
         memset(frame + 1, 1, 1);
         printf("Last Frame: %d\n", frame[1]);
@@ -99,20 +104,24 @@ void *MAC_tx_worker(void *_arg)
           printf("New Transmission1\n");
           mac->myState = mac->BACKING_OFF;
           mac->backOff();
+         // mac->myState = mac->TRANSMITTING;
         } else{
           printf("Transmission Continuation1\n");
           new_transmission = true;
+          mac->myState = mac->IDLE;
         }
       } else{
         if(new_transmission){
           printf("New Transmission2\n");
           mac->myState = mac->BACKING_OFF;
           mac->backOff();
+          mac->myState = mac->TRANSMITTING;
         }else {
           printf("Transmission Continuation2\n");
         }
         new_transmission = false;
       }
+      mac->addCRC(frame,frame_len);
       int status = mq_send(mac->phy_tx_queue, frame, frame_len, 5);
       if (status == -1)
       {
@@ -126,7 +135,7 @@ void *MAC_tx_worker(void *_arg)
         printf("Frames Sent: %d\n",frames_sent);
       }
       pthread_mutex_unlock(&mac->tx_mutex);
-      memset(frame, 0, frame_len);
+      memset(frame, 0, MAX_BUF);
     }
     else
     {
@@ -161,7 +170,8 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
   else if (newType == DATA)
   {
   }
-  data = temp_frame;
+  memcpy(data,temp_frame,data_len + CONTROL_FRAME_LEN);
+  //data = temp_frame;
 }
 /*  Creates a control frame header for any payload to be transmitted
 **  TODO:: Need to improve on which type of information is needed in
@@ -249,9 +259,13 @@ void *MAC_rx_worker(void *_arg)
     }
     else
     {
+      if(mac->isCorrectCRC(buf,status)){
      // pthread_mutex_lock(&mac->rx_mutex);
-      mac->analyzeReceivedFrame(buf,status);
+        mac->analyzeReceivedFrame(buf,status);
      // pthread_mutex_unlock(&mac->rx_mutex);
+      } else{
+        printf("Wrong Packet due to wrong CRC\n");
+      }
       memset(buf, 0, MAX_BUF);
     }
 
@@ -285,7 +299,9 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len){
   }
   else
   {
-    tx_channel_state = FREE;
+    if(myState == TRANSMITTING) {
+      tx_channel_state = FREE;
+    }
     int frame_num = buffToInteger(recv_header+8);
     frames_received++;
     frame_error_rate = (frame_num+1 - (float)frames_received)/((float)frame_num+1);
@@ -294,7 +310,11 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len){
     if(time_dif > 0) {
       bitrate = (buf_len*8)*frames_received/time_dif;
     }
-    
+    if(isCorrectCRC(buf,buf_len)){
+      printf("CRC Check: Passed\n");
+    } else{
+      printf("CRC Check: Failed\n");
+    }
     printf("Frame_num received: %d\n", frame_num);
     printf("Frames received: %d\n",frames_received);
     std::cout << std::fixed;
@@ -331,12 +351,37 @@ void MAC::backOff(){
     if(tx_channel_state==BUSY){
       if(i > 0) {
         i--;
+     //   printf("BACK OFF PAUSED \n");
       }
     } else{
+      printf("BACK OFF RESUMED \n");
       usleep(SLOT_TIME);
     }
   }
   myState = IDLE;
+}
+
+// HACK:: Little Endian and Big Endian issues with CRC
+void MAC::addCRC(char *frame, int &frame_len) {
+  unsigned long crc = crc32(0L,Z_NULL,0);
+  crc = crc32(crc,(const unsigned char *)frame,frame_len);
+  memcpy(frame+frame_len,&crc,4);
+  printf("CRC sent: %lu\n",crc);
+  frame_len = frame_len+4;
+}
+
+
+bool MAC::isCorrectCRC(char *buf, int buf_len){
+  unsigned long crc = crc32(0L,Z_NULL,0);
+  crc = crc32(crc,(const unsigned char *)buf,buf_len-4);
+ // printf("CRC Received: %lu\n",crc);
+  unsigned long received_crc = htonl((unsigned long) buffToInteger(buf+buf_len-4));
+  //printf("CRC Received 2: %lu\n",received_crc);
+  if(crc==received_crc){
+    return true;
+  } else{
+    return false;
+  }
 }
 //
 // Generate random_bytes for the MAC. Probability of using the same value = (1/256)^6

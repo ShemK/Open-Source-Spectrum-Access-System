@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <arpa/inet.h>
 #include <iomanip>
+#include <zlib.h>
 
 typedef unsigned short uint16;
 
@@ -35,7 +36,7 @@ public:
   int frames_received;
   int cw_min = 16;
   int cw_max = 1024;
-  int cw = cw_min;
+  int cw = 30;
   int back_off_time;
   bool collision_occured = false;
   char *mac_address = new char[6];
@@ -55,7 +56,8 @@ public:
     DATA_WAIT,
     CTS_WAIT,
     ACK_WAIT,
-    BACKING_OFF
+    BACKING_OFF,
+    TRANSMITTING
   };
 
   enum Channel_state{
@@ -106,6 +108,8 @@ public:
   bool isLastsegment(char *segment);
   bool isLastAlienFrame(char *frame);
   void backOff();
+  void addCRC(char *frame, int &frame_len);
+  bool isCorrectCRC(char *buf, int buf_len);
 
 };
 
