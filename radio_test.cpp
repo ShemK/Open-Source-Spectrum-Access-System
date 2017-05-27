@@ -108,7 +108,7 @@ void initialize_node_parameters(struct node_parameters *np)
   np->tx_modulation = LIQUID_MODEM_QAM4;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_HAMMING128;
-  np->tx_fec1 = LIQUID_FEC_SECDED7264;//LIQUID_FEC_HAMMING74;
+  np->tx_fec1 = LIQUID_FEC_HAMMING74;
   np->tx_cp_len = 16;
   np->rx_cp_len = 16;
   np->tx_taper_len = 4;

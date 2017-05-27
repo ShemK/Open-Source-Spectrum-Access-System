@@ -270,6 +270,7 @@ void *MAC_rx_worker(void *_arg)
      // pthread_mutex_unlock(&mac->rx_mutex);
       } else{
         printf("Wrong Packet due to wrong CRC\n");
+        mac->tx_channel_state = mac->BUSY;
       }
       memset(buf, 0, MAX_BUF);
     }
@@ -368,7 +369,7 @@ void MAC::backOff(){
 
 // HACK:: Little Endian and Big Endian issues with CRC
 void MAC::addCRC(char *frame, int &frame_len) {
-  unsigned long crc = crc32(0L,Z_NULL,0);
+  unsigned long crc = 0;//crc32(0L,Z_NULL,0);
   crc = crc32(crc,(const unsigned char *)frame,frame_len);
   memcpy(frame+frame_len,&crc,4);
   printf("CRC sent: %lu\n",crc);
@@ -377,7 +378,7 @@ void MAC::addCRC(char *frame, int &frame_len) {
 
 
 bool MAC::isCorrectCRC(char *buf, int buf_len){
-  unsigned long crc = crc32(0L,Z_NULL,0);
+  unsigned long crc = 0;//crc32(0L,Z_NULL,0);
   crc = crc32(crc,(const unsigned char *)buf,buf_len-4);
  // printf("CRC Received: %lu\n",crc);
   unsigned long received_crc = htonl((unsigned long) buffToInteger(buf+buf_len-4));
