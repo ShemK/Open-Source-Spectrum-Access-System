@@ -10,6 +10,9 @@
 #include <arpa/inet.h>
 #include <iomanip>
 #include <zlib.h>
+#include "tun.hpp"
+#include <sys/ioctl.h>
+#include <linux/if_tun.h>
 
 typedef unsigned short uint16;
 
@@ -42,6 +45,10 @@ public:
   char *mac_address = new char[6];
   bool stop_rx = false;
   bool stop_tx = false;
+
+  int tunfd;
+  char tun_name[20];
+  char systemCMD[200];
 
   int start_time = 0;
   char *dest_address;
