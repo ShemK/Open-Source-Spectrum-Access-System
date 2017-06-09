@@ -19,6 +19,7 @@
 void *ECR_tx_worker(void *_arg);
 void *ECR_rx_worker(void *_arg);
 void *ECR_ce_worker(void *_arg);
+void *ECR_rem_worker(void *_arg);
 
 // function that receives frame from PHY layer
 int rxCallback(unsigned char *_header, int _header_valid,
@@ -849,6 +850,9 @@ public:
   uhd::usrp::multi_usrp::sptr usrp_rx;
   uhd::rx_metadata_t metadata_rx;
 
+  uhd::rx_streamer::sptr usrp_rx_streamer;
+  uhd::tx_streamer::sptr usrp_tx_streamer;
+
 private:
   //=================================================================================
   // Private Cognitive Engine Objects
@@ -982,6 +986,10 @@ private:
   int tx_worker_state;
   int tx_state;
   friend void *ECR_tx_worker(void *);
+
+  //
+  int num_boards = 0;
+
 };
 
 #endif

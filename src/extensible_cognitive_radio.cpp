@@ -148,11 +148,25 @@ ExtensibleCognitiveRadio::ExtensibleCognitiveRadio(char *virtual_interface) {
   uhd::device_addr_t dev_addr;
   usrp_tx = uhd::usrp::multi_usrp::make(dev_addr);
   usrp_rx = uhd::usrp::multi_usrp::make(dev_addr);
-  usrp_rx->set_rx_antenna("RX2", 0);
-  usrp_tx->set_tx_antenna("TX/RX", 0);
-//  usrp_rx->set_rx_subdev_spec(uhd::usrp::subdev_spec_t("A:B"),0);
-//  usrp_tx->set_tx_subdev_spec(uhd::usrp::subdev_spec_t("A:B"),0);
+  usrp_rx->set_rx_antenna("RX2");
+  usrp_tx->set_tx_antenna("TX/RX");
+
+
+  num_boards = usrp_rx->get_num_mboards();
+  uhd::stream_args_t rx_stream_args("fc32");
+  std::vector<size_t> rx_channel_nums;
+  rx_channel_nums.push_back(0);
+  rx_stream_args.channels = rx_channel_nums;
+  usrp_rx_streamer = usrp_rx->get_rx_stream(rx_stream_args);
+
+  uhd::stream_args_t tx_stream_args("fc32");
+  std::vector<size_t> tx_channel_nums;
+  tx_channel_nums.push_back(0);
+  tx_stream_args.channels = tx_channel_nums;
+  usrp_tx_streamer = usrp_tx->get_tx_stream(tx_stream_args);
+
   printf("Creating tun interface\n");
+  printf("Num Boards: %d\n",num_boards);
   // Create TUN interface
   dprintf("Creating tun interface\n");
   strcpy(tun_name, virtual_interface);
@@ -885,6 +899,19 @@ void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
+
+
+  const size_t samps_per_buff = usrp_tx_streamer->get_max_num_samps();
+  std::vector<std::vector<std::complex<float> > > buffs(
+                usrp_tx->get_tx_num_channels(),
+                  std::vector<std::complex<float> >(samps_per_buff));
+  //create a vector of pointers to point to each of the channel buffers
+  std::vector<std::complex<float> *> buff_ptrs;
+
+  for (size_t i = 0; i < buffs.size(); i++){
+    buff_ptrs.push_back(&buffs[i].front());
+  }
+
   while (!last_symbol) {
 
     // generate symbol
@@ -894,10 +921,15 @@ void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
     for (i = 0; i < fgbuffer_len; i++)
       usrp_buffer[i] = fgbuffer[i] * tx_gain_soft_lin;
 
+    memcpy(buff_ptrs[0],&usrp_buffer[0],usrp_buffer.size() * sizeof(std::complex<float>));
+    
     // send samples to the device
-    usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
+    
+    /*usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
+    */                            
+    usrp_tx_streamer->send(buff_ptrs, usrp_buffer.size(),metadata_tx);
 
     metadata_tx.start_of_burst = false; // never SOB when continuou
 
@@ -906,16 +938,18 @@ void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
-  usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
+/*  usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                               metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
-
+*/
+  usrp_tx_streamer->send(buff_ptrs, usrp_buffer.size(),metadata_tx);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
-
+/*
   usrp_tx->get_device()->send("", 0, metadata_tx,
                               uhd::io_type_t::COMPLEX_FLOAT32,
-                              uhd::device::SEND_MODE_FULL_BUFF);
+                              uhd::device::SEND_MODE_FULL_BUFF); */
+  usrp_tx_streamer->send("", 0,metadata_tx);
   pthread_mutex_unlock(&tx_mutex);
 }
 
@@ -1260,7 +1294,24 @@ void *ECR_rx_worker(void *_arg) {
     // start the rx stream from the USRP
     pthread_mutex_lock(&ECR->rx_mutex);
     dprintf("rx worker beginning usrp streaming\n");
-    ECR->usrp_rx->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
+    
+    uhd::stream_args_t stream_args("fc32");
+    std::vector<size_t> channel_nums;
+    channel_nums.push_back(0);
+    // channel_nums.push_back(1);
+    stream_args.channels = channel_nums;
+    uhd::rx_streamer::sptr rx_stream = ECR->usrp_rx->get_rx_stream(stream_args);
+    rx_stream->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
+
+    const size_t samps_per_buff = rx_stream->get_max_num_samps();
+    std::vector<std::vector<std::complex<float>>> buffs(
+        ECR->usrp_rx->get_rx_num_channels(), std::vector<std::complex<float>>(samps_per_buff));
+
+    //create a vector of pointers to point to each of the channel buffers
+    std::vector<std::complex<float> *> buff_ptrs;
+    for (size_t i = 0; i < buffs.size(); i++)
+      buff_ptrs.push_back(&buffs[i].front());
+
     pthread_mutex_unlock(&ECR->rx_mutex);
 
     timer_tic(rx_stat_update_timer);
@@ -1272,10 +1323,14 @@ void *ECR_rx_worker(void *_arg) {
       // grab data from USRP and push through the frame synchronizer
       size_t num_rx_samps = 0;
       pthread_mutex_lock(&(ECR->rx_mutex));
-      num_rx_samps = ECR->usrp_rx->get_device()->recv(
-          ECR->rx_buffer, ECR->rx_buffer_len, ECR->metadata_rx,
-          uhd::io_type_t::COMPLEX_FLOAT32, uhd::device::RECV_MODE_ONE_PACKET);
-      ofdmflexframesync_execute(ECR->fs, ECR->rx_buffer, num_rx_samps);
+
+      num_rx_samps = rx_stream->recv(
+          buff_ptrs, ECR->rx_buffer_len, ECR->metadata_rx);
+      memcpy(ECR->rx_buffer, buff_ptrs[0], ECR->rx_buffer_len * sizeof(std::complex<float>));
+      ofdmflexframesync_execute(ECR->fs, buff_ptrs[0], num_rx_samps);
+      // printf("Recv Freq 0: %f\n", PHY->usrp_rx->get_rx_freq(0));
+      // printf("Recv Freq 1: %f\n", PHY->usrp_rx->get_rx_freq(1));
+      // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
       pthread_mutex_unlock(&(ECR->rx_mutex));
 
       if (ECR->ce_sensing_flag) {
@@ -1338,7 +1393,7 @@ void *ECR_rx_worker(void *_arg) {
     dprintf("rx_worker finished running\n");
 
     pthread_mutex_lock(&ECR->rx_mutex);
-    ECR->usrp_rx->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    rx_stream->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     pthread_mutex_unlock(&ECR->rx_mutex);
 
   } // while rx thread is running
