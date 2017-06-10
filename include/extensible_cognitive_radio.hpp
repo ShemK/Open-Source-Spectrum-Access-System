@@ -12,6 +12,7 @@
 #include "crts.hpp"
 #include "cognitive_engine.hpp"
 #include "timer.h"
+#include <mqueue.h>
 
 #define ECR_CONTROL_INFO_BYTES 6
 
@@ -19,7 +20,7 @@
 void *ECR_tx_worker(void *_arg);
 void *ECR_rx_worker(void *_arg);
 void *ECR_ce_worker(void *_arg);
-void *ECR_rem_worker(void *_arg);
+void *ECR_esc_worker(void *_arg);
 
 // function that receives frame from PHY layer
 int rxCallback(unsigned char *_header, int _header_valid,
@@ -823,6 +824,9 @@ public:
   struct rx_statistics get_rx_stats();
   void reset_rx_stats();
 
+
+  void set_esc_channel(int channel);
+  void send_esc_data(std::complex<float> * buffer, int buffer_len);
   //=================================================================================
   // Print/Log Methods and Variables
   //=================================================================================
@@ -987,8 +991,25 @@ private:
   int tx_state;
   friend void *ECR_tx_worker(void *);
 
+
+  // esc threading objects
+  pthread_t esc_process;
+  pthread_mutex_t esc_mutex;
+  pthread_mutex_t esc_state_mutex;
+  pthread_mutex_t esc_params_mutex;
+  pthread_cond_t esc_cond;
+  bool esc_complete;
+  bool esc_thread_running;
+  int esc_worker_state;
+  int esc_state;
+  friend void *ECR_esc_worker(void *);
+
   //
   int num_boards = 0;
+  int pipe_fd;
+  const char * pipe_fifo = "/tmp/ecr_esc";
+  bool send_to_esc;
+  int esc_channel;
 
 };
 

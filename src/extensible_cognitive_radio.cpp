@@ -150,7 +150,8 @@ ExtensibleCognitiveRadio::ExtensibleCognitiveRadio(char *virtual_interface) {
   usrp_rx = uhd::usrp::multi_usrp::make(dev_addr);
   usrp_rx->set_rx_antenna("RX2");
   usrp_tx->set_tx_antenna("TX/RX");
-
+//  usrp_rx->set_rx_subdev_spec(uhd::usrp::subdev_spec_t("A:0 B:0"), 0);
+//  usrp_tx->set_tx_subdev_spec(uhd::usrp::subdev_spec_t("A:0 B:0"), 0);
 
   num_boards = usrp_rx->get_num_mboards();
   uhd::stream_args_t rx_stream_args("fc32");
@@ -228,7 +229,6 @@ ExtensibleCognitiveRadio::ExtensibleCognitiveRadio(char *virtual_interface) {
   set_rx_freq(rx_params.rx_freq);
   set_rx_rate(rx_params.rx_rate);
   set_rx_gain_uhd(rx_params.rx_gain_uhd);
-
 
   dprintf("Finished creating ECR\n");
 }
@@ -922,13 +922,9 @@ void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
       usrp_buffer[i] = fgbuffer[i] * tx_gain_soft_lin;
 
     memcpy(buff_ptrs[0],&usrp_buffer[0],usrp_buffer.size() * sizeof(std::complex<float>));
-    
+
     // send samples to the device
-    
-    /*usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
-                                metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
-                                uhd::device::SEND_MODE_FULL_BUFF);
-    */                            
+
     usrp_tx_streamer->send(buff_ptrs, usrp_buffer.size(),metadata_tx);
 
     metadata_tx.start_of_burst = false; // never SOB when continuou
@@ -938,17 +934,10 @@ void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
-/*  usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
-                              metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
-                              uhd::device::SEND_MODE_FULL_BUFF);
-*/
   usrp_tx_streamer->send(buff_ptrs, usrp_buffer.size(),metadata_tx);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
-/*
-  usrp_tx->get_device()->send("", 0, metadata_tx,
-                              uhd::io_type_t::COMPLEX_FLOAT32,
-                              uhd::device::SEND_MODE_FULL_BUFF); */
+
   usrp_tx_streamer->send("", 0,metadata_tx);
   pthread_mutex_unlock(&tx_mutex);
 }
@@ -1266,7 +1255,7 @@ void *ECR_rx_worker(void *_arg) {
 
   // set up receive buffers
   ECR->rx_buffer_len =
-      ECR->usrp_rx->get_device()->get_max_recv_samps_per_packet();
+      ECR->usrp_rx_streamer->get_max_num_samps();
   ECR->ce_usrp_rx_buffer_length = ECR->rx_buffer_len;
   ECR->rx_buffer = (std::complex<float> *)malloc(ECR->rx_buffer_len *
                                          sizeof(std::complex<float>));
@@ -1277,6 +1266,7 @@ void *ECR_rx_worker(void *_arg) {
 
 
   while (ECR->rx_thread_running) {
+
     // wait for signal to start
     pthread_mutex_lock(&(ECR->rx_params_mutex));
     ECR->rx_worker_state = WORKER_READY;
@@ -1294,16 +1284,10 @@ void *ECR_rx_worker(void *_arg) {
     // start the rx stream from the USRP
     pthread_mutex_lock(&ECR->rx_mutex);
     dprintf("rx worker beginning usrp streaming\n");
-    
-    uhd::stream_args_t stream_args("fc32");
-    std::vector<size_t> channel_nums;
-    channel_nums.push_back(0);
-    // channel_nums.push_back(1);
-    stream_args.channels = channel_nums;
-    uhd::rx_streamer::sptr rx_stream = ECR->usrp_rx->get_rx_stream(stream_args);
-    rx_stream->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
 
-    const size_t samps_per_buff = rx_stream->get_max_num_samps();
+    ECR->usrp_rx_streamer->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
+
+    const size_t samps_per_buff =   ECR->usrp_rx_streamer->get_max_num_samps();
     std::vector<std::vector<std::complex<float>>> buffs(
         ECR->usrp_rx->get_rx_num_channels(), std::vector<std::complex<float>>(samps_per_buff));
 
@@ -1318,16 +1302,18 @@ void *ECR_rx_worker(void *_arg) {
 
     bool rx_continue = true;
     // run receiver
+
     while (rx_continue) {
 
+ //    dprintf("Reading \n");
       // grab data from USRP and push through the frame synchronizer
       size_t num_rx_samps = 0;
       pthread_mutex_lock(&(ECR->rx_mutex));
 
-      num_rx_samps = rx_stream->recv(
+      num_rx_samps =   ECR->usrp_rx_streamer->recv(
           buff_ptrs, ECR->rx_buffer_len, ECR->metadata_rx);
       memcpy(ECR->rx_buffer, buff_ptrs[0], ECR->rx_buffer_len * sizeof(std::complex<float>));
-      ofdmflexframesync_execute(ECR->fs, buff_ptrs[0], num_rx_samps);
+      ofdmflexframesync_execute(ECR->fs, ECR->rx_buffer, num_rx_samps);
       // printf("Recv Freq 0: %f\n", PHY->usrp_rx->get_rx_freq(0));
       // printf("Recv Freq 1: %f\n", PHY->usrp_rx->get_rx_freq(1));
       // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
@@ -1393,7 +1379,7 @@ void *ECR_rx_worker(void *_arg) {
     dprintf("rx_worker finished running\n");
 
     pthread_mutex_lock(&ECR->rx_mutex);
-    rx_stream->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    ECR->usrp_rx_streamer->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     pthread_mutex_unlock(&ECR->rx_mutex);
 
   } // while rx thread is running
@@ -1467,11 +1453,12 @@ int rxCallback(unsigned char *_header, int _header_valid,
     }
   }
 
-  int nwrite = 0;
+
   if (_payload_valid) {
     if (ExtensibleCognitiveRadio::DATA == ((_header[0] >> 6) & 0x3)) {
       dprintf("Amount of PayLoad Received: %d\n",_payload_len);
       // Pass payload to tun interface
+      int nwrite = 0;
       for (unsigned int i = 0; i < _payload_len; i++) {
         nwrite = cwrite(ECR->tunfd, (char*)&_payload[i],_payload_len);
 
@@ -1950,5 +1937,26 @@ void ExtensibleCognitiveRadio::reset_log_files() {
       printf("Error opening tx log file: %s\n", phy_tx_log_file);
       exit(EXIT_FAILURE);
     }
+  }
+}
+
+void *ECR_esc_worker(void *_arg) {
+  ExtensibleCognitiveRadio *ECR = (ExtensibleCognitiveRadio *) _arg;
+}
+
+void ExtensibleCognitiveRadio::set_esc_channel(int channel) {
+  esc_channel = channel;
+  pipe_fd = open(pipe_fifo,O_WRONLY);
+  if(pipe_fd == -1) {
+    printf("Error Opening pipe\n");
+  }
+  send_to_esc = true;
+}
+
+void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> * buffer,int buffer_len) {
+  int status = write(pipe_fd,buffer,buffer_len*sizeof(std::complex<float> ));
+  if(status == -1) {
+    printf("Error writing to pipe\n");
+    send_to_esc = false;
   }
 }
