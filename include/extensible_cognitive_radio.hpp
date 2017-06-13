@@ -13,9 +13,14 @@
 #include "cognitive_engine.hpp"
 #include "timer.h"
 #include <mqueue.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <stdlib.h>
 
 #define ECR_CONTROL_INFO_BYTES 6
-
+#define MAX_ESC_BUFFER 4000
 // thread functions
 void *ECR_tx_worker(void *_arg);
 void *ECR_rx_worker(void *_arg);
@@ -826,7 +831,10 @@ public:
 
 
   void set_esc_channel(int channel);
+  int get_esc_channel();
   void send_esc_data(std::complex<float> * buffer, int buffer_len);
+  void change_num_channels(int num_channels);
+  
   //=================================================================================
   // Print/Log Methods and Variables
   //=================================================================================
@@ -1006,11 +1014,25 @@ private:
 
   //
   int num_boards = 0;
-  int pipe_fd;
+  int pipe_fd = 0;
   const char * pipe_fifo = "/tmp/ecr_esc";
   bool send_to_esc;
   int esc_channel;
+  std::complex<float> * esc_data;
+  int sample_time = 0;
 
+  struct ESC_Struct{
+    int sample = 0;
+    double frequency = 0;
+    double sample_rate = 0;
+    int num_samples = 0;
+    std::complex<float> data[MAX_ESC_BUFFER];
+  };
+
+  ESC_Struct *shared_struct;
+
+  void set_rx_streamer(int num_channels);
+  void set_tx_streamer(int num_channels);
 };
 
 #endif

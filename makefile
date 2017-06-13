@@ -12,7 +12,7 @@ SCs = src/scenario_controller.cpp scenario_controllers/SC_Performance_Sweep_Util
 SC_Headers = scenario_controllers/SC_Performance_Sweep_Utility/SC_Performance_Sweep_Utility.hpp scenario_controllers/SC_BER_Sweep/SC_BER_Sweep.hpp scenario_controllers/SC_Template/SC_Template.hpp scenario_controllers/SC_Network_Loading/SC_Network_Loading.hpp scenario_controllers/SC_CORNET_Display/SC_CORNET_Display.hpp scenario_controllers/SC_Control_and_Feedback_Test/SC_Control_and_Feedback_Test.hpp scenario_controllers/SC_CORNET_Tutorial/SC_CORNET_Tutorial.hpp scenario_controllers/SC_Performance_Sweep_Utility/SC_Performance_Sweep_Utility.hpp scenario_controllers/SC_BER_Sweep/SC_BER_Sweep.hpp scenario_controllers/SC_Template/SC_Template.hpp scenario_controllers/SC_Network_Loading/SC_Network_Loading.hpp scenario_controllers/SC_CORNET_Display/SC_CORNET_Display.hpp scenario_controllers/SC_Control_and_Feedback_Test/SC_Control_and_Feedback_Test.hpp scenario_controllers/SC_CORNET_Tutorial/SC_CORNET_Tutorial.hpp
 #EDIT SC END FLAG
 
-all: lib/crts.o config_cognitive_engines config_scenario_controllers lib/tun.o lib/timer.o lib/ecr.o lib/interferer.o logs/convert_logs_bin_to_octave $(CEs) crts_interferer crts_cognitive_radio crts_controller udp_client udp_server crts_freq_hop tcp_server tcp_client server_interface client_interface radio_interface
+all: lib/crts.o config_cognitive_engines config_scenario_controllers lib/tun.o lib/timer.o lib/ecr.o lib/interferer.o logs/convert_logs_bin_to_octave $(CEs) crts_interferer crts_cognitive_radio crts_controller udp_client udp_server crts_freq_hop tcp_server tcp_client server_interface client_interface radio_interface rem_test
 
 lib/crts.o: include/crts.hpp src/crts.cpp
 	g++ $(FLAGS) -c -o lib/crts.o src/crts.cpp
@@ -71,6 +71,9 @@ server_interface: include/extensible_cognitive_radio.hpp src/tun.cpp src/extensi
 radio_interface: include/extensible_cognitive_radio.hpp src/tun.cpp src/extensible_cognitive_radio.cpp src/crts_cognitive_radio.cpp  $(CEs) $(CE_srcs) $(CE_Headers)
 										    g++ $(FLAGS) -o radio_interface src/radio_interface.cpp lib/crts.o lib/timer.o $(CEs) $(CE_srcs) $(LIBS) -lboost_system
 
+rem_test: include/extensible_cognitive_radio.hpp src/tun.cpp src/extensible_cognitive_radio.cpp src/crts_cognitive_radio.cpp  $(CEs) $(CE_srcs) $(CE_Headers)
+												g++ $(FLAGS) -o rem_test src/rem_test.cpp lib/crts.o lib/timer.o $(CEs) $(CE_srcs) $(LIBS) -lboost_system
+
 install:
 	cp ./.crts_sudoers /etc/sudoers.d/crts # Filename must not have '_' or '.' in name.
 	chmod 440 /etc/sudoers.d/crts
@@ -100,6 +103,7 @@ clean:
 	rm -rf server_interface
 	rm -rf crts_freq_hop
 	rm -rf radio_interface
+	rm -rf rem_test
 
 	$(MAKE) -C doc clean
 

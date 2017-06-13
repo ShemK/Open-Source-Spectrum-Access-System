@@ -178,6 +178,10 @@ struct node_parameters {
   double tx_freq_dwell_time; // seconds at a given freq
   double tx_freq_resolution; // granularity for SWEEP and RANDOM frequency behaviors
 
+  bool esc_capable;
+  int esc_channel;
+  int channels;
+
 };
 
 void print_node_parameters(struct node_parameters *np);

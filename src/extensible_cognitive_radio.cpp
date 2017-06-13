@@ -152,20 +152,8 @@ ExtensibleCognitiveRadio::ExtensibleCognitiveRadio(char *virtual_interface) {
   usrp_tx->set_tx_antenna("TX/RX");
 //  usrp_rx->set_rx_subdev_spec(uhd::usrp::subdev_spec_t("A:0 B:0"), 0);
 //  usrp_tx->set_tx_subdev_spec(uhd::usrp::subdev_spec_t("A:0 B:0"), 0);
-
-  num_boards = usrp_rx->get_num_mboards();
-  uhd::stream_args_t rx_stream_args("fc32");
-  std::vector<size_t> rx_channel_nums;
-  rx_channel_nums.push_back(0);
-  rx_stream_args.channels = rx_channel_nums;
-  usrp_rx_streamer = usrp_rx->get_rx_stream(rx_stream_args);
-
-  uhd::stream_args_t tx_stream_args("fc32");
-  std::vector<size_t> tx_channel_nums;
-  tx_channel_nums.push_back(0);
-  tx_stream_args.channels = tx_channel_nums;
-  usrp_tx_streamer = usrp_tx->get_tx_stream(tx_stream_args);
-
+  set_rx_streamer(1);
+  set_tx_streamer(1);
   printf("Creating tun interface\n");
   printf("Num Boards: %d\n",num_boards);
   // Create TUN interface
@@ -1314,6 +1302,10 @@ void *ECR_rx_worker(void *_arg) {
           buff_ptrs, ECR->rx_buffer_len, ECR->metadata_rx);
       memcpy(ECR->rx_buffer, buff_ptrs[0], ECR->rx_buffer_len * sizeof(std::complex<float>));
       ofdmflexframesync_execute(ECR->fs, ECR->rx_buffer, num_rx_samps);
+      if(ECR->send_to_esc) {
+        ECR->send_esc_data(buff_ptrs[ECR->get_esc_channel()],num_rx_samps);
+      }
+
       // printf("Recv Freq 0: %f\n", PHY->usrp_rx->get_rx_freq(0));
       // printf("Recv Freq 1: %f\n", PHY->usrp_rx->get_rx_freq(1));
       // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
@@ -1345,6 +1337,7 @@ void *ECR_rx_worker(void *_arg) {
         pthread_cond_signal(&ECR->CE_execute_sig);
         pthread_mutex_unlock(&ECR->CE_mutex);
         ECR->uhd_msg = 0;
+        std::cout << "Overflow" << std::endl;
         break;
       case 2:
         // Signal CE thread
@@ -1353,6 +1346,7 @@ void *ECR_rx_worker(void *_arg) {
         pthread_cond_signal(&ECR->CE_execute_sig);
         pthread_mutex_unlock(&ECR->CE_mutex);
         ECR->uhd_msg = 0;
+          std::cout << "Underrun" << std::endl;
         break;
       case 0:
         break;
@@ -1944,8 +1938,39 @@ void *ECR_esc_worker(void *_arg) {
   ExtensibleCognitiveRadio *ECR = (ExtensibleCognitiveRadio *) _arg;
 }
 
+
 void ExtensibleCognitiveRadio::set_esc_channel(int channel) {
   esc_channel = channel;
+  int fd_shm = shm_open("buffer", O_CREAT | O_RDWR, 0777);
+  if(fd_shm == -1) {
+    perror("failed to create shared memory\n");
+  }
+  int  status = ftruncate(fd_shm,rx_buffer_len);
+  if(status == -1) {
+    perror("Error Occured while truncating memory\n");
+  }
+
+  shared_struct = (ESC_Struct *)mmap (NULL, sizeof(ESC_Struct)
+                      , PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
+  send_to_esc = true;
+}
+
+void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> * buffer,int buffer_len) {
+  //printf("Total Complex Numbers Written: %d\n",buffer_len );
+  sample_time++;
+  shared_struct->num_samples = buffer_len;
+  shared_struct->sample = sample_time;
+  memcpy(shared_struct->data,buffer,buffer_len);
+  shared_struct->frequency = get_rx_freq();
+  shared_struct->sample_rate = get_rx_rate();
+//  std::cout << shared_struct->sample << std::endl;
+}
+
+
+/*
+void ExtensibleCognitiveRadio::set_esc_channel(int channel) {
+  esc_channel = channel;
+  mkfifo(pipe_fifo,1500);
   pipe_fd = open(pipe_fifo,O_WRONLY);
   if(pipe_fd == -1) {
     printf("Error Opening pipe\n");
@@ -1954,9 +1979,57 @@ void ExtensibleCognitiveRadio::set_esc_channel(int channel) {
 }
 
 void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> * buffer,int buffer_len) {
+  //printf("Total Complex Numbers Written: %d\n",buffer_len );
   int status = write(pipe_fd,buffer,buffer_len*sizeof(std::complex<float> ));
   if(status == -1) {
     printf("Error writing to pipe\n");
     send_to_esc = false;
   }
+
+}
+
+*/
+
+void ExtensibleCognitiveRadio::set_tx_streamer(int num_channels) {
+  if (usrp_rx->get_mboard_name().compare("X310") == 0)
+  {
+  //usrp_tx_streamer.reset();
+  uhd::stream_args_t tx_stream_args("fc32");
+  std::vector<size_t> tx_channel_nums;
+  for(int i = 0; i < num_channels;i++) {
+    tx_channel_nums.push_back(i);
+  }
+  tx_stream_args.channels = tx_channel_nums;
+  //usrp_tx_streamer = usrp_tx->get_tx_stream(tx_stream_args);
+  }
+}
+
+void ExtensibleCognitiveRadio::set_rx_streamer(int num_channels) {
+  
+  usrp_rx_streamer.reset();
+  if (usrp_rx->get_mboard_name().compare("X310") != 0)
+  {
+    usrp_tx_streamer.reset();
+  }
+  num_boards = usrp_rx->get_num_mboards();
+  uhd::stream_args_t rx_stream_args("fc32");
+  std::vector<size_t> rx_channel_nums;
+  for(int i = 0; i < num_channels;i++) {
+    rx_channel_nums.push_back(i);
+  }
+  rx_stream_args.channels = rx_channel_nums;
+  usrp_rx_streamer = usrp_rx->get_rx_stream(rx_stream_args);
+  if (usrp_rx->get_mboard_name().compare("X310") != 0)
+  {
+    usrp_tx_streamer = usrp_tx->get_tx_stream(rx_stream_args);
+  }
+}
+
+int ExtensibleCognitiveRadio::get_esc_channel(){
+  return esc_channel;
+}
+
+void ExtensibleCognitiveRadio::change_num_channels(int num_channels){
+  set_tx_streamer(num_channels);
+  set_rx_streamer(num_channels);
 }
