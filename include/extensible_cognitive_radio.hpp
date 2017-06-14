@@ -742,6 +742,8 @@ public:
 
   void set_rx_freq(double _rx_freq, double _dsp_freq);
 
+  void set_rx_freq(double _rx_freq,int channel, bool next_ch);
+
   /// \brief Set the value of ExtensibleCognitiveRadio::rx_parameter_s::rx_rate.
   void set_rx_rate(double _rx_rate);
 
@@ -834,7 +836,7 @@ public:
   int get_esc_channel();
   void send_esc_data(std::complex<float> * buffer, int buffer_len);
   void change_num_channels(int num_channels);
-  
+
   //=================================================================================
   // Print/Log Methods and Variables
   //=================================================================================
@@ -1033,6 +1035,17 @@ private:
 
   void set_rx_streamer(int num_channels);
   void set_tx_streamer(int num_channels);
+
+  struct ChannelState{
+    double freq;
+    double dsp_freq;
+    double rate;
+  };
+  int num_channels = 1;
+  int channel_to_change = 0;
+  int ecr_channel = 0;
+  ChannelState rx_channels[2];
+  ChannelState tx_channels[2];
 };
 
 #endif
