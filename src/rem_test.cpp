@@ -104,7 +104,7 @@ void initialize_node_parameters(struct node_parameters *np) {
   np->esc_capable = true;
   np->esc_channel = 0;
   np->channels = 2;
-  
+
 }
 
 void Initialize_CR(struct node_parameters *np, void *ECR_p,
@@ -153,9 +153,10 @@ void Initialize_CR(struct node_parameters *np, void *ECR_p,
     ECR->set_ce(np->cognitive_engine, argc, argv);
     if(np->esc_capable) {
       ECR->set_esc_channel(np->esc_channel);
-      ECR->change_num_channels(np->channels);
     }
+    ECR->change_num_channels(np->channels);
     ECR->reset_log_files();
+    ECR->set_rx_freq(1000e6,1,true);
     /*
     // copy subcarrier allocations if other than liquid-dsp default
     if (np->tx_subcarrier_alloc_method == CUSTOM_SUBCARRIER_ALLOC ||

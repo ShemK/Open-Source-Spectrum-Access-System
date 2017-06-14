@@ -942,8 +942,12 @@ void ExtensibleCognitiveRadio::transmit_control_frame(unsigned char *_payload,
 // set receiver frequency
 void ExtensibleCognitiveRadio::set_rx_freq(double _rx_freq) {
   pthread_mutex_lock(&rx_params_mutex);
-  rx_params.rx_freq = _rx_freq;
-  rx_params.rx_dsp_freq = 0.0;
+  if(channel_to_change == ecr_channel){
+    rx_channels[channel_to_change].freq = _rx_freq;
+    rx_channels[channel_to_change].dsp_freq = 0.0;
+    rx_params.rx_freq = _rx_freq;
+    rx_params.rx_dsp_freq = 0.0;
+  }
   update_rx_flag = true;
   update_usrp_rx = true;
   pthread_mutex_unlock(&rx_params_mutex);
@@ -952,13 +956,23 @@ void ExtensibleCognitiveRadio::set_rx_freq(double _rx_freq) {
 // set receiver frequency
 void ExtensibleCognitiveRadio::set_rx_freq(double _rx_freq, double _dsp_freq) {
   pthread_mutex_lock(&rx_params_mutex);
-  rx_params.rx_freq = _rx_freq;
-  rx_params.rx_dsp_freq = _dsp_freq;
+  if(channel_to_change == ecr_channel) {
+    rx_channels[channel_to_change].freq = _rx_freq;
+    rx_channels[channel_to_change].dsp_freq = 0.0;
+    rx_params.rx_freq = _rx_freq;
+    rx_params.rx_dsp_freq = _dsp_freq;
+  }
   update_rx_flag = true;
   update_usrp_rx = true;
   pthread_mutex_unlock(&rx_params_mutex);
 }
 
+void ExtensibleCognitiveRadio::set_rx_freq(double _rx_freq,int channel, bool next_ch){
+  rx_channels[channel].freq = _rx_freq;
+  rx_channels[channel].dsp_freq = 0.0;
+  channel_to_change = channel;
+  set_rx_freq(_rx_freq);
+}
 // get receiver state
 int ExtensibleCognitiveRadio::get_rx_state() {
   pthread_mutex_lock(&rx_params_mutex);
@@ -1203,15 +1217,22 @@ void ExtensibleCognitiveRadio::update_rx_params() {
   if (update_usrp_rx) {
     usrp_rx->set_rx_gain(rx_params.rx_gain_uhd);
     usrp_rx->set_rx_rate(rx_params.rx_rate);
-
+    // need to update all channels
     uhd::tune_request_t tune;
     tune.rf_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
     tune.dsp_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
-    tune.rf_freq = rx_params.rx_freq;
-    tune.dsp_freq = rx_params.rx_dsp_freq;
-
-    usrp_rx->set_rx_freq(tune);
-
+    for(int i = 0; i < num_channels; i++) {
+      if(i == ecr_channel) {
+        tune.rf_freq = rx_channels[ecr_channel].freq;//rx_params.rx_freq;
+        tune.dsp_freq = rx_channels[ecr_channel].dsp_freq;//rx_params.rx_dsp_freq;
+        usrp_rx->set_rx_freq(tune,ecr_channel);
+      } else if(i == channel_to_change){
+        tune.rf_freq = rx_channels[channel_to_change].freq;//rx_params.rx_freq;
+        tune.dsp_freq = rx_channels[channel_to_change].dsp_freq;//rx_params.rx_dsp_freq;
+        usrp_rx->set_rx_freq(tune,channel_to_change);
+      }
+    }
+    channel_to_change = ecr_channel;
     update_usrp_rx = false;
   }
 
@@ -1305,9 +1326,6 @@ void *ECR_rx_worker(void *_arg) {
       if(ECR->send_to_esc) {
         ECR->send_esc_data(buff_ptrs[ECR->get_esc_channel()],num_rx_samps);
       }
-
-      // printf("Recv Freq 0: %f\n", PHY->usrp_rx->get_rx_freq(0));
-      // printf("Recv Freq 1: %f\n", PHY->usrp_rx->get_rx_freq(1));
       // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
       pthread_mutex_unlock(&(ECR->rx_mutex));
 
@@ -1372,6 +1390,8 @@ void *ECR_rx_worker(void *_arg) {
     } // while rx running
     dprintf("rx_worker finished running\n");
 
+    printf("Recv Freq 0: %f\n", ECR->usrp_rx->get_rx_freq(0));
+    printf("Recv Freq 1: %f\n", ECR->usrp_rx->get_rx_freq(1));
     pthread_mutex_lock(&ECR->rx_mutex);
     ECR->usrp_rx_streamer->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     pthread_mutex_unlock(&ECR->rx_mutex);
@@ -1993,19 +2013,19 @@ void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> * buffer,int bu
 void ExtensibleCognitiveRadio::set_tx_streamer(int num_channels) {
   if (usrp_rx->get_mboard_name().compare("X310") == 0)
   {
-  //usrp_tx_streamer.reset();
+  usrp_tx_streamer.reset();
   uhd::stream_args_t tx_stream_args("fc32");
   std::vector<size_t> tx_channel_nums;
   for(int i = 0; i < num_channels;i++) {
     tx_channel_nums.push_back(i);
   }
   tx_stream_args.channels = tx_channel_nums;
-  //usrp_tx_streamer = usrp_tx->get_tx_stream(tx_stream_args);
+  usrp_tx_streamer = usrp_tx->get_tx_stream(tx_stream_args);
   }
 }
 
 void ExtensibleCognitiveRadio::set_rx_streamer(int num_channels) {
-  
+
   usrp_rx_streamer.reset();
   if (usrp_rx->get_mboard_name().compare("X310") != 0)
   {
@@ -2030,6 +2050,7 @@ int ExtensibleCognitiveRadio::get_esc_channel(){
 }
 
 void ExtensibleCognitiveRadio::change_num_channels(int num_channels){
+  this->num_channels = num_channels;
   set_tx_streamer(num_channels);
   set_rx_streamer(num_channels);
 }
