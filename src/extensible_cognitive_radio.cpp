@@ -1959,6 +1959,7 @@ void ExtensibleCognitiveRadio::reset_log_files() {
 void *ECR_esc_worker(void *_arg) {
   ExtensibleCognitiveRadio *ECR = (ExtensibleCognitiveRadio *) _arg;
 
+  std::string received_string;
   struct sockaddr_in udp_server_addr;
   struct sockaddr_in udp_client_addr;
   socklen_t addr_len = sizeof(udp_server_addr);
@@ -1989,8 +1990,26 @@ void *ECR_esc_worker(void *_arg) {
     if(p > 0) {
       int recv_len = recvfrom(udp_server_sock, recv_buffer, recv_buffer_len, 0,
                             (struct sockaddr *)&udp_client_addr, &addr_len);
+
       if(recv_len > 0) {
-        printf("Received Something\n");
+        for(int i = 0; i < recv_len; i++) {
+          received_string.push_back(recv_buffer[i]);
+        }
+        pmt::pmt_t instruction = pmt::deserialize_str(received_string);
+        pmt::pmt_t freq_key = pmt::string_to_symbol("Freq");
+        pmt::pmt_t not_found = pmt::mp(0);
+        double freq = 0;
+        if(pmt::dict_has_key(instruction,freq_key)) {
+          freq = pmt::to_double(pmt::dict_ref(instruction,freq_key,not_found));
+          printf("Frequency: %f\n",freq);
+          if(ECR->send_to_esc) {
+            if(freq!=0){
+              ECR->set_rx_freq(freq,ECR->get_esc_channel(),true);
+            }
+          }
+        } else{
+          printf("No Freq\n");
+        }
       } else{
         printf("Socket Reading failed\n");
       }

@@ -1,5 +1,5 @@
 FLAGS = -I include -Wall -fPIC -std=c++11 -g
-LIBS = lib/tun.o lib/ecr.o -lliquid -luhd -lpthread -lm -lc -lconfig -lrt
+LIBS = lib/tun.o lib/ecr.o -lliquid -luhd -lpthread -lm -lc -lconfig -lrt -lgnuradio-pmt
 
 #EDIT CE OBJECT LIST START FLAG
 CEs = src/cognitive_engine.cpp lib/CE_Template.o lib/CE_Subcarrier_Alloc.o lib/CE_Throughput_Test.o lib/CE_Control_and_Feedback_Test.o lib/CE_Simultaneous_RX_And_Sensing.o lib/CE_Two_Channel_DSA_Spectrum_Sensing.o lib/CE_Mod_Adaptation.o lib/CE_Network_Loading.o lib/CE_FEC_Adaptation.o lib/CE_Two_Channel_DSA_Link_Reliability.o lib/CE_Two_Channel_DSA_PU.o

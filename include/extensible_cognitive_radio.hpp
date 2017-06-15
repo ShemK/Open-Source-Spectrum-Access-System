@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <stdlib.h>
+#include <pmt/pmt.h>
 
 #define ECR_CONTROL_INFO_BYTES 6
 #define MAX_ESC_BUFFER 4000
