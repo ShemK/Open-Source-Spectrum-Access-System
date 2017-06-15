@@ -4,6 +4,7 @@ crts_controller
 crts_interferer
 config_cognitive_engines
 config_scenario_controllers
+.remote-sync.json
 
 # Ignore VIM swap files
 *.swp

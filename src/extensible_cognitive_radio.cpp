@@ -203,6 +203,9 @@ ExtensibleCognitiveRadio::ExtensibleCognitiveRadio(char *virtual_interface) {
   pthread_cond_init(&CE_cond, NULL); // cognitive engine condition
   pthread_create(&CE_process, NULL, ECR_ce_worker, (void *)this);
 
+  // Start ESC thread
+  pthread_create(&esc_process,NULL,ECR_esc_worker,(void *)this);
+
   set_tx_queue_len(1500);
   tx_queue_len = 1500;
   tx_queued_bytes = 0;
@@ -1355,7 +1358,7 @@ void *ECR_rx_worker(void *_arg) {
         pthread_cond_signal(&ECR->CE_execute_sig);
         pthread_mutex_unlock(&ECR->CE_mutex);
         ECR->uhd_msg = 0;
-        std::cout << "Overflow" << std::endl;
+      //  std::cout << "Overflow" << std::endl;
         break;
       case 2:
         // Signal CE thread
@@ -1364,7 +1367,7 @@ void *ECR_rx_worker(void *_arg) {
         pthread_cond_signal(&ECR->CE_execute_sig);
         pthread_mutex_unlock(&ECR->CE_mutex);
         ECR->uhd_msg = 0;
-          std::cout << "Underrun" << std::endl;
+       // std::cout << "Underrun" << std::endl;
         break;
       case 0:
         break;
@@ -1472,9 +1475,8 @@ int rxCallback(unsigned char *_header, int _header_valid,
     if (ExtensibleCognitiveRadio::DATA == ((_header[0] >> 6) & 0x3)) {
       dprintf("Amount of PayLoad Received: %d\n",_payload_len);
       // Pass payload to tun interface
-      int nwrite = 0;
       for (unsigned int i = 0; i < _payload_len; i++) {
-        nwrite = cwrite(ECR->tunfd, (char*)&_payload[i],_payload_len);
+        int nwrite = cwrite(ECR->tunfd, (char*)&_payload[i],_payload_len);
 
       //  if (nwrite != 288)
     //      printf("Number of bytes written to TUN interface not equal to the "
@@ -1956,6 +1958,51 @@ void ExtensibleCognitiveRadio::reset_log_files() {
 
 void *ECR_esc_worker(void *_arg) {
   ExtensibleCognitiveRadio *ECR = (ExtensibleCognitiveRadio *) _arg;
+
+  struct sockaddr_in udp_server_addr;
+  struct sockaddr_in udp_client_addr;
+  socklen_t addr_len = sizeof(udp_server_addr);
+  memset(&udp_server_addr, 0, addr_len);
+  udp_server_addr.sin_family = AF_INET;
+  udp_server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  udp_server_addr.sin_port = htons(8000);
+  int udp_server_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  int status = bind(udp_server_sock, (sockaddr *)&udp_server_addr, addr_len);
+  if(status < 0) {
+    printf("Failed to bind esc socket\n");
+  }
+  bool rx_continue = true;
+
+  fd_set read_fds;
+
+  usleep(4000000);
+  int recv_buffer_len = 1000;
+  char recv_buffer[recv_buffer_len];
+  while(rx_continue) {
+    FD_ZERO(&read_fds);
+    FD_SET(udp_server_sock, &read_fds);
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 1000;
+    
+    int p = select(udp_server_sock + 1, &read_fds, NULL, NULL, &timeout);
+    if(p > 0) {
+      int recv_len = recvfrom(udp_server_sock, recv_buffer, recv_buffer_len, 0,
+                            (struct sockaddr *)&udp_client_addr, &addr_len);
+      if(recv_len > 0) {
+        printf("Received Something\n");
+      } else{
+        printf("Socket Reading failed\n");
+      }
+
+    }
+
+    if (ECR->rx_state == RX_STOPPED){
+      rx_continue = false;
+    }
+  }
+  close(udp_server_sock);
+  pthread_exit(NULL);
 }
 
 
@@ -1985,30 +2032,6 @@ void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> * buffer,int bu
   shared_struct->sample_rate = get_rx_rate();
 //  std::cout << shared_struct->sample << std::endl;
 }
-
-
-/*
-void ExtensibleCognitiveRadio::set_esc_channel(int channel) {
-  esc_channel = channel;
-  mkfifo(pipe_fifo,1500);
-  pipe_fd = open(pipe_fifo,O_WRONLY);
-  if(pipe_fd == -1) {
-    printf("Error Opening pipe\n");
-  }
-  send_to_esc = true;
-}
-
-void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> * buffer,int buffer_len) {
-  //printf("Total Complex Numbers Written: %d\n",buffer_len );
-  int status = write(pipe_fd,buffer,buffer_len*sizeof(std::complex<float> ));
-  if(status == -1) {
-    printf("Error writing to pipe\n");
-    send_to_esc = false;
-  }
-
-}
-
-*/
 
 void ExtensibleCognitiveRadio::set_tx_streamer(int num_channels) {
   if (usrp_rx->get_mboard_name().compare("X310") == 0)
