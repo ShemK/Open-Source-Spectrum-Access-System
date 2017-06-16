@@ -13,7 +13,7 @@ class JsonListener{
 		$this->myJsonObj = $newJsonObj;
 		// reset the pointer to the first key
 		@reset($this->myJsonObj)
-			or exit("{'Error':'Wrong JSON Object Received'}");
+		or exit("{'Error':'Wrong JSON Object Received'}");
 		// get first key
 		$this->requestType = key($this->myJsonObj);
 		$this->myDBHandler = new serversql();
@@ -22,8 +22,8 @@ class JsonListener{
 	}
 
 	/*
-	 * Function to isolate each request in case mulitiple requests
-	 * are received in one JSON
+	* Function to isolate each request in case mulitiple requests
+	* are received in one JSON
 	*/
 
 	function processRequest() {
@@ -33,105 +33,155 @@ class JsonListener{
 				$serverReplyArray[$i] = $this->processInternalRequest($requestObj[$i]);
 			}
 		} else {
-				$serverReplyArray = $this->processInternalRequest($requestObj);
+			$serverReplyArray = $this->processInternalRequest($requestObj);
 		}
 		//echo $serverReplyArray[0];
 		$this->serverReply = (object) [$this->requestResponse=>$serverReplyArray];
 		return $this->serverReply;
 	}
 	/*
-	 *	Function to check the type of request in each JSON received
+	*	Function to check the type of request in each JSON received
 	*/
 	private function processInternalRequest($requestObj) {
 		// check the type of request
 		switch ($this->requestType) {
 			case 'registrationRequest':
-				$this->requestResponse = 'registrationResponse';
-				return $this->registrationRequest($requestObj);
-				break;
+			$this->requestResponse = 'registrationResponse';
+			return $this->registrationRequest($requestObj);
+			break;
 			case 'spectrumInquiryRequest':
-				$this->requestResponse = 'spectrumInquiryResponse';
-				return $this->spectrumInquiryRequest($requestObj);
-				break;
+			$this->requestResponse = 'spectrumInquiryResponse';
+			return $this->spectrumInquiryRequest($requestObj);
+			break;
 			case 'grantRequest':
-				$this->requestResponse = 'grantResponse';
-				return $this->grantRequest($requestObj);
-				break;
+			$this->requestResponse = 'grantResponse';
+			return $this->grantRequest($requestObj);
+			break;
 			case 'heartbeatRequest':
-				$this->requestResponse = 'heartbeatResponse';
-				return $this->heartbeatRequest($requestObj);
-				break;
+			$this->requestResponse = 'heartbeatResponse';
+			return $this->heartbeatRequest($requestObj);
+			break;
 			case 'relinquishmentRequest':
-				$this->requestResponse = 'relinquishmentResponse';
-				return $this->relinquishmentRequest($requestObj);
-				break;
+			$this->requestResponse = 'relinquishmentResponse';
+			return $this->relinquishmentRequest($requestObj);
+			break;
 			case 'deregistrationRequest':
-				return 0;
-				break;
+			return 0;
+			break;
 			default:
-				return 0;
-				break;
+			return 0;
+			break;
 		}
 	}
 
 	/*
 
-		Registration Request Function
+	Registration Request Function
 
 	*/
 	private function registrationRequest($newRegistrationRequestObj) {
-		$userId = $newRegistrationRequestObj->{'userId'};
-		$fccId = $newRegistrationRequestObj->{'fccId'};
-		$cbsdSerialNumber = $newRegistrationRequestObj->{'cbsdSerialNumber'};
-        $query = "SELECT cbsdId,cbsdCategory FROM registered_cbsds where ";
 
-        $query = $query."userId = "."'".$userId."'";
-        $query = $query." and fccId = "."'".$fccId."'";
+		//Check for necessary data - G
+		if(property_exists($newRegistrationRequestObj, 'userId'))
+		{
+			if(property_exists($newRegistrationRequestObj, 'fccId'))
+			{
+				if(property_exists($newRegistrationRequestObj, 'cbsdSerialNumber'))
+				{
+					$userId = $newRegistrationRequestObj->{'userId'};
+					$fccId = $newRegistrationRequestObj->{'fccId'};
+					$cbsdSerialNumber = $newRegistrationRequestObj->{'cbsdSerialNumber'};
+
+					//check to see if the CBSD was blacklisted
+					$query = "SELECT * FROM blacklisted_cbsds where ";
+					$query = $query."userId = "."'".$userId."'";
+					$query = $query." and fccId = "."'".$fccId."'";
+
+					$result = $this->myDBHandler->query($query);
+
+					if($result)
+					{
+						if($row = $this->myDBHandler->fetchResults($result)) {
+							$replyObj = (object)['response'=>(object)['responseCode'=>'101', 'responseMessage'=>'BLACKLISTED']];
+						} else{
+
+							$query = "SELECT cbsdId,cbsdCategory FROM registered_cbsds where ";
+
+							$query = $query."userId = "."'".$userId."'";
+							$query = $query." and fccId = "."'".$fccId."'";
 
 
-        $result = $this->myDBHandler->query($query);
-        //echo $result->num_rows;
-        // check if there is a result in the query with the provided parameters
-        if($row = $this->myDBHandler->fetchResults($result)) {
-        	$cbsdId = $row['cbsdId'];
-        	if($row['cbsdCategory'] == $newRegistrationRequestObj->{'cbsdCategory'}) {
-	        	$response = (object)['responseCode'=>'0','cbsdId' =>$cbsdId, 'responseMessage'=>'Registration Successful'];
-	        	$replyObj = (object)['response' => $response];
-	        	// update each parameter in the database
-	         	foreach ($newRegistrationRequestObj as $key => $value) {
-	          		if($key == 'cbsdInfo' || 'airInterface' || 'installationParam' || 'groupingParam' || 'measCapability') {
-	          			if(is_array($value) || is_object($value)) {
+							$result = $this->myDBHandler->query($query);
+							//echo $result->num_rows;
+							// check if there is a result in the query with the provided parameters
+							if($row = $this->myDBHandler->fetchResults($result)) {
+								$cbsdId = $row['cbsdId'];
+								if($row['cbsdCategory'] == $newRegistrationRequestObj->{'cbsdCategory'}) {
+									if($row['cbsdInfo'] == $newRegistrationRequestObj->{'cbsdInfo'})
+									{
+										if($row['cbsdSerialNumber'] == $newRegistrationRequestObj->{'cbsdSerialNumber'})
+										{
+											if($row['callSign'] == $newRegistrationRequestObj->{'callSign'})
+											{
+												$response = (object)['responseCode'=>'0','cbsdId' =>$cbsdId, 'responseMessage'=>'Registration Successful'];
+												$replyObj = (object)['response' => $response];
+												// update each parameter in the database
+												foreach ($newRegistrationRequestObj as $key => $value) {
+													if($key == 'cbsdInfo' || 'airInterface' || 'installationParam' || 'groupingParam' || 'measCapability') {
+														if(is_array($value) || is_object($value)) {
 
-	          				$value = json_encode($value);
-	          			}
-		            	$this->updateParameter($key,$value,$cbsdId,'registrationRequest');
-	          		}
+															$value = json_encode($value);
+														}
+														$this->updateParameter($key,$value,$cbsdId,'registrationRequest');
+													}
 
-	        	}
-	        	// check for given measCapability
-	        	if(property_exists($newRegistrationRequestObj, 'measCapability')) {
-	        		$measCapability = $newRegistrationRequestObj->{'measCapability'};
-	        		if(is_array($measCapability)) {
+												}
+												// check for given measCapability
+												if(property_exists($newRegistrationRequestObj, 'measCapability')) {
+													$measCapability = $newRegistrationRequestObj->{'measCapability'};
+													if(is_array($measCapability)) {
 
-	        			if(count($measCapability) > 1) {
-	        				$replyObj->{'measReportConfig'} = 'EUTRA_CARRIER_RSSI_NON_TX';
-	        			} else {
-	        				$replyObj->{'measReportConfig'} = $measCapability[0];
-	        			}
-	        		}
-	        	}
-        	} else {
-        		$replyObj = (object)['response'=>(object)['responseCode'=>'202', 'responseMessage'=>'CATEGORY_ERROR']];
-        	}
-        } else{
-        	$replyObj = (object)['response'=>(object)['responseCode'=>'103']];
+														if(count($measCapability) > 1) {
+															$replyObj->{'measReportConfig'} = 'EUTRA_CARRIER_RSSI_NON_TX';
+														} else {
+															$replyObj->{'measReportConfig'} = $measCapability[0];
+														}
+													}
+												}
+											}else{
+												$replyObj = (object)['response'=>(object)['responseCode'=>'103', 'responseMessage'=>'INVALID_VALUE: invalid CBSD callSign']];
+											}
+										}else{
+											$replyObj = (object)['response'=>(object)['responseCode'=>'103', 'responseMessage'=>'INVALID_VALUE: invalid cbsdSerialNumber']];
+										}
 
-        }
-    	return $replyObj;
+									}else{
+										$replyObj = (object)['response'=>(object)['responseCode'=>'103', 'responseMessage'=>'INVALID_VALUE: invalid cbsdInfo']];
+									}
+
+								} else {
+									$replyObj = (object)['response'=>(object)['responseCode'=>'202', 'responseMessage'=>'CATEGORY_ERROR']];
+								}
+							} else{
+								$replyObj = (object)['response'=>(object)['responseCode'=>'103']];
+
+							}
+						}
+					}
+				}else{
+					$replyObj = (object)['response'=>(object)['responseCode'=>'200', 'responseMessage'=>'REG_PENDING: cbsdSerialNumber missing']];
+				}
+			}else{
+				$replyObj = (object)['response'=>(object)['responseCode'=>'200', 'responseMessage'=>'REG_PENDING: fccID missing']];
+			}
+		}else{
+			$replyObj = (object)['response'=>(object)['responseCode'=>'200', 'responseMessage'=>'REG_PENDING: userID missing']];
+		}
+		return $replyObj;
 	}
 
 	/*
-		Spectrum Request Functions
+	Spectrum Request Functions
 
 	*/
 
@@ -150,17 +200,17 @@ class JsonListener{
 					$lowFrequency = $inquiredSpectrum[$i]->{'lowFrequency'};
 					$highFrequency = $inquiredSpectrum[$i]->{'highFrequency'};
 					$query = "SELECT available,channelType FROM channels
-										WHERE lowFrequency = ".$lowFrequency."
-														AND highFrequency = ".$highFrequency.";";
+					WHERE lowFrequency = ".$lowFrequency."
+					AND highFrequency = ".$highFrequency.";";
 
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
 						if($row['available'] == TRUE) {
 							array_push($availableChannel,
-								(object)['lowFrequency'=>$lowFrequency,
-														'highFrequency'=>$highFrequency,
-														'channelType'=>$row['channelType'],
-														'ruleApplied'=>'FCC_PART_96']);
+							(object)['lowFrequency'=>$lowFrequency,
+							'highFrequency'=>$highFrequency,
+							'channelType'=>$row['channelType'],
+							'ruleApplied'=>'FCC_PART_96']);
 						}
 					}
 				}
@@ -181,7 +231,7 @@ class JsonListener{
 	}
 
 	/*
-		Grant Request Functions
+	Grant Request Functions
 	*/
 
 	private	function grantRequest($grantInquiryObj) {
@@ -195,8 +245,8 @@ class JsonListener{
 			$lowFrequency = $operationParam->{'operationalFrequencyRange'}->{'lowFrequency'};
 			$highFrequency = $operationParam->{'operationalFrequencyRange'}->{'highFrequency'};
 			$query = "SELECT available,channelType FROM channels
-						WHERE lowFrequency = ".$lowFrequency."
-							AND highFrequency = ".$highFrequency.";";
+			WHERE lowFrequency = ".$lowFrequency."
+			AND highFrequency = ".$highFrequency.";";
 
 			$result = $this->myDBHandler->query($query);
 			if($row = $this->myDBHandler->fetchResults($result)) {
@@ -205,22 +255,22 @@ class JsonListener{
 					//echo time();
 					date_default_timezone_set ('UTC');
 					// add 10 seconds = 1 * 60 seconds
-					$grantExpireTime = time() + (1*30/60*60);
+					$grantExpireTime = time() + (1*10/60*60);
 					$grantExpireDate = $this->convertTimeToDate($grantExpireTime);
 					$replyObj->{'grantExpireTime'} = $grantExpireDate;
 					$replyObj->{'heartbeatInterval'} = 2;
 					$replyObj->{'grantId'} = $cbsdId."_".$grantExpireDate;
 					$replyObj->{'response'}->{'responseCode'} = '0';
 					$query =  "INSERT INTO grants (grantId, grantExpireTime,heartBeatInterval,maxEirp) "
-    							. "VALUES ( '".$replyObj->{'grantId'}. "','".$grantExpireTime."','".
-    								$replyObj->{'heartbeatInterval'}."','".$maxEirp."' );";
+					. "VALUES ( '".$replyObj->{'grantId'}. "','".$grantExpireTime."','".
+					$replyObj->{'heartbeatInterval'}."','".$maxEirp."' );";
 					$result = $this->myDBHandler->query($query);
 
 					// change channel to not available
-//					$query = "UPDATE channels SET cbsdId = "."'".$cbsdId."'"
-//									.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
+					//					$query = "UPDATE channels SET cbsdId = "."'".$cbsdId."'"
+					//									.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
 					$query = "UPDATE channels SET grantId = "."'".$replyObj->{'grantId'}."'"
-									.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
+					.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
 					$result = $this->myDBHandler->query($query);
 
 				}
@@ -237,7 +287,7 @@ class JsonListener{
 
 
 	/*
-		Heartbeat Functions
+	Heartbeat Functions
 	*/
 
 	private function heartbeatRequest($newHeartBeatInquiryObj) {
@@ -255,15 +305,15 @@ class JsonListener{
 					if($row['grantState'] == 'GRANTED') {
 						$this->updateParameter('grantState','AUTHORIZED',$grantId,'heartbeatRequest');
 						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
-											'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
-											'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
+						'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
+						'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
 
 
 					}
 					else if($row['grantState'] == 'AUTHORIZED'){
 						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
-											'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
-											'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
+						'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
+						'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
 
 					}
 					$replyObj->{'response'}->{'responseCode'} = '0';
@@ -274,11 +324,11 @@ class JsonListener{
 	}
 
 	/*
-		Relinquishment Request
+	Relinquishment Request
 	*/
 
 	private function relinquishmentRequest($newRelinquishmentInquiryObj) {
-	//	echo $newRelinquishmentInquiryObj;
+		//	echo $newRelinquishmentInquiryObj;
 		if(property_exists($newRelinquishmentInquiryObj, 'cbsdId')) {
 
 			$cbsdId = $newRelinquishmentInquiryObj->{'cbsdId'};
@@ -290,12 +340,12 @@ class JsonListener{
 		}
 		$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId];
 		$replyObj->{'response'}->{'responseCode'} = '0';
-	//	echo "yo";
+		//	echo "yo";
 		return $replyObj;
 	}
 
 	/*
-		Deregistration Request
+	Deregistration Request
 	*/
 
 	private function deregistrationRequest($newDeregistrationInquiryObj) {
@@ -305,36 +355,36 @@ class JsonListener{
 	private function updateParameter($key,$value,$primaryKey,$requestType) {
 		switch ($requestType) {
 			case 'registrationRequest':
-				$query = "UPDATE registered_cbsds SET ".$key." = "."'".$value."'"." WHERE cbsdId = "."'".$primaryKey."';";
-				$result = $this->myDBHandler->query($query);
-				break;
+			$query = "UPDATE registered_cbsds SET ".$key." = "."'".$value."'"." WHERE cbsdId = "."'".$primaryKey."';";
+			$result = $this->myDBHandler->query($query);
+			break;
 			case 'spectrumInquiryRequest':
 
-				break;
+			break;
 			case 'grantRequest':
 
-				break;
+			break;
 			case 'heartbeatRequest':
-				if($key = 'grantState') {
-					$query = "UPDATE grants SET ".$key." = "."'".$value."'"." WHERE grantId = "."'".$primaryKey."';";
-					$result = $this->myDBHandler->query($query);
-				}
-
-				if($key = 'cbsdId') {
-
-				}
-
-				break;
-			case 'relinquishmentRequest':
-				$query = "UPDATE channels SET ".$key." = ".$value." WHERE grantId = '".$primaryKey."';";
+			if($key = 'grantState') {
+				$query = "UPDATE grants SET ".$key." = "."'".$value."'"." WHERE grantId = "."'".$primaryKey."';";
 				$result = $this->myDBHandler->query($query);
-				break;
+			}
+
+			if($key = 'cbsdId') {
+
+			}
+
+			break;
+			case 'relinquishmentRequest':
+			$query = "UPDATE channels SET ".$key." = ".$value." WHERE grantId = '".$primaryKey."';";
+			$result = $this->myDBHandler->query($query);
+			break;
 			case 'deregistrationRequest':
 
-				break;
+			break;
 			default:
 
-				break;
+			break;
 		}
 
 	}
@@ -352,6 +402,4 @@ class JsonListener{
 
 
 }
-
-
 ?>
