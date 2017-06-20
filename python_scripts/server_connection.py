@@ -34,8 +34,8 @@ class Server_connection(object):
             self._http_connection.request("POST",self._url,message,headers)
             http_response = self._http_connection.getresponse()
             reply = http_response.read()
-	 #   print("raw reply:");
-	 #   print(reply);
+	    print("raw reply:");
+	    print(reply);
         else:
             print("The connection failed. Request cannot be made")
             reply = -1

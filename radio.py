@@ -22,15 +22,15 @@ def main():
     # TODO: the ability for the user to choose input parameters
     # TODO: To check if the input from the socket is a JSON Object
 
-    newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba")
+    newCbsd = cbsd.Cbsd("cbd562","A","cbd2","hask124ba")
     newCbsd.add_registration_parameters("callSign","CB987")
     json_encoder = json.JSONEncoder()
     json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())
-    my_server_connection = server_connection.Server_connection("http://128.173.95.235/spectrumAccessSystem/start.php")
+    my_server_connection = server_connection.Server_connection("http://128.173.94.243/spectrumAccessSystem/start.php")
     print("Request: sending registration request")
     # get response string
     response = my_server_connection.send_request(json_request)
-
+    """
     # create json decoder object
     json_decoder = json.JSONDecoder()
     # get dictionary
@@ -137,7 +137,7 @@ def main():
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     while time.mktime(datetime.datetime.utcnow().timetuple()) < newCbsd.get_grantExpireTime_seconds():
         sock.sendto("asfjasjkfakjsfjkasfjasfjjjjjjjjjjasassasa",("10.0.10.5",5819))
-
+    """
 
   #  os.kill(os.getpid(), signal.SIGQUIT)
   #  os.kill(os.getpid(), signal.SIGINT)
