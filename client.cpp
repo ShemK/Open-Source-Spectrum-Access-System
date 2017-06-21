@@ -18,7 +18,8 @@ int main() {
   signal(SIGINT, terminate);
   signal(SIGQUIT, terminate);
   signal(SIGTERM, terminate);
-  MAC *mac = new MAC((char*)"AAAAAA");
+  MAC *mac = new MAC();
+  mac->set_ip("10.0.0.2");
   int buffer_length = 1000;
   char message[buffer_length];
   std::string input;

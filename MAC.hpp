@@ -20,8 +20,8 @@ typedef unsigned short uint16;
 #define MAX_BUF 2000 // maximum buffer tx frame
 #define MTU 1500
 #define CONTROL_FRAME_LEN 6
-#define ETH_HEADER_LEN 18 //14 + 4 for ethernet 
-#define IP_HEADER_LEN 20 
+#define ETH_HEADER_LEN 18 //14 + 4 for ethernet
+#define IP_HEADER_LEN 20
 #define IP_FLAG_POS 13
 #define PMODE 0777
 #define FRAME_NUM_POS 2
@@ -30,14 +30,14 @@ typedef unsigned short uint16;
 
 #define TCP_PACKET 6
 #define UDP_PACKET 17
-
+#define TAP_EXTRA_LOAD 4
 
 
 class MAC{
 private:
 
 public:
-  MAC(char *mac_address);
+  MAC();
   ~MAC();
 
   mqd_t phy_tx_queue;
@@ -56,6 +56,8 @@ public:
   int tunfd;
   char tun_name[20];
   char systemCMD[200];
+
+  char broadcast_address[6];
 
   int start_time = 0;
   char *dest_address;
@@ -118,13 +120,16 @@ public:
   char *getMACHeader(char *frame);
   char *getPayLoad(char *frame, int payload_len);
   char *extractSourceMAC(char *header);
-
+  char *extractDestinationMAC(char *recv_payload);
   void analyzeReceivedFrame(char *frame, int frame_len);
   bool isLastsegment(char *segment);
   bool isLastAlienFrame(char *frame);
   void backOff();
   void addCRC(char *frame, int &frame_len);
   bool isCorrectCRC(char *buf, int buf_len);
+  void sendToIPLayer(char *payload, int payload_len);
+  void set_ip(const char *ip);
+
   bool new_transmission = true;
   int frames_sent = 0;
 
@@ -135,3 +140,5 @@ void *MAC_rx_worker(void *_arg);
 char *random_byte_generator();
 int buffToInteger(char * buffer);
 bool isBitSet (unsigned char c, int n);
+std::string exec(const char* cmd);
+unsigned char hex_digit( char ch );

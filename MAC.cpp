@@ -1,36 +1,32 @@
 #include "MAC.hpp"
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <array>
 
-MAC::MAC(char *mac_address)
+
+MAC::MAC()
 {
   printf("Creating tun interface\n");
   // Create TUN interface
   //dprintf("Creating tun interface\n");
   strcpy(tun_name, "mac_interface");
-  /*
-  sprintf(systemCMD, "sudo ip tuntap add dev %s mode tun", tun_name);
+
+  sprintf(systemCMD, "sudo ip tuntap add dev %s mode tap", tun_name);
   system(systemCMD);
   //dprintf("Bringing up tun interface\n");
   //dprintf("Connecting to tun interface\n");
   sprintf(systemCMD, "sudo ip link set dev %s up", tun_name);
   system(systemCMD);
 
-  sprintf(systemCMD, "sudo ifconfig %s %s netmask 255.255.255.0", tun_name, "10.0.0.2");
-  system(systemCMD);
-  */
+
+
   // Get reference to TUN interface
   tunfd = tun_alloc(tun_name, IFF_TAP);
 
-  strncpy(this->mac_address, mac_address, sizeof(mac_address));
-  tx_channel_state = FREE;
-  frames_received = 0;
-  // generate random_mac
-  this->mac_address = random_byte_generator();
-  printf("My MAC Address: ");
-  for (int i = 0; i < 6; i++)
-  {
-    printf("%02x:", (unsigned char)this->mac_address[i]);
-  }
-  printf("\n");
+
   struct mq_attr attr_tx;
   attr_tx.mq_maxmsg = 10;
   attr_tx.mq_msgsize = MAX_BUF;
@@ -62,20 +58,42 @@ MAC::~MAC()
   stop_tx = true;
   mq_close(phy_tx_queue);
   mq_close(phy_rx_queue);
-  mq_unlink("/mac2phy");
-  mq_unlink("/phy2mac");
+  //mq_unlink("/mac2phy");
+  //mq_unlink("/phy2mac");
   // close the TUN interface file descriptor
   //dprintf("destructor closing the TUN interface file descriptor\n");
   close(tunfd);
-  /*
+
   //dprintf("destructor bringing down TUN interface\n");
   sprintf(systemCMD, "sudo ip link set dev %s down", tun_name);
   system(systemCMD);
 
   //dprintf("destructor deleting TUN interface\n");
-  sprintf(systemCMD, "sudo ip tuntap del dev %s mode tun", tun_name);
+  sprintf(systemCMD, "sudo ip tuntap del dev %s mode tap", tun_name);
   system(systemCMD);
-  */
+
+}
+
+void MAC::set_ip(const char *ip) {
+  sprintf(systemCMD, "sudo ifconfig %s %s netmask 255.255.255.0", tun_name, ip);
+  system(systemCMD);
+  std::string mac_str = exec("ifconfig mac_interface | grep HWaddr | awk '{print $5}'");
+  for (uint idx = 0; idx < 6; ++idx)
+  {
+    mac_address[idx] = hex_digit(mac_str[3 * idx]) << 4;
+    mac_address[idx] |= hex_digit(mac_str[1 + 3 * idx]);
+  }
+  tx_channel_state = FREE;
+  frames_received = 0;
+
+  //printf("My MAC Address: ");
+  for (int i = 0; i < 6; i++)
+  {
+    //printf("%02x:", (unsigned char)mac_address[i]);
+  }
+  //printf("\n");
+
+  memset(broadcast_address,255,6);
 }
 
 /*
@@ -134,15 +152,15 @@ void *MAC_tx_worker(void *_arg)
           {
           case ETH_P_ARP:
             printf("ARP Packet\n");
-            mac->transmit_frame(frame,nread,ETH_P_ARP,frame_num);
+            mac->transmit_frame(frame, nread, ETH_P_ARP, frame_num);
             break;
           case ETH_P_IP:
             printf("IP Packet\n");
-            mac->transmit_frame(frame,nread,UDP_PACKET,frame_num);
+            mac->transmit_frame(frame, nread, UDP_PACKET, frame_num);
             frame_num++;
             break;
           default:
-            printf("Unknown Packet\n");
+            //printf("Unknown Packet\n");
             break;
           }
           nread = 0;
@@ -156,7 +174,8 @@ void *MAC_tx_worker(void *_arg)
 
 void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_num)
 {
-  if (tx_channel_state == FREE && segment_len> 0)
+  printf("\n----------------Transmitting-------------------\n");
+  if (tx_channel_state == FREE && segment_len > 0)
   {
     int tmp_len = MTU;
     bool last_segment = false;
@@ -278,8 +297,8 @@ char *MAC::getControlFrame(FrameControl temp)
   memcpy(offset, temp_offset, 2); // TODO:: test by removing temp_offset. temp_offset provides a frame_protocol_type
   //printf("Control Frame: %x\n", control_frame[0]);
   //offset = offset + 2;
- // memcpy(offset, mac_address, 6); // add mac address to the control_frame
- // offset = offset + 6;
+  // memcpy(offset, mac_address, 6); // add mac address to the control_frame
+  // offset = offset + 6;
 
   return control_frame;
 }
@@ -297,12 +316,18 @@ char *MAC::getMACHeader(char *frame)
 // from the start of the header
 // TODO:: need to create a variable for the position of the mac header
 
-char *MAC::extractSourceMAC(char *header)
+char *MAC::extractSourceMAC(char *payload)
 {
   char *temp = new char[6];
   memset(temp, 0, 6);
+  memcpy(temp, payload + TAP_EXTRA_LOAD + 6, 6);
+  return temp;
+}
 
-  memcpy(temp, header + 2, 6);
+char *MAC::extractDestinationMAC(char *payload){
+  char *temp = new char[6];
+  memset(temp, 0, 6);
+  memcpy(temp, payload + TAP_EXTRA_LOAD, 6);
   return temp;
 }
 //
@@ -349,10 +374,12 @@ void *MAC_rx_worker(void *_arg)
     }
     else
     {
+      printf("\n----------------Receiving-------------------\n");
       if (mac->isCorrectCRC(buf, status))
       {
         // pthread_mutex_lock(&mac->rx_mutex);
         mac->analyzeReceivedFrame(buf, status);
+        printf("Correct CRC Received \n");
         // pthread_mutex_unlock(&mac->rx_mutex);
       }
       else
@@ -372,12 +399,29 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   printf("Message Received\n");
   recv_header = getMACHeader(buf);
   recv_payload = getPayLoad(buf, buf_len);
-  char *sourceMAC = extractSourceMAC(recv_header);
-  printf("Source MAC Address: ");
+  int recv_payload_len = buf_len - CONTROL_FRAME_LEN;
+  char *sourceMAC = extractSourceMAC(recv_payload);
+  char *destinationMAC = extractDestinationMAC(recv_payload);
   double frame_error_rate = 0;
+
+  printf("Source MAC Address: ");
   for (int i = 0; i < 6; i++)
   {
     printf("%02x:", (unsigned char)sourceMAC[i]);
+  }
+  printf("\n");
+
+  printf("Destination MAC Address: ");
+  for (int i = 0; i < 6; i++)
+  {
+    printf("%02x:", (unsigned char)destinationMAC[i]);
+  }
+  printf("\n");
+
+  printf("Broadcast MAC Address: ");
+  for (int i = 0; i < 6; i++)
+  {
+    printf("%02x:", (unsigned char)broadcast_address[i]);
   }
   printf("\n");
 
@@ -393,6 +437,16 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       tx_channel_state = FREE;
       printf("Channel free %u\n", strncmp(mac_address, sourceMAC, 6));
     }
+
+    if(memcmp(destinationMAC,mac_address,sizeof(mac_address))==0){
+      sendToIPLayer(recv_payload, recv_payload_len);
+      printf("Received Payload Sent to Me\n");
+    }
+
+    if(memcmp(destinationMAC,broadcast_address,sizeof(broadcast_address))==0){
+      printf("This is a broadcast message\n");
+    }
+
   }
   else
   {
@@ -425,6 +479,11 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     //  printf("%s\n", recv_payload);
     printf("------------------------------------\n");
   }
+}
+
+
+void MAC::sendToIPLayer(char *payload, int payload_len){
+
 }
 
 /*
@@ -528,4 +587,35 @@ int buffToInteger(char *buffer)
 bool isBitSet(unsigned char c, int n)
 {
   return (1 & (c >> n));
+}
+
+std::string exec(const char *cmd)
+{
+  std::array<char, 128> buffer;
+  std::string result;
+  std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+  if (!pipe)
+    throw std::runtime_error("popen() failed!");
+  while (!feof(pipe.get()))
+  {
+    if (fgets(buffer.data(), 128, pipe.get()) != NULL)
+      result += buffer.data();
+  }
+  return result;
+}
+
+
+unsigned char hex_digit( char ch )
+{
+    if(             ( '0' <= ch ) && ( ch <= '9' ) ) { ch -= '0'; }
+    else
+    {
+        if(         ( 'a' <= ch ) && ( ch <= 'f' ) ) { ch += 10 - 'a'; }
+        else
+        {
+            if(     ( 'A' <= ch ) && ( ch <= 'F' ) ) { ch += 10 - 'A'; }
+            else                                     { ch = 16; }
+        }
+    }
+    return ch;
 }
