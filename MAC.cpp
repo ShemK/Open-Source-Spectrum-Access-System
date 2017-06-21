@@ -6,10 +6,16 @@
 #include <string>
 #include <array>
 
+#define DEBUG 0
+#if DEBUG == 1
+#define dprintf(...) printf(__VA_ARGS__)
+#else
+#define dprintf(...) /*__VA_ARGS__*/
+#endif
 
 MAC::MAC()
 {
-  printf("Creating tun interface\n");
+  dprintf("Creating tun interface\n");
   // Create TUN interface
   //dprintf("Creating tun interface\n");
   strcpy(tun_name, "mac_interface");
@@ -132,18 +138,18 @@ void *MAC_tx_worker(void *_arg)
         nread += cread(mac->tunfd, (char *)(&frame[nread]), MAX_BUF);
         if (nread < 0)
         {
-          printf("Error reading from TUN interface");
+          dprintf("Error reading from TUN interface");
           close(mac->tunfd);
           exit(EXIT_FAILURE);
         }
         else
         {
-          printf("%d bytes ready for transmission\n", nread);
+          dprintf("%d bytes ready for transmission\n", nread);
           for (int i = 0; i < nread; i++)
           {
             //printf("%x ", frame[i]);
           }
-          printf("\n");
+          dprintf("\n");
           uint16 ether_type = -1;
           char *temp = (char *)&ether_type;
           memcpy(&ether_type, frame + 2, sizeof(ether_type));
@@ -151,11 +157,11 @@ void *MAC_tx_worker(void *_arg)
           switch (ether_type)
           {
           case ETH_P_ARP:
-            printf("ARP Packet\n");
+            dprintf("ARP Packet\n");
             mac->transmit_frame(frame, nread, ETH_P_ARP, frame_num);
             break;
           case ETH_P_IP:
-            printf("IP Packet\n");
+            dprintf("IP Packet\n");
             mac->transmit_frame(frame, nread, UDP_PACKET, frame_num);
             frame_num++;
             break;
@@ -174,7 +180,7 @@ void *MAC_tx_worker(void *_arg)
 
 void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_num)
 {
-  printf("\n----------------Transmitting-------------------\n");
+  dprintf("\n----------------Transmitting-------------------\n");
   if (tx_channel_state == FREE && segment_len > 0)
   {
     int tmp_len = MTU;
@@ -202,7 +208,7 @@ void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_nu
     if (last_segment)
     {
       memset(frame + 1, 1, 1);
-      printf("Last Frame: %d\n", frame[1]);
+      dprintf("Last Frame: %d\n", frame[1]);
       if (new_transmission)
       {
         //printf("New Transmission1\n");
@@ -241,10 +247,10 @@ void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_nu
     }
     else
     {
-      printf("mq_send successful with frame_num: %d\n", frame_num);
+      dprintf("mq_send successful with frame_num: %d\n", frame_num);
       frame_num++;
       frames_sent++;
-      printf("Frames Sent: %d\n", frames_sent);
+      dprintf("Frames Sent: %d\n", frames_sent);
     }
     pthread_mutex_unlock(&tx_mutex);
     memset(frame, 0, MAX_BUF);
@@ -374,17 +380,17 @@ void *MAC_rx_worker(void *_arg)
     }
     else
     {
-      printf("\n----------------Receiving-------------------\n");
+      dprintf("\n----------------Receiving-------------------\n");
       if (mac->isCorrectCRC(buf, status))
       {
         // pthread_mutex_lock(&mac->rx_mutex);
+        dprintf("Correct CRC Received \n");
         mac->analyzeReceivedFrame(buf, status);
-        printf("Correct CRC Received \n");
         // pthread_mutex_unlock(&mac->rx_mutex);
       }
       else
       {
-        printf("Wrong Packet due to wrong CRC\n");
+        dprintf("Wrong Packet due to wrong CRC\n");
         mac->tx_channel_state = mac->BUSY;
       }
       memset(buf, 0, MAX_BUF);
@@ -396,7 +402,7 @@ void *MAC_rx_worker(void *_arg)
 // Analyze any received frame to make decisions on the state of the channel
 void MAC::analyzeReceivedFrame(char *buf, int buf_len)
 {
-  printf("Message Received\n");
+  dprintf("Message Received\n");
   recv_header = getMACHeader(buf);
   recv_payload = getPayLoad(buf, buf_len);
   int recv_payload_len = buf_len - CONTROL_FRAME_LEN;
@@ -404,47 +410,48 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   char *destinationMAC = extractDestinationMAC(recv_payload);
   double frame_error_rate = 0;
 
-  printf("Source MAC Address: ");
+  dprintf("Source MAC Address: ");
   for (int i = 0; i < 6; i++)
   {
-    printf("%02x:", (unsigned char)sourceMAC[i]);
+    dprintf("%02x:", (unsigned char)sourceMAC[i]);
   }
-  printf("\n");
+  dprintf("\n");
 
-  printf("Destination MAC Address: ");
+  dprintf("Destination MAC Address: ");
   for (int i = 0; i < 6; i++)
   {
-    printf("%02x:", (unsigned char)destinationMAC[i]);
+    dprintf("%02x:", (unsigned char)destinationMAC[i]);
   }
-  printf("\n");
+  dprintf("\n");
 
-  printf("Broadcast MAC Address: ");
+  dprintf("Broadcast MAC Address: ");
   for (int i = 0; i < 6; i++)
   {
     printf("%02x:", (unsigned char)broadcast_address[i]);
   }
-  printf("\n");
+  dprintf("\n");
 
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
     if (!isLastAlienFrame(recv_header))
     {
       tx_channel_state = BUSY;
-      printf("Channel Busy %u\n", strncmp(mac_address, sourceMAC, 6));
+      dprintf("Channel Busy %u\n", strncmp(mac_address, sourceMAC, 6));
     }
     else
     {
       tx_channel_state = FREE;
-      printf("Channel free %u\n", strncmp(mac_address, sourceMAC, 6));
+      dprintf("Channel free %u\n", strncmp(mac_address, sourceMAC, 6));
     }
 
-    if(memcmp(destinationMAC,mac_address,sizeof(mac_address))==0){
+    if(memcmp(destinationMAC,mac_address,6)==0){
+      dprintf("Received Payload Sent to Me\n");
       sendToIPLayer(recv_payload, recv_payload_len);
-      printf("Received Payload Sent to Me\n");
     }
 
-    if(memcmp(destinationMAC,broadcast_address,sizeof(broadcast_address))==0){
-      printf("This is a broadcast message\n");
+    if(memcmp(destinationMAC,broadcast_address,6)==0){
+      dprintf("This is a broadcast message\n");
+      sendToIPLayer(recv_payload, recv_payload_len);
     }
 
   }
@@ -465,25 +472,31 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     }
     if (isCorrectCRC(buf, buf_len))
     {
-      printf("CRC Check: Passed\n");
+      dprintf("CRC Check: Passed\n");
     }
     else
     {
-      printf("CRC Check: Failed\n");
+      dprintf("CRC Check: Failed\n");
     }
-    printf("Frame_num received: %d\n", frame_num);
-    printf("Frames received: %d\n", frames_received);
+    dprintf("Frame_num received: %d\n", frame_num);
+    dprintf("Frames received: %d\n", frames_received);
     std::cout << std::fixed;
     std::cout << "Frame Error Rate: " << std::setprecision(5) << frame_error_rate << '\n';
-    printf("Bitrate: %d\n", bitrate);
+    dprintf("Bitrate: %d\n", bitrate);
     //  printf("%s\n", recv_payload);
-    printf("------------------------------------\n");
+    dprintf("------------------------------------\n");
   }
 }
 
 
 void MAC::sendToIPLayer(char *payload, int payload_len){
-
+  int nwrite = 0;
+  for (unsigned int i = 0; i < payload_len; i++) {
+    nwrite = cwrite(tunfd, (char *)&payload[i], payload_len);
+  }
+  if(nwrite < 0){
+    perror("Error writing to TAP interface\n");
+  }
 }
 
 /*
@@ -536,7 +549,7 @@ void MAC::addCRC(char *frame, int &frame_len)
   unsigned long crc = 0; //crc32(0L,Z_NULL,0);
   crc = crc32(crc, (const unsigned char *)frame, frame_len);
   memcpy(frame + frame_len, &crc, 4);
-  printf("CRC sent: %lu\n", crc);
+//  dprintf("CRC sent: %lu\n", crc);
   frame_len = frame_len + 4;
 }
 
