@@ -13,17 +13,24 @@
 #include "tun.hpp"
 #include <sys/ioctl.h>
 #include <linux/if_tun.h>
+#include <netinet/if_ether.h>
 
 typedef unsigned short uint16;
 
 #define MAX_BUF 2000 // maximum buffer tx frame
-#define MTU 288
-#define CONTROL_FRAME_LEN 12
-#define IP_HEADER_LEN 0 //20
-#define IP_FLAG_POS 0 //13
+#define MTU 1500
+#define CONTROL_FRAME_LEN 6
+#define ETH_HEADER_LEN 18 //14 + 4 for ethernet 
+#define IP_HEADER_LEN 20 
+#define IP_FLAG_POS 13
 #define PMODE 0777
+#define FRAME_NUM_POS 2
 #define DIFS_TIME 50
 #define SLOT_TIME 1000
+
+#define TCP_PACKET 6
+#define UDP_PACKET 17
+
 
 
 class MAC{
@@ -103,6 +110,7 @@ public:
   pthread_t rx_process;            // thread for transmission
   pthread_mutex_t rx_mutex;
 
+  void transmit_frame(char *frame, int frame_len, int ip_type, int frame_num);
 
   char *getControlFrame(FrameControl temp);
   void create_frame(char *&data, int data_len,ProtocolType newType,
@@ -117,6 +125,8 @@ public:
   void backOff();
   void addCRC(char *frame, int &frame_len);
   bool isCorrectCRC(char *buf, int buf_len);
+  bool new_transmission = true;
+  int frames_sent = 0;
 
 };
 

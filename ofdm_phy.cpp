@@ -308,7 +308,7 @@ void *PHY_tx_worker(void *_arg)
   unsigned char *payload = new unsigned char[MAX_BUF];
   unsigned int payload_len;
   int nread;
-  std::ofstream log("yo.txt");
+  //std::ofstream log("yo.txt");
   unsigned int count = 0;
   while (PHY->tx_thread_running)
   {
@@ -373,9 +373,9 @@ void *PHY_tx_worker(void *_arg)
         //  strncpy((char*)payload, buffer, payload_len);
         memcpy(payload, (unsigned char *)buffer, payload_len);
         PHY->tx_frame_counter++;
-        time_t t = time(0);
-        struct tm *now = localtime(&t);
-        log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
+       // time_t t = time(0);
+       // struct tm *now = localtime(&t);
+       // log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
         for (int i = 0; i < 6; i++)
         {
           printf("%02x:", (unsigned char)payload[i]);
