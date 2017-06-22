@@ -249,13 +249,39 @@ int main(int argc, char **argv) {
 
   bool send_flag = true;
 
+  struct sockaddr_in udp_server_addr;
+  struct sockaddr_in udp_client_addr;
+  socklen_t addr_len = sizeof(udp_client_addr);
+  memset(&udp_client_addr, 0, addr_len);
+  udp_server_addr.sin_family = AF_INET;
+  udp_server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  udp_server_addr.sin_port = htons(8000);
+  int udp_client_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  double freq = 1000e6;
+  double initial_freq = freq;
+  int count = 0;
   if (send_flag) {
       // send burst of packets
     while(sig_terminate == 0) {
-
+      pmt::pmt_t instruction = pmt::make_dict();
+      pmt::pmt_t key =  pmt::string_to_symbol("Freq");
+      freq = freq + count*np.rx_rate;
+      printf("New Freq: %f\n",freq);
+      pmt::pmt_t value = pmt::mp(freq);
+      instruction = pmt::dict_add(instruction,key,value);
+      std::string serialized_pmt = pmt::serialize_str(instruction);
+      int len = serialized_pmt.length();
+      sendto(udp_client_sock, serialized_pmt.c_str(),len,0,
+              (struct sockaddr *)&udp_server_addr,sizeof(udp_server_addr));
+      usleep(1e6);
+      count++;
+      if(count > 150e6/np.rx_rate){
+        count = 0;
+        freq = initial_freq;
+      }
     }
   }
-
+  close(udp_client_sock);
   printf("Preparing to terminate transmission\n");
 
   // clean up ECR/python process

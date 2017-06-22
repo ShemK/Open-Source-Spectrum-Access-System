@@ -2129,7 +2129,6 @@ void *ECR_esc_worker(void *_arg)
 {
   ExtensibleCognitiveRadio *ECR = (ExtensibleCognitiveRadio *)_arg;
 
-  std::string received_string;
   struct sockaddr_in udp_server_addr;
   struct sockaddr_in udp_client_addr;
   socklen_t addr_len = sizeof(udp_server_addr);
@@ -2165,6 +2164,7 @@ void *ECR_esc_worker(void *_arg)
     int p = select(udp_server_sock + 1, &read_fds, NULL, NULL, &timeout);
     if (p > 0)
     {
+      std::string received_string;
       int recv_len = recvfrom(udp_server_sock, recv_buffer, recv_buffer_len, 0,
                               (struct sockaddr *)&udp_client_addr, &addr_len);
 
@@ -2174,31 +2174,34 @@ void *ECR_esc_worker(void *_arg)
         {
           received_string.push_back(recv_buffer[i]);
         }
-        pmt::pmt_t instruction = pmt::deserialize_str(received_string);
+        pmt::pmt_t instruction = pmt::make_dict();
+        instruction = pmt::deserialize_str(received_string);
         pmt::pmt_t freq_key = pmt::string_to_symbol("Freq");
         pmt::pmt_t not_found = pmt::mp(0);
         double freq = 0;
         if (pmt::dict_has_key(instruction, freq_key))
         {
           freq = pmt::to_double(pmt::dict_ref(instruction, freq_key, not_found));
-          printf("Frequency: %f\n", freq);
+          dprintf("Frequency: %f\n", freq);
           if (ECR->send_to_esc)
           {
-            if (freq != 0)
+            if (freq != ECR->rx_channels[ECR->get_esc_channel()].freq)
             {
               ECR->set_rx_freq(freq, ECR->get_esc_channel(), true);
+              dprintf("Channel set to: %f\n",freq);
             }
           }
         }
         else
         {
-          printf("No Freq\n");
+          dprintf("No Freq\n");
         }
       }
       else
       {
         printf("Socket Reading failed\n");
       }
+      memset(recv_buffer,0,recv_buffer_len);
     }
 
     if (ECR->rx_state == RX_STOPPED)
@@ -2235,7 +2238,8 @@ void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> *buffer, int bu
   shared_struct->num_samples = buffer_len;
   shared_struct->sample = sample_time;
   memcpy(shared_struct->data, buffer, buffer_len);
-  shared_struct->frequency = get_rx_freq();
+  //std::cout << rx_channels[esc_channel].freq << "\n";
+  shared_struct->frequency =  rx_channels[esc_channel].freq;
   shared_struct->sample_rate = get_rx_rate();
   //  std::cout << shared_struct->sample << std::endl;
 }
