@@ -147,7 +147,7 @@ void *MAC_tx_worker(void *_arg)
           dprintf("%d bytes ready for transmission\n", nread);
           for (int i = 0; i < nread; i++)
           {
-            //printf("%x ", frame[i]);
+            //dprintf("%x ", frame[i]);
           }
           dprintf("\n");
           uint16 ether_type = -1;
@@ -166,7 +166,7 @@ void *MAC_tx_worker(void *_arg)
             frame_num++;
             break;
           default:
-            //printf("Unknown Packet\n");
+            dprintf("Unknown Packet\n");
             break;
           }
           nread = 0;
@@ -239,7 +239,7 @@ void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_nu
       new_transmission = false;
     }
     addCRC(frame, frame_len);
-    std::cout << "Frame Len: " << frame_len << "\n";
+//std::cout << "Frame Len: " << frame_len << "\n";
     int status = mq_send(phy_tx_queue, frame, frame_len, 5);
     if (status == -1)
     {
@@ -301,11 +301,6 @@ char *MAC::getControlFrame(FrameControl temp)
   int temp_frame_control = htons(((temp.frame_protocol_type << 12) | (temp.frame_protocol_subtype << 8)));
   char *temp_offset = (char *)&temp_frame_control;
   memcpy(offset, temp_offset, 2); // TODO:: test by removing temp_offset. temp_offset provides a frame_protocol_type
-  //printf("Control Frame: %x\n", control_frame[0]);
-  //offset = offset + 2;
-  // memcpy(offset, mac_address, 6); // add mac address to the control_frame
-  // offset = offset + 6;
-
   return control_frame;
 }
 
@@ -424,13 +419,6 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   }
   dprintf("\n");
 
-  dprintf("Broadcast MAC Address: ");
-  for (int i = 0; i < 6; i++)
-  {
-    printf("%02x:", (unsigned char)broadcast_address[i]);
-  }
-  dprintf("\n");
-
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
     if (!isLastAlienFrame(recv_header))
@@ -480,8 +468,8 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     }
     dprintf("Frame_num received: %d\n", frame_num);
     dprintf("Frames received: %d\n", frames_received);
-    std::cout << std::fixed;
-    std::cout << "Frame Error Rate: " << std::setprecision(5) << frame_error_rate << '\n';
+   // std::cout << std::fixed;
+   // std::cout << "Frame Error Rate: " << std::setprecision(5) << frame_error_rate << '\n';
     dprintf("Bitrate: %d\n", bitrate);
     //  printf("%s\n", recv_payload);
     dprintf("------------------------------------\n");

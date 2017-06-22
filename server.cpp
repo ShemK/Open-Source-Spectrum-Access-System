@@ -6,6 +6,13 @@
 #include <errno.h>
 #include <signal.h>
 
+#define DEBUG 0
+#if DEBUG == 1
+#define dprintf(...) printf(__VA_ARGS__)
+#else
+#define dprintf(...) /*__VA_ARGS__*/
+#endif
+
 int sig_terminate = 0;
 void terminate(int signum) {
   printf("\nSending termination message to controller\n");
@@ -22,7 +29,7 @@ int main() {
   mac->set_ip("10.0.0.3");
   int recv_buffer_len= 1000;
   char recv_buffer[recv_buffer_len];
-
+  char message[recv_buffer_len];
 
   struct sockaddr_in udp_server_addr;
   memset(&udp_server_addr, 0, sizeof(udp_server_addr));
@@ -58,7 +65,19 @@ int main() {
       int recv_len = recvfrom(udp_server_sock, recv_buffer, recv_buffer_len, 0,
                             (struct sockaddr *)&udp_client_addr, &clientlen);
       if (recv_len > 0) {
-
+        dprintf("Received packet containing %i bytes:\n",recv_len);
+        char client_ip[20];
+        strncpy(client_ip,inet_ntoa(udp_client_addr.sin_addr),20);
+        printf("Message Received from %s: %s",client_ip,recv_buffer);
+        for(int i = 0; i < recv_len; i++) {
+          //std::cout << recv_buffer[i];
+        }
+        std::string reply = "Message received";
+        strncpy(message,reply.c_str(),reply.length());
+        int message_length = reply.length();
+        sendto(udp_server_sock,(char *)message, message_length, 0,
+                  (struct sockaddr *)&udp_client_addr, sizeof(udp_client_addr));
+        printf("\n");
       }
     }
 
