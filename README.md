@@ -3,6 +3,9 @@ Open Source Spectrum Access System
 
 install postgresql, create a database called rem. Create a role called wireless (superuser) and grant it all privileges on database rem. 
 DETAILED INSTRUCTIONS ON HOW TO DO THIS WILL BE ADDED SOON, GOOGLE IS YOUR FRIEND FOR NOW.
+This link could be useful: 
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-14-04
+
 
 Use the rem_postgre.sql file in /path/to/this/branch/sql to populate the database rem. 
 {Cron jobs for maintenance are not activated for this module yet, truncate tables as necessary. 

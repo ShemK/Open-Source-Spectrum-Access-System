@@ -121,7 +121,7 @@ namespace gr {
         means[i]=mean(acc);
         variances[i]=variance(acc);
 
-        if(means[i]-noise_floor[i]> threshold && means[i]>-130.0)
+        if(means[i]-noise_floor[i]> threshold && means[i]>-150.0)
           {
             fcstates[i]=1;
             continue;

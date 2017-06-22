@@ -14,5 +14,5 @@ Install gr-sas. Install my OOT module (ahmadsj) gr-utils from the DARPA SC2 gitl
 
 Use the flowgraph in the apps folder as a guildeline. 
 - Leave the number of subchannels in the Energy-Detector block as 1, and the number of channels in the psql_insert block as 1. Detection performance will be enhance by using these later.
-- 
+
 
