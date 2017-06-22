@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -O3 -DNDEBUG  -shared -Wl,-soname,_sas_swig.so -o _sas_swig.so CMakeFiles/_sas_swig.dir/sas_swigPYTHON_wrap.cxx.o -lpython2.7 ../lib/libgnuradio-sas-1.0.0git.so.0.0.0 -lboost_filesystem -lboost_system -lgnuradio-runtime -lgnuradio-pmt -lpqxx -Wl,-rpath,/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib: 

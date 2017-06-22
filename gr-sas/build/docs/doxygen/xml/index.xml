@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.6">
+  <compound refid="classgr_1_1sas_1_1psql__insert" kind="class"><name>gr::sas::psql_insert</name>
+    <member refid="classgr_1_1sas_1_1psql__insert_1ad63c61510f484ffa499799209bb4c88b" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert_1a12862f3b247ac97477e8aa11306b01c6" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1psql__insert__impl" kind="class"><name>gr::sas::psql_insert_impl</name>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a420b180b23fb7389361cbf0e779b3fb5" kind="variable"><name>d_tags</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1acc04fd1dac3f3544ae738ad361ef285c" kind="variable"><name>d_tags_itr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a2603b894bf8cea4d246de95e50ef3f52" kind="variable"><name>d_filter</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a70af6ef36c9f6ce69656f908e48ac76d" kind="variable"><name>N</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a25659646af1bdf5db4cbae6e2c341408" kind="variable"><name>num_channels</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1abb48e262f3a90aed78715a49128a9387" kind="variable"><name>cstates</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab720316feca6b18e7ccefbb281ebdc91" kind="variable"><name>state</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a8545a063e66ebe48691848ee988e601e" kind="variable"><name>threshold</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad756454e74ffc4838aa4a99e809fd526" kind="variable"><name>sensitivity</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1afafe6345b970d04674a70874ca728427" kind="variable"><name>last_mean</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab8d02d5b463ec131daa4028a2389d586" kind="variable"><name>last_variance</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a976d9d03ed5976d03103bc59ea89ea29" kind="variable"><name>oldbuf</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a3dc1b514d9abeabe99e40219b6f3e2da" kind="variable"><name>noise_floor</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1acbb8457472f6c396422f263a2404283f" kind="variable"><name>cur_noise_floor</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a7699ba389ebbed53a449ab0e2dcf2b90" kind="variable"><name>rx_rate</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1acbf3853013ba87fdc57e621e410a0083" kind="variable"><name>wbnoise_floor</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1aa64fd827b90b66bd65d0065a49b57ea3" kind="variable"><name>fcstates</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1aa2bf9b9170a44808cf28cdb5126647c9" kind="variable"><name>thresholds</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a7a1e240a8190094150e34a5a4fe00725" kind="variable"><name>means</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a5d2e754658d1fa1c0763e7a6c2534fbf" kind="variable"><name>variances</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1afbf89328e1e956d6c94d0be5d3a4f0be" kind="variable"><name>dbstring</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab0767fabcf46d2ddc00e83d9a745537a" kind="variable"><name>c</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac2105f9051850a70d1abab2c82d44c3e" kind="variable"><name>latitude</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a0aaf73da8c7485f5c522c18acb56eaf0" kind="variable"><name>longitude</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a8cd3505b2c6ab14681234ad60de65573" kind="variable"><name>latstr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a88d6eb933d3a316ea20c71c17f25f8f7" kind="variable"><name>longstr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad5357050c70b1ee0e831c60c5585566a" kind="function"><name>psql_insert_impl</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6ceb774961b346af43b30908ba0714b6" kind="function"><name>~psql_insert_impl</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a9b8fe6d36f1a18435f76073486bb5065" kind="function"><name>print</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a3b83debb7bebb58468548fc58323f728" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="namespacegr" kind="namespace"><name>gr</name>
+  </compound>
+  <compound refid="namespacegr_1_1sas" kind="namespace"><name>gr::sas</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="api_8h" kind="file"><name>api.h</name>
+    <member refid="api_8h_1ad559be21ddcacf19ab6f84dc5de3869c" kind="define"><name>SAS_API</name></member>
+  </compound>
+  <compound refid="group__defs_8dox" kind="file"><name>group_defs.dox</name>
+  </compound>
+  <compound refid="main__page_8dox" kind="file"><name>main_page.dox</name>
+  </compound>
+  <compound refid="psql__insert_8h" kind="file"><name>psql_insert.h</name>
+  </compound>
+  <compound refid="psql__insert__impl_8h" kind="file"><name>psql_insert_impl.h</name>
+  </compound>
+  <compound refid="group__block" kind="group"><name>block</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_97aefd0d527b934f1d99a682da8fe6a9" kind="dir"><name>lib</name>
+  </compound>
+  <compound refid="dir_a9b3ba23c4aa9d14e76d7fa76649e039" kind="dir"><name>sas</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

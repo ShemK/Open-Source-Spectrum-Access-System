@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.6">
+  <compound refid="classgr_1_1sas_1_1psql__insert" kind="class"><name>gr::sas::psql_insert</name>
+    <member refid="classgr_1_1sas_1_1psql__insert_1ad63c61510f484ffa499799209bb4c88b" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert_1a12862f3b247ac97477e8aa11306b01c6" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="namespacegr" kind="namespace"><name>gr</name>
+  </compound>
+  <compound refid="namespacegr_1_1sas" kind="namespace"><name>gr::sas</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="api_8h" kind="file"><name>api.h</name>
+    <member refid="api_8h_1ad559be21ddcacf19ab6f84dc5de3869c" kind="define"><name>SAS_API</name></member>
+  </compound>
+  <compound refid="psql__insert_8h" kind="file"><name>psql_insert.h</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include</name>
+  </compound>
+  <compound refid="dir_a9b3ba23c4aa9d14e76d7fa76649e039" kind="dir"><name>/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas</name>
+  </compound>
+</doxygenindex>

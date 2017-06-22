@@ -1,0 +1,12 @@
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/apps/CMakeFiles/pygen_apps_9a6dd.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/uninstall.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/_sas_swig_swig_tag.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib/CMakeFiles/gnuradio-sas.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/sas_swig_swig_2d0df.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/CMakeFiles/pygen_python_5fe4c.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/docs/doxygen/CMakeFiles/doxygen_target.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/_sas_swig.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib/CMakeFiles/test-sas.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/pygen_swig_093d2.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/_sas_swig_doc_tag.dir
+/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/sas_swig_swig_doc.dir
