@@ -15,13 +15,18 @@ void terminate(int signum)
 
 int main()
 {
-
+  srand (time(NULL));
   // register signal handlers
   signal(SIGINT, terminate);
   signal(SIGQUIT, terminate);
   signal(SIGTERM, terminate);
   MAC *mac = new MAC();
-  mac->set_ip("10.0.0.2");
+  int octet = rand()%254;
+  std::string ip = "10.0.";
+  ip = ip + std::to_string(octet) + ".";
+  octet = 1+rand()%254;
+  ip = ip + std::to_string(octet);
+  mac->set_ip(ip.c_str());
   int buffer_length = 1500;
   char message[buffer_length];
   char recv_buffer[buffer_length];
@@ -29,16 +34,9 @@ int main()
   struct sockaddr_in udp_server_addr;
   memset(&udp_server_addr, 0, sizeof(udp_server_addr));
   udp_server_addr.sin_family = AF_INET;
-  udp_server_addr.sin_addr.s_addr = inet_addr("10.0.0.3"); //10.0.0.3
+  udp_server_addr.sin_addr.s_addr = inet_addr("10.0.0.1"); 
   udp_server_addr.sin_port = htons(5000);
-
-  struct sockaddr_in udp_client_addr;
-  memset(&udp_client_addr, 0, sizeof(udp_client_addr));
-  udp_client_addr.sin_family = AF_INET;
-  udp_client_addr.sin_addr.s_addr = inet_addr("10.0.0.2"); //10.0.0.2
-  udp_client_addr.sin_port = htons(8000);
-  socklen_t clientlen = sizeof(udp_client_addr);
-
+  socklen_t clientlen = sizeof(udp_server_addr);
   int udp_client_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   int packet_number = 0;
   while (sig_terminate == 0)
@@ -70,6 +68,7 @@ int main()
       printf("\n");
     }
   }
+  close(udp_client_sock);
   delete mac;
   pthread_exit(NULL);
 }

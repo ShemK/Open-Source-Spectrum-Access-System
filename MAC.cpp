@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -17,21 +17,18 @@ MAC::MAC()
 {
   dprintf("Creating tun interface\n");
   // Create TUN interface
-  //dprintf("Creating tun interface\n");
+  dprintf("Creating tun interface\n");
   strcpy(tun_name, "mac_interface");
 
   sprintf(systemCMD, "sudo ip tuntap add dev %s mode tap", tun_name);
   system(systemCMD);
-  //dprintf("Bringing up tun interface\n");
-  //dprintf("Connecting to tun interface\n");
+  dprintf("Bringing up tun interface\n");
+  dprintf("Connecting to tun interface\n");
   sprintf(systemCMD, "sudo ip link set dev %s up", tun_name);
   system(systemCMD);
 
-
-
   // Get reference to TUN interface
   tunfd = tun_alloc(tun_name, IFF_TAP);
-
 
   struct mq_attr attr_tx;
   attr_tx.mq_maxmsg = 10;
@@ -50,6 +47,9 @@ MAC::MAC()
     exit(0);
   }
 
+  // set any banned mac addresses
+  set_banned_addresses();
+
   pthread_mutex_init(&tx_mutex, NULL); // transmitter mutex
   pthread_create(&tx_process, NULL, MAC_tx_worker, (void *)this);
   pthread_mutex_init(&rx_mutex, NULL); // receiver mutex
@@ -67,21 +67,21 @@ MAC::~MAC()
   //mq_unlink("/mac2phy");
   //mq_unlink("/phy2mac");
   // close the TUN interface file descriptor
-  //dprintf("destructor closing the TUN interface file descriptor\n");
+  dprintf("destructor closing the TUN interface file descriptor\n");
   close(tunfd);
 
-  //dprintf("destructor bringing down TUN interface\n");
+  dprintf("destructor bringing down TUN interface\n");
   sprintf(systemCMD, "sudo ip link set dev %s down", tun_name);
   system(systemCMD);
 
-  //dprintf("destructor deleting TUN interface\n");
+  dprintf("destructor deleting TUN interface\n");
   sprintf(systemCMD, "sudo ip tuntap del dev %s mode tap", tun_name);
   system(systemCMD);
-
 }
 
-void MAC::set_ip(const char *ip) {
-  sprintf(systemCMD, "sudo ifconfig %s %s netmask 255.255.255.0", tun_name, ip);
+void MAC::set_ip(const char *ip)
+{
+  sprintf(systemCMD, "sudo ifconfig %s %s netmask 255.255.0.0", tun_name, ip);
   system(systemCMD);
   std::string mac_str = exec("ifconfig mac_interface | grep HWaddr | awk '{print $5}'");
   for (uint idx = 0; idx < 6; ++idx)
@@ -91,15 +91,7 @@ void MAC::set_ip(const char *ip) {
   }
   tx_channel_state = FREE;
   frames_received = 0;
-
-  //printf("My MAC Address: ");
-  for (int i = 0; i < 6; i++)
-  {
-    //printf("%02x:", (unsigned char)mac_address[i]);
-  }
-  //printf("\n");
-
-  memset(broadcast_address,255,6);
+  memset(broadcast_address, 255, 6);
 }
 
 /*
@@ -138,32 +130,35 @@ void *MAC_tx_worker(void *_arg)
         nread += cread(mac->tunfd, (char *)(&frame[nread]), MAX_BUF);
         if (nread < 0)
         {
-          dprintf("Error reading from TUN interface");
+          dprintf("Error reading from TUN interface\n");
           close(mac->tunfd);
           exit(EXIT_FAILURE);
         }
         else
         {
+          /*
           dprintf("%d bytes ready for transmission\n", nread);
           for (int i = 0; i < nread; i++)
           {
             //dprintf("%x ", frame[i]);
           }
           dprintf("\n");
+          */
           uint16 ether_type = -1;
-          char *temp = (char *)&ether_type;
           memcpy(&ether_type, frame + 2, sizeof(ether_type));
           ether_type = htons(ether_type);
           switch (ether_type)
           {
           case ETH_P_ARP:
             dprintf("ARP Packet\n");
-            mac->transmit_frame(frame, nread, ETH_P_ARP, frame_num);
+            mac->transmit_frame(frame, nread, UDP_PACKET, frame_num);
             break;
           case ETH_P_IP:
-            dprintf("IP Packet\n");
-            mac->transmit_frame(frame, nread, UDP_PACKET, frame_num);
-            frame_num++;
+            if (!mac->isAddressBanned(mac->extractDestinationMAC(frame)))
+            {
+              dprintf("IP Packet\n");
+              mac->transmit_frame(frame, nread, mac->getProtocol(frame), frame_num);
+            }
             break;
           default:
             dprintf("Unknown Packet\n");
@@ -178,15 +173,21 @@ void *MAC_tx_worker(void *_arg)
   pthread_exit(NULL);
 }
 
-void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_num)
+void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &frame_num)
 {
-  dprintf("\n----------------Transmitting-------------------\n");
+  // Check for invalid payload with unknown protocol
+  if (ip_protocol != UDP_PACKET && ip_protocol != TCP_PACKET)
+  {
+    dprintf("Unknown Protocol: %02x\n", ip_protocol);
+    return;
+  }
   if (tx_channel_state == FREE && segment_len > 0)
   {
+    dprintf("\n----------------Transmitting-------------------\n");
     int tmp_len = MTU;
     bool last_segment = false;
     // check ip flags set
-    if (isLastsegment(frame) || ip_type == UDP_PACKET || ip_type == ETH_P_ARP)
+    if (isLastsegment(frame) || ip_protocol == UDP_PACKET)
     {
       last_segment = true;
     }
@@ -211,14 +212,14 @@ void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_nu
       dprintf("Last Frame: %d\n", frame[1]);
       if (new_transmission)
       {
-        //printf("New Transmission1\n");
+        dprintf("New Transmission - No more frames\n");
         myState = BACKING_OFF;
         backOff();
         // mac->myState = mac->TRANSMITTING;
       }
       else
       {
-        //printf("Transmission Continuation1\n");
+        dprintf("Transmission Continuation - Last Frame\n");
         new_transmission = true;
         myState = IDLE;
       }
@@ -227,19 +228,19 @@ void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_nu
     {
       if (new_transmission)
       {
-        //  printf("New Transmission2\n");
+        dprintf("New Transmission - More frames to follow\n");
         myState = BACKING_OFF;
         backOff();
         myState = TRANSMITTING;
       }
       else
       {
-        //printf("Transmission Continuation2\n");
+        dprintf("Transmission Continuation - More frames to follow\n");
       }
       new_transmission = false;
     }
     addCRC(frame, frame_len);
-//std::cout << "Frame Len: " << frame_len << "\n";
+    dprintf("Frame Len: %d\n", frame_len);
     int status = mq_send(phy_tx_queue, frame, frame_len, 5);
     if (status == -1)
     {
@@ -257,7 +258,8 @@ void MAC::transmit_frame(char *frame, int segment_len, int ip_type, int frame_nu
   }
   else
   {
-    //printf("TX Channel Busy\n");
+    dprintf("TX Channel Busy: %d\n", tx_channel_state);
+    transmit_frame(frame, segment_len, ip_protocol, frame_num);
   }
   // usleep(1000);
 }
@@ -325,7 +327,8 @@ char *MAC::extractSourceMAC(char *payload)
   return temp;
 }
 
-char *MAC::extractDestinationMAC(char *payload){
+char *MAC::extractDestinationMAC(char *payload)
+{
   char *temp = new char[6];
   memset(temp, 0, 6);
   memcpy(temp, payload + TAP_EXTRA_LOAD, 6);
@@ -369,8 +372,11 @@ void *MAC_rx_worker(void *_arg)
       }
       else
       {
-        perror("Failed to read queue");
-        exit(0);
+        if (!stop_rx)
+        {
+          perror("Failed to read queue");
+          exit(0);
+        }
       }
     }
     else
@@ -405,22 +411,22 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   char *destinationMAC = extractDestinationMAC(recv_payload);
   double frame_error_rate = 0;
 
-  dprintf("Source MAC Address: ");
-  for (int i = 0; i < 6; i++)
-  {
-    dprintf("%02x:", (unsigned char)sourceMAC[i]);
-  }
-  dprintf("\n");
-
-  dprintf("Destination MAC Address: ");
-  for (int i = 0; i < 6; i++)
-  {
-    dprintf("%02x:", (unsigned char)destinationMAC[i]);
-  }
-  dprintf("\n");
-
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
+    dprintf("Source MAC Address: ");
+    for (int i = 0; i < 6; i++)
+    {
+      dprintf("%02x:", (unsigned char)sourceMAC[i]);
+    }
+    dprintf("\n");
+
+    dprintf("Destination MAC Address: ");
+    for (int i = 0; i < 6; i++)
+    {
+      dprintf("%02x:", (unsigned char)destinationMAC[i]);
+    }
+    dprintf("\n");
+
     if (!isLastAlienFrame(recv_header))
     {
       tx_channel_state = BUSY;
@@ -432,19 +438,21 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       dprintf("Channel free %u\n", strncmp(mac_address, sourceMAC, 6));
     }
 
-    if(memcmp(destinationMAC,mac_address,6)==0){
+    if (memcmp(destinationMAC, mac_address, 6) == 0)
+    {
       dprintf("Received Payload Sent to Me\n");
       sendToIPLayer(recv_payload, recv_payload_len);
     }
 
-    if(memcmp(destinationMAC,broadcast_address,6)==0){
+    if (memcmp(destinationMAC, broadcast_address, 6) == 0)
+    {
       dprintf("This is a broadcast message\n");
       sendToIPLayer(recv_payload, recv_payload_len);
     }
-
   }
   else
   {
+    dprintf("---------Current TX statistics-----------------\n");
     if (myState == TRANSMITTING)
     {
       tx_channel_state = FREE;
@@ -458,31 +466,26 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     {
       bitrate = (buf_len * 8) * frames_received / time_dif;
     }
-    if (isCorrectCRC(buf, buf_len))
-    {
-      dprintf("CRC Check: Passed\n");
-    }
-    else
-    {
-      dprintf("CRC Check: Failed\n");
-    }
+
     dprintf("Frame_num received: %d\n", frame_num);
     dprintf("Frames received: %d\n", frames_received);
-   // std::cout << std::fixed;
-   // std::cout << "Frame Error Rate: " << std::setprecision(5) << frame_error_rate << '\n';
+    // std::cout << std::fixed;
+    // std::cout << "Frame Error Rate: " << std::setprecision(5) << frame_error_rate << '\n';
     dprintf("Bitrate: %d\n", bitrate);
     //  printf("%s\n", recv_payload);
     dprintf("------------------------------------\n");
   }
 }
 
-
-void MAC::sendToIPLayer(char *payload, int payload_len){
+void MAC::sendToIPLayer(char *payload, int payload_len)
+{
   int nwrite = 0;
-  for (unsigned int i = 0; i < payload_len; i++) {
+  for (unsigned int i = 0; i < payload_len; i++)
+  {
     nwrite = cwrite(tunfd, (char *)&payload[i], payload_len);
   }
-  if(nwrite < 0){
+  if (nwrite < 0)
+  {
     perror("Error writing to TAP interface\n");
   }
 }
@@ -537,7 +540,7 @@ void MAC::addCRC(char *frame, int &frame_len)
   unsigned long crc = 0; //crc32(0L,Z_NULL,0);
   crc = crc32(crc, (const unsigned char *)frame, frame_len);
   memcpy(frame + frame_len, &crc, 4);
-//  dprintf("CRC sent: %lu\n", crc);
+  //  dprintf("CRC sent: %lu\n", crc);
   frame_len = frame_len + 4;
 }
 
@@ -556,6 +559,33 @@ bool MAC::isCorrectCRC(char *buf, int buf_len)
   {
     return false;
   }
+}
+
+void MAC::set_banned_addresses()
+{
+  std::string mac_str = "01:00:5e:00:00:fb";
+  for (uint idx = 0; idx < 6; ++idx)
+  {
+    mdns[idx] = hex_digit(mac_str[3 * idx]) << 4;
+    mdns[idx] |= hex_digit(mac_str[1 + 3 * idx]);
+  }
+}
+
+bool MAC::isAddressBanned(const char *add_check)
+{
+  if (memcmp(mdns, add_check, 6) == 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+char MAC::getProtocol(char *frame)
+{
+  return *(frame + ETH_HEADER_LEN + 9);
 }
 //
 // Generate random_bytes for the MAC. Probability of using the same value = (1/256)^6
@@ -605,18 +635,29 @@ std::string exec(const char *cmd)
   return result;
 }
 
-
-unsigned char hex_digit( char ch )
+unsigned char hex_digit(char ch)
 {
-    if(             ( '0' <= ch ) && ( ch <= '9' ) ) { ch -= '0'; }
+  if (('0' <= ch) && (ch <= '9'))
+  {
+    ch -= '0';
+  }
+  else
+  {
+    if (('a' <= ch) && (ch <= 'f'))
+    {
+      ch += 10 - 'a';
+    }
     else
     {
-        if(         ( 'a' <= ch ) && ( ch <= 'f' ) ) { ch += 10 - 'a'; }
-        else
-        {
-            if(     ( 'A' <= ch ) && ( ch <= 'F' ) ) { ch += 10 - 'A'; }
-            else                                     { ch = 16; }
-        }
+      if (('A' <= ch) && (ch <= 'F'))
+      {
+        ch += 10 - 'A';
+      }
+      else
+      {
+        ch = 16;
+      }
     }
-    return ch;
+  }
+  return ch;
 }

@@ -28,8 +28,8 @@ typedef unsigned short uint16;
 #define DIFS_TIME 50
 #define SLOT_TIME 1000
 
-#define TCP_PACKET 6
-#define UDP_PACKET 17
+#define TCP_PACKET 0x06
+#define UDP_PACKET 0x11
 #define TAP_EXTRA_LOAD 4
 
 
@@ -112,7 +112,7 @@ public:
   pthread_t rx_process;            // thread for transmission
   pthread_mutex_t rx_mutex;
 
-  void transmit_frame(char *frame, int frame_len, int ip_type, int frame_num);
+  void transmit_frame(char *frame, int frame_len, char ip_protocol, int &frame_num);
 
   char *getControlFrame(FrameControl temp);
   void create_frame(char *&data, int data_len,ProtocolType newType,
@@ -132,6 +132,11 @@ public:
 
   bool new_transmission = true;
   int frames_sent = 0;
+
+  char mdns[6]; // to store mdns mac_address
+  void set_banned_addresses();
+  bool isAddressBanned(const char *add_check);
+  char getProtocol(char *frame);
 
 };
 

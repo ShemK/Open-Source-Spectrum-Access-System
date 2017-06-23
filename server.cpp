@@ -26,15 +26,16 @@ int main() {
   signal(SIGQUIT, terminate);
   signal(SIGTERM, terminate);
   MAC *mac = new MAC();
-  mac->set_ip("10.0.0.3");
-  int recv_buffer_len= 1000;
+  std::string ip = "10.0.0.1";
+  mac->set_ip(ip.c_str());
+  int recv_buffer_len= 1500;
   char recv_buffer[recv_buffer_len];
   char message[recv_buffer_len];
 
   struct sockaddr_in udp_server_addr;
   memset(&udp_server_addr, 0, sizeof(udp_server_addr));
   udp_server_addr.sin_family = AF_INET;
-  udp_server_addr.sin_addr.s_addr = inet_addr("10.0.0.3"); //10.0.0.3
+  udp_server_addr.sin_addr.s_addr = inet_addr(ip.c_str()); 
   udp_server_addr.sin_port = htons(5000);
   socklen_t clientlen = sizeof(udp_server_addr);
   int udp_server_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -44,7 +45,7 @@ int main() {
   udp_client_addr.sin_family = AF_INET;
 
   // Bind CRTS server socket
-  bind(udp_server_sock, (sockaddr *)&udp_server_addr, clientlen); //10.0.0.3
+  bind(udp_server_sock, (sockaddr *)&udp_server_addr, clientlen); 
 
   int packet_number = 0;
   fd_set read_fds;
