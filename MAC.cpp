@@ -108,7 +108,6 @@ void *MAC_tx_worker(void *_arg)
   int buffer_len = MAX_BUF;
   char *frame = new char[MAX_BUF];
   int frame_num = 0;
-  mac->start_time = time(NULL);
   int nread = 0;
   while (!mac->stop_tx)
   {
@@ -212,6 +211,7 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
       dprintf("Last Frame: %d\n", frame[1]);
       if (new_transmission)
       {
+        start_time = time(NULL);
         dprintf("New Transmission - No more frames\n");
         myState = BACKING_OFF;
         backOff();
@@ -228,6 +228,7 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
     {
       if (new_transmission)
       {
+        start_time = time(NULL);
         dprintf("New Transmission - More frames to follow\n");
         myState = BACKING_OFF;
         backOff();
@@ -255,11 +256,13 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
     }
     pthread_mutex_unlock(&tx_mutex);
     memset(frame, 0, MAX_BUF);
+    return;
   }
   else
   {
     dprintf("TX Channel Busy: %d\n", tx_channel_state);
-    transmit_frame(frame, segment_len, ip_protocol, frame_num);
+    dprintf("TX MAC State: %d\n", myState);
+    return transmit_frame(frame, segment_len, ip_protocol, frame_num);
   }
   // usleep(1000);
 }
@@ -372,7 +375,7 @@ void *MAC_rx_worker(void *_arg)
       }
       else
       {
-        if (!stop_rx)
+        if (!mac->stop_rx)
         {
           perror("Failed to read queue");
           exit(0);
@@ -573,7 +576,7 @@ void MAC::set_banned_addresses()
 
 bool MAC::isAddressBanned(const char *add_check)
 {
-  if (memcmp(mdns, add_check, 6) == 0)
+  if (memcmp(mdns, add_check, 3) == 0)
   {
     return true;
   }
