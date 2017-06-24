@@ -131,7 +131,7 @@ void *MAC_tx_worker(void *_arg)
         nread += cread(mac->tunfd, (char *)(&frame[nread]), MAX_BUF);
         if (nread < 0)
         {
-          dprintf("Error reading from TUN interface\n");
+          dprintf(RED "Error reading from TUN interface\n" RESET);
           close(mac->tunfd);
           exit(EXIT_FAILURE);
         }
@@ -148,29 +148,53 @@ void *MAC_tx_worker(void *_arg)
           uint16 ether_type = -1;
           memcpy(&ether_type, frame + 2, sizeof(ether_type));
           ether_type = htons(ether_type);
+          MAC::IpSegment new_segment;
           switch (ether_type)
           {
           case ETH_P_ARP:
-            dprintf("ARP Packet\n");
-            mac->transmit_frame(frame, nread, UDP_PACKET, frame_num);
+            dprintf(YEL "ARP Packet\n" RESET);
+            memset(new_segment.segment, 0, nread);
+            new_segment.size = nread;
+            memcpy(new_segment.segment, frame, nread);
+            new_segment.arp_packet = true;
+            mac->ip_tx_queue.push(new_segment);
+            memset(frame, 0, nread);
             break;
           case ETH_P_IP:
             if (!mac->isAddressBanned(mac->extractDestinationMAC(frame)))
             {
-              dprintf("IP Packet\n");
-              mac->transmit_frame(frame, nread, mac->getProtocol(frame), frame_num);
+              dprintf(YEL "IP Packet\n" RESET);
+              memset(new_segment.segment, 0, nread);
+              new_segment.size = nread;
+              memcpy(new_segment.segment, frame, nread);
+              memset(frame, 0, nread);
+              new_segment.arp_packet = false;
+              mac->ip_tx_queue.push(new_segment);
             }
             break;
           default:
-            dprintf("Unknown Packet\n");
+            dprintf(YEL "Unknown Packet\n" RESET);
             break;
           }
           nread = 0;
         }
       }
+      if (mac->ip_tx_queue.size() > 0)
+      {
+        if (mac->ip_tx_queue.front().arp_packet)
+        {
+          mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
+                              UDP_PACKET, frame_num);
+        }
+        else
+        {
+          mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
+                              mac->getProtocol(mac->ip_tx_queue.front().segment), frame_num);
+        }
+      }
     }
   }
-
+  delete[] frame;
   pthread_exit(NULL);
 }
 
@@ -179,15 +203,18 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
   // Check for invalid payload with unknown protocol
   if (ip_protocol != UDP_PACKET && ip_protocol != TCP_PACKET)
   {
-    dprintf("Unknown Protocol: %02x\n", ip_protocol);
+    dprintf(RED "Unknown Protocol: %02x\n" RESET, ip_protocol);
+    ip_tx_queue.pop();
     return;
   }
   if (tx_channel_state == FREE && segment_len > 0)
   {
-    dprintf("\n----------------Transmitting-------------------\n");
+    dprintf(YEL "\n----------------Transmitting-------------------\n" RESET);
+    dprintf(CYN "Current TX Queue Length: %lu\n" RESET, ip_tx_queue.size());
     bool last_segment = false;
     // check ip flags set
-    if (isLastsegment(frame) || ip_protocol == UDP_PACKET || segment_len < MTU)
+    //if (isLastsegment(frame) || ip_protocol == UDP_PACKET || segment_len < MTU)
+    if (segment_len < MTU)
     {
       last_segment = true;
     }
@@ -203,45 +230,52 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
 
     unsigned int conv_frame_num = htonl(frame_num);
     memcpy(frame + FRAME_NUM_POS, &conv_frame_num, 4);
+    if (tx_continuation > 3)
+    {
+      last_segment = true;
+    }
 
     // FIXME:: Need to look into what state the MAC should be in
     // if only one segment is received
     if (last_segment)
     {
       memset(frame + 1, 1, 1);
-      dprintf("Last Frame: %d\n", frame[1]);
+      dprintf(YEL "Last Frame: %d\n" RESET, frame[1]);
       if (new_transmission)
       {
         start_time = time(NULL);
-        dprintf("New Transmission - No more frames\n");
+        dprintf(YEL "New Transmission - No more frames\n" RESET);
         myState = BACKING_OFF;
         backOff();
       }
       else
       {
-        dprintf("Transmission Continuation - Last Frame\n");
+        dprintf(YEL "Transmission Continuation - Last Frame\n" RESET);
         new_transmission = true;
       }
+      tx_continuation = 0;
       myState = IDLE;
     }
     else
     {
       if (new_transmission)
       {
+        tx_continuation = 0;
         start_time = time(NULL);
-        dprintf("New Transmission - More frames to follow\n");
+        dprintf(YEL "New Transmission - More frames to follow\n" RESET);
         myState = BACKING_OFF;
         backOff();
         myState = TRANSMITTING;
       }
       else
       {
-        dprintf("Transmission Continuation - More frames to follow\n");
+        tx_continuation++;
+        dprintf(YEL "Transmission Continuation - More frames to follow\n" RESET);
       }
       new_transmission = false;
     }
     addCRC(frame, frame_len);
-    dprintf("Frame Len: %d\n", frame_len);
+    dprintf(YEL "Frame Len: %d\n" RESET, frame_len);
     struct timespec timeout;
     timeout.tv_sec = time(NULL) + 1;
     timeout.tv_nsec = 0;
@@ -250,33 +284,27 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
     {
       if (errno == ETIMEDOUT)
       {
-        perror("Message Queue Time Out\n");
+        perror(RED "Message Queue Time Out\n" RESET);
       }
-      perror("mq_send failure\n");
+      if (!stop_tx)
+      {
+        perror(RED "mq_send failure\n" RESET);
+      }
     }
     else
     {
-      dprintf("mq_send successful with frame_num: %d\n", frame_num);
+      dprintf(CYN "mq_send successful with frame_num: %d\n" RESET, frame_num);
       frame_num++;
       frames_sent++;
-      dprintf("Frames Sent: %d\n", frames_sent);
+      dprintf(CYN "Frames Sent: %d\n" RESET, frames_sent);
     }
     pthread_mutex_unlock(&tx_mutex);
-    memset(frame, 0, MAX_BUF);
-    return;
+    ip_tx_queue.pop();
   }
   else
   {
-    dprintf("TX Channel Busy: %d\n", tx_channel_state);
-    dprintf("TX MAC State: %d\n", myState);
-    while(tx_channel_state != FREE){
-      if(stop_tx){
-        break;
-      }
-      dprintf("TX Channel Busy: %d\n", tx_channel_state);
-      dprintf("TX MAC State: %d\n", myState);
-    }
-    return transmit_frame(frame, segment_len, ip_protocol, frame_num);
+    dprintf(RED "TX Channel Busy: %d\n" RESET, tx_channel_state);
+    dprintf(RED "TX MAC State: %d\n" RESET, myState);
   }
   // usleep(1000);
 }
@@ -306,6 +334,8 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
   {
   }
   memcpy(data, temp_frame, data_len + CONTROL_FRAME_LEN);
+  delete[] temp_frame;
+  delete[] temp_control_frame;
 }
 /*  Creates a control frame header for any payload to be transmitted
   **  TODO:: Need to improve on which type of information is needed in
@@ -315,7 +345,7 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
 char *MAC::getControlFrame(FrameControl temp)
 {
   char *control_frame = new char[CONTROL_FRAME_LEN];
-  memset(control_frame, 0, sizeof(control_frame));
+  memset(control_frame, 0, CONTROL_FRAME_LEN);
   char *offset = control_frame;
   int temp_frame_control = htons(((temp.frame_protocol_type << 12) | (temp.frame_protocol_subtype << 8)));
   char *temp_offset = (char *)&temp_frame_control;
@@ -380,11 +410,7 @@ void *MAC_rx_worker(void *_arg)
       {
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
-          if (mac->myState == mac->IDLE)
-          {
-            mac->tx_channel_state = mac->FREE;
-          }
-          //printf("Channel Free\n");
+          mac->tx_channel_state = mac->FREE;
         }
       }
       else
@@ -401,16 +427,15 @@ void *MAC_rx_worker(void *_arg)
       dprintf("\n----------------Receiving-------------------\n");
       if (mac->isCorrectCRC(buf, status))
       {
-        // pthread_mutex_lock(&mac->rx_mutex);
+        pthread_mutex_lock(&mac->rx_mutex);
         dprintf("Correct CRC Received \n");
         mac->analyzeReceivedFrame(buf, status);
-        // pthread_mutex_unlock(&mac->rx_mutex);
+        pthread_mutex_unlock(&mac->rx_mutex);
       }
-      /*else
+      else
       {
         dprintf("Wrong Packet due to wrong CRC\n");
-        mac->tx_channel_state = mac->BUSY;
-      } */
+      }
       memset(buf, 0, MAX_BUF);
     }
   }
@@ -447,33 +472,39 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     if (!isLastAlienFrame(recv_header))
     {
       tx_channel_state = BUSY;
-      dprintf("Channel Busy %u\n", strncmp(mac_address, sourceMAC, 6));
+      dprintf("Channel Busy\n");
     }
     else
     {
       tx_channel_state = FREE;
-      dprintf("Channel free %u\n", strncmp(mac_address, sourceMAC, 6));
+      dprintf(GRN "Channel free - Last Frame Received\n" RESET);
     }
 
     if (memcmp(destinationMAC, mac_address, 6) == 0)
     {
-      dprintf("Received Payload Sent to Me\n");
+      dprintf(GRN "Received Payload Sent to Me\n" RESET);
       sendToIPLayer(recv_payload, recv_payload_len);
     }
 
     if (memcmp(destinationMAC, broadcast_address, 6) == 0)
     {
       dprintf("This is a broadcast message\n");
+      tx_channel_state = FREE;
       sendToIPLayer(recv_payload, recv_payload_len);
     }
   }
   else
   {
-    dprintf("---------Current TX statistics-----------------\n");
-    if (myState == TRANSMITTING)
+    tx_channel_state = FREE;
+    if (memcmp(sourceMAC, mac_address, 6) == 0)
     {
-      tx_channel_state = FREE;
+      dprintf("I am transmitting\n");
     }
+    /*
+    dprintf("---------Current TX statistics-----------------\n");
+
+    
+
     int frame_num = buffToInteger(recv_header + 8);
     frames_received++;
     frame_error_rate = (frame_num + 1 - (float)frames_received) / ((float)frame_num + 1);
@@ -491,20 +522,26 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     dprintf("Bitrate: %d\n", bitrate);
     //  printf("%s\n", recv_payload);
     dprintf("------------------------------------\n");
+    */
   }
+  delete[] recv_header;
+  delete[] sourceMAC;
+  delete[] destinationMAC;
 }
 
 void MAC::sendToIPLayer(char *payload, int payload_len)
 {
   int nwrite = 0;
+  dprintf(GRN "Writing to TAP Interface\n" RESET);
   for (unsigned int i = 0; i < payload_len; i++)
   {
     nwrite = cwrite(tunfd, (char *)&payload[i], payload_len);
   }
   if (nwrite < 0)
   {
-    perror("Error writing to TAP interface\n");
+    perror(RED "Error writing to TAP interface\n" RESET);
   }
+  dprintf(GRN "Done Writing to TAP interface\n" RESET);
 }
 
 /*
@@ -515,8 +552,8 @@ bool MAC::isLastsegment(char *segment)
 {
   unsigned char flag;
   memset(&flag, 0, 1);
-  memcpy(&flag, segment + ETH_HEADER_LEN + IP_HEADER_LEN + IP_FLAG_POS, 1);
-  dprintf("TCP Flags: %02x\n", flag);
+  memcpy(&flag, segment + ETH_HEADER_LEN + IP_HEADER_LEN + IP_FLAG_POS, sizeof(char));
+  dprintf(CYN "TCP Flags: %02x\n" RESET, flag);
   return (isBitSet(flag, 0) | isBitSet(flag, 1) | isBitSet(flag, 2) | isBitSet(flag, 3));
 }
 
@@ -541,12 +578,12 @@ void MAC::backOff()
       if (i > 0)
       {
         i--;
-        //   printf("BACK OFF PAUSED \n");
+       // dprintf(RED "BACK OFF PAUSED \n" RESET);
       }
     }
     else
     {
-      // printf("BACK OFF RESUMED \n");
+      //dprintf(GRN "BACK OFF RESUMED \n" RESET);
       usleep(SLOT_TIME);
     }
   }

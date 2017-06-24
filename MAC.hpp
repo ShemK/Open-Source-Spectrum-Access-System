@@ -14,6 +14,16 @@
 #include <sys/ioctl.h>
 #include <linux/if_tun.h>
 #include <netinet/if_ether.h>
+#include <queue>
+
+#define RED "\x1B[31m"
+#define GRN "\x1B[32m"
+#define YEL "\x1B[33m"
+#define BLU "\x1B[34m"
+#define MAG "\x1B[35m"
+#define CYN "\x1B[36m"
+#define WHT "\x1B[37m"
+#define RESET "\x1B[0m"
 
 typedef unsigned short uint16;
 
@@ -32,10 +42,9 @@ typedef unsigned short uint16;
 #define UDP_PACKET 0x11
 #define TAP_EXTRA_LOAD 4
 
-
-class MAC{
+class MAC
+{
 private:
-
 public:
   MAC();
   ~MAC();
@@ -49,7 +58,7 @@ public:
   int cw = 30;
   int back_off_time;
   bool collision_occured = false;
-  char *mac_address = new char[6];
+  char mac_address[6];
   bool stop_rx = false;
   bool stop_tx = false;
 
@@ -65,7 +74,8 @@ public:
   int checksum;
   char *recv_payload;
   char *recv_header;
-  enum State{
+  enum State
+  {
     IDLE = 0,
     DIFS,
     SIFS,
@@ -76,47 +86,48 @@ public:
     TRANSMITTING
   };
 
-  enum Channel_state{
+  enum Channel_state
+  {
     BUSY = 0,
     FREE,
     UNAVAILABLE
   };
 
-  enum ProtocolType{
+  enum ProtocolType
+  {
     MANAGEMENT = 0x0000,
     CONTROL = 0x0001,
     DATA = 0x0002
   };
 
-  enum ProtocolSubtype{
+  enum ProtocolSubtype
+  {
     ASSOC_REQ = 0x0000,
     BEACON = 0x0008,
     RTS = 0x000A,
     CTS = 0x000C
   };
 
-
-  struct FrameControl{
+  struct FrameControl
+  {
     ProtocolType frame_protocol_type;
     ProtocolSubtype frame_protocol_subtype;
   };
-
 
   State myState;
   Channel_state tx_channel_state;
   FrameControl packet_FrameControl;
 
-
-  pthread_t tx_process;            // thread for transmission
+  pthread_t tx_process; // thread for transmission
   pthread_mutex_t tx_mutex;
-  pthread_t rx_process;            // thread for transmission
+  pthread_t rx_process; // thread for transmission
   pthread_mutex_t rx_mutex;
 
   void transmit_frame(char *frame, int frame_len, char ip_protocol, int &frame_num);
 
   char *getControlFrame(FrameControl temp);
-  void create_frame(char *&data, int data_len,ProtocolType newType,
-                  ProtocolSubtype newSubType);
+  void create_frame(char *&data, int data_len, ProtocolType newType,
+                    ProtocolSubtype newSubType);
   char *getMACHeader(char *frame);
   char *getPayLoad(char *frame, int payload_len);
   char *extractSourceMAC(char *header);
@@ -137,13 +148,20 @@ public:
   void set_banned_addresses();
   bool isAddressBanned(const char *add_check);
   char getProtocol(char *frame);
-
+  struct IpSegment
+  {
+    int size;
+    char segment[MAX_BUF];
+    bool arp_packet = false;
+  };
+  std::queue<IpSegment> ip_tx_queue;
+  int tx_continuation = 0;
 };
 
 void *MAC_tx_worker(void *_arg);
 void *MAC_rx_worker(void *_arg);
 char *random_byte_generator();
-int buffToInteger(char * buffer);
-bool isBitSet (unsigned char c, int n);
-std::string exec(const char* cmd);
-unsigned char hex_digit( char ch );
+int buffToInteger(char *buffer);
+bool isBitSet(unsigned char c, int n);
+std::string exec(const char *cmd);
+unsigned char hex_digit(char ch);
