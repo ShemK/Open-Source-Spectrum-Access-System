@@ -83,6 +83,8 @@ void MAC::set_ip(const char *ip)
 {
   sprintf(systemCMD, "sudo ifconfig %s %s netmask 255.255.0.0", tun_name, ip);
   system(systemCMD);
+  sprintf(systemCMD, "sudo ifconfig %s txqueuelen %s", tun_name, "15000");
+  system(systemCMD);
   std::string mac_str = exec("ifconfig mac_interface | grep HWaddr | awk '{print $5}'");
   for (uint idx = 0; idx < 6; ++idx)
   {
@@ -183,10 +185,9 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
   if (tx_channel_state == FREE && segment_len > 0)
   {
     dprintf("\n----------------Transmitting-------------------\n");
-    int tmp_len = MTU;
     bool last_segment = false;
     // check ip flags set
-    if (isLastsegment(frame) || ip_protocol == UDP_PACKET)
+    if (isLastsegment(frame) || ip_protocol == UDP_PACKET || segment_len < MTU)
     {
       last_segment = true;
     }
@@ -215,14 +216,13 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
         dprintf("New Transmission - No more frames\n");
         myState = BACKING_OFF;
         backOff();
-        // mac->myState = mac->TRANSMITTING;
       }
       else
       {
         dprintf("Transmission Continuation - Last Frame\n");
         new_transmission = true;
-        myState = IDLE;
       }
+      myState = IDLE;
     }
     else
     {
@@ -242,9 +242,16 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
     }
     addCRC(frame, frame_len);
     dprintf("Frame Len: %d\n", frame_len);
-    int status = mq_send(phy_tx_queue, frame, frame_len, 5);
+    struct timespec timeout;
+    timeout.tv_sec = time(NULL) + 1;
+    timeout.tv_nsec = 0;
+    int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
     if (status == -1)
     {
+      if (errno == ETIMEDOUT)
+      {
+        perror("Message Queue Time Out\n");
+      }
       perror("mq_send failure\n");
     }
     else
@@ -262,6 +269,13 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
   {
     dprintf("TX Channel Busy: %d\n", tx_channel_state);
     dprintf("TX MAC State: %d\n", myState);
+    while(tx_channel_state != FREE){
+      if(stop_tx){
+        break;
+      }
+      dprintf("TX Channel Busy: %d\n", tx_channel_state);
+      dprintf("TX MAC State: %d\n", myState);
+    }
     return transmit_frame(frame, segment_len, ip_protocol, frame_num);
   }
   // usleep(1000);
@@ -392,11 +406,11 @@ void *MAC_rx_worker(void *_arg)
         mac->analyzeReceivedFrame(buf, status);
         // pthread_mutex_unlock(&mac->rx_mutex);
       }
-      else
+      /*else
       {
         dprintf("Wrong Packet due to wrong CRC\n");
         mac->tx_channel_state = mac->BUSY;
-      }
+      } */
       memset(buf, 0, MAX_BUF);
     }
   }
@@ -500,7 +514,9 @@ void MAC::sendToIPLayer(char *payload, int payload_len)
 bool MAC::isLastsegment(char *segment)
 {
   unsigned char flag;
+  memset(&flag, 0, 1);
   memcpy(&flag, segment + ETH_HEADER_LEN + IP_HEADER_LEN + IP_FLAG_POS, 1);
+  dprintf("TCP Flags: %02x\n", flag);
   return (isBitSet(flag, 0) | isBitSet(flag, 1) | isBitSet(flag, 2) | isBitSet(flag, 3));
 }
 
