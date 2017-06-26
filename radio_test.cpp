@@ -97,7 +97,7 @@ void initialize_node_parameters(struct node_parameters *np)
   // initial USRP settings
   np->rx_freq = 1000e6;
   np->rx_rate = 2e6;
-  np->rx_gain = 0.0;
+  np->rx_gain = 20.0;
 
   np->tx_freq = 1000e6;
   np->tx_rate = 2e6;
@@ -108,7 +108,7 @@ void initialize_node_parameters(struct node_parameters *np)
   np->tx_modulation = LIQUID_MODEM_QAM4;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_HAMMING128;
-  np->tx_fec1 = LIQUID_FEC_HAMMING74;
+  np->tx_fec1 = LIQUID_FEC_HAMMING128;
   np->tx_cp_len = 16;
   np->rx_cp_len = 16;
   np->tx_taper_len = 4;

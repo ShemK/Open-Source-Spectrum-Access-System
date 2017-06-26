@@ -373,14 +373,15 @@ void *PHY_tx_worker(void *_arg)
         //  strncpy((char*)payload, buffer, payload_len);
         memcpy(payload, (unsigned char *)buffer, payload_len);
         PHY->tx_frame_counter++;
-       // time_t t = time(0);
-       // struct tm *now = localtime(&t);
-       // log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
-        for (int i = 0; i < 6; i++)
+        // time_t t = time(0);
+        // struct tm *now = localtime(&t);
+        // log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
+      /*  for (int i = 0; i < 6; i++)
         {
           printf("%02x:", (unsigned char)payload[i]);
         }
         printf("\n");
+        */
         PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
         memset(buffer, 0, buffer_len);
       }
@@ -439,8 +440,8 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // assemble frame
   ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
   // dprintf("Transmitting Frame!!!!\n");
-  printf("-----------------Transmitting--------------\n");
-  printf("Frame_num transmitted: %d with %d bytes\n", frame_num - 1, _payload_len);
+ // printf("-----------------Transmitting--------------\n");
+ // printf("Frame_num transmitted: %d with %d bytes\n", frame_num - 1, _payload_len);
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
@@ -1048,21 +1049,32 @@ int rxCallback(unsigned char *_header, int _header_valid,
   unsigned int frame_num = ((_header[0] & 0x3F) << 8 | _header[1]);
   printf("Frame_num received: %d\n", frame_num);
   printf("Received %d bytes\n", _payload_len);
-  if (_header_valid == 1 && _payload_valid == 1)
+  if (_header_valid == 1)
   {
-    timespec timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_nsec = 100;
-
-    int status = mq_timedsend(PHY->phy_rx_queue, (char *)_payload, _payload_len, 0, &timeout);
-    if (status == -1)
+    if (_payload_valid == 1)
     {
-      perror("Queue is full\n");
+      timespec timeout;
+      timeout.tv_sec = 0;
+      timeout.tv_nsec = 100;
+
+      int status = mq_timedsend(PHY->phy_rx_queue, (char *)_payload, _payload_len, 0, &timeout);
+      if (status == -1)
+      {
+        perror("Queue is full\n");
+      }
+      else
+      {
+        dprintf("mq_send successful\n");
+      }
     }
     else
     {
-      dprintf("mq_send successful\n");
+      dprintf("Invalid Payload\n");
     }
+  }
+  else
+  {
+    dprintf("Invalid Header\n");
   }
   return 0;
 }

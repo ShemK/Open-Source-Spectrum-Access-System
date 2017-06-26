@@ -15,6 +15,10 @@
 #include <linux/if_tun.h>
 #include <netinet/if_ether.h>
 #include <queue>
+#include <map>
+#include <future>
+#include <functional>
+#include <cstring>
 
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
@@ -54,7 +58,7 @@ public:
 
   int frames_received;
   int cw_min = 16;
-  int cw_max = 1024;
+  int cw_max = 50; //1024;
   int cw = 30;
   int back_off_time;
   bool collision_occured = false;
@@ -153,9 +157,27 @@ public:
     int size;
     char segment[MAX_BUF];
     bool arp_packet = false;
+    int frame_num = 0;
   };
   std::queue<IpSegment> ip_tx_queue;
   int tx_continuation = 0;
+
+  struct Peer
+  {
+    char mac_address[6];
+    int frames_sent;
+    int frames_received;
+    int frame_errors;
+    double bit_error_rate;
+  };
+
+
+  std::vector<Peer> peerlist;
+  int peer_number = 0;
+  int getPeerPosition(char peer_address[6]);
+  int updatePeerTxStatistics(char peer_address[6]);
+  void updatePeerRxStatistics(char peer_address[6], int frame_num_received, int frame_len);
+  //Peer new_peer;
 };
 
 void *MAC_tx_worker(void *_arg);

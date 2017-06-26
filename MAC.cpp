@@ -50,11 +50,12 @@ MAC::MAC()
   // set any banned mac addresses
   set_banned_addresses();
 
+  // initialize random seed
+  srand(time(NULL));
   pthread_mutex_init(&tx_mutex, NULL); // transmitter mutex
   pthread_create(&tx_process, NULL, MAC_tx_worker, (void *)this);
   pthread_mutex_init(&rx_mutex, NULL); // receiver mutex
   pthread_create(&rx_process, NULL, MAC_rx_worker, (void *)this);
-  //  pthread_exit(NULL);
 }
 
 MAC::~MAC()
@@ -77,6 +78,8 @@ MAC::~MAC()
   dprintf("destructor deleting TUN interface\n");
   sprintf(systemCMD, "sudo ip tuntap del dev %s mode tap", tun_name);
   system(systemCMD);
+
+  peerlist.clear();
 }
 
 void MAC::set_ip(const char *ip)
@@ -149,10 +152,13 @@ void *MAC_tx_worker(void *_arg)
           memcpy(&ether_type, frame + 2, sizeof(ether_type));
           ether_type = htons(ether_type);
           MAC::IpSegment new_segment;
+          char *peer_address = mac->extractDestinationMAC(frame);
           switch (ether_type)
           {
           case ETH_P_ARP:
             dprintf(YEL "ARP Packet\n" RESET);
+            dprintf(YEL "Peer List Size: %lu\n" RESET, mac->peerlist.size());
+            //new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
             memset(new_segment.segment, 0, nread);
             new_segment.size = nread;
             memcpy(new_segment.segment, frame, nread);
@@ -161,8 +167,9 @@ void *MAC_tx_worker(void *_arg)
             memset(frame, 0, nread);
             break;
           case ETH_P_IP:
-            if (!mac->isAddressBanned(mac->extractDestinationMAC(frame)))
+            if (!mac->isAddressBanned(peer_address))
             {
+              new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
               dprintf(YEL "IP Packet\n" RESET);
               memset(new_segment.segment, 0, nread);
               new_segment.size = nread;
@@ -177,6 +184,7 @@ void *MAC_tx_worker(void *_arg)
             break;
           }
           nread = 0;
+          delete[] peer_address;
         }
       }
       if (mac->ip_tx_queue.size() > 0)
@@ -184,12 +192,12 @@ void *MAC_tx_worker(void *_arg)
         if (mac->ip_tx_queue.front().arp_packet)
         {
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
-                              UDP_PACKET, frame_num);
+                              UDP_PACKET, mac->ip_tx_queue.front().frame_num);
         }
         else
         {
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
-                              mac->getProtocol(mac->ip_tx_queue.front().segment), frame_num);
+                              mac->getProtocol(mac->ip_tx_queue.front().segment), mac->ip_tx_queue.front().frame_num);
         }
       }
     }
@@ -230,7 +238,7 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
 
     unsigned int conv_frame_num = htonl(frame_num);
     memcpy(frame + FRAME_NUM_POS, &conv_frame_num, 4);
-    if (tx_continuation > 3)
+    if (tx_continuation > 5)
     {
       last_segment = true;
     }
@@ -294,12 +302,12 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
     else
     {
       dprintf(CYN "mq_send successful with frame_num: %d\n" RESET, frame_num);
-      frame_num++;
+      //frame_num++;
       frames_sent++;
       dprintf(CYN "Frames Sent: %d\n" RESET, frames_sent);
+      ip_tx_queue.pop();
     }
     pthread_mutex_unlock(&tx_mutex);
-    ip_tx_queue.pop();
   }
   else
   {
@@ -399,8 +407,8 @@ void *MAC_rx_worker(void *_arg)
   {
     //mac->tx_channel_state = mac->FREE;
     struct timespec timeout;
-    timeout.tv_sec = time(NULL) + 1;
-    timeout.tv_nsec = 0;
+    timeout.tv_sec = time(NULL);
+    timeout.tv_nsec = 1e3;
 
     int status = mq_timedreceive(mac->phy_rx_queue, buf, MAX_BUF, 0, &timeout);
 
@@ -411,6 +419,7 @@ void *MAC_rx_worker(void *_arg)
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
           mac->tx_channel_state = mac->FREE;
+          // dprintf(GRN "Nothing Detected - Channel is free\n" RESET);
         }
       }
       else
@@ -427,10 +436,13 @@ void *MAC_rx_worker(void *_arg)
       dprintf("\n----------------Receiving-------------------\n");
       if (mac->isCorrectCRC(buf, status))
       {
-        pthread_mutex_lock(&mac->rx_mutex);
-        dprintf("Correct CRC Received \n");
-        mac->analyzeReceivedFrame(buf, status);
-        pthread_mutex_unlock(&mac->rx_mutex);
+
+        dprintf("Correct CRC Received for %d bytes\n", status);
+        std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
+                                           mac, buf, status);
+        dprintf("Asynchronous Analyze Thread Launched\n");
+        //mac->analyzeReceivedFrame(buf, status);
+        //pthread_mutex_unlock(&mac->rx_mutex);
       }
       else
       {
@@ -452,9 +464,12 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   char *sourceMAC = extractSourceMAC(recv_payload);
   char *destinationMAC = extractDestinationMAC(recv_payload);
   double frame_error_rate = 0;
+  pthread_mutex_lock(&rx_mutex);
+  
 
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
+  
     dprintf("Source MAC Address: ");
     for (int i = 0; i < 6; i++)
     {
@@ -468,7 +483,6 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       dprintf("%02x:", (unsigned char)destinationMAC[i]);
     }
     dprintf("\n");
-
     if (!isLastAlienFrame(recv_header))
     {
       tx_channel_state = BUSY;
@@ -482,13 +496,15 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
 
     if (memcmp(destinationMAC, mac_address, 6) == 0)
     {
+      int frame_num = buffToInteger(recv_header + FRAME_NUM_POS);
       dprintf(GRN "Received Payload Sent to Me\n" RESET);
+      updatePeerRxStatistics(sourceMAC,frame_num, buf_len);
       sendToIPLayer(recv_payload, recv_payload_len);
     }
 
     if (memcmp(destinationMAC, broadcast_address, 6) == 0)
     {
-      dprintf("This is a broadcast message\n");
+      dprintf(GRN "This is a broadcast message\n" RESET);
       tx_channel_state = FREE;
       sendToIPLayer(recv_payload, recv_payload_len);
     }
@@ -524,6 +540,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     dprintf("------------------------------------\n");
     */
   }
+  pthread_mutex_unlock(&rx_mutex);
   delete[] recv_header;
   delete[] sourceMAC;
   delete[] destinationMAC;
@@ -571,6 +588,8 @@ bool MAC::isLastAlienFrame(char *frame)
 
 void MAC::backOff()
 {
+  cw = cw_min + rand() % (cw_max - cw_min);
+  dprintf(GRN "Random CW: %d\n" RESET, cw);
   for (int i = 0; i < cw; i++)
   {
     if (tx_channel_state == BUSY)
@@ -578,12 +597,12 @@ void MAC::backOff()
       if (i > 0)
       {
         i--;
-       // dprintf(RED "BACK OFF PAUSED \n" RESET);
+        dprintf(RED "BACK OFF PAUSED: %d \n" RESET, i);
       }
     }
     else
     {
-      //dprintf(GRN "BACK OFF RESUMED \n" RESET);
+      dprintf(GRN "BACK OFF RESUMED: %d \n" RESET, i);
       usleep(SLOT_TIME);
     }
   }
@@ -642,6 +661,70 @@ bool MAC::isAddressBanned(const char *add_check)
 char MAC::getProtocol(char *frame)
 {
   return *(frame + ETH_HEADER_LEN + 9);
+}
+
+int MAC::updatePeerTxStatistics(char peer_address[6])
+{
+  int pos = getPeerPosition(peer_address);
+  if (pos < 0)
+  {
+    // if peer does not exist
+    MAC::Peer *new_peer = new Peer;
+    memcpy(new_peer->mac_address, peer_address, 6);
+    new_peer->frames_sent = 1;
+    new_peer->frames_received = 0;
+    new_peer->frame_errors = 0;
+    peerlist.push_back(*new_peer);
+    printf("New Peer Added\n");
+    return new_peer->frames_sent;
+  }
+  else
+  {
+    // if peer exists;
+    printf("Peer Exists\n");
+    int temp = peerlist.at(pos).frames_sent++;
+    printf("Frames Sent to one of peers = %d\n", temp);
+    return temp;
+  }
+}
+
+void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, int frame_len)
+{
+  dprintf(YEL "Peer List Size: %lu\n" RESET, peerlist.size());
+  int pos = getPeerPosition(peer_address);
+  if (pos < 0)
+  {
+    // if peer does not exist
+    MAC::Peer *new_peer = new Peer;
+    memcpy(new_peer->mac_address, peer_address, 6);
+    new_peer->frames_sent = 0;
+    new_peer->frames_received = frame_num_received;
+    new_peer->frame_errors = 0;
+    peerlist.push_back(*new_peer);
+    printf("New RX Peer Added\n");
+  }
+  else
+  {
+    // if peer exists;
+    printf("RX Peer Exists\n");
+
+    peerlist.at(pos).frames_received++;
+    peerlist.at(pos).frame_errors =  frame_num_received - peerlist.at(pos).frames_received;
+    peerlist.at(pos).bit_error_rate = ((float)peerlist.at(pos).frame_errors)/((float)frame_num_received);
+    printf("Frame Num Received: %d\n",frame_num_received);
+    std::cout << std::fixed;
+    std::cout << "Frame Error Rate: " << std::setprecision(5) << peerlist.at(pos).bit_error_rate << '\n';
+    printf("Number of frames Received: %d\n",peerlist.at(pos).frames_received);
+  }
+}
+
+int MAC::getPeerPosition(char peer_address[6]){
+  for(int i = 0; i < peerlist.size(); i++) {
+    if(memcmp(peerlist[i].mac_address,peer_address,6)==0){
+      return i;
+    }
+  }
+  return -1;
 }
 //
 // Generate random_bytes for the MAC. Probability of using the same value = (1/256)^6
