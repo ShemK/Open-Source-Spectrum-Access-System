@@ -93,10 +93,8 @@ class JsonListener{
 					$cbsdSerialNumber = $newRegistrationRequestObj->{'cbsdSerialNumber'};
 
 					//check to see if the CBSD was blacklisted
-					$query = "SELECT * FROM blacklisted_cbsds where ";
-					$query = $query."userId = "."'".$userId."'";
-					$query = $query." and fccId = "."'".$fccId."'";
-
+					$where_array = array('userId' => $userId,'fccId'=>$fccId);
+					$query = $this->create_select_query("*","blacklisted_cbsds",$where_array);
 					$result = $this->myDBHandler->query($query);
 
 					if($result)
@@ -105,12 +103,10 @@ class JsonListener{
 							$replyObj = (object)['response'=>(object)['responseCode'=>'101', 'responseMessage'=>'BLACKLISTED']];
 						} else{
 
-							$query = "SELECT cbsdId,cbsdCategory FROM registered_cbsds where ";
-
-							$query = $query."userId = "."'".$userId."'";
-							$query = $query." and fccId = "."'".$fccId."'";
-
-
+							$select_array = '*';
+							$from_array = 'registered_cbsds';
+							$where_array = array('userId'=>$userId,'fccId'=>$fccId);
+							$query = $this->create_select_query($select_array,$from_array,$where_array);
 							$result = $this->myDBHandler->query($query);
 							//echo $result->num_rows;
 							// check if there is a result in the query with the provided parameters
@@ -121,6 +117,7 @@ class JsonListener{
 									{
 										if($row['cbsdSerialNumber'] == $newRegistrationRequestObj->{'cbsdSerialNumber'})
 										{
+											echo "Serial Number: ";//.$newRegistrationRequestObj->{'cbsdSerialNumber'};
 											if($row['callSign'] == $newRegistrationRequestObj->{'callSign'})
 											{
 												$response = (object)['responseCode'=>'0','cbsdId' =>$cbsdId, 'responseMessage'=>'Registration Successful'];
@@ -189,7 +186,8 @@ class JsonListener{
 		$replyObj = (object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
 		if(property_exists($newSpectrumInquiryObj, 'cbsdId')) {
 			$cbsdId = $newSpectrumInquiryObj->{'cbsdId'};
-			$query = "SELECT cbsdId FROM registered_cbsds where cbsdId = "."'".$cbsdId."';";
+			//$query = "SELECT cbsdId FROM registered_cbsds where cbsdId = "."'".$cbsdId."';";
+			$query = $this->create_select_query("cbsdId","registered_cbsds",array("cbsdId"=>$cbsdId));
 			$availableChannel = array();
 			$result = $this->myDBHandler->query($query);
 
@@ -202,7 +200,7 @@ class JsonListener{
 					$query = "SELECT available,channelType FROM channels
 					WHERE lowFrequency = ".$lowFrequency."
 					AND highFrequency = ".$highFrequency.";";
-
+					//$query = $this->create_select_query(array('available','channelType'),);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
 						if($row['available'] == TRUE) {
@@ -401,5 +399,54 @@ class JsonListener{
 	}
 
 
+	function create_select_query($select_array,$from_array,$where_array) {
+	  $query = "SELECT ";
+	  if (is_array($select_array)) {
+	    for ($i=0; $i<count($select_array);$i++) {
+	      $query = $query.$select_array[$i];
+	      if($i!=count($select_array)-1){
+	        $query = $query.",";
+	      }
+	    }
+	    $query = $query." ";
+	  } else {
+	    $query = $query.$select_array." ";
+	  }
+
+	  $query = $query." FROM ";
+
+	  if(is_array($from_array)){
+	    for ($i=0; $i<count($from_array);$i++) {
+	      $query = $query.$from_array[$i];
+	      if($i!=count($from_array)-1){
+	        $query = $query." JOIN ";
+	      }
+	    }
+	    $query = $query." ";
+	  } else{
+	    $query = $query.$from_array." ";
+	  }
+
+	  if($where_array!=null){
+	    if(is_array($where_array)) {
+	      $query = $query." WHERE ";
+	      $i = 0;
+	      foreach ($where_array as $key => $value) {
+	        $query = $query.$key." = "."'".$value."'";
+	        if($i!=count($where_array)-1){
+	          $query = $query." AND ";
+	        }
+	        $i = $i+1;
+	      }
+	      $query = $query.";";
+	    } else{
+	      $query = $query.";";
+	    }
+	  } else{
+	    $query = $query.";";
+	  }
+	  return $query;
+	}
+	
 }
 ?>

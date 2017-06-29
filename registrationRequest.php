@@ -31,11 +31,11 @@ if(isset($_POST)) {
         $cbsdSerialNumber = $registrationRequestObj->{'cbsdSerialNumber'};
 
         $query = "SELECT cbsdId,cbsdCategory FROM registered_cbsds where ";
-        
-        $query = $query."userId = "."'".$userId."'"; 
+
+        $query = $query."userId = "."'".$userId."'";
         $query = $query." and fccId = "."'".$fccId."'";
 
-        
+
         $result = $myDBHandler->query($query);
         if($row = $myDBHandler->fetchResults($result)) {
     //      header('application/json');
