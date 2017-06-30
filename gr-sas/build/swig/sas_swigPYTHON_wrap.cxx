@@ -14612,7 +14612,20 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"psql_insert_sptr_message_ports_out", _wrap_psql_insert_sptr_message_ports_out, METH_VARARGS, (char *)"psql_insert_sptr_message_ports_out(psql_insert_sptr self) -> swig_int_ptr"},
 	 { (char *)"psql_insert_sptr_message_subscribers", (PyCFunction) _wrap_psql_insert_sptr_message_subscribers, METH_VARARGS | METH_KEYWORDS, (char *)"psql_insert_sptr_message_subscribers(psql_insert_sptr self, swig_int_ptr which_port) -> swig_int_ptr"},
 	 { (char *)"psql_insert_sptr_swigregister", psql_insert_sptr_swigregister, METH_VARARGS, NULL},
-	 { (char *)"sas_buffer_make", (PyCFunction) _wrap_sas_buffer_make, METH_VARARGS | METH_KEYWORDS, (char *)"sas_buffer_make(int N) -> sas_buffer_sptr"},
+	 { (char *)"sas_buffer_make", (PyCFunction) _wrap_sas_buffer_make, METH_VARARGS | METH_KEYWORDS, (char *)"\n"
+		"sas_buffer_make(int N) -> sas_buffer_sptr\n"
+		"\n"
+		"<+description of block+>\n"
+		"\n"
+		"Constructor Specific Documentation:\n"
+		"\n"
+		"Return a shared_ptr to a new instance of sas::sas_buffer.\n"
+		"\n"
+		"To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a private implementation class. sas::sas_buffer::make is the public interface for creating new instances.\n"
+		"\n"
+		"Args:\n"
+		"    N : \n"
+		""},
 	 { (char *)"delete_sas_buffer", _wrap_delete_sas_buffer, METH_VARARGS, (char *)"delete_sas_buffer(sas_buffer self)"},
 	 { (char *)"sas_buffer_swigregister", sas_buffer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_sas_buffer_sptr", _wrap_new_sas_buffer_sptr, METH_VARARGS, (char *)"\n"
@@ -14621,7 +14634,20 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"sas_buffer_sptr___deref__", _wrap_sas_buffer_sptr___deref__, METH_VARARGS, (char *)"sas_buffer_sptr___deref__(sas_buffer_sptr self) -> sas_buffer"},
 	 { (char *)"delete_sas_buffer_sptr", _wrap_delete_sas_buffer_sptr, METH_VARARGS, (char *)"delete_sas_buffer_sptr(sas_buffer_sptr self)"},
-	 { (char *)"sas_buffer_sptr_make", (PyCFunction) _wrap_sas_buffer_sptr_make, METH_VARARGS | METH_KEYWORDS, (char *)"sas_buffer_sptr_make(sas_buffer_sptr self, int N) -> sas_buffer_sptr"},
+	 { (char *)"sas_buffer_sptr_make", (PyCFunction) _wrap_sas_buffer_sptr_make, METH_VARARGS | METH_KEYWORDS, (char *)"\n"
+		"sas_buffer_sptr_make(sas_buffer_sptr self, int N) -> sas_buffer_sptr\n"
+		"\n"
+		"<+description of block+>\n"
+		"\n"
+		"Constructor Specific Documentation:\n"
+		"\n"
+		"Return a shared_ptr to a new instance of sas::sas_buffer.\n"
+		"\n"
+		"To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a private implementation class. sas::sas_buffer::make is the public interface for creating new instances.\n"
+		"\n"
+		"Args:\n"
+		"    N : \n"
+		""},
 	 { (char *)"sas_buffer_sptr_history", _wrap_sas_buffer_sptr_history, METH_VARARGS, (char *)"sas_buffer_sptr_history(sas_buffer_sptr self) -> unsigned int"},
 	 { (char *)"sas_buffer_sptr_declare_sample_delay", _wrap_sas_buffer_sptr_declare_sample_delay, METH_VARARGS, (char *)"\n"
 		"declare_sample_delay(int which, int delay)\n"
@@ -14705,7 +14731,22 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"sas_buffer_sptr_message_ports_out", _wrap_sas_buffer_sptr_message_ports_out, METH_VARARGS, (char *)"sas_buffer_sptr_message_ports_out(sas_buffer_sptr self) -> swig_int_ptr"},
 	 { (char *)"sas_buffer_sptr_message_subscribers", (PyCFunction) _wrap_sas_buffer_sptr_message_subscribers, METH_VARARGS | METH_KEYWORDS, (char *)"sas_buffer_sptr_message_subscribers(sas_buffer_sptr self, swig_int_ptr which_port) -> swig_int_ptr"},
 	 { (char *)"sas_buffer_sptr_swigregister", sas_buffer_sptr_swigregister, METH_VARARGS, NULL},
-	 { (char *)"ed_threshold_make", (PyCFunction) _wrap_ed_threshold_make, METH_VARARGS | METH_KEYWORDS, (char *)"ed_threshold_make(int fft_len, int num_channels, float threshold) -> ed_threshold_sptr"},
+	 { (char *)"ed_threshold_make", (PyCFunction) _wrap_ed_threshold_make, METH_VARARGS | METH_KEYWORDS, (char *)"\n"
+		"ed_threshold_make(int fft_len, int num_channels, float threshold) -> ed_threshold_sptr\n"
+		"\n"
+		"<+description of block+>\n"
+		"\n"
+		"Constructor Specific Documentation:\n"
+		"\n"
+		"Return a shared_ptr to a new instance of sas::ed_threshold.\n"
+		"\n"
+		"To avoid accidental use of raw pointers, sas::ed_threshold's constructor is in a private implementation class. sas::ed_threshold::make is the public interface for creating new instances.\n"
+		"\n"
+		"Args:\n"
+		"    fft_len : \n"
+		"    num_channels : \n"
+		"    threshold : \n"
+		""},
 	 { (char *)"delete_ed_threshold", _wrap_delete_ed_threshold, METH_VARARGS, (char *)"delete_ed_threshold(ed_threshold self)"},
 	 { (char *)"ed_threshold_swigregister", ed_threshold_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_ed_threshold_sptr", _wrap_new_ed_threshold_sptr, METH_VARARGS, (char *)"\n"
@@ -14714,7 +14755,22 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"ed_threshold_sptr___deref__", _wrap_ed_threshold_sptr___deref__, METH_VARARGS, (char *)"ed_threshold_sptr___deref__(ed_threshold_sptr self) -> ed_threshold"},
 	 { (char *)"delete_ed_threshold_sptr", _wrap_delete_ed_threshold_sptr, METH_VARARGS, (char *)"delete_ed_threshold_sptr(ed_threshold_sptr self)"},
-	 { (char *)"ed_threshold_sptr_make", (PyCFunction) _wrap_ed_threshold_sptr_make, METH_VARARGS | METH_KEYWORDS, (char *)"ed_threshold_sptr_make(ed_threshold_sptr self, int fft_len, int num_channels, float threshold) -> ed_threshold_sptr"},
+	 { (char *)"ed_threshold_sptr_make", (PyCFunction) _wrap_ed_threshold_sptr_make, METH_VARARGS | METH_KEYWORDS, (char *)"\n"
+		"ed_threshold_sptr_make(ed_threshold_sptr self, int fft_len, int num_channels, float threshold) -> ed_threshold_sptr\n"
+		"\n"
+		"<+description of block+>\n"
+		"\n"
+		"Constructor Specific Documentation:\n"
+		"\n"
+		"Return a shared_ptr to a new instance of sas::ed_threshold.\n"
+		"\n"
+		"To avoid accidental use of raw pointers, sas::ed_threshold's constructor is in a private implementation class. sas::ed_threshold::make is the public interface for creating new instances.\n"
+		"\n"
+		"Args:\n"
+		"    fft_len : \n"
+		"    num_channels : \n"
+		"    threshold : \n"
+		""},
 	 { (char *)"ed_threshold_sptr_history", _wrap_ed_threshold_sptr_history, METH_VARARGS, (char *)"ed_threshold_sptr_history(ed_threshold_sptr self) -> unsigned int"},
 	 { (char *)"ed_threshold_sptr_declare_sample_delay", _wrap_ed_threshold_sptr_declare_sample_delay, METH_VARARGS, (char *)"\n"
 		"declare_sample_delay(int which, int delay)\n"

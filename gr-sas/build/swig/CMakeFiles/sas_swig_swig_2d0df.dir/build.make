@@ -57,7 +57,6 @@ swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/ta
 swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/gr_ctrlport.i
 swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/realtime.i
 swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/gnuradio.i
-swig/sas_swig_swig_2d0df.cpp: swig/sas_swig_doc.i
 swig/sas_swig_swig_2d0df.cpp: ../swig/sas_swig.i
 swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/prefs.i
 swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/top_block.i
@@ -84,26 +83,15 @@ swig/sas_swig_swig_2d0df.cpp: /home/wireless/GNURadio_2/include/gnuradio/swig/hi
 swig/sas_swig_swig_2d0df.cpp: swig/sas_swig.tag
 	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig && /usr/bin/cmake -E copy /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_swig_2d0df.cpp.in /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_swig_2d0df.cpp
 
-swig/sas_swig_doc.i: swig/sas_swig_doc_swig_docs/xml/index.xml
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating python docstrings for sas_swig_doc"
-	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/docs/doxygen && /usr/bin/python2 -B /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/docs/doxygen/swig_doc.py /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_doc_swig_docs/xml /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_doc.i
-
 swig/sas_swig.tag: swig/_sas_swig_swig_tag
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating sas_swig.tag"
 	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig && ./_sas_swig_swig_tag
 	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig && /usr/bin/cmake -E touch /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig.tag
 
-swig/sas_swig_doc_swig_docs/xml/index.xml: swig/_sas_swig_doc_tag
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_3)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating doxygen xml for sas_swig_doc docs"
-	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig && ./_sas_swig_doc_tag
-	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig && /usr/bin/doxygen /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_doc_swig_docs/Doxyfile
-
 swig/CMakeFiles/sas_swig_swig_2d0df.dir/sas_swig_swig_2d0df.cpp.o: swig/CMakeFiles/sas_swig_swig_2d0df.dir/flags.make
 swig/CMakeFiles/sas_swig_swig_2d0df.dir/sas_swig_swig_2d0df.cpp.o: swig/sas_swig_swig_2d0df.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object swig/CMakeFiles/sas_swig_swig_2d0df.dir/sas_swig_swig_2d0df.cpp.o"
 	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/sas_swig_swig_2d0df.dir/sas_swig_swig_2d0df.cpp.o -c /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_swig_2d0df.cpp
 
@@ -152,9 +140,7 @@ swig/CMakeFiles/sas_swig_swig_2d0df.dir/clean:
 .PHONY : swig/CMakeFiles/sas_swig_swig_2d0df.dir/clean
 
 swig/CMakeFiles/sas_swig_swig_2d0df.dir/depend: swig/sas_swig_swig_2d0df.cpp
-swig/CMakeFiles/sas_swig_swig_2d0df.dir/depend: swig/sas_swig_doc.i
 swig/CMakeFiles/sas_swig_swig_2d0df.dir/depend: swig/sas_swig.tag
-swig/CMakeFiles/sas_swig_swig_2d0df.dir/depend: swig/sas_swig_doc_swig_docs/xml/index.xml
 	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/swig /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/sas_swig_swig_2d0df.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : swig/CMakeFiles/sas_swig_swig_2d0df.dir/depend
 

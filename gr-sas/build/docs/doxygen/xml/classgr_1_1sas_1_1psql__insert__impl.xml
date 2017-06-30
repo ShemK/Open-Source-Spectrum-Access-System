@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="33" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="33" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="52" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="52" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1acc04fd1dac3f3544ae738ad361ef285c" prot="private" static="no" mutable="no">
         <type>std::vector&lt; tag_t &gt;::iterator</type>
@@ -29,7 +29,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="34" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="34" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="53" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="53" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a2603b894bf8cea4d246de95e50ef3f52" prot="private" static="no" mutable="no">
         <type>pmt::pmt_t</type>
@@ -42,7 +42,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="35" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="35" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="54" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a70af6ef36c9f6ce69656f908e48ac76d" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -55,7 +55,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="36" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="36" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="55" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="55" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a25659646af1bdf5db4cbae6e2c341408" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -68,7 +68,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="36" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="36" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="55" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="55" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1abb48e262f3a90aed78715a49128a9387" prot="private" static="no" mutable="no">
         <type>int *</type>
@@ -81,7 +81,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="36" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="36" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="55" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="55" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1ab720316feca6b18e7ccefbb281ebdc91" prot="private" static="no" mutable="no">
         <type>int *</type>
@@ -94,7 +94,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="36" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="36" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="55" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="55" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a8545a063e66ebe48691848ee988e601e" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -107,7 +107,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="37" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="37" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1ad756454e74ffc4838aa4a99e809fd526" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -120,7 +120,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="37" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="37" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1afafe6345b970d04674a70874ca728427" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -133,7 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="37" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="37" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1ab8d02d5b463ec131daa4028a2389d586" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -146,7 +146,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="37" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="37" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a6f7f835198539bc14c6caf0db2598b0a" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::sas::psql_insert_impl::occ</definition>
+        <argsstring></argsstring>
+        <name>occ</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a976d9d03ed5976d03103bc59ea89ea29" prot="private" static="no" mutable="no">
         <type>std::vector&lt; float &gt; *</type>
@@ -159,7 +172,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="38" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="38" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="57" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="57" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a3dc1b514d9abeabe99e40219b6f3e2da" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -172,7 +185,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="39" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="39" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="58" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1acbb8457472f6c396422f263a2404283f" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -185,7 +198,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="39" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="39" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="58" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a7699ba389ebbed53a449ab0e2dcf2b90" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -198,7 +211,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="39" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="39" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="58" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1acbf3853013ba87fdc57e621e410a0083" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -211,7 +224,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="39" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="39" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="58" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1aa64fd827b90b66bd65d0065a49b57ea3" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -224,7 +237,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="39" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="39" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="58" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1aa2bf9b9170a44808cf28cdb5126647c9" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -237,7 +250,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="40" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="40" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="59" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="59" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a7a1e240a8190094150e34a5a4fe00725" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -250,7 +263,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="40" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="40" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="59" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="59" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a5d2e754658d1fa1c0763e7a6c2534fbf" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -263,21 +276,21 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="40" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="40" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="59" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="59" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1afbf89328e1e956d6c94d0be5d3a4f0be" prot="private" static="no" mutable="no">
         <type>std::string</type>
         <definition>std::string gr::sas::psql_insert_impl::dbstring</definition>
         <argsstring></argsstring>
         <name>dbstring</name>
-        <initializer>= &quot;dbname = REM user = REM hostaddr = 127.0.0.1 port = 5432&quot;</initializer>
+        <initializer>= &quot;dbname = rem user = wireless password = wireless hostaddr = 127.0.0.1 port = 5432&quot;</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="41" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="41" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="60" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="60" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1ab0767fabcf46d2ddc00e83d9a745537a" prot="private" static="no" mutable="no">
         <type>pqxx::connection *</type>
@@ -290,7 +303,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="43" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="43" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="62" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1ac2105f9051850a70d1abab2c82d44c3e" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -303,7 +316,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="45" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="45" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="64" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="64" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a0aaf73da8c7485f5c522c18acb56eaf0" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -316,7 +329,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="45" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="45" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="64" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a30336a97dcb52369c46b2c75f30703eb" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::sas::psql_insert_impl::center_frequency</definition>
+        <argsstring></argsstring>
+        <name>center_frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="64" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="64" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a8cd3505b2c6ab14681234ad60de65573" prot="private" static="no" mutable="no">
         <type>std::ostringstream</type>
@@ -329,7 +355,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="46" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="46" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="65" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="65" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a88d6eb933d3a316ea20c71c17f25f8f7" prot="private" static="no" mutable="no">
         <type>std::ostringstream</type>
@@ -342,7 +368,48 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="46" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="46" bodyend="-1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="65" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1ace34b18f984a8de03e2fd3e0eb8502a7" prot="private" static="no" mutable="no">
+        <type>std::ostringstream</type>
+        <definition>std::ostringstream gr::sas::psql_insert_impl::cent_freq</definition>
+        <argsstring></argsstring>
+        <name>cent_freq</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="65" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a5c2d59d343bd52a024ffd9b04f829dbb" prot="private" static="no" mutable="no">
+        <type>std::ostringstream</type>
+        <definition>std::ostringstream gr::sas::psql_insert_impl::occstr</definition>
+        <argsstring></argsstring>
+        <name>occstr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="65" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classgr_1_1sas_1_1psql__insert__impl_1a4ba3b616d36aedf3d2788c0520ea2666" prot="public" static="no" mutable="no">
+        <type><ref refid="classDecisionMaker" kindref="compound">DecisionMaker</ref></type>
+        <definition>DecisionMaker gr::sas::psql_insert_impl::decision_maker</definition>
+        <argsstring></argsstring>
+        <name>decision_maker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="81" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="81" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -365,7 +432,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="49" column="1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="68" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classgr_1_1sas_1_1psql__insert__impl_1a6ceb774961b346af43b30908ba0714b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -378,13 +445,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="50" column="1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="69" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="classgr_1_1sas_1_1psql__insert__impl_1a9b8fe6d36f1a18435f76073486bb5065" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classgr_1_1sas_1_1psql__insert__impl_1ac79f4e93360bea3adafa2a4fc18504b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
-        <definition>void gr::sas::psql_insert_impl::print</definition>
+        <definition>void gr::sas::psql_insert_impl::gps</definition>
         <argsstring>(pmt::pmt_t msg)</argsstring>
-        <name>print</name>
+        <name>gps</name>
         <param>
           <type>pmt::pmt_t</type>
           <declname>msg</declname>
@@ -395,7 +462,41 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="52" column="1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="71" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1psql__insert__impl_1abf41f2c9da2de4d4a283eaf4c3e9cd60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::sas::psql_insert_impl::center_freq</definition>
+        <argsstring>(pmt::pmt_t msg)</argsstring>
+        <name>center_freq</name>
+        <param>
+          <type>pmt::pmt_t</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="73" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1psql__insert__impl_1ab245603ab79b7d3d99c137d71423fe56" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::sas::psql_insert_impl::decision</definition>
+        <argsstring>(pmt::pmt_t msg)</argsstring>
+        <name>decision</name>
+        <param>
+          <type>pmt::pmt_t</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="75" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classgr_1_1sas_1_1psql__insert__impl_1a3b83debb7bebb58468548fc58323f728" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -420,7 +521,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="54" column="1"/>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="77" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -428,49 +529,62 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="12">
+      <node id="135">
         <label>gr::sas::psql_insert</label>
         <link refid="classgr_1_1sas_1_1psql__insert"/>
-        <childnode refid="13" relation="public-inheritance">
+        <childnode refid="136" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="11">
+      <node id="134">
         <label>gr::sas::psql_insert_impl</label>
         <link refid="classgr_1_1sas_1_1psql__insert__impl"/>
-        <childnode refid="12" relation="public-inheritance">
+        <childnode refid="135" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="13">
+      <node id="136">
         <label>gr::sync_block</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="15">
+      <node id="138">
         <label>gr::sas::psql_insert</label>
         <link refid="classgr_1_1sas_1_1psql__insert"/>
-        <childnode refid="16" relation="public-inheritance">
+        <childnode refid="139" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="14">
+      <node id="137">
         <label>gr::sas::psql_insert_impl</label>
         <link refid="classgr_1_1sas_1_1psql__insert__impl"/>
-        <childnode refid="15" relation="public-inheritance">
+        <childnode refid="138" relation="public-inheritance">
+        </childnode>
+        <childnode refid="140" relation="usage">
+          <edgelabel>decision_maker</edgelabel>
         </childnode>
       </node>
-      <node id="16">
+      <node id="140">
+        <label>DecisionMaker</label>
+        <link refid="classDecisionMaker"/>
+      </node>
+      <node id="139">
         <label>gr::sync_block</label>
       </node>
     </collaborationgraph>
-    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="31" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="30" bodyend="57"/>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" line="50" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/psql_insert_impl.h" bodystart="49" bodyend="82"/>
     <listofallmembers>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab0767fabcf46d2ddc00e83d9a745537a" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>c</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1ace34b18f984a8de03e2fd3e0eb8502a7" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>cent_freq</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1abf41f2c9da2de4d4a283eaf4c3e9cd60" prot="public" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>center_freq</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1a30336a97dcb52369c46b2c75f30703eb" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>center_frequency</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1abb48e262f3a90aed78715a49128a9387" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>cstates</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1acbb8457472f6c396422f263a2404283f" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>cur_noise_floor</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a2603b894bf8cea4d246de95e50ef3f52" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>d_filter</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a420b180b23fb7389361cbf0e779b3fb5" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>d_tags</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1acc04fd1dac3f3544ae738ad361ef285c" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>d_tags_itr</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1afbf89328e1e956d6c94d0be5d3a4f0be" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>dbstring</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab245603ab79b7d3d99c137d71423fe56" prot="public" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>decision</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1a4ba3b616d36aedf3d2788c0520ea2666" prot="public" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>decision_maker</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1aa64fd827b90b66bd65d0065a49b57ea3" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>fcstates</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac79f4e93360bea3adafa2a4fc18504b2" prot="public" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>gps</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1afafe6345b970d04674a70874ca728427" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>last_mean</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab8d02d5b463ec131daa4028a2389d586" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>last_variance</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac2105f9051850a70d1abab2c82d44c3e" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>latitude</name></member>
@@ -482,8 +596,9 @@
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a70af6ef36c9f6ce69656f908e48ac76d" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>N</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a3dc1b514d9abeabe99e40219b6f3e2da" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>noise_floor</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a25659646af1bdf5db4cbae6e2c341408" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>num_channels</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6f7f835198539bc14c6caf0db2598b0a" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>occ</name></member>
+      <member refid="classgr_1_1sas_1_1psql__insert__impl_1a5c2d59d343bd52a024ffd9b04f829dbb" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>occstr</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a976d9d03ed5976d03103bc59ea89ea29" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>oldbuf</name></member>
-      <member refid="classgr_1_1sas_1_1psql__insert__impl_1a9b8fe6d36f1a18435f76073486bb5065" prot="public" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>print</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad5357050c70b1ee0e831c60c5585566a" prot="public" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>psql_insert_impl</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1a7699ba389ebbed53a449ab0e2dcf2b90" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>rx_rate</name></member>
       <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad756454e74ffc4838aa4a99e809fd526" prot="private" virt="non-virtual"><scope>gr::sas::psql_insert_impl</scope><name>sensitivity</name></member>

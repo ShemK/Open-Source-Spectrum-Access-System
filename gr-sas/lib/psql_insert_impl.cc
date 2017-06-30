@@ -1,17 +1,17 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2017 A. S. Jauhar, ahmadsj@vt.edu
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -119,23 +119,37 @@ namespace gr {
       std::vector<float> buf;
       float *   in = (float *) input_items[0];
       std::string s= date::format("%F %T\n", std::chrono::system_clock::now());
-      
+
       buf.assign( in, in+N);
-      
+
       std::stringstream result;
       std::copy(buf.begin(), buf.end(), std::ostream_iterator<float>(result,","));
       std::string r = result.str();
       r = r.substr(0, r.length()-1);  // get rid of the trailing space
 
       //std::cout << "'" << buf.size() << "'\n";
-      
+
       std::string sql = "INSERT INTO SpectrumInfo (timetag, latitude, longitude, occ, center_freq,psd) VALUES ('"+s+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','{"+r+"}');";
       //std::cout<<sql;
       w.exec( sql);
+
+
+      float decision = decision_maker.getDecision(occ[0],std::stod (cent_freq.str(),0));
+      if(decision != -1) {
+        std::cout << "Actual Channel " <<  cent_freq.str() << std::endl;
+        double frequency = decision_maker.get_previous_center_frequency() - 1e6;
+        sql = "UPDATE ChannelInfo SET occ = "+ std::to_string(decision)
+                  + " WHERE startfreq = " + std::to_string(frequency) + ";";
+        std::cout << sql << std::endl;
+        w.exec( sql);
+      //  w.commit();
+        //printf("Center Frequency%f\n", decision_maker.get_previous_center_frequency());
+        //printf("decision: %f\n", decision);
+
+      }
       w.commit();
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
   } /* namespace sas */
 } /* namespace gr */
-

@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classDecisionMaker" kind="class" prot="public">
+    <compoundname>DecisionMaker</compoundname>
+    <includes refid="decision__maker_8h" local="no">decision_maker.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classDecisionMaker_1accfc84a828404a4c3dbc840b088f65a4" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt; float &gt; DecisionMaker::occ_values</definition>
+        <argsstring></argsstring>
+        <name>occ_values</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="5" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" bodystart="5" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classDecisionMaker_1a0de6083263bbb4eebc518a5838c288f7" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DecisionMaker::center_frequency</definition>
+        <argsstring></argsstring>
+        <name>center_frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="6" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" bodystart="6" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classDecisionMaker_1a9b7e9cfe856176deebbe3b483e9e4439" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float DecisionMaker::previous_center_frequency</definition>
+        <argsstring></argsstring>
+        <name>previous_center_frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="7" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" bodystart="7" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>DecisionMaker::DecisionMaker</definition>
+        <argsstring>()</argsstring>
+        <name>DecisionMaker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="9" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>DecisionMaker::~DecisionMaker</definition>
+        <argsstring>()</argsstring>
+        <name>~DecisionMaker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="10" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1a82e346aa69329351ebbf08c53605d9d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float DecisionMaker::getDecision</definition>
+        <argsstring>(float occ, float center_frequency)</argsstring>
+        <name>getDecision</name>
+        <param>
+          <type>float</type>
+          <declname>occ</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>center_frequency</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="11" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1a1155a82705f5a781765bb49b2f864ad0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float DecisionMaker::get_previous_center_frequency</definition>
+        <argsstring>()</argsstring>
+        <name>get_previous_center_frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="12" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float DecisionMaker::average</definition>
+        <argsstring>()</argsstring>
+        <name>average</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="13" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>DecisionMaker::DecisionMaker</definition>
+        <argsstring>()</argsstring>
+        <name>DecisionMaker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker0.h" line="9" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>DecisionMaker::~DecisionMaker</definition>
+        <argsstring>()</argsstring>
+        <name>~DecisionMaker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker0.h" line="10" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1a82e346aa69329351ebbf08c53605d9d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float DecisionMaker::getDecision</definition>
+        <argsstring>(float occ, float center_frequency)</argsstring>
+        <name>getDecision</name>
+        <param>
+          <type>float</type>
+          <declname>occ</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>center_frequency</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker0.h" line="11" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1a1155a82705f5a781765bb49b2f864ad0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float DecisionMaker::get_previous_center_frequency</definition>
+        <argsstring>()</argsstring>
+        <name>get_previous_center_frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker0.h" line="12" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float DecisionMaker::average</definition>
+        <argsstring>()</argsstring>
+        <name>average</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker0.h" line="13" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" line="3" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h" bodystart="3" bodyend="14"/>
+    <listofallmembers>
+      <member refid="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>average</name></member>
+      <member refid="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>average</name></member>
+      <member refid="classDecisionMaker_1a0de6083263bbb4eebc518a5838c288f7" prot="private" virt="non-virtual"><scope>DecisionMaker</scope><name>center_frequency</name></member>
+      <member refid="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>DecisionMaker</name></member>
+      <member refid="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>DecisionMaker</name></member>
+      <member refid="classDecisionMaker_1a1155a82705f5a781765bb49b2f864ad0" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>get_previous_center_frequency</name></member>
+      <member refid="classDecisionMaker_1a1155a82705f5a781765bb49b2f864ad0" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>get_previous_center_frequency</name></member>
+      <member refid="classDecisionMaker_1a82e346aa69329351ebbf08c53605d9d3" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>getDecision</name></member>
+      <member refid="classDecisionMaker_1a82e346aa69329351ebbf08c53605d9d3" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>getDecision</name></member>
+      <member refid="classDecisionMaker_1accfc84a828404a4c3dbc840b088f65a4" prot="private" virt="non-virtual"><scope>DecisionMaker</scope><name>occ_values</name></member>
+      <member refid="classDecisionMaker_1a9b7e9cfe856176deebbe3b483e9e4439" prot="private" virt="non-virtual"><scope>DecisionMaker</scope><name>previous_center_frequency</name></member>
+      <member refid="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>~DecisionMaker</name></member>
+      <member refid="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" prot="public" virt="non-virtual"><scope>DecisionMaker</scope><name>~DecisionMaker</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

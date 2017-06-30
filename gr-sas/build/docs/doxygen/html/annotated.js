@@ -1,4 +1,6 @@
 var annotated =
 [
-    [ "gr", "namespacegr.html", "namespacegr" ]
+    [ "date", "namespacedate.html", "namespacedate" ],
+    [ "gr", "namespacegr.html", "namespacegr" ],
+    [ "DecisionMaker", "classDecisionMaker.html", "classDecisionMaker" ]
 ];

@@ -180,6 +180,30 @@ test-sas/fast:
 	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/test-sas.dir/build.make lib/CMakeFiles/test-sas.dir/build
 .PHONY : test-sas/fast
 
+decision_maker.o: decision_maker.cc.o
+.PHONY : decision_maker.o
+
+# target to build an object file
+decision_maker.cc.o:
+	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o
+.PHONY : decision_maker.cc.o
+
+decision_maker.i: decision_maker.cc.i
+.PHONY : decision_maker.i
+
+# target to preprocess a source file
+decision_maker.cc.i:
+	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.i
+.PHONY : decision_maker.cc.i
+
+decision_maker.s: decision_maker.cc.s
+.PHONY : decision_maker.s
+
+# target to generate assembly for a file
+decision_maker.cc.s:
+	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.s
+.PHONY : decision_maker.cc.s
+
 ed_threshold_impl.o: ed_threshold_impl.cc.o
 .PHONY : ed_threshold_impl.o
 
@@ -315,6 +339,9 @@ help:
 	@echo "... test-sas"
 	@echo "... test"
 	@echo "... install/local"
+	@echo "... decision_maker.o"
+	@echo "... decision_maker.i"
+	@echo "... decision_maker.s"
 	@echo "... ed_threshold_impl.o"
 	@echo "... ed_threshold_impl.i"
 	@echo "... ed_threshold_impl.s"

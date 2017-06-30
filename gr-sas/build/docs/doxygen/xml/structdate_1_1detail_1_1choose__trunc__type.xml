@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="structdate_1_1detail_1_1choose__trunc__type" kind="struct" prot="public">
+    <compoundname>date::detail::choose_trunc_type</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" prot="public" static="no">
+        <type>typename std::conditional&lt; <ref refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" kindref="member">digits</ref>&lt; 32, std::int32_t, typename std::conditional&lt; <ref refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" kindref="member">digits</ref>&lt; 64, std::int64_t, std::int64_t &gt;::<ref refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" kindref="member">type</ref> &gt;::<ref refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" kindref="member">type</ref></type>
+        <definition>using date::detail::choose_trunc_type&lt; T &gt;::type =  typename std::conditional &lt; digits &lt; 32, std::int32_t, typename std::conditional &lt; digits &lt; 64, std::int64_t, std::int64_t &gt;::type &gt;::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="920" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="934" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" prot="public" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int date::detail::choose_trunc_type&lt; T &gt;::digits</definition>
+        <argsstring></argsstring>
+        <name>digits</name>
+        <initializer>= std::numeric_limits&lt;T&gt;::digits</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="919" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="919" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="918" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="917" bodyend="935"/>
+    <listofallmembers>
+      <member refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" prot="public" virt="non-virtual"><scope>date::detail::choose_trunc_type</scope><name>digits</name></member>
+      <member refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" prot="public" virt="non-virtual"><scope>date::detail::choose_trunc_type</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

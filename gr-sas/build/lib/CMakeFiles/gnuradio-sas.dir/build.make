@@ -118,11 +118,35 @@ lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o.provides: lib/CMakeFiles/
 
 lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o.provides.build: lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o
 
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o: lib/CMakeFiles/gnuradio-sas.dir/flags.make
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o: ../lib/decision_maker.cc
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles $(CMAKE_PROGRESS_4)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o"
+	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o -c /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/decision_maker.cc
+
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/gnuradio-sas.dir/decision_maker.cc.i"
+	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/decision_maker.cc > CMakeFiles/gnuradio-sas.dir/decision_maker.cc.i
+
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/gnuradio-sas.dir/decision_maker.cc.s"
+	cd /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/decision_maker.cc -o CMakeFiles/gnuradio-sas.dir/decision_maker.cc.s
+
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.requires:
+.PHONY : lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.requires
+
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.provides: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.requires
+	$(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.provides.build
+.PHONY : lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.provides
+
+lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.provides.build: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o
+
 # Object files for target gnuradio-sas
 gnuradio__sas_OBJECTS = \
 "CMakeFiles/gnuradio-sas.dir/psql_insert_impl.cc.o" \
 "CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.o" \
-"CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o"
+"CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o" \
+"CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o"
 
 # External object files for target gnuradio-sas
 gnuradio__sas_EXTERNAL_OBJECTS =
@@ -130,6 +154,7 @@ gnuradio__sas_EXTERNAL_OBJECTS =
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/psql_insert_impl.cc.o
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.o
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o
+lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/build.make
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: /usr/lib/x86_64-linux-gnu/libboost_system.so
@@ -154,6 +179,7 @@ lib/CMakeFiles/gnuradio-sas.dir/build: lib/libgnuradio-sas-1.0.0git.so
 lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/psql_insert_impl.cc.o.requires
 lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.o.requires
 lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o.requires
+lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.requires
 .PHONY : lib/CMakeFiles/gnuradio-sas.dir/requires
 
 lib/CMakeFiles/gnuradio-sas.dir/clean:

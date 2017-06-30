@@ -1,0 +1,329 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="namespacedate_1_1literals" kind="namespace">
+    <compoundname>date::literals</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacedate_1_1literals_1ac595e630d8ba97c357afb119b3ade9d1" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="structdate_1_1last__spec" kindref="compound">date::last_spec</ref></type>
+        <definition>constexpr const date::last_spec date::literals::last</definition>
+        <argsstring></argsstring>
+        <name>last</name>
+        <initializer>{}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1685" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1685" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a6267bf5a37cc9007404dd953b603d8ed" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::jan</definition>
+        <argsstring></argsstring>
+        <name>jan</name>
+        <initializer>{1}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1687" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1687" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1adb43cf4d5db7eb3f58e206e0f68a1837" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::feb</definition>
+        <argsstring></argsstring>
+        <name>feb</name>
+        <initializer>{2}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1688" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1688" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a002ce2869b6dcb3018c337930fafcfdb" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::mar</definition>
+        <argsstring></argsstring>
+        <name>mar</name>
+        <initializer>{3}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1689" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1689" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a9bea18e0bf0649d48d1cdffeb4fda482" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::apr</definition>
+        <argsstring></argsstring>
+        <name>apr</name>
+        <initializer>{4}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1690" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1690" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1ae33997d80b90abc548584e1725ec66dc" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::may</definition>
+        <argsstring></argsstring>
+        <name>may</name>
+        <initializer>{5}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1691" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1691" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1ae794b3867e16959a9cd96cdb4ba0b9c6" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::jun</definition>
+        <argsstring></argsstring>
+        <name>jun</name>
+        <initializer>{6}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1692" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1692" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a38b774f5cc16c8c9b51d3269b69514a2" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::jul</definition>
+        <argsstring></argsstring>
+        <name>jul</name>
+        <initializer>{7}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1693" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1693" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a6e6738cfeb98ed1aa58781689e3339f3" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::aug</definition>
+        <argsstring></argsstring>
+        <name>aug</name>
+        <initializer>{8}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1694" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1694" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a54ac0267790edc0095f2f1681d6857ce" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::sep</definition>
+        <argsstring></argsstring>
+        <name>sep</name>
+        <initializer>{9}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1695" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1695" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a51e822756e56ca6fbdcf48689cbf8c76" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::oct</definition>
+        <argsstring></argsstring>
+        <name>oct</name>
+        <initializer>{10}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1696" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1696" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1abd45b3c66c1cb14185af0606f8b45279" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::nov</definition>
+        <argsstring></argsstring>
+        <name>nov</name>
+        <initializer>{11}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1697" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1697" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a47a14c25e8233d74d5b0696bed754bb7" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr const date::month date::literals::dec</definition>
+        <argsstring></argsstring>
+        <name>dec</name>
+        <initializer>{12}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1698" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1698" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1ac4451f429a846f604d86eaccd23cd3e5" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::sun</definition>
+        <argsstring></argsstring>
+        <name>sun</name>
+        <initializer>{0u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1700" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1700" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1ae94559cd34ee675901ec55db25cd9580" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::mon</definition>
+        <argsstring></argsstring>
+        <name>mon</name>
+        <initializer>{1u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1701" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1701" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a9488c05b4c5755a2f4d66b6f266a65b6" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::tue</definition>
+        <argsstring></argsstring>
+        <name>tue</name>
+        <initializer>{2u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1702" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1702" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a7041d96dfd41bfedd85442d7a431840e" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::wed</definition>
+        <argsstring></argsstring>
+        <name>wed</name>
+        <initializer>{3u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1703" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1703" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a943260b5028336e74003f1e816058ac7" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::thu</definition>
+        <argsstring></argsstring>
+        <name>thu</name>
+        <initializer>{4u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1704" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1704" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1af8603ed21d901a94e7ee2a723d2b6050" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::fri</definition>
+        <argsstring></argsstring>
+        <name>fri</name>
+        <initializer>{5u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1705" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1705" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacedate_1_1literals_1a693c93409f0b4f9612c8d603ba903ac6" prot="public" static="no" mutable="no">
+        <type>constexpr const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr const date::weekday date::literals::sat</definition>
+        <argsstring></argsstring>
+        <name>sat</name>
+        <initializer>{6u}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="1706" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1706" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacedate_1_1literals_1af56e7918d642a24086d6eac79449846c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1day" kindref="compound">date::day</ref></type>
+        <definition>constexpr date::day date::literals::operator&quot;&quot;_d</definition>
+        <argsstring>(unsigned long long d) noexcept</argsstring>
+        <name>operator&quot;&quot;_d</name>
+        <param>
+          <type>unsigned long long</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="855" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1671" bodyend="1674"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacedate_1_1literals_1a0880b3061f902cd9ab2a9e6c3a03c1f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1year" kindref="compound">date::year</ref></type>
+        <definition>constexpr date::year date::literals::operator&quot;&quot;_y</definition>
+        <argsstring>(unsigned long long y) noexcept</argsstring>
+        <name>operator&quot;&quot;_y</name>
+        <param>
+          <type>unsigned long long</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="856" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1679" bodyend="1682"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="853" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="include_2sas_2decision__maker_8h" kind="file">
+    <compoundname>include/sas/decision_maker.h</compoundname>
+    <includes local="no">vector</includes>
+    <incdepgraph>
+      <node id="172">
+        <label>decision_maker.h</label>
+        <link refid="include/sas/decision_maker.h"/>
+        <childnode refid="173" relation="include">
+        </childnode>
+      </node>
+      <node id="173">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classDecisionMaker" prot="public">DecisionMaker</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/decision_maker.h"/>
+  </compounddef>
+</doxygen>

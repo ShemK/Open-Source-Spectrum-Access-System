@@ -444,12 +444,36 @@ psql_insert_sptr.__repr__ = lambda self: "<gr_block %s (%d)>" % (self.name(), se
 psql_insert = psql_insert.make;
 
 class sas_buffer(object):
-    """Proxy of C++ gr::sas::sas_buffer class"""
+    """
+    <+description of block+>
+
+    Constructor Specific Documentation:
+
+    Return a shared_ptr to a new instance of sas::sas_buffer.
+
+    To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a private implementation class. sas::sas_buffer::make is the public interface for creating new instances.
+
+    Args:
+        N : 
+    """
     thisown = _swig_property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
     def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
     __repr__ = _swig_repr
     def make(*args, **kwargs):
-        """make(int N) -> sas_buffer_sptr"""
+        """
+        make(int N) -> sas_buffer_sptr
+
+        <+description of block+>
+
+        Constructor Specific Documentation:
+
+        Return a shared_ptr to a new instance of sas::sas_buffer.
+
+        To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a private implementation class. sas::sas_buffer::make is the public interface for creating new instances.
+
+        Args:
+            N : 
+        """
         return _sas_swig.sas_buffer_make(*args, **kwargs)
 
     make = staticmethod(make)
@@ -459,7 +483,20 @@ sas_buffer_swigregister = _sas_swig.sas_buffer_swigregister
 sas_buffer_swigregister(sas_buffer)
 
 def sas_buffer_make(*args, **kwargs):
-  """sas_buffer_make(int N) -> sas_buffer_sptr"""
+  """
+    sas_buffer_make(int N) -> sas_buffer_sptr
+
+    <+description of block+>
+
+    Constructor Specific Documentation:
+
+    Return a shared_ptr to a new instance of sas::sas_buffer.
+
+    To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a private implementation class. sas::sas_buffer::make is the public interface for creating new instances.
+
+    Args:
+        N : 
+    """
   return _sas_swig.sas_buffer_make(*args, **kwargs)
 
 class sas_buffer_sptr(object):
@@ -481,7 +518,20 @@ class sas_buffer_sptr(object):
     __swig_destroy__ = _sas_swig.delete_sas_buffer_sptr
     __del__ = lambda self : None;
     def make(self, *args, **kwargs):
-        """make(sas_buffer_sptr self, int N) -> sas_buffer_sptr"""
+        """
+        make(sas_buffer_sptr self, int N) -> sas_buffer_sptr
+
+        <+description of block+>
+
+        Constructor Specific Documentation:
+
+        Return a shared_ptr to a new instance of sas::sas_buffer.
+
+        To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a private implementation class. sas::sas_buffer::make is the public interface for creating new instances.
+
+        Args:
+            N : 
+        """
         return _sas_swig.sas_buffer_sptr_make(self, *args, **kwargs)
 
     def history(self):
@@ -738,12 +788,40 @@ sas_buffer_sptr.__repr__ = lambda self: "<gr_block %s (%d)>" % (self.name(), sel
 sas_buffer = sas_buffer.make;
 
 class ed_threshold(object):
-    """Proxy of C++ gr::sas::ed_threshold class"""
+    """
+    <+description of block+>
+
+    Constructor Specific Documentation:
+
+    Return a shared_ptr to a new instance of sas::ed_threshold.
+
+    To avoid accidental use of raw pointers, sas::ed_threshold's constructor is in a private implementation class. sas::ed_threshold::make is the public interface for creating new instances.
+
+    Args:
+        fft_len : 
+        num_channels : 
+        threshold : 
+    """
     thisown = _swig_property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc='The membership flag')
     def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
     __repr__ = _swig_repr
     def make(*args, **kwargs):
-        """make(int fft_len, int num_channels, float threshold) -> ed_threshold_sptr"""
+        """
+        make(int fft_len, int num_channels, float threshold) -> ed_threshold_sptr
+
+        <+description of block+>
+
+        Constructor Specific Documentation:
+
+        Return a shared_ptr to a new instance of sas::ed_threshold.
+
+        To avoid accidental use of raw pointers, sas::ed_threshold's constructor is in a private implementation class. sas::ed_threshold::make is the public interface for creating new instances.
+
+        Args:
+            fft_len : 
+            num_channels : 
+            threshold : 
+        """
         return _sas_swig.ed_threshold_make(*args, **kwargs)
 
     make = staticmethod(make)
@@ -753,7 +831,22 @@ ed_threshold_swigregister = _sas_swig.ed_threshold_swigregister
 ed_threshold_swigregister(ed_threshold)
 
 def ed_threshold_make(*args, **kwargs):
-  """ed_threshold_make(int fft_len, int num_channels, float threshold) -> ed_threshold_sptr"""
+  """
+    ed_threshold_make(int fft_len, int num_channels, float threshold) -> ed_threshold_sptr
+
+    <+description of block+>
+
+    Constructor Specific Documentation:
+
+    Return a shared_ptr to a new instance of sas::ed_threshold.
+
+    To avoid accidental use of raw pointers, sas::ed_threshold's constructor is in a private implementation class. sas::ed_threshold::make is the public interface for creating new instances.
+
+    Args:
+        fft_len : 
+        num_channels : 
+        threshold : 
+    """
   return _sas_swig.ed_threshold_make(*args, **kwargs)
 
 class ed_threshold_sptr(object):
@@ -775,7 +868,22 @@ class ed_threshold_sptr(object):
     __swig_destroy__ = _sas_swig.delete_ed_threshold_sptr
     __del__ = lambda self : None;
     def make(self, *args, **kwargs):
-        """make(ed_threshold_sptr self, int fft_len, int num_channels, float threshold) -> ed_threshold_sptr"""
+        """
+        make(ed_threshold_sptr self, int fft_len, int num_channels, float threshold) -> ed_threshold_sptr
+
+        <+description of block+>
+
+        Constructor Specific Documentation:
+
+        Return a shared_ptr to a new instance of sas::ed_threshold.
+
+        To avoid accidental use of raw pointers, sas::ed_threshold's constructor is in a private implementation class. sas::ed_threshold::make is the public interface for creating new instances.
+
+        Args:
+            fft_len : 
+            num_channels : 
+            threshold : 
+        """
         return _sas_swig.ed_threshold_sptr_make(self, *args, **kwargs)
 
     def history(self):

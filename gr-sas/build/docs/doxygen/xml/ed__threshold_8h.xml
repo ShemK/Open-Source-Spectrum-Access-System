@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="ed__threshold_8h" kind="file">
+    <compoundname>ed_threshold.h</compoundname>
+    <includes refid="api_8h" local="no">sas/api.h</includes>
+    <includes local="no">gnuradio/sync_block.h</includes>
+    <includedby refid="ed__threshold__impl_8h" local="no">ed_threshold_impl.h</includedby>
+    <incdepgraph>
+      <node id="185">
+        <label>gnuradio/sync_block.h</label>
+      </node>
+      <node id="184">
+        <label>gnuradio/attributes.h</label>
+      </node>
+      <node id="183">
+        <label>sas/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="184" relation="include">
+        </childnode>
+      </node>
+      <node id="182">
+        <label>ed_threshold.h</label>
+        <link refid="ed_threshold.h"/>
+        <childnode refid="183" relation="include">
+        </childnode>
+        <childnode refid="185" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="187">
+        <label>ed_threshold_impl.h</label>
+        <link refid="ed__threshold__impl_8h"/>
+      </node>
+      <node id="186">
+        <label>ed_threshold.h</label>
+        <link refid="ed_threshold.h"/>
+        <childnode refid="187" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classgr_1_1sas_1_1ed__threshold" prot="public">gr::sas::ed_threshold</innerclass>
+    <innernamespace refid="namespacegr">gr</innernamespace>
+    <innernamespace refid="namespacegr_1_1sas">gr::sas</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/ed_threshold.h"/>
+  </compounddef>
+</doxygen>

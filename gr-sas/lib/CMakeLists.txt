@@ -31,7 +31,8 @@ link_directories(${Boost_LIBRARY_DIRS}
 list(APPEND sas_sources
     psql_insert_impl.cc
     sas_buffer_impl.cc
-    ed_threshold_impl.cc )
+    ed_threshold_impl.cc
+    decision_maker.cc)
 
 set(sas_sources "${sas_sources}" PARENT_SCOPE)
 if(NOT sas_sources)
@@ -84,4 +85,3 @@ GR_ADD_TEST(test_sas test-sas)
 ########################################################################
 message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
-

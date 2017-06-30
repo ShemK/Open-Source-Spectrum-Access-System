@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1weekday__last" kind="class" prot="public">
+    <compoundname>date::weekday_last</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdate_1_1weekday__last_1ab1d53acbcad3351cf71b366600ffe6c0" prot="private" static="no" mutable="no">
+        <type><ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>date::weekday date::weekday_last::wd_</definition>
+        <argsstring></argsstring>
+        <name>wd_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="438" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="438" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdate_1_1weekday__last_1a760cca39ea7efed3baf7ad632bb611d1" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type>constexpr</type>
+        <definition>constexpr date::weekday_last::weekday_last</definition>
+        <argsstring>(const date::weekday &amp;wd) noexcept</argsstring>
+        <name>weekday_last</name>
+        <param>
+          <type>const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="441" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1775" bodyend="1775"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1weekday__last_1affa8f12a1451a1cd0e74f0cc525a3374" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr date::weekday date::weekday_last::weekday</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>weekday</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="443" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1773" bodyend="1773"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1weekday__last_1accf3ad4e154d9e304d0479d10338e298" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr bool</type>
+        <definition>constexpr bool date::weekday_last::ok</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>ok</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="444" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1774" bodyend="1774"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="437" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="436" bodyend="445"/>
+    <listofallmembers>
+      <member refid="classdate_1_1weekday__last_1accf3ad4e154d9e304d0479d10338e298" prot="public" virt="non-virtual"><scope>date::weekday_last</scope><name>ok</name></member>
+      <member refid="classdate_1_1weekday__last_1ab1d53acbcad3351cf71b366600ffe6c0" prot="private" virt="non-virtual"><scope>date::weekday_last</scope><name>wd_</name></member>
+      <member refid="classdate_1_1weekday__last_1affa8f12a1451a1cd0e74f0cc525a3374" prot="public" virt="non-virtual"><scope>date::weekday_last</scope><name>weekday</name></member>
+      <member refid="classdate_1_1weekday__last_1a760cca39ea7efed3baf7ad632bb611d1" prot="public" virt="non-virtual"><scope>date::weekday_last</scope><name>weekday_last</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -243,13 +243,10 @@ PYTHON_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libpython2.7.so
 //Path to a library.
 PYTHON_LIBRARY_DEBUG:FILEPATH=PYTHON_LIBRARY_DEBUG-NOTFOUND
 
-//The Set the PostgreSQL_INCLUDE_DIR cmake cache entry to the top-level
-// directory containing the PostgreSQL include directories. E.g
-// /usr/local/include/PostgreSQL/8.4 or C:/Program Files/PostgreSQL/8.4/include
+//The 
 PostgreSQL_INCLUDE_DIR:PATH=/usr/include/postgresql
 
-//The Set the PostgreSQL_LIBRARY_DIR cmake cache entry to the top-level
-// directory containing the PostgreSQL libraries.
+//The 
 PostgreSQL_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libpq.so
 
 //python interpreter for QA tests

@@ -1,5 +1,192 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.6">
+  <compound refid="structdate_1_1detail_1_1choose__trunc__type" kind="struct"><name>date::detail::choose_trunc_type</name>
+    <member refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" kind="typedef"><name>type</name></member>
+    <member refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" kind="variable"><name>digits</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1classify__duration" kind="struct"><name>date::detail::classify_duration</name>
+    <member refid="structdate_1_1detail_1_1classify__duration_1a4125a52c076b499e6e1dfa0b257f8fa8" kind="variable"><name>value</name></member>
+  </compound>
+  <compound refid="classdate_1_1day" kind="class"><name>date::day</name>
+    <member refid="classdate_1_1day_1a2add7050b934323c1317b7753ad6f11a" kind="variable"><name>d_</name></member>
+    <member refid="classdate_1_1day_1a13d80b9efb88b988a21e5982151942f0" kind="function"><name>day</name></member>
+    <member refid="classdate_1_1day_1a63d245d16920af4b432769292649d613" kind="function"><name>day</name></member>
+    <member refid="classdate_1_1day_1aafe96cd1e460918da89d61609000aea7" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1day_1a5c7e791e42f0522857e8e3de21ef55b6" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1day_1a79ebeac089e3a4360dedcc42bc184c38" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1day_1ad894b9b36123afc180545865fcc01378" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1day_1af61aa577c996cb92157dbe1b44d97ee0" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1day_1a22cbfad1560fc9c0e35dcb59282315f2" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1day_1aaba97b08a40f5192cf7630798527c2a1" kind="function"><name>operator unsigned</name></member>
+    <member refid="classdate_1_1day_1aa700d7ae926546ee100777dfeaadbb8a" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1decimal__format__seconds" kind="class"><name>date::detail::decimal_format_seconds</name>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1ac3c300d92b80b857b59094168d75e344" kind="typedef"><name>precision</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1ab2cb745fcdedebec1e1b217ae191efa4" kind="variable"><name>width</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1abf9fb4ef9cba2ec2206b7c2c2ce999fa" kind="variable"><name>s_</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a6cf3d5168e8cf8baf5f0649442a621ba" kind="variable"><name>sub_s_</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a624d788b6a98c279dabfa40aa2114b23" kind="function"><name>decimal_format_seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a4676803cdafd9fc94ce83778761b4efe" kind="function"><name>decimal_format_seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a86102b53dc7c21c84650401dc311839e" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a28e60ff38ed6a4c624acd6a9cb1416d4" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a3a53bee1d7e21d0034b6c2b845e3fd70" kind="function"><name>subseconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1aa8f5fe78f580a335a0aa56d48d4fbf71" kind="function"><name>to_duration</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a67d3fda6ee99a818f348aa88772640ec" kind="function"><name>in_conventional_range</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_1afec5c6bb3e79700c56a3b8d9a6c525a5" kind="friend"><name>operator&lt;&lt;</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4" kind="class"><name>date::detail::decimal_format_seconds&lt; Duration, 0 &gt;</name>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a3a243a7ddc35f6d7ad45f9298075e913" kind="typedef"><name>precision</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a7641ae2380358d261abb7593fb5bfe87" kind="variable"><name>w</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a7ccac22168f44ff462d785414bf072fb" kind="variable"><name>width</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a7a28be41bb63ff55821f0104301fd94e" kind="variable"><name>s_</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a7a8ba4c227f72fd1c6ee12a79cac5f41" kind="function"><name>decimal_format_seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a5cf1e39cedc1e2ba7577cd441f33bb8d" kind="function"><name>decimal_format_seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a9ed55bcbe3f5d3d4ff7e61aeca69df3b" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1af1935871a72d124c8a0e5de41fda11a5" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a4e5f3be269c8f018151a9fa41da3134a" kind="function"><name>to_duration</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1a7ebc8fef32e55ec4ed899e6ee4eab2b7" kind="function"><name>in_conventional_range</name></member>
+    <member refid="classdate_1_1detail_1_1decimal__format__seconds_3_01Duration_00_010_01_4_1afec5c6bb3e79700c56a3b8d9a6c525a5" kind="friend"><name>operator&lt;&lt;</name></member>
+  </compound>
+  <compound refid="classDecisionMaker" kind="class"><name>DecisionMaker</name>
+    <member refid="classDecisionMaker_1accfc84a828404a4c3dbc840b088f65a4" kind="variable"><name>occ_values</name></member>
+    <member refid="classDecisionMaker_1a0de6083263bbb4eebc518a5838c288f7" kind="variable"><name>center_frequency</name></member>
+    <member refid="classDecisionMaker_1a9b7e9cfe856176deebbe3b483e9e4439" kind="variable"><name>previous_center_frequency</name></member>
+    <member refid="classDecisionMaker_1a600039f2a0227a7eb7f7b29d1fd99926" kind="variable"><name>center_frequency</name></member>
+    <member refid="classDecisionMaker_1aec2e69e25d30d8ceaacb52ba86e323bb" kind="variable"><name>previous_center_frequency</name></member>
+    <member refid="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" kind="function"><name>DecisionMaker</name></member>
+    <member refid="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" kind="function"><name>~DecisionMaker</name></member>
+    <member refid="classDecisionMaker_1a82e346aa69329351ebbf08c53605d9d3" kind="function"><name>getDecision</name></member>
+    <member refid="classDecisionMaker_1a1155a82705f5a781765bb49b2f864ad0" kind="function"><name>get_previous_center_frequency</name></member>
+    <member refid="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" kind="function"><name>average</name></member>
+    <member refid="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" kind="function"><name>DecisionMaker</name></member>
+    <member refid="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" kind="function"><name>~DecisionMaker</name></member>
+    <member refid="classDecisionMaker_1a82e346aa69329351ebbf08c53605d9d3" kind="function"><name>getDecision</name></member>
+    <member refid="classDecisionMaker_1a1155a82705f5a781765bb49b2f864ad0" kind="function"><name>get_previous_center_frequency</name></member>
+    <member refid="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" kind="function"><name>average</name></member>
+    <member refid="classDecisionMaker_1aa0dfa7fec033c057254406849d6968cc" kind="function"><name>DecisionMaker</name></member>
+    <member refid="classDecisionMaker_1a0cc27a5a77631e71aece59ee279ef7b3" kind="function"><name>~DecisionMaker</name></member>
+    <member refid="classDecisionMaker_1a08afac171306673a5e75e4575f73af2f" kind="function"><name>getDecision</name></member>
+    <member refid="classDecisionMaker_1afcca1fc5d436866f63f99778b28bba9a" kind="function"><name>get_previous_center_frequency</name></member>
+    <member refid="classDecisionMaker_1adf102e4aae7284140470abf9ccb51f42" kind="function"><name>average</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1ed__threshold" kind="class"><name>gr::sas::ed_threshold</name>
+    <member refid="classgr_1_1sas_1_1ed__threshold_1ae098ab68d6f5b147daeba1a4fe908fc8" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold_1a373568a4b9107eb1c0874fc8975caeec" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1ed__threshold__impl" kind="class"><name>gr::sas::ed_threshold_impl</name>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1aad9f5dd89873d154da9ea56606c755af" kind="variable"><name>fft_len</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1aa582b8a9cee70808e6d5337934bdef5f" kind="variable"><name>num_channels</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1ad82290df5958f91289b9338a6b927e32" kind="variable"><name>cstates</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1ad224fac5043f9c193f9f9e949a7025be" kind="variable"><name>state</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a727677dcd33185ca85ef9fa72e5389d3" kind="variable"><name>threshold</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a58afd635cee52a803235879d12c57de2" kind="variable"><name>sensitivity</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a4613a9618138dcfe7a2e68477e4381d3" kind="variable"><name>last_mean</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a81bb4ccc095935af9f0acf857734162a" kind="variable"><name>last_variance</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1ab5047cdb7142debedcf92278100f754e" kind="variable"><name>oldbuf</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a747f22d94aa3497a8713886a081c7c68" kind="variable"><name>noise_floor</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a59a485255ecc28cce675799b07a0caa9" kind="variable"><name>cur_noise_floor</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a5a25c5c0820c89f37414d5826f066bbe" kind="variable"><name>rx_rate</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a369af11c73b458a4aff30d9726c7a127" kind="variable"><name>wbnoise_floor</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1ae6373a06582efe068b4c3d334853d394" kind="variable"><name>fcstates</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a0aa40dbc58aa8ffa183cdafcb96e4411" kind="variable"><name>thresholds</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a32a7e5b52f7cddacb623444496a997a1" kind="variable"><name>means</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a2b5c34c7360a0196a813da17c69f5b3c" kind="variable"><name>variances</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a61860e28e65e9df07a33dcb7ebca228e" kind="function"><name>ed_threshold_impl</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a6a11504243123120619709d319286802" kind="function"><name>~ed_threshold_impl</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1afaef83f9ed71dd4e4f13d988bc9da600" kind="function"><name>work</name></member>
+    <member refid="classgr_1_1sas_1_1ed__threshold__impl_1ab8de53c89bad3e8ea366006c0babf870" kind="function"><name>pack_decision</name></member>
+  </compound>
+  <compound refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct" kind="struct"><name>gr::sas::sas_buffer_impl::ESC_Struct</name>
+    <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1a8e784cedd6644bf31099de08d3c8d721" kind="variable"><name>sample</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1aa71967a1eccbb821a18dfe9cf42e112d" kind="variable"><name>frequency</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1a35e7fea63c851e932392f17b49cbd3d1" kind="variable"><name>sample_rate</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1a151de507bdca598cb001de10d8148e22" kind="variable"><name>num_samples</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1a7e2be4a7ab73dde2a5ded1a023a7f9a6" kind="variable"><name>data</name></member>
+  </compound>
+  <compound refid="structdate_1_1fields" kind="struct"><name>date::fields</name>
+    <member refid="structdate_1_1fields_1a7ad38573327cf02a071d32ac089e51de" kind="variable"><name>ymd</name></member>
+    <member refid="structdate_1_1fields_1a8dca608f10995a52fed6cd91db54ae03" kind="variable"><name>wd</name></member>
+    <member refid="structdate_1_1fields_1a4ca9ed8a1e5109031e5cda16c70ee08c" kind="variable"><name>tod</name></member>
+    <member refid="structdate_1_1fields_1a6354f11c7adc70fc8d8bd1f439c0025a" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1a9d75f9e549f500bc8fd3371c20ac896f" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1a8ca57b99980985e7819692194ed7e020" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1aab53862f58eb84033e69d113f98dbcf6" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1a239955edb244d9bd999200831b2906b9" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1a4541f9a38465bb9b6e49863dc230be1c" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1a575380e108b69c35916c58d5154c149b" kind="function"><name>fields</name></member>
+    <member refid="structdate_1_1fields_1ace6d28ef4491f7592b68df1d38cb1854" kind="function"><name>fields</name></member>
+  </compound>
+  <compound refid="structdate_1_1last__spec" kind="struct"><name>date::last_spec</name>
+    <member refid="structdate_1_1last__spec_1a6cf23973360d965051f7a5d735af2530" kind="function"><name>last_spec</name></member>
+  </compound>
+  <compound refid="structdate_1_1local__t" kind="struct"><name>date::local_t</name>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__precision" kind="struct"><name>date::detail::make_precision</name>
+    <member refid="structdate_1_1detail_1_1make__precision_1a497fc340b11d67cd02e2e4d15a1d100f" kind="typedef"><name>type</name></member>
+    <member refid="structdate_1_1detail_1_1make__precision_1a7980eae66c33317e94af11d33aa9c7bd" kind="variable"><name>width</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__precision_3_01w_00_01false_01_4" kind="struct"><name>date::detail::make_precision&lt; w, false &gt;</name>
+    <member refid="structdate_1_1detail_1_1make__precision_3_01w_00_01false_01_4_1a552a90a12643d6fc4cfcaa0b4dfd7391" kind="typedef"><name>type</name></member>
+    <member refid="structdate_1_1detail_1_1make__precision_3_01w_00_01false_01_4_1aae2abcdc4940e6f706d1b12ce1f1f7d1" kind="variable"><name>width</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__string" kind="struct"><name>date::detail::make_string</name>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__string_3_01char_01_4" kind="struct"><name>date::detail::make_string&lt; char &gt;</name>
+    <member refid="structdate_1_1detail_1_1make__string_3_01char_01_4_1ad89425f9bfbaf380462fc018b9b00b2c" kind="function"><name>from</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__string_3_01char_00_01Traits_01_4" kind="struct"><name>date::detail::make_string&lt; char, Traits &gt;</name>
+    <member refid="structdate_1_1detail_1_1make__string_3_01char_00_01Traits_01_4_1a1afcfde960bdcb784f92d7aa082fadb6" kind="function"><name>from</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__string_3_01wchar__t_01_4" kind="struct"><name>date::detail::make_string&lt; wchar_t &gt;</name>
+    <member refid="structdate_1_1detail_1_1make__string_3_01wchar__t_01_4_1a75f544188c68059e9607095303d7402e" kind="function"><name>from</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1make__string_3_01wchar__t_00_01Traits_01_4" kind="struct"><name>date::detail::make_string&lt; wchar_t, Traits &gt;</name>
+    <member refid="structdate_1_1detail_1_1make__string_3_01wchar__t_00_01Traits_01_4_1a157e3b14ec34fc96077a606dcbfb2fb5" kind="function"><name>from</name></member>
+  </compound>
+  <compound refid="classdate_1_1month" kind="class"><name>date::month</name>
+    <member refid="classdate_1_1month_1ac517f9fbee33f2d2d015c4f5aff67c29" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1month_1ae759079a468091115346e1ad702456c5" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1month_1a2f1d927dc7c891d12f104c7b252008fd" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1month_1a4456f84f6cf4106dcefa48569ed07743" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1month_1ab161b2691601f1b461b8ca96ea801d6c" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1month_1a2f581f7ffbb1e1fc86aa190db7c13ded" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1month_1a09c876aeeb5242432f3484f0328a2e96" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1month_1adfd48bd6ab3ca3f4d74700e7de212c7b" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1month_1a4d2fac9a0e9f8d3ea6f54e0c00a5d0c4" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1month_1a23300474b054bb6afb480767a8f3a5b0" kind="function"><name>operator unsigned</name></member>
+    <member refid="classdate_1_1month_1ab6518c7476d05f77ebe10838881e025a" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1month__day" kind="class"><name>date::month_day</name>
+    <member refid="classdate_1_1month__day_1a3e0efbe81201d2a6cc72a9936ac23387" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1month__day_1acfd8377d2dda4c68e32961322d1b89ef" kind="variable"><name>d_</name></member>
+    <member refid="classdate_1_1month__day_1a8d78157862989039c2e334af7c88fa14" kind="function"><name>month_day</name></member>
+    <member refid="classdate_1_1month__day_1a785bde00e2147d3ffe441bf0c96633d0" kind="function"><name>month_day</name></member>
+    <member refid="classdate_1_1month__day_1af952c1e818338767d604149da004a51f" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1month__day_1a432794a534c22f58e87a80063a35a2a8" kind="function"><name>day</name></member>
+    <member refid="classdate_1_1month__day_1a0f732ad825dcfaf949e43f336ef39632" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1month__day__last" kind="class"><name>date::month_day_last</name>
+    <member refid="classdate_1_1month__day__last_1afcb4059a2134b7004e929fbf524e23dc" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1month__day__last_1a910f9cdf6d7d435b9b5ab0af49f32927" kind="function"><name>month_day_last</name></member>
+    <member refid="classdate_1_1month__day__last_1a73c894574f497b329d684a23aab9484f" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1month__day__last_1a2d3d4b66a6832d9b86a6d30fef6cbf2a" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1month__weekday" kind="class"><name>date::month_weekday</name>
+    <member refid="classdate_1_1month__weekday_1ad86977f68175209e36338d9faeaec25b" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1month__weekday_1ac1d833dca46798f71d650931d291972d" kind="variable"><name>wdi_</name></member>
+    <member refid="classdate_1_1month__weekday_1a99e32650eba86c9e064703f994a37b81" kind="function"><name>month_weekday</name></member>
+    <member refid="classdate_1_1month__weekday_1aee496dec1d5eef3ccbd43eae2548ad33" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1month__weekday_1acc93f76b3a096d5f40b61fc46f377fb1" kind="function"><name>weekday_indexed</name></member>
+    <member refid="classdate_1_1month__weekday_1ae300acb90f2a931979a5f61521fefd52" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1month__weekday__last" kind="class"><name>date::month_weekday_last</name>
+    <member refid="classdate_1_1month__weekday__last_1a66db1ae09fd9099e2ad5a79017db1b6c" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1month__weekday__last_1a2313668d2464b730b26fc0535cbc0009" kind="variable"><name>wdl_</name></member>
+    <member refid="classdate_1_1month__weekday__last_1a0a9c7287de1f2eaead28716ae9c6c009" kind="function"><name>month_weekday_last</name></member>
+    <member refid="classdate_1_1month__weekday__last_1ab669199f0ced62bd0a73b5e39c4f2bd7" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1month__weekday__last_1afe4f3b94bd3b1a4187ab06a2bc5abb10" kind="function"><name>weekday_last</name></member>
+    <member refid="classdate_1_1month__weekday__last_1aa3d23862103ebd4a22652d4666d37c9c" kind="function"><name>ok</name></member>
+  </compound>
   <compound refid="classgr_1_1sas_1_1psql__insert" kind="class"><name>gr::sas::psql_insert</name>
     <member refid="classgr_1_1sas_1_1psql__insert_1ad63c61510f484ffa499799209bb4c88b" kind="typedef"><name>sptr</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert_1a12862f3b247ac97477e8aa11306b01c6" kind="function"><name>make</name></member>
@@ -16,6 +203,7 @@
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad756454e74ffc4838aa4a99e809fd526" kind="variable"><name>sensitivity</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1afafe6345b970d04674a70874ca728427" kind="variable"><name>last_mean</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab8d02d5b463ec131daa4028a2389d586" kind="variable"><name>last_variance</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6f7f835198539bc14c6caf0db2598b0a" kind="variable"><name>occ</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a976d9d03ed5976d03103bc59ea89ea29" kind="variable"><name>oldbuf</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a3dc1b514d9abeabe99e40219b6f3e2da" kind="variable"><name>noise_floor</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1acbb8457472f6c396422f263a2404283f" kind="variable"><name>cur_noise_floor</name></member>
@@ -29,12 +217,615 @@
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab0767fabcf46d2ddc00e83d9a745537a" kind="variable"><name>c</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac2105f9051850a70d1abab2c82d44c3e" kind="variable"><name>latitude</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a0aaf73da8c7485f5c522c18acb56eaf0" kind="variable"><name>longitude</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a30336a97dcb52369c46b2c75f30703eb" kind="variable"><name>center_frequency</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a8cd3505b2c6ab14681234ad60de65573" kind="variable"><name>latstr</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a88d6eb933d3a316ea20c71c17f25f8f7" kind="variable"><name>longstr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ace34b18f984a8de03e2fd3e0eb8502a7" kind="variable"><name>cent_freq</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a5c2d59d343bd52a024ffd9b04f829dbb" kind="variable"><name>occstr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a4ba3b616d36aedf3d2788c0520ea2666" kind="variable"><name>decision_maker</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad5357050c70b1ee0e831c60c5585566a" kind="function"><name>psql_insert_impl</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6ceb774961b346af43b30908ba0714b6" kind="function"><name>~psql_insert_impl</name></member>
-    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a9b8fe6d36f1a18435f76073486bb5065" kind="function"><name>print</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac79f4e93360bea3adafa2a4fc18504b2" kind="function"><name>gps</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1abf41f2c9da2de4d4a283eaf4c3e9cd60" kind="function"><name>center_freq</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab245603ab79b7d3d99c137d71423fe56" kind="function"><name>decision</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a3b83debb7bebb58468548fc58323f728" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1rld" kind="struct"><name>date::detail::rld</name>
+    <member refid="structdate_1_1detail_1_1rld_1aa25e0e79bbb95a2c99d1537ad98ea0cb" kind="variable"><name>i</name></member>
+    <member refid="structdate_1_1detail_1_1rld_1a376391510721f5f3af2feae746452f3c" kind="variable"><name>m</name></member>
+    <member refid="structdate_1_1detail_1_1rld_1aed8160fcd23293e24eaf82ae6d7b0363" kind="variable"><name>M</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1rs" kind="struct"><name>date::detail::rs</name>
+    <member refid="structdate_1_1detail_1_1rs_1ac16dc3c2005fe988bf855867085abcad" kind="variable"><name>i</name></member>
+    <member refid="structdate_1_1detail_1_1rs_1aaf84430508cc4e0051fae508cdc65d79" kind="variable"><name>m</name></member>
+    <member refid="structdate_1_1detail_1_1rs_1a5d0a7c17a3531864c5c2e2ed34079b7c" kind="variable"><name>M</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1ru" kind="struct"><name>date::detail::ru</name>
+    <member refid="structdate_1_1detail_1_1ru_1aeea3c9b51ae9be996593ea6e07ddf922" kind="variable"><name>i</name></member>
+    <member refid="structdate_1_1detail_1_1ru_1a41002680bd9cc3deb36ae1254b500c9a" kind="variable"><name>m</name></member>
+    <member refid="structdate_1_1detail_1_1ru_1a87aad385edc91f06c76650d5996739c0" kind="variable"><name>M</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1sas__buffer" kind="class"><name>gr::sas::sas_buffer</name>
+    <member refid="classgr_1_1sas_1_1sas__buffer_1a6ec1dc778ac08f3715ae2f1fa0e057e1" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer_1abe020ca46e631ffca339e7d6acc8c540" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1sas__buffer__impl" kind="class"><name>gr::sas::sas_buffer_impl</name>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a226d7fcb6419306e4f53c6f7e881ab2c" kind="variable"><name>d_N</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a82879cd9ab056a0037a8974aca2f1e26" kind="variable"><name>d_num_channels</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1aa304fcc415f036b3de90867cb4e005c7" kind="variable"><name>shared_struct</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a640066bbf29de4d0c8f82246129f8330" kind="variable"><name>sample</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ad1b7558c9ae2ba8a5003848affd7cd78" kind="variable"><name>frequency</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ac2a0ddb8cb061dfa41e08c0549df7922" kind="variable"><name>sample_rate</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1abf0f385c25c73ad85762f4b19a638a9c" kind="variable"><name>num_samples</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ab2d95536ccb46d074abdffdea60288e1" kind="function"><name>sas_buffer_impl</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1abc772df02e5eec7fe2ff52ff2b0dd05d" kind="function"><name>~sas_buffer_impl</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a89bdd1bba6c7ffb11056644b9e3161db" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1save__stream" kind="class"><name>date::detail::save_stream</name>
+    <member refid="classdate_1_1detail_1_1save__stream_1aee0b9ed15b74dad061ad3c4071107eaf" kind="variable"><name>os_</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1a58292321b20e05b4c631612624120e57" kind="variable"><name>fill_</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1a59d7e473faedb74f812f7999b10687ec" kind="variable"><name>flags_</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1aa59b450bc9675eb0548718006f29edb1" kind="variable"><name>loc_</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1a5f9ea5e47463e1f75d68c3a4fb5a2317" kind="function"><name>~save_stream</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1ab1798017d61cbbb680f160fc63580e7d" kind="function"><name>save_stream</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1ab0b15db5f1b8ecee88d0db7ca6907e33" kind="function"><name>operator=</name></member>
+    <member refid="classdate_1_1detail_1_1save__stream_1aa74b6e463705b2ac68d13267385e86ff" kind="function"><name>save_stream</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1static__pow10" kind="struct"><name>date::detail::static_pow10</name>
+    <member refid="structdate_1_1detail_1_1static__pow10_1ad3356129c265b4d0f7bcca9b91e13280" kind="variable"><name>h</name></member>
+    <member refid="structdate_1_1detail_1_1static__pow10_1a2b7e2731ebc466cf8751163fbd70fb19" kind="variable"><name>value</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1static__pow10_3_010_01_4" kind="struct"><name>date::detail::static_pow10&lt; 0 &gt;</name>
+    <member refid="structdate_1_1detail_1_1static__pow10_3_010_01_4_1a5ff0b814137c34400cdc8e09cb3220d1" kind="variable"><name>value</name></member>
+  </compound>
+  <compound refid="classdate_1_1time__of__day" kind="class"><name>date::time_of_day</name>
+    <member refid="classdate_1_1time__of__day_1ad9ddb72b050bdfe73378bd24ebff84e9" kind="typedef"><name>base</name></member>
+    <member refid="classdate_1_1time__of__day_1a0a787e07a179396806fc89336d90da59" kind="function"><name>time_of_day</name></member>
+    <member refid="classdate_1_1time__of__day_1a23fe4cfac291b4ef6175c300fdef6524" kind="function"><name>time_of_day</name></member>
+    <member refid="classdate_1_1time__of__day_1af227988df4d8dac355a7d9cb5eb6b97f" kind="function"><name>time_of_day</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1time__of__day__base" kind="class"><name>date::detail::time_of_day_base</name>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1aed6557d24bc8ecbd09e2d85b175520ce" kind="enum"><name>@1</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1aed6557d24bc8ecbd09e2d85b175520cea3dad84f902a973289d38df1b3ca18fdb" kind="enumvalue"><name>is24hr</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a3f7973f5fe189833d0afaa4e1640b315" kind="variable"><name>h_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a182ead7b323a818a756587e2b1b7393c" kind="variable"><name>mode_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a7ca30fb656cd24de968e6643751c2301" kind="variable"><name>neg_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a33379261ea04487d8e0693af0b3e3568" kind="function"><name>time_of_day_base</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1ac93402ed980599512227243bd9bc634f" kind="function"><name>time_of_day_base</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1ab9b1b3509f4f2f154db8672b532c5d54" kind="function"><name>make24</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a543c15a26b9b5d0894376bd1499fa74e" kind="function"><name>make12</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a1eff36c354d9246b7a3560b0d1d08e0c" kind="function"><name>to24hr</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__base_1a79c8fc9925a2451ee3951769b3730e02" kind="function"><name>in_conventional_range</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1time__of__day__storage" kind="class"><name>date::detail::time_of_day_storage</name>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814" kind="class"><name>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::hour &gt;</name>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a6d19d3310f467c6cbd9ecc6da0a5e8ed" kind="typedef"><name>base</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1af8e4f3ea602ea949957c92d33392c715" kind="typedef"><name>precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a37012a50f1270703883ef69ecc62d939" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a3b300df0db9a3f0826e48c7f173df286" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a841dd633e4f8e741c60405c691ce46ea" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a2d578f53ef21cfada7efb733b86bc17e" kind="function"><name>hours</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a7578c685341f47defaf975879846347d" kind="function"><name>mode</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a66f367bf5ab2cd4758c55c930d1458c1" kind="function"><name>operator precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1aa44443e551b9bbaa2818d8de47326793" kind="function"><name>to_duration</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1aa703de3b26a6ee1d622208b1db387ce5" kind="function"><name>make24</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a9fc189c55784bc2035e3546522bfa07c" kind="function"><name>make12</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1a0ed23da8ab02b655563642c0b5196108" kind="function"><name>in_conventional_range</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814_1aa723ed987ab639045a035ce6020dfb3d" kind="friend"><name>operator&lt;&lt;</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c" kind="class"><name>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::minute &gt;</name>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1ae6b2314fc489b87a723f38ab4e69475f" kind="typedef"><name>base</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a0584cc5f06b4226f2af3f8be8ba1c5c7" kind="typedef"><name>precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a6cf87ec4f1891a4745a48a560956f1c6" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1acaa77155e8c7d0b6992f4f80813403dc" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a1c291bd275e112058a800ea43ebbf581" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a9dbe0806db41cf257459843c024dbd59" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a46829e4ac57505cf25c2288060ae1fd8" kind="function"><name>hours</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a0fb4a75c32734bcdebe65fe0e29fe582" kind="function"><name>minutes</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a7294117ae7708d44765e18733b291a44" kind="function"><name>mode</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a05273f1ca4bac2e1bef333d03436b17a" kind="function"><name>operator precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a169f86ac9a303f6625bda23b03e698bb" kind="function"><name>to_duration</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a5e65dd55dd1963292290cb4387e37de3" kind="function"><name>make24</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1af6ed00177193867267c977d105302742" kind="function"><name>make12</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1a4da145cd34a48a6c3429d653828481ad" kind="function"><name>in_conventional_range</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c_1aa723ed987ab639045a035ce6020dfb3d" kind="friend"><name>operator&lt;&lt;</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f" kind="class"><name>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::second &gt;</name>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ae8c65c89dda89bcd4d9bb97e1608cf90" kind="typedef"><name>base</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1af5a0fb1ce7108322b5306b878fd145e2" kind="typedef"><name>dfs</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ab1371d4931ab5caaf0bd72052a8706f0" kind="typedef"><name>precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ae3cf8746f24ce7c003830b6dae72f5e7" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ad57da3444fc3d1683ba6dad84c901a46" kind="variable"><name>s_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1abbd15b8330b28ae922e5dbeb9418f903" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1aa430e6d1bed5e9945a47cc1df6250a9e" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a1fe7d99515dc50b1b214b664e13a7186" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a6768398bd21aa8b4b0bc8719bc5b0cb7" kind="function"><name>hours</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ad534664a7a6103638cffd74561c0da96" kind="function"><name>minutes</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ac58301763d6ba14558fab602d1605382" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1add9ad3cfcd3132c982bb1788379dea65" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a17526b6c1cab778ac483c63d0f2bbb00" kind="function"><name>mode</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a2586435cac9b71f80acd478ef480e08e" kind="function"><name>operator precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1af025bbd0b7b2586a17612419ed1842cc" kind="function"><name>to_duration</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a3e4895b8c89ac6fe516bcc0529149352" kind="function"><name>make24</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a9b0e006b1800b2861679dbd2a4f0e328" kind="function"><name>make12</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a0cbcf51fa7bb0a94941dcacdb1aae68a" kind="function"><name>in_conventional_range</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1aa723ed987ab639045a035ce6020dfb3d" kind="friend"><name>operator&lt;&lt;</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a2853dca6023583ace5831882334bbe6a" kind="friend"><name>date::to_stream</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a371d0b3dd0606d7eb95dd5206645d3ca" kind="friend"><name>date::from_stream</name></member>
+  </compound>
+  <compound refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63" kind="class"><name>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;</name>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a96e20eb8342552d0f7b647fa459ff880" kind="typedef"><name>Duration</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a3b015106069d4e0f6b9041bc6054a16a" kind="typedef"><name>dfs</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a3d485aff5e1c44c63d90f48d4098fdc1" kind="typedef"><name>precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a1bb86ffa246471c5985c926d59639aba" kind="typedef"><name>base</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a4e2974974794a249282a21665d2174d8" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a049ca11a3d6461a1bc192fde800ee5ea" kind="variable"><name>s_</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1ac43f1a12bff819b5910f48c5f6dbf336" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1ab098c2b61e21c4c37e6ac2e6e8cf1059" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a1329cfaf1b929fc9dd3158710a43d52a" kind="function"><name>time_of_day_storage</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1af9d1d05a84f962975aff4dcb9f368c60" kind="function"><name>hours</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a33d0f1af2bbf5962781891d75663af9b" kind="function"><name>minutes</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a28f44e4e58542706624729bb21f7b21c" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1ad08518716e02e36fe3357df41da94d36" kind="function"><name>seconds</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a38b8c3c8163e2ab00dd2539f43d28b6b" kind="function"><name>subseconds</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1ab95810afda7fd54773b82fccd8b42543" kind="function"><name>mode</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1aa3cb87f3c983e35508107901ec74cb3b" kind="function"><name>operator precision</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a0f2d6fc6c382e677280d6112ee1f281b" kind="function"><name>to_duration</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a2abc8850c9211782810db489182feb1b" kind="function"><name>make24</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a53f6fedfbb5331b79275249246c45432" kind="function"><name>make12</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a3f0f65978f107cf11eb683aba582d850" kind="function"><name>in_conventional_range</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1aa723ed987ab639045a035ce6020dfb3d" kind="friend"><name>operator&lt;&lt;</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a2853dca6023583ace5831882334bbe6a" kind="friend"><name>date::to_stream</name></member>
+    <member refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a371d0b3dd0606d7eb95dd5206645d3ca" kind="friend"><name>date::from_stream</name></member>
+  </compound>
+  <compound refid="classdate_1_1weekday" kind="class"><name>date::weekday</name>
+    <member refid="classdate_1_1weekday_1ac5ffc101c58a109859ed86765c7122ff" kind="variable"><name>wd_</name></member>
+    <member refid="classdate_1_1weekday_1a02089e8384455c52a6ceecd8c093cccd" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday_1a999b4b3d51c862f6bd0068d4907fead0" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday_1a11a0bfc61746f66e50300dcf799ee8f6" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday_1aad8ee1d4429494450b73c4546125bc03" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday_1a06046aa0103044022c1c5c6f88723d60" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday_1adb992e4bedbcc92452101e70dcfa7afa" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1weekday_1a906ef796e520cb2d8059b8b833d5d607" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1weekday_1a859cb41767bae3d9f77561fbd22563d5" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1weekday_1aa02d2929a27cd3531550f5f46de1c5ba" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1weekday_1aeb8f547ed20b5b221cfa0b06212772b4" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1weekday_1a0631de8f0b07b51e39bacab4897609a8" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1weekday_1ab20fed9d142af5649a4bae932325eeee" kind="function"><name>operator unsigned</name></member>
+    <member refid="classdate_1_1weekday_1ae96e1724ac8c13d49b617db033a39d32" kind="function"><name>ok</name></member>
+    <member refid="classdate_1_1weekday_1ab866200e9d16ddfe1d1246b2a838c7a7" kind="function"><name>operator[]</name></member>
+    <member refid="classdate_1_1weekday_1a885fd8d238f7bf4e79d0245864b56fe4" kind="function"><name>operator[]</name></member>
+    <member refid="classdate_1_1weekday_1a7b465803e1bb6b75cd4d9881a027bd6f" kind="function"><name>weekday_from_days</name></member>
+  </compound>
+  <compound refid="classdate_1_1weekday__indexed" kind="class"><name>date::weekday_indexed</name>
+    <member refid="classdate_1_1weekday__indexed_1a21531a1c273cb3de435f63bc90c0dbdd" kind="variable"><name>wd_</name></member>
+    <member refid="classdate_1_1weekday__indexed_1a232e4fd63b504b354f81d58c9150c8ca" kind="variable"><name>index_</name></member>
+    <member refid="classdate_1_1weekday__indexed_1a2e7be193a460dc7b96589dbe8ed5aa57" kind="function"><name>weekday_indexed</name></member>
+    <member refid="classdate_1_1weekday__indexed_1ae991a428fa28305cde2a4b0c0b553678" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday__indexed_1a5328075940e97b5f5ad717892935c15a" kind="function"><name>index</name></member>
+    <member refid="classdate_1_1weekday__indexed_1a9fd7c06cd1190bb5bf32c69316a1100b" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1weekday__last" kind="class"><name>date::weekday_last</name>
+    <member refid="classdate_1_1weekday__last_1ab1d53acbcad3351cf71b366600ffe6c0" kind="variable"><name>wd_</name></member>
+    <member refid="classdate_1_1weekday__last_1ad9e1e53786e471b2aba2ea086c47b089" kind="function"><name>weekday_last</name></member>
+    <member refid="classdate_1_1weekday__last_1af4e5e91f1cb790211be795acde4957d4" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1weekday__last_1a09ff0fdc5388ff6332de5ee1d8b29e8c" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1width" kind="struct"><name>date::detail::width</name>
+    <member refid="structdate_1_1detail_1_1width_1ac76362103ef10fda4549a4781cdf70bf" kind="variable"><name>value</name></member>
+  </compound>
+  <compound refid="structdate_1_1detail_1_1width_3_01n_00_01d_00_01w_00_01false_01_4" kind="struct"><name>date::detail::width&lt; n, d, w, false &gt;</name>
+    <member refid="structdate_1_1detail_1_1width_3_01n_00_01d_00_01w_00_01false_01_4_1a61558ddcb9c4dc69bd467ed74e259dd4" kind="variable"><name>value</name></member>
+  </compound>
+  <compound refid="classdate_1_1year" kind="class"><name>date::year</name>
+    <member refid="classdate_1_1year_1ade3e7d62e20e87032df159c65c9e798b" kind="variable"><name>y_</name></member>
+    <member refid="classdate_1_1year_1a0841ed58d7658bdd86df765187dd5902" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year_1a748216d81ee3e681b51af32dad6d280d" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year_1a5417a56fb580b0453a943f8f94ef5471" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1year_1a628a45d4d5eb67edea951e1a656c3e46" kind="function"><name>operator++</name></member>
+    <member refid="classdate_1_1year_1a6525559f224c282a2d1992eb47df77f8" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1year_1a7113eb5f18f44d5a92517b11a31d560f" kind="function"><name>operator--</name></member>
+    <member refid="classdate_1_1year_1af59000cb6a5517b6e115265564c3651f" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year_1a924f10124422eb84f9bfb94cede5b619" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year_1a52ea8451abcc9d433f046b06607b8dfc" kind="function"><name>operator-</name></member>
+    <member refid="classdate_1_1year_1a2ac832d148b5d02aab5ac4b3a80da404" kind="function"><name>operator+</name></member>
+    <member refid="classdate_1_1year_1a40e9e2f0c5dfab3290329fd89a7a9266" kind="function"><name>is_leap</name></member>
+    <member refid="classdate_1_1year_1a56a148aa2db6ccabb7691e712881172d" kind="function"><name>operator int</name></member>
+    <member refid="classdate_1_1year_1a4760a74f84a239c906236d957e312432" kind="function"><name>ok</name></member>
+    <member refid="classdate_1_1year_1ab2ee02d911fe5da7e9314d99689c1bb0" kind="function"><name>min</name></member>
+    <member refid="classdate_1_1year_1af6d73feb38dab4cd867cb91a6da91f13" kind="function"><name>max</name></member>
+  </compound>
+  <compound refid="classdate_1_1year__month" kind="class"><name>date::year_month</name>
+    <member refid="classdate_1_1year__month_1a28a3eba5edcd3070b5489d660b000c8a" kind="variable"><name>y_</name></member>
+    <member refid="classdate_1_1year__month_1a51e9a93093dce1c0e6397a7099547980" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1year__month_1a223184a2fbe2aaee59ebafbeb2220666" kind="function"><name>year_month</name></member>
+    <member refid="classdate_1_1year__month_1a72bc1f9b228071ddf311ca69df7c2206" kind="function"><name>year_month</name></member>
+    <member refid="classdate_1_1year__month_1a9456ddd47089912798d2cff01a44b119" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year__month_1a504e045dc6565c34c0bfa0b360660589" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1year__month_1afa4315ba9728e051267f4eb759d5fb03" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month_1a566e134511d508231d5ca855e5bf6489" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month_1a418b944033d78990060d6a2ec7cd35fd" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month_1afc31d8209e88397cd14c333f43f959a3" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month_1ab43240a2a592694e7c1fc65862299b55" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1year__month__day" kind="class"><name>date::year_month_day</name>
+    <member refid="classdate_1_1year__month__day_1a88bca7fdafc312b252589ec80e1362bf" kind="variable"><name>y_</name></member>
+    <member refid="classdate_1_1year__month__day_1a442e1743199795d066b45a12bd5f4ab4" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1year__month__day_1ab53d00e7110f42119162252d8f43845b" kind="variable"><name>d_</name></member>
+    <member refid="classdate_1_1year__month__day_1a306b37151fee3efd598de0d78047d701" kind="function"><name>year_month_day</name></member>
+    <member refid="classdate_1_1year__month__day_1a0c88822f75cb37f594ebaa3594ff23ea" kind="function"><name>year_month_day</name></member>
+    <member refid="classdate_1_1year__month__day_1ad5377f13aa834eec9a3f5663dc7d604d" kind="function"><name>year_month_day</name></member>
+    <member refid="classdate_1_1year__month__day_1a3a2e417d191b002f13141b00ca3b6767" kind="function"><name>year_month_day</name></member>
+    <member refid="classdate_1_1year__month__day_1a5a749b0767e8b47a4848b36df1d2d893" kind="function"><name>year_month_day</name></member>
+    <member refid="classdate_1_1year__month__day_1a3d2b3ac4ed15af18baca50146c9ab336" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__day_1a58ab7c15f5fb00adf8dc8d58e4f7e31f" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__day_1a7ee7b9513b13c55d3b5fced8e390e587" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__day_1ae0f1ecb32c6412f5eb47f86b2cca148c" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__day_1a90fe176b8278fa7d049222df6f2d6fcf" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year__month__day_1ae97c2bc7fccc3e4aec83035fff09e256" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1year__month__day_1a9f06a363a27cf6aab75b0df5ee57eeff" kind="function"><name>day</name></member>
+    <member refid="classdate_1_1year__month__day_1ad5cbef46f987b9041384ca02b5547e60" kind="function"><name>operator sys_days</name></member>
+    <member refid="classdate_1_1year__month__day_1aad54880900b2884e749ffbd63de2b204" kind="function"><name>operator local_days</name></member>
+    <member refid="classdate_1_1year__month__day_1a97945fc698a22e803b05e7d75d0eb94a" kind="function"><name>ok</name></member>
+    <member refid="classdate_1_1year__month__day_1aba97bdb95dc360a728fed580121ede2d" kind="function"><name>from_days</name></member>
+    <member refid="classdate_1_1year__month__day_1a59c07e575506bed2d191933c5346aca4" kind="function"><name>to_days</name></member>
+  </compound>
+  <compound refid="classdate_1_1year__month__day__last" kind="class"><name>date::year_month_day_last</name>
+    <member refid="classdate_1_1year__month__day__last_1accb7655867b47e39185443759dca0544" kind="variable"><name>y_</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a057bc395cfc4413fde53244550ef306d" kind="variable"><name>mdl_</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a03d883aced2763fb7845f82d96c9a5a2" kind="function"><name>year_month_day_last</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a3055122339b3bb2f7223a65f87daaa0e" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__day__last_1ab8e8c4ec918e6c6a717bc3b29f78d5a4" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__day__last_1af5984d2a2858a070aad955c8c90bf714" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a63cb63ecf862fed7a984f689f21a5668" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__day__last_1afa41eb8ace00d798bfae92d805f16426" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a3c83e2f0f75f02079313d87aaf1264a1" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a760ebc3c0f0578423fbf2816359e6f92" kind="function"><name>month_day_last</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a7c23ab47271432745b4014e4b32c74b6" kind="function"><name>day</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a019bce113a50e6262c56caad6ae905b8" kind="function"><name>operator sys_days</name></member>
+    <member refid="classdate_1_1year__month__day__last_1a921d35dfdb75ffabade9586794da8ac4" kind="function"><name>operator local_days</name></member>
+    <member refid="classdate_1_1year__month__day__last_1ab75894e7e40fda7d887455a0bcba633a" kind="function"><name>ok</name></member>
+  </compound>
+  <compound refid="classdate_1_1year__month__weekday" kind="class"><name>date::year_month_weekday</name>
+    <member refid="classdate_1_1year__month__weekday_1a5fa23cab52adb7679dc1d57711a6cd06" kind="variable"><name>y_</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a7dc7b081fa5dc4a75a66b5c6c9ec1095" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a3edba462b9d970d67bf12660b86a15c4" kind="variable"><name>wdi_</name></member>
+    <member refid="classdate_1_1year__month__weekday_1ac2ff4c58e59c3a10a56f5376f7d9ff31" kind="function"><name>year_month_weekday</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a2a22f7241822349ee24e4dc238ddf36a" kind="function"><name>year_month_weekday</name></member>
+    <member refid="classdate_1_1year__month__weekday_1ac0325880052a0d2db1f820629d1dcad8" kind="function"><name>year_month_weekday</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a1d541d88cde0d0bdd6c419dad416299c" kind="function"><name>year_month_weekday</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a6599d72651192b1f6dc8e12b0b6196ca" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__weekday_1ae2f30f183214d5e66e2c518830d27b72" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__weekday_1aac36851e78a68f59f881149fcf8f6b92" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a5c015698238c7c26475d0e667b7e5a20" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a655f8509dcdeb1d9fdc5baed73522d45" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year__month__weekday_1aa7611eb26172e286d894da06af3a14f6" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1year__month__weekday_1ac96dc8514676005aebd92ca99adcc45a" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a111b0830ad3d6d90a978779974138a0d" kind="function"><name>index</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a4ea4a1f5e8323f5bda1538e664dc7d5d" kind="function"><name>weekday_indexed</name></member>
+    <member refid="classdate_1_1year__month__weekday_1ae5552a8f01baef8f7d45e353bfc9b762" kind="function"><name>operator sys_days</name></member>
+    <member refid="classdate_1_1year__month__weekday_1af7b6d017b5fc657da6b7741c3c7eedf0" kind="function"><name>operator local_days</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a9298bd47d32e511e6bdbcdce5af44d9a" kind="function"><name>ok</name></member>
+    <member refid="classdate_1_1year__month__weekday_1ab79a13f231b61d98fa8affcf21437f1c" kind="function"><name>from_days</name></member>
+    <member refid="classdate_1_1year__month__weekday_1a66c2b1d5b61944c0e7dbcc37ffa6b5df" kind="function"><name>to_days</name></member>
+  </compound>
+  <compound refid="classdate_1_1year__month__weekday__last" kind="class"><name>date::year_month_weekday_last</name>
+    <member refid="classdate_1_1year__month__weekday__last_1a095004d499399631b6999949fc39675e" kind="variable"><name>y_</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a5b85108c3cadd05588abd9479d5c9ab1" kind="variable"><name>m_</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a0cb3ffc322547fec73495e1a5687759c" kind="variable"><name>wdl_</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a33b364cc472102ab50e9b536651d3baa" kind="function"><name>year_month_weekday_last</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a30392ea13211984c01036e38af193c2c" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a798953fb22ff6f7cdcdc8dafb6f85dce" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1ad220146cf9ad32c4a1c3bdcbf61ab64f" kind="function"><name>operator+=</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1abc86c79f96d1930b1ced0aab68ea468b" kind="function"><name>operator-=</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1ae487e3bc6d3af9c7e097b6d277178e32" kind="function"><name>year</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a8fb46528e17889f47816c0150b18a156" kind="function"><name>month</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a6491e4bb7f805ff816f8826b7198a256" kind="function"><name>weekday</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1acad8d47b76e5cd57dfbeae8a6e727a4c" kind="function"><name>weekday_last</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a7c56c9fb1e69d3c4a84dc9988f40625d" kind="function"><name>operator sys_days</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1aee29d96121750ffb8e20afccc9fd2774" kind="function"><name>operator local_days</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a19524f013798fcc5dbfc19b4f7282bb1" kind="function"><name>ok</name></member>
+    <member refid="classdate_1_1year__month__weekday__last_1a51cc2035001f423694cceac6f59acb6c" kind="function"><name>to_days</name></member>
+  </compound>
+  <compound refid="namespacedate" kind="namespace"><name>date</name>
+    <member refid="namespacedate_1a175fea3ee38ed788cb7789dcbcd72e32" kind="enum"><name>@0</name></member>
+    <member refid="namespacedate_1a175fea3ee38ed788cb7789dcbcd72e32a98cdabe1cc8baf888e526f082fe82fcb" kind="enumvalue"><name>am</name></member>
+    <member refid="namespacedate_1a175fea3ee38ed788cb7789dcbcd72e32aef22e7ac395adaceea83678779f98b1a" kind="enumvalue"><name>pm</name></member>
+    <member refid="namespacedate_1adf571d57f07056294fc3cff11a1e9f07" kind="typedef"><name>days</name></member>
+    <member refid="namespacedate_1af07192c7fc555062e17d897deb865613" kind="typedef"><name>weeks</name></member>
+    <member refid="namespacedate_1acb8b946ca6b26e58f3cb8eff45b60936" kind="typedef"><name>years</name></member>
+    <member refid="namespacedate_1a005843da29d15b8741d6d744fd0bc5bf" kind="typedef"><name>months</name></member>
+    <member refid="namespacedate_1a79aceba3594c9da2a7f09b0b992be3e2" kind="typedef"><name>sys_time</name></member>
+    <member refid="namespacedate_1ae5b7953f5a7367396877454e5a88b809" kind="typedef"><name>sys_days</name></member>
+    <member refid="namespacedate_1adcbf0401c4632c85be5cae32930ae631" kind="typedef"><name>sys_seconds</name></member>
+    <member refid="namespacedate_1adc9dd2e86274818079be9919f3ff0efd" kind="typedef"><name>local_time</name></member>
+    <member refid="namespacedate_1a19108953dec934a2d04cdd8b8102bfba" kind="typedef"><name>local_seconds</name></member>
+    <member refid="namespacedate_1a396e62efd18a8a3544e9f09d91ef7eb3" kind="typedef"><name>local_days</name></member>
+    <member refid="namespacedate_1a738de58740c3159dd2c14a1db15178c1" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a65722134cf629ed2ba291b268ee3e85e" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1aa6a3b6eac7dc66c78d2514dc2eb0e5f4" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a44e2ca7658f5b99b529ccf3d89f0c2ac" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a4b9de142ee806e758799a28bcafcc998" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a8adaf652acea0acb996242300edd11d9" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a6f8acf54f4ec1a5ae38449af948dfe2b" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a400b093c2528fb0b3adf107c9f9e3d16" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a13e27944d8eb820cc280356384c100a7" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a05360141ee3b07eb890985e59a7b125e" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a29a697934e10ee81bc9579d62eae73fb" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a67787991bfb6ac112ab414735b2d53a0" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1af09f26058b95fca8801c9de0045b9bec" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a8535390bffcd3cba0992da4bfc23ba90" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a732de66684b1b32869c3f1c5ef5297e7" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a8aa6e487adcde5c7b7437a268ecd5f98" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a82be032ea6387039aab96adb36a52ed3" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1aa270771d06d6aca21d903cb402522ab3" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1af99467aa924b97dd683a53deb81f37e1" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a499d9e1919783ce5e292cdc932087ab8" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1ac972b9cacf284f0686c4d0e67d1db031" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a8b5fc24b52d1203b5e51ba1b233f7f17" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1af37efd1e623b3af9d3cfaef6cd920f17" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a4506965880693268baa17792a37a93d8" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a9f4c12e286d5abc2d5e73c040e4992ec" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a3b5a1a87e5ee8092e23e90a206363a1b" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1afb8042576615da3b89608154597228db" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a7179c6158059fd6cff3106e262a8538b" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1ac68a11aa133aa1720bc704c802f2e074" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a5e0f11b007c2cd5f1ed921640501f556" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a9b9a85fe8330d2f2ff230a49ec7705f4" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a45841cc62ab1c8a5de837125498f3016" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a0a9ab023f3e5ddf4e0934d72ec4ab61e" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a9e4938dae3c5ac59aba34df877156865" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a15f8ef0cc4ebd20dcae13b122597230c" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a2a4f2baaf8711639357e67fce1622a0f" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1ab76160951992f4f2339d5e575c8cbd7b" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a6c55abcb8ce6f09b0e002578379431b9" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1ab76b4a628f234ffd1d9bfdffe592183c" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a550462749534da9961fe549f26eb122e" kind="function"><name>operator/</name></member>
+    <member refid="namespacedate_1a797d22fa1abe76dcaa63500561ec37fe" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a917b00f8df9588eff035a7f1b81f79a7" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1acb2211372e9281769fae4fab3d82cd93" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1a70e7968a4183977436377714d6cb63ed" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1aa42f3c31bb23193a6bc925fa98521aab" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1a0cd159b63a81fdfc349d32e8db5825ef" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a1a05337ec366df3812ddd7e08f9063ed" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ac47420bda3312118e42b2b28c67ea24e" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a248109a457512f6cd5e7fe3051050908" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1ac8d31d6364ab40223721e130a7ec3434" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a33b57cfd037c2cbabdc2cf0ac5af2c48" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a6693959b06a08e8856f5251fab0d0fb7" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a4a103bc66c0623a61450be3eb701b366" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a81423a5c1008935363d3b854b51e9892" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1a70200fb3bcb823cb43f1d5854fd495ec" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1aee66293ac895c39e9c617fdaf3af6c28" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1a81d39fab48e017d740408b38de86ffed" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a3a48dd59cc45164715335354b4eb046a" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1aa45b0592ba9c40e45f75442783dd7faa" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ab8fdb5a4039c04390947d721dad8d931" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1aab7ee826de00f29e3bde3872bdcdca68" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a9cd427bde4f1b8d310af2d94f9068624" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a42c845ef892d14ac628310607371a077" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a271bf881f64c965441b3cb8b199a59a1" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1ada3fab4c7b85cfb37fa529af19771b6e" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1a6b4dfb85b3b9ae862c83bc9090d5699b" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1a993185da6863a07a708e63e7ef660a1d" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1ac08c8d1fda91bd9200cb40589737cb50" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1ad275f37aaf122391a0f9f71806fee604" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a13840edbd42e871a37a91a21a776c87c" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ab309decf94c272ef08d9c662ee00f71c" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a8702cf32648a55bdfa33e799fe553ff8" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1abc64e59390e042da9cd5d121dd8c7bfe" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a7afa959e791ba0da69554fd892e20fcc" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a5d52bd9a895e80916aa064882a769f30" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a380af855fe79269f89e6e33e26214c13" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ab10dcd4dfb6b8a5713e0641276843b91" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1afbd2d136106e856c6f3d70eaa604c174" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a1f280d36ca71492981da26960cc3566c" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1aeba2ca917d1ae16bc545fd5f16c9099c" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a3aa1d46702c72386c0d503e32387b8c1" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a27eef23781f3d8297310843952947ec4" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a3c69ae0dfec738499d3562d06042fa17" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a4b8a42735b4020e60381c76ccc0e753e" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1af0352c0fa35a41a87f41963c7378e75f" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a00c466d95eacd06d53457c77962e48e8" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a25b8be2c8beaf1a6fbd8d8d692d375a0" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1aa7bcc86efff33c76c476112a5fb28125" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a2377e3521fabe64da9dafed864d3c0b4" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1afe915104e87b0cd640595d12689700ca" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1a5234b1b362fe55dff08e2b4322d4ae98" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1ae4c5bb20595e4f5309882dbe7ec82792" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a8a540b713ee30f68348ba6b835755f84" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ab9f59c676d84833960c41a12775e8d58" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a47c18c7890b0ef8b92bf03f8c2825b10" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a1c9e9891a588c709db1dccd624a98631" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a2407ba68bfc6f8c7d7eca3ac780e3369" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a6d2066ae70838184aba6b6e77cca1f6a" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ad45890095a967be9d2b022799f2fea4a" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1ab85a0e2fa0a5c6e590c9f938689baa73" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a3b44aa0d2c2875c4744f22709b40cdcd" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a957310fd0eefa25833489885d36f37f7" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1aef6228ea117503f244d00730132a9164" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1a8fff62204d4e8c93fce5ff573232cb82" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1a86d65275b5da0fa867d48e1fd4b8ca85" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1aae5f72968db998f331286b271a89bc26" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a02ee20a3bb7aae65854ddafad87eb7b2" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a55dbbbe7db8b534a74ff10190dad262b" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1af8e631b6df4406a6433588915ab8f717" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1afcf2ac23e45df08a02ad5bdacf0830b2" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1a2907dff1804711f29d62f53144e094ec" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1a3b8074bcd99b403736a36c75c97e34ad" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1a2039cfaaf366459d58e5e85bbe0a2c90" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a38bc0d866a9316748492aa2df1a0eab7" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a0f77190eca66247187248271b1dee7f2" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a851c40136e2efbcdaad129572d9a43ed" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a94f58ecfa45d3c6c8a94609b860d8abe" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1ad5105c214cf0c5cc2286fc24cc9ebd01" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1ae3f2cc7d0fc787ebcf5f7088bc20a6b1" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a37b3669de440a4637d3bbdd1f188d455" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a91a7043a0a49bba07bfce6b864180094" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a564f051842ce14c864bd634a60fd6ec3" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a59bbec8f62e4d53d023af2a228800017" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1a903ef4bff3fc3cb84fbcf869b7ad222f" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1aa0445481ada66f561a70834c3a551ede" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1aed6f8d54525616ee9e21e6a3764e9e5e" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a06db787c55e541a81c15ae2bef39e880" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1aadf991f026d3331c1f7dcd4389655ff9" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a1f3d521a0a75c171ac3e2790f5f75d7a" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a0d1591b62f4d2f1d9baca93eafcc4c98" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1ad035d7184bb4f37b908242b6015ae9af" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a973fbb7e1a5c97eeefcac31bfbab23b7" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a7d5d6140a9b4a5d520d8e3e26ebeaf22" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a73e131141e5d6868a6a08598cddf3d21" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1ac939721182628dea9f9c7c34feed6ef9" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1aff2bec3947ca404143d72c2680e8adcf" kind="function"><name>operator&lt;</name></member>
+    <member refid="namespacedate_1aea24ce60f27baebe5a9763e11c0639cc" kind="function"><name>operator&gt;</name></member>
+    <member refid="namespacedate_1acd5a260001b6b3808b5b7bb8754f7dca" kind="function"><name>operator&lt;=</name></member>
+    <member refid="namespacedate_1a1ec04280e79280d6938d604508bae1bd" kind="function"><name>operator&gt;=</name></member>
+    <member refid="namespacedate_1a326f2ed5129ef84e09e2f57cf390ad3d" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a5fd824d1bcbd228a9988c246d71fa1c3" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a103239921cf56c1182a2f5aa31e4218b" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a7afd5ccea50b003b570ade38caaa3517" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a4539a6b08795705143320cd8805cda99" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a43ea3c116f3eb9da6c37e45adaadee89" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a0ec7e4b21f08056d3ad8f5d5e240d0e5" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a67cec488f2112d86659eec0ebf01f697" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1af5c0a9929405ac6b73e0dc8be4cb0e29" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1afedbd6460ec62996d15d84f34176286a" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a1ce7aaafb88df167925884bc1afeacc2" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1abe26fad14971f94cf362e73db9c4b9c9" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a6b0e2e2887af25fc547b1ad47848f44d" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a6ccf69d7ef5785f12fea050ed9206972" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a5f13387cf336d6e0fa8026eafb1747aa" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1aed3169961d840f33c60e650d4e01db79" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1afae86d82fbd041a6255d5fb76497cc8a" kind="function"><name>operator==</name></member>
+    <member refid="namespacedate_1a46116264a6688671fc25beb64e3c8555" kind="function"><name>operator!=</name></member>
+    <member refid="namespacedate_1a4acdd57c019cb8f8cbb71fd6ed4d6961" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a1b86600147a057d2ec59e2286b84d186" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a71a3fc789a210ba51870bda3f117230f" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a764beedb14f52e3c1fdbeb5423c363ec" kind="function"><name>operator+</name></member>
+    <member refid="namespacedate_1a8372235a00bf50a1033070aa4f53a779" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1aff7864e27c03c9aa649d26e542843490" kind="function"><name>operator-</name></member>
+    <member refid="namespacedate_1a2e10d9652fd0f531dac68697624d34f9" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1aa22a1d5229e93c5e653e7563fcabfb72" kind="function"><name>trunc</name></member>
+    <member refid="namespacedate_1a7e71a624e4f24c1ad09eea33b8ce4c87" kind="function"><name>floor</name></member>
+    <member refid="namespacedate_1a137f7c160374c629a39afb6b53f18cc2" kind="function"><name>round</name></member>
+    <member refid="namespacedate_1aec0d366f4018e3655c6aea0451560533" kind="function"><name>ceil</name></member>
+    <member refid="namespacedate_1ad15b8066673c9f9e74eaceb7f3d8a977" kind="function"><name>abs</name></member>
+    <member refid="namespacedate_1adc041b6a8ef7135ee16b665de447eac5" kind="function"><name>floor</name></member>
+    <member refid="namespacedate_1a15d195fd10c89bd2351a2da8bfabbb12" kind="function"><name>round</name></member>
+    <member refid="namespacedate_1ae3a533d82ee1093f257ba865d6d190f3" kind="function"><name>ceil</name></member>
+    <member refid="namespacedate_1aae52289ddb56139bfd2d36f1d3cc6283" kind="function"><name>trunc</name></member>
+    <member refid="namespacedate_1a499d5617043d1d9ac6ffb942a3f3e205" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1aedee617419ad3679e3b875c8c667c12f" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a49b6c3d4337124b6a2eb4b155c1917d2" kind="function"><name>make_time</name></member>
+    <member refid="namespacedate_1a6e23a4c4f5590e8440edcee1a6d28f4c" kind="function"><name>make_time</name></member>
+    <member refid="namespacedate_1afcaa8c6d3b8f8574212492d7ffe43dcd" kind="function"><name>make_time</name></member>
+    <member refid="namespacedate_1af7ea6860d47dc918dbd6d452fb6190a6" kind="function"><name>make_time</name></member>
+    <member refid="namespacedate_1a10625596de59bf16a914dc4e5d8202ff" kind="function"><name>make_time</name></member>
+    <member refid="namespacedate_1adfe318df190695a059619bfe8007b0cc" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1ac76dc684b4fd759e748322801cf24e6a" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1a1f45f1e425c88465bd341bfe98d15770" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="namespacedate_1ad99dc9cb136d510f92e8fc2c4bfc14a7" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a1037cce10376fad7e0d082c02bcf5262" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a149e653d0c19d7d31c3400cf2c76ea0e" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a01388e0e091f5ddd8162f56309dbf3ef" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a58c4072ebd9fb68a770487f894002bf2" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a62f27996c7d4fc9a7711657409d266c7" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a0884022682fe1ebc7bc78a3e4d8a736c" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a8a423f7b88b3a11316274e6549e3c17c" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a8e3cb68b403b25b8b2bd01a84dd2d57c" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1ae0c303fca7b648029bd594aed1469c17" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a877f8169e9e16cb6e0d1c020f04c6851" kind="function"><name>format</name></member>
+    <member refid="namespacedate_1af7ff66572d7c6c23b78ced943b149532" kind="function"><name>imbue</name></member>
+    <member refid="namespacedate_1aad529181dcbd23596bffa7f231d09c30" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1a986dc629a987fefaa8f8de5d62d122d8" kind="function"><name>str</name></member>
+    <member refid="namespacedate_1a75743a4d77010484dbeefea06af34182" kind="function"><name>format</name></member>
+    <member refid="namespacedate_1a18e2d49611b368acaab0da15c2b37ffe" kind="function"><name>format</name></member>
+    <member refid="namespacedate_1ac16cfe3b4d7c418eb779e14fae0db96b" kind="function"><name>to_stream</name></member>
+    <member refid="namespacedate_1ac6bc54d4d0fee1e45574e25bd2316447" kind="function"><name>format</name></member>
+    <member refid="namespacedate_1a5b67c565056c881a7cc3c478f3f87d56" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a39f60f1116fd3dc214a626cdcb9c56a1" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a4f86267b82522eaffe61c2432ec438ae" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a3d58560c18f73ab7c35ea29d039970d4" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a6f1795afc1942edccb2bc11a8fc50bea" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a5e5b5a58f2fa86c8b9f2cbd38d861a97" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1afabcdb8cfa67946688ffb9546f26d376" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a1d0960596bbe18274bd29e672134f9c1" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1af7d7b8446b242eb7247fbe8934be884b" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a81a5440c4955c47a3d72dab66023b270" kind="function"><name>from_stream</name></member>
+    <member refid="namespacedate_1a0eb4780f63b3db588c26d4fab3069d5e" kind="function"><name>operator&gt;&gt;</name></member>
+    <member refid="namespacedate_1af9369efdaa9b44e918c1ecf410a16382" kind="function"><name>operator&lt;&lt;</name></member>
+  </compound>
+  <compound refid="namespacedate_1_1detail" kind="namespace"><name>date::detail</name>
+    <member refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054a" kind="enum"><name>classify</name></member>
+    <member refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054aa435099c73c46c8112e828474018f53dd" kind="enumvalue"><name>not_valid</name></member>
+    <member refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054aa896c55cc5e46fab38ce9f51ebf7bfcd3" kind="enumvalue"><name>hour</name></member>
+    <member refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054aa0a7d55be9d12a369a6a8da0fb517fba4" kind="enumvalue"><name>minute</name></member>
+    <member refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054aaa9f0e61a137d86aa9db53465e0801612" kind="enumvalue"><name>second</name></member>
+    <member refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054aaa8f4bf00b07926ad56626ae52019abda" kind="enumvalue"><name>subsecond</name></member>
+    <member refid="namespacedate_1_1detail_1a4f8cb9bfd750eb77b0df0379b1283855" kind="function"><name>trunc</name></member>
+    <member refid="namespacedate_1_1detail_1a2b9554b90b252e4260e3b390ddc13b89" kind="function"><name>trunc</name></member>
+    <member refid="namespacedate_1_1detail_1a16721f884c348136e5fa12ff687140ef" kind="function"><name>abs</name></member>
+    <member refid="namespacedate_1_1detail_1aa61b1967e725f0705ca780e858ef2970" kind="function"><name>abs</name></member>
+    <member refid="namespacedate_1_1detail_1a2f83f52847546bd7a019f04864aa88d9" kind="function"><name>extract_weekday</name></member>
+    <member refid="namespacedate_1_1detail_1aae0a6aa8d638275382c11e703a18d095" kind="function"><name>read_char</name></member>
+    <member refid="namespacedate_1_1detail_1a0f5b8ce3fc13b73664f5df3df33dcfd4" kind="function"><name>read_unsigned</name></member>
+    <member refid="namespacedate_1_1detail_1a5554c33cd3b8193a6ad0fbd684b0b486" kind="function"><name>read_signed</name></member>
+    <member refid="namespacedate_1_1detail_1acc406a54f9d73ab043bfc7c905185721" kind="function"><name>read_long_double</name></member>
+    <member refid="namespacedate_1_1detail_1a54db98d331e44d62c0466b03add3b06f" kind="function"><name>read</name></member>
+    <member refid="namespacedate_1_1detail_1a4c40cf530fca0385d6df1b7688a7f95d" kind="function"><name>read</name></member>
+    <member refid="namespacedate_1_1detail_1a04f33a32f05be39048493fff71c596e5" kind="function"><name>read</name></member>
+    <member refid="namespacedate_1_1detail_1aecb203889c8250f8a1f58dc59c7ad504" kind="function"><name>read</name></member>
+    <member refid="namespacedate_1_1detail_1a0bbcb0ddc6ed0d1529b78fc547b61bc2" kind="function"><name>read</name></member>
+    <member refid="namespacedate_1_1detail_1aa89ac456067c9bb381b2aa1cc131980a" kind="function"><name>read</name></member>
+    <member refid="namespacedate_1_1detail_1a0fe7ae2ed43494a0b74b93e78522e2d1" kind="function"><name>to_string</name></member>
+    <member refid="namespacedate_1_1detail_1a159c1bfff32e07792da3d10a957ac240" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a8b773ca54d33f3af8e2aa9312a92a20d" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1af689a7b8c9afc518080d8b0157abbaae" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1abdf6b08aabf030af5b5572bf93dd999b" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a6d3108036404d7eadda6db6a4dff21a3" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1ac7503f8c053ac956c28f8b32e509c1fd" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a7faa2f0e084d2cbe4f0ed6e6a980dbd0" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a733a198b7d89cf1cccfb73e638a0bd77" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a9e99abefe4baf5b44b067c59e24c6c68" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a8f24cea7b8327daf822932e5e5f9d6f5" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1ac37a73cce39c6f1c877013c03b1ad1de" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a0fb61aec7c6cf268c5f289310a7d08c9" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a4ddd73e7dc89ed924df2dff2328c4dd1" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1ac710855b7c268bac68ee350e1c8e34db" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a18e79ec05966a44a77c4de30e8944206" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a753092d97550b5329c60ffbbbf76e9f1" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a61e0e99ebed909162bf0553e570fb7e5" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1a7d10f57869ef0c776cd4b2066bf8e8e0" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1ac7029d749827fe0cab8161a8c7991f43" kind="function"><name>msl</name></member>
+    <member refid="namespacedate_1_1detail_1abea3c30136e0e2335f0a23125e5fc0d1" kind="function"><name>get_units</name></member>
+    <member refid="namespacedate_1_1detail_1a542a89880c38c33ee6143b8e754a414c" kind="function"><name>get_units</name></member>
+    <member refid="namespacedate_1_1detail_1ace018575b2b543dd45c59283cf6934dd" kind="function"><name>get_units</name></member>
+    <member refid="namespacedate_1_1detail_1a32ee8c8fda41ca0e181ba0e904430326" kind="function"><name>get_units</name></member>
+  </compound>
+  <compound refid="namespacedate_1_1literals" kind="namespace"><name>date::literals</name>
+    <member refid="namespacedate_1_1literals_1a69e2181e335259f5d827a689e3a156ba" kind="variable"><name>last</name></member>
+    <member refid="namespacedate_1_1literals_1af74ed14fd96db48ccc311bba2cd6b5ed" kind="variable"><name>jan</name></member>
+    <member refid="namespacedate_1_1literals_1a8096bd2a5068976f59ad16cd1ce44c93" kind="variable"><name>feb</name></member>
+    <member refid="namespacedate_1_1literals_1aca28754df8fa08ecc96d676de8f1e5da" kind="variable"><name>mar</name></member>
+    <member refid="namespacedate_1_1literals_1a044af235343f7586e45400f02b792cb2" kind="variable"><name>apr</name></member>
+    <member refid="namespacedate_1_1literals_1aa9809cb9c83eb2dcedfc3f080ac7025c" kind="variable"><name>may</name></member>
+    <member refid="namespacedate_1_1literals_1a26b105ea66c9ec3936b0d855d066ccf6" kind="variable"><name>jun</name></member>
+    <member refid="namespacedate_1_1literals_1a41acc8d7266b5c213d11ee09e516d84a" kind="variable"><name>jul</name></member>
+    <member refid="namespacedate_1_1literals_1a9078347ae9a1f6e4e9ab4cc100ef8037" kind="variable"><name>aug</name></member>
+    <member refid="namespacedate_1_1literals_1a844d47215b2f8d27a77719d418e55298" kind="variable"><name>sep</name></member>
+    <member refid="namespacedate_1_1literals_1a7138c6abade6ab5f79eddcf6c750576f" kind="variable"><name>oct</name></member>
+    <member refid="namespacedate_1_1literals_1a17bd471dc722f11b3841218d1fd78ffd" kind="variable"><name>nov</name></member>
+    <member refid="namespacedate_1_1literals_1a966275491d1bc7eebda3f0446e51ee0a" kind="variable"><name>dec</name></member>
+    <member refid="namespacedate_1_1literals_1aad7f657a7e032c632f18894eff1c030e" kind="variable"><name>sun</name></member>
+    <member refid="namespacedate_1_1literals_1a408be38a2a1ef37a7bfe2da0939f94ae" kind="variable"><name>mon</name></member>
+    <member refid="namespacedate_1_1literals_1a0736fb9d7a31754f2c1a940187890796" kind="variable"><name>tue</name></member>
+    <member refid="namespacedate_1_1literals_1a42fd2852fd18139e03f1d31264ddcd36" kind="variable"><name>wed</name></member>
+    <member refid="namespacedate_1_1literals_1abff29c3d080b55586b4067f6f42b8532" kind="variable"><name>thu</name></member>
+    <member refid="namespacedate_1_1literals_1a8abb62ffb0f72cfd0372a567e133f2b6" kind="variable"><name>fri</name></member>
+    <member refid="namespacedate_1_1literals_1abec7ea90e1a93502c8d9e5fdee4cc945" kind="variable"><name>sat</name></member>
+    <member refid="namespacedate_1_1literals_1a3f6eb8a823ff5e809fdc07245e9c8219" kind="function"><name>operator&quot;&quot;_d</name></member>
+    <member refid="namespacedate_1_1literals_1a8d8fc72fda866b3cc5ce3e2424d7aded" kind="function"><name>operator&quot;&quot;_y</name></member>
   </compound>
   <compound refid="namespacegr" kind="namespace"><name>gr</name>
   </compound>
@@ -45,6 +836,23 @@
   <compound refid="api_8h" kind="file"><name>api.h</name>
     <member refid="api_8h_1ad559be21ddcacf19ab6f84dc5de3869c" kind="define"><name>SAS_API</name></member>
   </compound>
+  <compound refid="date_8h" kind="file"><name>date.h</name>
+    <member refid="date_8h_1a1262e7cef5d1d56fb1f1ed2a43bfe4d1" kind="define"><name>CONSTDATA</name></member>
+    <member refid="date_8h_1a98c025909efef28d356780da89fc44b6" kind="define"><name>CONSTCD11</name></member>
+    <member refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kind="define"><name>CONSTCD14</name></member>
+    <member refid="date_8h_1a10a59554805ac7ce3905fd3540f98137" kind="define"><name>NOEXCEPT</name></member>
+    <member refid="date_8h_1a3669f0d0de342066134da35844c2e1ad" kind="define"><name>HAS_CHRONO_ROUNDING</name></member>
+  </compound>
+  <compound refid="include_2sas_2decision__maker_8h" kind="file"><name>include/sas/decision_maker.h</name>
+  </compound>
+  <compound refid="lib_2decision__maker_8h" kind="file"><name>lib/decision_maker.h</name>
+  </compound>
+  <compound refid="decision__maker0_8h" kind="file"><name>decision_maker0.h</name>
+  </compound>
+  <compound refid="ed__threshold_8h" kind="file"><name>ed_threshold.h</name>
+  </compound>
+  <compound refid="ed__threshold__impl_8h" kind="file"><name>ed_threshold_impl.h</name>
+  </compound>
   <compound refid="group__defs_8dox" kind="file"><name>group_defs.dox</name>
   </compound>
   <compound refid="main__page_8dox" kind="file"><name>main_page.dox</name>
@@ -52,6 +860,11 @@
   <compound refid="psql__insert_8h" kind="file"><name>psql_insert.h</name>
   </compound>
   <compound refid="psql__insert__impl_8h" kind="file"><name>psql_insert_impl.h</name>
+  </compound>
+  <compound refid="sas__buffer_8h" kind="file"><name>sas_buffer.h</name>
+  </compound>
+  <compound refid="sas__buffer__impl_8h" kind="file"><name>sas_buffer_impl.h</name>
+    <member refid="sas__buffer__impl_8h_1a9148708527d1c6fa46eda4a937382662" kind="define"><name>MAX_ESC_BUFFER</name></member>
   </compound>
   <compound refid="group__block" kind="group"><name>block</name>
   </compound>

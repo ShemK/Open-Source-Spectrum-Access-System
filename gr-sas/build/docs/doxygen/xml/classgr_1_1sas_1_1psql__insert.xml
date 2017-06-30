@@ -48,30 +48,30 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="6">
+      <node id="129">
         <label>gr::sas::psql_insert</label>
         <link refid="classgr_1_1sas_1_1psql__insert"/>
-        <childnode refid="7" relation="public-inheritance">
+        <childnode refid="130" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="8">
+      <node id="131">
         <label>gr::sas::psql_insert_impl</label>
         <link refid="classgr_1_1sas_1_1psql__insert__impl"/>
-        <childnode refid="6" relation="public-inheritance">
+        <childnode refid="129" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="7">
+      <node id="130">
         <label>gr::sync_block</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="9">
+      <node id="132">
         <label>gr::sas::psql_insert</label>
         <link refid="classgr_1_1sas_1_1psql__insert"/>
-        <childnode refid="10" relation="public-inheritance">
+        <childnode refid="133" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="10">
+      <node id="133">
         <label>gr::sync_block</label>
       </node>
     </collaborationgraph>
