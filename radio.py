@@ -22,7 +22,7 @@ def main():
     # TODO: the ability for the user to choose input parameters
     # TODO: To check if the input from the socket is a JSON Object
 
-    newCbsd = cbsd.Cbsd("cbd562","A","cbd2","hask124ba")
+    newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba","yap")
     newCbsd.add_registration_parameters("callSign","CB987")
     json_encoder = json.JSONEncoder()
     json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())

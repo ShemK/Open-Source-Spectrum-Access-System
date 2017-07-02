@@ -9,6 +9,7 @@ class Cbsd(object):
     _userId = "cbd1"
     _state = "Unregistered"
     _cbsdSerialNumber = "hask124ba"
+    _cbsdInfo = "yap";
     _cbsd_registered = False
     _grant_state = None
     _registrationRequestObj = None
@@ -32,11 +33,12 @@ class Cbsd(object):
     _reliquishmentRequestObj = None
 
 
-    def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber):
+    def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber,cbsdInfo):
         self._fccId = fccId
         self._cbsdCategory = cbsdCategory
         self._userId = userId
         self._cbsdSerialNumber = cbsdSerialNumber
+        self._cbsdInfo = cbsdInfo
         self._registrationRequestObj = self._create_registration_request_obj()
 
     def _create_registration_request_obj(self):
@@ -45,6 +47,7 @@ class Cbsd(object):
                                         "cbsdCategory": self._cbsdCategory,
                                         "userId": self._userId,
                                         "cbsdSerialNumber": self._cbsdSerialNumber,
+                                        "cbsdInfo": self._cbsdInfo
                                         }
                                 }
         return temp_registrationObj
@@ -194,7 +197,7 @@ class Cbsd(object):
 
     def set_relinquishmentRequest(self):
         self._relinquishGrant = True
-            
+
     def get_heartbeatRequestObj(self):
         self._create_heart_request_obj()
         return self._heartbeatRequestObj

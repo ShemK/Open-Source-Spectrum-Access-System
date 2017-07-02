@@ -74,7 +74,7 @@ void initialize_node_parameters(struct node_parameters *np) {
   // initial USRP settings
   np->rx_freq = 1000e6;
   np->rx_rate = 4e6;
-  np->rx_gain = 15.0;
+  np->rx_gain = 0.0;
   np->tx_freq = 1000e6;
   np->tx_rate = 4e6;
   np->tx_gain = 15.0;
@@ -263,9 +263,9 @@ int main(int argc, char **argv) {
   if (send_flag) {
       // send burst of packets
     while(sig_terminate == 0) {
+      
       pmt::pmt_t instruction = pmt::make_dict();
       pmt::pmt_t key =  pmt::string_to_symbol("Freq");
-      freq = freq + count*np.rx_rate;
       printf("New Freq: %f\n",freq);
       pmt::pmt_t value = pmt::mp(freq);
       instruction = pmt::dict_add(instruction,key,value);
@@ -275,10 +275,12 @@ int main(int argc, char **argv) {
               (struct sockaddr *)&udp_server_addr,sizeof(udp_server_addr));
       usleep(1e6);
       count++;
+      freq = freq + np.rx_rate;
       if(count > 150e6/np.rx_rate){
         count = 0;
         freq = initial_freq;
       }
+      
     }
   }
   close(udp_client_sock);

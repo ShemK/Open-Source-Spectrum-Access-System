@@ -2216,7 +2216,7 @@ void *ECR_esc_worker(void *_arg)
 void ExtensibleCognitiveRadio::set_esc_channel(int channel)
 {
   esc_channel = channel;
-  int fd_shm = shm_open("buffer", O_CREAT | O_RDWR, 0777);
+  int fd_shm = shm_open("sas_buffer", O_CREAT | O_RDWR, 0777);
   if (fd_shm == -1)
   {
     perror("failed to create shared memory\n");
