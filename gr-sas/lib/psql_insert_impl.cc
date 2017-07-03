@@ -40,6 +40,15 @@ namespace gr {
     }
 
     void
+    psql_insert_impl::msg_samp_rate(pmt::pmt_t msg)
+    {
+    bandwidth = pmt::to_float(msg);
+    bwstr.str("");
+    bwstr.clear();
+    bwstr<<bandwidth;
+    }
+
+    void
     psql_insert_impl::gps(pmt::pmt_t msg)
     {
     latitude=pmt::to_float(pmt::vector_ref(msg,0));
@@ -92,15 +101,18 @@ namespace gr {
       longitude=0;
       latstr<<latitude;
       longstr<<longitude;
+      bwstr<<0.0;
       occ = new float[num_channels];
       occstr<<0.0;
       //message
       message_port_register_in(pmt::mp("latlong"));
       message_port_register_in(pmt::mp("center_freq"));
       message_port_register_in(pmt::mp("decision"));
+      message_port_register_in(pmt::mp("samp_rate"));
       set_msg_handler(pmt::mp("latlong"), boost::bind(&psql_insert_impl::gps, this, _1));
       set_msg_handler(pmt::mp("center_freq"), boost::bind(&psql_insert_impl::center_freq, this, _1));
       set_msg_handler(pmt::mp("decision"), boost::bind(&psql_insert_impl::decision, this, _1));
+      set_msg_handler(pmt::mp("samp_rate"), boost::bind(&psql_insert_impl::msg_samp_rate, this, _1));
     }
 
     /*
@@ -129,7 +141,7 @@ namespace gr {
 
       //std::cout << "'" << buf.size() << "'\n";
 
-      std::string sql = "INSERT INTO SpectrumInfo (timetag, latitude, longitude, occ, center_freq,psd) VALUES ('"+s+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','{"+r+"}');";
+      std::string sql = "INSERT INTO SpectrumInfo (timetag, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
       //std::cout<<sql;
       w.exec( sql);
 

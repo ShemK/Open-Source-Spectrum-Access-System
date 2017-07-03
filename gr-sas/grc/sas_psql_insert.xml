@@ -52,4 +52,10 @@
     <optional>1</optional>
   </sink>
 
+   <sink>
+    <name>samp_rate</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
 </block>

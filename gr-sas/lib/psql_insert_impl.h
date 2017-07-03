@@ -60,9 +60,9 @@ namespace gr {
       std::string dbstring = "dbname = rem user = wireless password = wireless hostaddr = 127.0.0.1 port = 5432";
 
       pqxx::connection *c;
-
+      double bandwidth;
       float latitude, longitude, center_frequency;
-      std::ostringstream latstr,longstr, cent_freq, occstr;
+      std::ostringstream latstr,longstr, cent_freq, occstr,bwstr;
 
      public:
       psql_insert_impl(int N, int num_channels);
@@ -71,6 +71,8 @@ namespace gr {
       void gps(pmt::pmt_t msg);
 
       void center_freq(pmt::pmt_t msg);
+
+      void msg_samp_rate(pmt::pmt_t msg);
 
       void decision(pmt::pmt_t msg);
       // Where all the action really happens
