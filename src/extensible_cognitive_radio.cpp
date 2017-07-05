@@ -1147,10 +1147,11 @@ void ExtensibleCognitiveRadio::reset_rx()
     usleep(1e1);
   }
   int num_rx_samps = 1;
-  while (num_rx_samps > 0)
+  while (num_rx_samps > 0) {
     num_rx_samps = usrp_rx->get_device()->recv(
         rx_buffer, rx_buffer_len, metadata_rx, uhd::io_type_t::COMPLEX_FLOAT32,
         uhd::device::RECV_MODE_ONE_PACKET, 0.01);
+  }
   reset_rx_stats();
   pthread_mutex_lock(&rx_params_mutex);
   ofdmflexframesync_reset(fs);
@@ -1431,11 +1432,12 @@ void *ECR_rx_worker(void *_arg)
       size_t num_rx_samps = 0;
       pthread_mutex_lock(&(ECR->rx_mutex));
 
-      num_rx_samps = ECR->usrp_rx_streamer->recv(
-          buff_ptrs, ECR->rx_buffer_len, ECR->metadata_rx);
+      num_rx_samps = ECR->usrp_rx_streamer->recv(buff_ptrs, ECR->rx_buffer_len, 
+                                                      ECR->metadata_rx,0.01,true);
+
       memcpy(ECR->rx_buffer, buff_ptrs[0], ECR->rx_buffer_len * sizeof(std::complex<float>));
       ofdmflexframesync_execute(ECR->fs, ECR->rx_buffer, num_rx_samps);
-      if (ECR->send_to_esc)
+      if (ECR->send_to_esc && num_rx_samps > 0)
       {
         ECR->send_esc_data(buff_ptrs[ECR->get_esc_channel()], num_rx_samps);
       }
