@@ -107,10 +107,24 @@ std::string CentralRemConnector::insert(pmt::pmt_t dict, std::string table)
                 values = values + "'" + std::to_string(pmt::to_double(temp)) + "'";
             }
         }
-        else if (pmt::is_vector(temp))
+        else if (pmt::is_f32vector(temp))
         {
+            std::vector<float> value_vector = pmt::f32vector_elements(temp);
+            values = values + "'{";
+            for (int i = 0; i < value_vector.size(); i++)
+            {
+                values = values + std::to_string(value_vector[i]);
+                if (i != value_vector.size() - 1)
+                {
+                    values = values + ",";
+                }
+                else
+                {
+                    values = values + "}'";
+                }
+            }
         }
-        else
+        else if (pmt::is_symbol(temp))
         {
             values = values + "'" + pmt::symbol_to_string(temp) + "'";
         }
@@ -150,10 +164,25 @@ std::string CentralRemConnector::update(pmt::pmt_t attributes, pmt::pmt_t condit
                 query = query + pmt::symbol_to_string(pmt::nth(i, key_list)) + " = '" + std::to_string(pmt::to_double(temp)) + "'";
             }
         }
-        else if (pmt::is_vector(temp))
+        else if (pmt::is_f32vector(temp))
         {
+            query = query + pmt::symbol_to_string(pmt::nth(i, key_list)) + " = ";
+            std::vector<float> value_vector = pmt::f32vector_elements(temp);
+            query = query + "'{";
+            for (int i = 0; i < value_vector.size(); i++)
+            {
+                query = query + std::to_string(value_vector[i]);
+                if (i != value_vector.size() - 1)
+                {
+                    query = query + ",";
+                }
+                else
+                {
+                    query = query + "}'";
+                }
+            }
         }
-        else
+        else if (pmt::is_symbol(temp))
         {
             query = query + pmt::symbol_to_string(pmt::nth(i, key_list)) + " = '" + pmt::symbol_to_string(temp) + "'";
         }
@@ -184,10 +213,10 @@ std::string CentralRemConnector::update(pmt::pmt_t attributes, pmt::pmt_t condit
                     query = query + pmt::symbol_to_string(pmt::nth(i, key_list)) + " = '" + std::to_string(pmt::to_double(temp)) + "'";
                 }
             }
-            else if (pmt::is_vector(temp))
+            else if (pmt::is_f32vector(temp))
             {
             }
-            else
+            else if (pmt::is_symbol(temp))
             {
                 query = query + pmt::symbol_to_string(pmt::nth(i, key_list)) + " = '" + pmt::symbol_to_string(temp) + "'";
             }

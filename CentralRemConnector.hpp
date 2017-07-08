@@ -2,6 +2,7 @@
 #include <pqxx/pqxx>
 #include <string>
 #include <pmt/pmt.h>
+#include <vector>
 
 using namespace pmt;
 

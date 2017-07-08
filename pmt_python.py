@@ -9,6 +9,13 @@ attributes = pmt.dict_add(attributes, pmt.string_to_symbol("center_freq"),pmt.fr
 attributes = pmt.dict_add(attributes, pmt.string_to_symbol("occ"),pmt.from_double(0.0134))
 attributes = pmt.dict_add(attributes, pmt.string_to_symbol("bandwidth"),pmt.from_double(2e6))
 
+psd_list = []
+for i in range(0,30):
+ psd_list.append(i)
+
+attributes = pmt.dict_add(attributes,pmt.string_to_symbol("psd"),pmt.init_f32vector(30,psd_list))
+
+
 command = pmt.make_dict()
 command = pmt.dict_add(command,pmt.string_to_symbol("table"),pmt.string_to_symbol("spectruminfo"))
 command = pmt.dict_add(command, pmt.string_to_symbol("attributes"),attributes)

@@ -51,30 +51,6 @@ int main()
             db_connector.analyze((const char *)recv_buffer, recv_len);
         }
     }
+    
     close(udp_server_sock);
-    /*
-    pmt::pmt_t instruction = pmt::make_dict();
-    pmt::pmt_t key = pmt::string_to_symbol("UPDATE");
-    pmt::pmt_t instruction_value = pmt::make_dict();
-    pmt::pmt_t select_list = pmt::list1(key);
-    select_list = pmt::list_rm(select_list, key);
-    select_list = pmt::list_add(select_list, pmt::string_to_symbol("occ"));
-    instruction_value = pmt::dict_add(instruction_value, pmt::string_to_symbol("select_list"), select_list);
-    //instruction = pmt::dict_add(instruction,key,instruction_value);
-    instruction = pmt::dict_add(instruction, pmt::string_to_symbol("Life"), pmt::from_long(7123));
-    instruction = pmt::dict_add(instruction, pmt::string_to_symbol("asj"), pmt::from_double(73));
-    instruction = pmt::dict_add(instruction, pmt::string_to_symbol("hjsad"), pmt::string_to_symbol("yo"));
-    pmt::pmt_t key_list = pmt::dict_keys(instruction);
-    db_connector.insert(instruction);
-    pmt_t recv_dict = pmt::make_dict();
-    pmt_t table = pmt::string_to_symbol("channelinfo");
-    pmt_t parameters = pmt::make_dict();
-    parameters = pmt::dict_add(parameters, pmt::string_to_symbol("table"), table);
-    parameters = pmt::dict_add(parameters, pmt::string_to_symbol("attributes"), instruction);
-    recv_dict = pmt::dict_add(recv_dict, key, parameters);
-    std::string data_to_send = pmt::serialize_str(recv_dict);
-    db_connector.analyze(data_to_send.c_str(), data_to_send.length());
-    */
-    // std::cout << pmt::length(pmt::dict_keys(recv_dict)) << std::endl;
-    // std::cout << recv_dict << std::endl;
 }
