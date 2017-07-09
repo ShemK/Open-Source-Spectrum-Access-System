@@ -10,9 +10,9 @@ class ServerPsql {
 	function ServerPsql() {
 		//L$config = parse_ini_file("/usr/lib/apache2/html_configs/config.ini");
 		$this->host = "127.0.0.1";
-		$this->acct = "";
-		$this->password = "";
-		$this->dbName = "";
+		$this->acct = "wireless";
+		$this->password = "wireless";
+		$this->dbName = "rem";
 		$this->dbLink = false;
 	}
 

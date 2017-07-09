@@ -108,11 +108,11 @@ class JsonListener{
 							$where_array = array('userId'=>$userId,'fccId'=>$fccId);
 							$query = $this->create_select_query($select_array,$from_array,$where_array);
 							$result = $this->myDBHandler->query($query);
-
+				
 							// check if there is a result in the query with the provided parameters
 							if($row = $this->myDBHandler->fetchResults($result)) {
 								$cbsdId = uniqid();
-								$query = "UPDATE registered_cbsds SET cbsdId = "."'".$cbsdId."'"." WHERE fccId = "."'".$fccId."';";
+								$query = 'UPDATE registered_cbsds SET "cbsdId" = '."'".$cbsdId."'".' WHERE "fccId" = '."'".$fccId."';";
 								$result = $this->myDBHandler->query($query);
 
 								if($row['cbsdCategory'] == $newRegistrationRequestObj->{'cbsdCategory'}) {
@@ -265,7 +265,7 @@ class JsonListener{
 					$replyObj->{'heartbeatInterval'} = 2;
 					$replyObj->{'grantId'} = $cbsdId."_".$grantExpireDate;
 					$replyObj->{'response'}->{'responseCode'} = '0';
-					$query =  "INSERT INTO grants (grantId, grantExpireTime,heartBeatInterval,maxEirp) "
+					$query =  'INSERT INTO grants ("grantId", "grantExpireTime","heartBeatInterval","maxEirp") '
 					. "VALUES ( '".$replyObj->{'grantId'}. "','".$grantExpireTime."','".
 					$replyObj->{'heartbeatInterval'}."','".$maxEirp."' );";
 					$result = $this->myDBHandler->query($query);
@@ -273,8 +273,8 @@ class JsonListener{
 					// change channel to not available
 					//					$query = "UPDATE channels SET cbsdId = "."'".$cbsdId."'"
 					//									.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
-					$query = "UPDATE channels SET grantId = "."'".$replyObj->{'grantId'}."'"
-					.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
+					$query = 'UPDATE cbsd_channels SET "grantId" = '."'".$replyObj->{'grantId'}."'"
+					.',available = 0 WHERE "lowFrequency" = '."'".$lowFrequency."';";
 					$result = $this->myDBHandler->query($query);
 
 				}
@@ -360,7 +360,7 @@ class JsonListener{
 	private function updateParameter($key,$value,$primaryKey,$requestType) {
 		switch ($requestType) {
 			case 'registrationRequest':
-			$query = "UPDATE registered_cbsds SET ".$key." = "."'".$value."'"." WHERE cbsdId = "."'".$primaryKey."';";
+			$query = 'UPDATE registered_cbsds SET '.'"'.$key.'"'." = "."'".$value."'".' WHERE "cbsdId" = '."'".$primaryKey."';";
 			$result = $this->myDBHandler->query($query);
 			break;
 			case 'spectrumInquiryRequest':
@@ -406,7 +406,7 @@ class JsonListener{
 	}
 
 
-	function create_select_query($select_array,$from_array,$where_array) {
+	public function create_select_query($select_array,$from_array,$where_array) {
 	  $query = "SELECT ";
 	  if (is_array($select_array)) {
 	    for ($i=0; $i<count($select_array);$i++) {
@@ -417,7 +417,11 @@ class JsonListener{
 	    }
 	    $query = $query." ";
 	  } else {
-	    $query = $query.$select_array." ";
+		if($select_array=='*'){
+			$query = $query.$select_array." ";
+		} else {
+			$query = $query.'"'.$select_array.'"'." ";
+		}
 	  }
 
 	  $query = $query." FROM ";
@@ -439,7 +443,7 @@ class JsonListener{
 	      $query = $query." WHERE ";
 	      $i = 0;
 	      foreach ($where_array as $key => $value) {
-	        $query = $query.$key." = "."'".$value."'";
+	        $query = $query.'"'.$key.'"'." = "."'".$value."'";
 	        if($i!=count($where_array)-1){
 	          $query = $query." AND ";
 	        }
