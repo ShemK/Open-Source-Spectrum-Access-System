@@ -8,7 +8,7 @@ class ServerPsql {
 	private $dbLink;   //  returns true of the db is connected
 
 	function ServerPsql() {
-		$config = parse_ini_file("/usr/lib/apache2/html_configs/config.ini");
+		//L$config = parse_ini_file("/usr/lib/apache2/html_configs/config.ini");
 		$this->host = "127.0.0.1";
 		$this->acct = "";
 		$this->password = "";
@@ -39,12 +39,12 @@ class ServerPsql {
 	 *	send a query to the database
 	 *	returns an object with the results
 	*/
-	function query($sql) {
+	function query($psql) {
 		if(!$this->dbLink) {
 			$this->connect();
 			$this->query($sql);
 		} else {
-			$result =  pg_query($this->dbLink,$sql);
+			$result =  pg_query($this->dbLink,$psql);
 			if(!$result) {
 				echo "query failed";
 				echo pg_last_error($this->dbLink);

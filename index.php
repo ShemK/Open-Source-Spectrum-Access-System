@@ -87,6 +87,8 @@ $query = create_select_query($select_array,$from_array,$where_array);
 
 echo $query."<br>";
 
+printf("uniqid(): %s\r\n", uniqid());
+
 /*
 include_once("serverpsql.class.php");
 

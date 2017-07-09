@@ -1,6 +1,6 @@
 <?php
 include_once("serversql.class.php");
-
+include_once("serverpsql.class.php");
 class JsonListener{
 
 	private $myJsonObj;
@@ -16,7 +16,7 @@ class JsonListener{
 		or exit("{'Error':'Wrong JSON Object Received'}");
 		// get first key
 		$this->requestType = key($this->myJsonObj);
-		$this->myDBHandler = new serversql();
+		$this->myDBHandler = new serverpsql();
 		$this->myDBHandler->connect();
 		date_default_timezone_set ('UTC');
 	}
@@ -108,16 +108,19 @@ class JsonListener{
 							$where_array = array('userId'=>$userId,'fccId'=>$fccId);
 							$query = $this->create_select_query($select_array,$from_array,$where_array);
 							$result = $this->myDBHandler->query($query);
-							//echo $result->num_rows;
+
 							// check if there is a result in the query with the provided parameters
 							if($row = $this->myDBHandler->fetchResults($result)) {
-								$cbsdId = $row['cbsdId'];
+								$cbsdId = uniqid();
+								$query = "UPDATE registered_cbsds SET cbsdId = "."'".$cbsdId."'"." WHERE fccId = "."'".$fccId."';";
+								$result = $this->myDBHandler->query($query);
+
 								if($row['cbsdCategory'] == $newRegistrationRequestObj->{'cbsdCategory'}) {
 									if($row['cbsdInfo'] == $newRegistrationRequestObj->{'cbsdInfo'})
 									{
 										if($row['cbsdSerialNumber'] == $newRegistrationRequestObj->{'cbsdSerialNumber'})
 										{
-											echo "Serial Number: ";//.$newRegistrationRequestObj->{'cbsdSerialNumber'};
+
 											if($row['callSign'] == $newRegistrationRequestObj->{'callSign'})
 											{
 												$response = (object)['responseCode'=>'0','cbsdId' =>$cbsdId, 'responseMessage'=>'Registration Successful'];
@@ -197,10 +200,12 @@ class JsonListener{
 				for($i = 0; $i < count($inquiredSpectrum);$i++) {
 					$lowFrequency = $inquiredSpectrum[$i]->{'lowFrequency'};
 					$highFrequency = $inquiredSpectrum[$i]->{'highFrequency'};
-					$query = "SELECT available,channelType FROM channels
-					WHERE lowFrequency = ".$lowFrequency."
-					AND highFrequency = ".$highFrequency.";";
-					//$query = $this->create_select_query(array('available','channelType'),);
+					//$query = "SELECT available,channelType FROM channels
+					//WHERE lowFrequency = ".$lowFrequency."
+					//AND highFrequency = ".$highFrequency.";";
+					$select_array = array('available','channelType');
+					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
+					$query = $this->create_select_query($select_array,'channels',$where_array);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
 						if($row['available'] == TRUE) {
@@ -242,10 +247,11 @@ class JsonListener{
 			$maxEirp = $operationParam->{'maxEirp'};
 			$lowFrequency = $operationParam->{'operationalFrequencyRange'}->{'lowFrequency'};
 			$highFrequency = $operationParam->{'operationalFrequencyRange'}->{'highFrequency'};
-			$query = "SELECT available,channelType FROM channels
-			WHERE lowFrequency = ".$lowFrequency."
-			AND highFrequency = ".$highFrequency.";";
-
+//$query = "SELECT available,channelType FROM channels
+//			WHERE lowFrequency = ".$lowFrequency."
+//			AND highFrequency = ".$highFrequency.";";
+			$where_array = array('lowFrequency' => $lowFrequency,'highFrequency'=>$highFrequency);
+			$query = $this->create_select_query(array('available','channelType'),'channels',$where_array);
 			$result = $this->myDBHandler->query($query);
 			if($row = $this->myDBHandler->fetchResults($result)) {
 				if($row['available'] == TRUE) {
@@ -296,7 +302,8 @@ class JsonListener{
 			if(property_exists($newHeartBeatInquiryObj, 'grantId')) {
 				$grantId = $newHeartBeatInquiryObj->{'grantId'};
 
-				$query = "SELECT * FROM grants WHERE grantId = '".$grantId."';";
+//				$query = "SELECT * FROM grants WHERE grantId = '".$grantId."';";
+				$query = $this->create_select_query('*','grants',array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				if($row = $this->myDBHandler->fetchResults($result)) {
 
@@ -447,6 +454,6 @@ class JsonListener{
 	  }
 	  return $query;
 	}
-	
+
 }
 ?>
