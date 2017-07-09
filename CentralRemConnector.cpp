@@ -53,6 +53,7 @@ bool CentralRemConnector::connect()
 
 void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
 {
+    pqxx::work worker(*db_handler);
     std::string received_string;
     if (recv_len > 0)
     {
@@ -66,22 +67,24 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
         pmt_t key_list = pmt::dict_keys(received_dict);
         pmt::pmt_t not_found = pmt::mp(0);
         for (size_t i = 0; i < pmt::length(key_list); i++)
-        {
+        {    std::string query;
             pmt_t individual_dict = pmt::dict_ref(received_dict, pmt::nth(i, key_list), not_found);
             if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "INSERT")
             {
                 pmt_t attributes = pmt::dict_ref(individual_dict, pmt::string_to_symbol("attributes"), not_found);
                 std::string table = pmt::symbol_to_string(pmt::dict_ref(individual_dict, pmt::string_to_symbol("table"), not_found));
-                insert(attributes, table);
+                query = insert(attributes, table);
             }
             else if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "UPDATE")
             {
                 pmt_t attributes = pmt::dict_ref(individual_dict, pmt::string_to_symbol("attributes"), not_found);
                 pmt_t conditions = pmt::dict_ref(individual_dict, pmt::string_to_symbol("conditions"), not_found);
                 std::string table = pmt::symbol_to_string(pmt::dict_ref(individual_dict, pmt::string_to_symbol("table"), not_found));
-                update(attributes, conditions, table);
+                query = update(attributes, conditions, table);
             }
+            worker.exec(query);
         }
+        worker.commit();
     }
 }
 std::string CentralRemConnector::insert(pmt::pmt_t dict, std::string table)
