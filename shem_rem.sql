@@ -11,7 +11,7 @@ DROP FUNCTION IF EXISTS truncateSpectrumInfo();
 
 DROP TABLE IF EXISTS blacklisted_cbsds;
 DROP TYPE IF EXISTS cbsd_category;
-CREATE TYPE category AS ENUM ('A','B');
+CREATE TYPE cbsd_category AS ENUM ('A','B');
 CREATE TABLE blacklisted_cbsds (
   userId varchar(19) NOT NULL,
   fccId varchar(19) NOT NULL,
