@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -41,6 +41,8 @@ MAC::MAC()
   phy_tx_queue = mq_open("/mac2phy", O_WRONLY | O_CREAT, PMODE, &attr_tx);
   phy_rx_queue = mq_open("/phy2mac", O_RDONLY | O_CREAT, PMODE, &attr_rx);
 
+//  phy_tx_queue = mq_open("/loopback", O_WRONLY | O_CREAT, PMODE, &attr_tx);
+//  phy_rx_queue = mq_open("/loopback", O_RDONLY | O_CREAT, PMODE, &attr_rx);
   if (phy_tx_queue == -1 || phy_rx_queue == -1)
   {
     perror("Failed to open message queue");
@@ -233,7 +235,7 @@ void MAC::transmit_frame(char *frame, int segment_len, char ip_protocol, int &fr
 
     int frame_len = segment_len + CONTROL_FRAME_LEN;
 
-    create_frame(frame, segment_len, DATA, RTS);
+    create_frame(frame, segment_len, DATA, UNKNOWN);
     pthread_mutex_lock(&tx_mutex);
 
     unsigned int conv_frame_num = htonl(frame_num);
@@ -332,16 +334,9 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
   char *temp_control_frame = getControlFrame(temp);
   memcpy(temp_frame, temp_control_frame, CONTROL_FRAME_LEN);
   memcpy(temp_frame + CONTROL_FRAME_LEN, data, data_len);
-  if (newType == MANAGEMENT)
-  {
-  }
-  else if (newType == CONTROL)
-  {
-  }
-  else if (newType == DATA)
-  {
-  }
+
   memcpy(data, temp_frame, data_len + CONTROL_FRAME_LEN);
+  //extractFrameControl(data);
   delete[] temp_frame;
   delete[] temp_control_frame;
 }
@@ -361,6 +356,18 @@ char *MAC::getControlFrame(FrameControl temp)
   return control_frame;
 }
 
+MAC::FrameControl MAC::extractFrameControl(char *header) {
+  char temp[2];
+  memcpy(temp,header,2);
+  MAC::FrameControl frame_control;
+  memset(&frame_control,0,sizeof(frame_control));
+
+  uint16 temp_frame_control = (uint16) (temp[0] & 0x30) >> 4;
+  memcpy(&frame_control.frame_protocol_type,&temp_frame_control,2);
+  temp_frame_control = (uint16) (temp[0] & 0x0F);
+  memcpy(&frame_control.frame_protocol_subtype,&temp_frame_control,2);
+  return frame_control;
+}
 // extracts control_frame(mac header) from any given payload
 // control_frame size will always remain constant as specified by CONTROL_FRAME_LEN
 char *MAC::getMACHeader(char *frame)
@@ -464,12 +471,20 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   char *sourceMAC = extractSourceMAC(recv_payload);
   char *destinationMAC = extractDestinationMAC(recv_payload);
   double frame_error_rate = 0;
-  pthread_mutex_lock(&rx_mutex);
-  
+
+  int frame_num = buffToInteger(recv_header + FRAME_NUM_POS);
+  MAC::FrameControl incomingFrameControl = extractFrameControl(recv_header);
+
+
+  if(incomingFrameControl.frame_protocol_subtype == ACK){
+    tx_channel_state = FREE;
+    dprintf(GRN "Channel free - ACK Received\n" RESET);
+  }
+
 
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
-  
+    pthread_mutex_lock(&rx_mutex);
     dprintf("Source MAC Address: ");
     for (int i = 0; i < 6; i++)
     {
@@ -483,6 +498,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       dprintf("%02x:", (unsigned char)destinationMAC[i]);
     }
     dprintf("\n");
+
     if (!isLastAlienFrame(recv_header))
     {
       tx_channel_state = BUSY;
@@ -494,12 +510,21 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       dprintf(GRN "Channel free - Last Frame Received\n" RESET);
     }
 
+    pthread_mutex_unlock(&rx_mutex);
+
     if (memcmp(destinationMAC, mac_address, 6) == 0)
     {
-      int frame_num = buffToInteger(recv_header + FRAME_NUM_POS);
-      dprintf(GRN "Received Payload Sent to Me\n" RESET);
-      updatePeerRxStatistics(sourceMAC,frame_num, buf_len);
-      sendToIPLayer(recv_payload, recv_payload_len);
+      if(incomingFrameControl.frame_protocol_subtype == ACK){
+        printf("Received ACK\n");
+      }
+      if(incomingFrameControl.frame_protocol_type == DATA) {
+        dprintf(GRN "Received Payload Sent to Me\n" RESET);
+        updatePeerRxStatistics(sourceMAC,frame_num, buf_len);
+        sendToIPLayer(recv_payload, recv_payload_len);
+        if(isLastAlienFrame(recv_header)){
+          sendACK(recv_payload,frame_num);
+        }
+      }
     }
 
     if (memcmp(destinationMAC, broadcast_address, 6) == 0)
@@ -508,6 +533,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       tx_channel_state = FREE;
       sendToIPLayer(recv_payload, recv_payload_len);
     }
+
   }
   else
   {
@@ -516,31 +542,8 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     {
       dprintf("I am transmitting\n");
     }
-    /*
-    dprintf("---------Current TX statistics-----------------\n");
-
-    
-
-    int frame_num = buffToInteger(recv_header + 8);
-    frames_received++;
-    frame_error_rate = (frame_num + 1 - (float)frames_received) / ((float)frame_num + 1);
-    int time_dif = (time(NULL) - start_time);
-    int bitrate = 0;
-    if (time_dif > 0)
-    {
-      bitrate = (buf_len * 8) * frames_received / time_dif;
-    }
-
-    dprintf("Frame_num received: %d\n", frame_num);
-    dprintf("Frames received: %d\n", frames_received);
-    // std::cout << std::fixed;
-    // std::cout << "Frame Error Rate: " << std::setprecision(5) << frame_error_rate << '\n';
-    dprintf("Bitrate: %d\n", bitrate);
-    //  printf("%s\n", recv_payload);
-    dprintf("------------------------------------\n");
-    */
   }
-  pthread_mutex_unlock(&rx_mutex);
+
   delete[] recv_header;
   delete[] sourceMAC;
   delete[] destinationMAC;
@@ -725,6 +728,32 @@ int MAC::getPeerPosition(char peer_address[6]){
     }
   }
   return -1;
+}
+
+void MAC::sendACK(char *recv_payload, int frame_num){
+  printf("Sending ACK\n");
+  char *ack_frame = new char[50];
+  memcpy(ack_frame,recv_payload,ETH_HEADER_LEN);
+  char *sourceMAC = extractSourceMAC(recv_payload);
+  char *destinationMAC = extractDestinationMAC(recv_payload);
+  memcpy(ack_frame+TAP_EXTRA_LOAD,sourceMAC,6);
+  memcpy(ack_frame+TAP_EXTRA_LOAD+ 6,destinationMAC,6);
+  int frame_len = TAP_EXTRA_LOAD + 6 + 6;
+  create_frame(ack_frame, frame_len, MANAGEMENT, ACK);
+  unsigned int conv_frame_num = htonl(frame_num);
+  memcpy(ack_frame + FRAME_NUM_POS, &conv_frame_num, 4);
+  frame_len = frame_len + CONTROL_FRAME_LEN;
+  addCRC(ack_frame, frame_len);
+  int status = mq_send(phy_tx_queue, ack_frame, frame_len, 0);
+
+  if (status == -1)
+  {
+    if (!stop_tx)
+    {
+      perror(RED "mq_send failure\n" RESET);
+    }
+  }
+  delete [] ack_frame;
 }
 //
 // Generate random_bytes for the MAC. Probability of using the same value = (1/256)^6

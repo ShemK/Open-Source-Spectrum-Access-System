@@ -109,7 +109,9 @@ public:
     ASSOC_REQ = 0x0000,
     BEACON = 0x0008,
     RTS = 0x000A,
-    CTS = 0x000C
+    CTS = 0x000C,
+    ACK = 0x000E,
+    UNKNOWN = 0x000F
   };
 
   struct FrameControl
@@ -178,6 +180,10 @@ public:
   int updatePeerTxStatistics(char peer_address[6]);
   void updatePeerRxStatistics(char peer_address[6], int frame_num_received, int frame_len);
   //Peer new_peer;
+
+
+  FrameControl extractFrameControl(char *header);
+  void sendACK(char *recv_payload, int frame_num);
 };
 
 void *MAC_tx_worker(void *_arg);
