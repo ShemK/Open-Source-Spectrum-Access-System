@@ -34,6 +34,14 @@
 #include <cstdlib>
 #include <string.h>
 #include <chrono>
+#include <stdio.h>
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <functional>
+#include <memory>
+
 
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -61,13 +69,17 @@ namespace gr {
 
       pqxx::connection *c;
       double bandwidth;
-      float latitude, longitude, center_frequency;
-      std::ostringstream latstr,longstr, cent_freq, occstr,bwstr;
+      float latitude, longitude, center_frequency, nodeid;
+      std::ostringstream latstr,longstr, cent_freq, occstr,bwstr, nodeidstr;
 
      public:
       psql_insert_impl(int N, int num_channels);
       ~psql_insert_impl();
 
+      std::string exec(const char *cmd);
+      std::string get_mac();
+      std::string get_ip();
+      
       void gps(pmt::pmt_t msg);
 
       void center_freq(pmt::pmt_t msg);

@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS SpectrumInfo(
 	occ real DEFAULT 1.0,
 	center_freq float DEFAULT NULL,
 	bandwidth float DEFAULT NULL, 
+	noise_floor float DEFAULT NULL,
 	FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID),
 	FOREIGN KEY (channelID) REFERENCES ChannelInfo (channelID)
 );

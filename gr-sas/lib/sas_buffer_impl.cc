@@ -51,6 +51,7 @@ namespace gr {
     {
       pmt::pmt_t msg = pmt::from_float(number_of_samps);
       return msg;
+      
     }
 
     pmt::pmt_t pack_samp_number(float samp_number)

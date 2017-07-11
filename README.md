@@ -1,6 +1,8 @@
 # Open-Source-Spectrum-Access-System
 Open Source Spectrum Access System
 
+sudo apt-get install postgresql postgresql-contrib
+
 install postgresql, create a database called rem. Create a role called wireless (superuser) and grant it all privileges on database rem. 
 DETAILED INSTRUCTIONS ON HOW TO DO THIS WILL BE ADDED SOON, GOOGLE IS YOUR FRIEND FOR NOW.
 This link could be useful: 

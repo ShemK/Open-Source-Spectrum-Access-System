@@ -33,13 +33,18 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/__init__.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/__init__.py"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/send_data.py"
+    )
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyc"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyc"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyo"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyo"
     )
 endif()
 

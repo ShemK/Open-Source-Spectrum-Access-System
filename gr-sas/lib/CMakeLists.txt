@@ -32,7 +32,8 @@ list(APPEND sas_sources
     psql_insert_impl.cc
     sas_buffer_impl.cc
     ed_threshold_impl.cc
-    decision_maker.cc)
+    decision_maker.cc
+    )
 
 set(sas_sources "${sas_sources}" PARENT_SCOPE)
 if(NOT sas_sources)

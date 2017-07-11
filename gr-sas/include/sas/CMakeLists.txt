@@ -25,5 +25,6 @@ install(FILES
     psql_insert.h 
     date.h
     sas_buffer.h
-    ed_threshold.h DESTINATION include/sas
+    ed_threshold.h
+    DESTINATION include/sas
 )

@@ -85,6 +85,7 @@ namespace gr {
       }
       wbnoise_floor=100;
       message_port_register_out(pmt::mp("decision"));
+      message_port_register_out(pmt::mp("noise_floor"));
     }
 
     /*
@@ -133,7 +134,8 @@ namespace gr {
       }
 
       message_port_pub(pmt::intern("decision"), pack_decision(fcstates, num_channels));
-      
+      message_port_pub(pmt::intern("noise_floor"), pmt::from_float(noise_floor[0]));
+      //TODO: EXTEND TO SUBCHANNEL SENSING
       memcpy(out,in, fft_len*sizeof(float) );
       // Tell runtime system how many output items we produced.
       return noutput_items;

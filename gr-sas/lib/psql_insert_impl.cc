@@ -80,9 +80,54 @@ namespace gr {
       occstr<<occ[0];
       //TODO add case for split psd
     }
-    /*
-     * The private constructor
-     */
+    
+    std::string psql_insert_impl::exec(const char *cmd)
+    {
+      std::array<char, 128> buffer;
+      std::string result;
+      std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+      if (!pipe)
+        throw std::runtime_error("popen() failed!");
+      while (!feof(pipe.get()))
+      {
+        if (fgets(buffer.data(), 128, pipe.get()) != NULL)
+          result += buffer.data();
+      }
+      return result;
+    }
+
+    std::string psql_insert_impl::get_ip() {
+      std::string temp = "Not Found";
+      struct ifaddrs * ifAddrStruct=NULL;
+      struct ifaddrs * ifa=NULL;
+      void * tmpAddrPtr=NULL;
+      char interface_name[INET_ADDRSTRLEN] = "wlp2s0";
+
+      getifaddrs(&ifAddrStruct);
+      for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+          if (ifa ->ifa_addr->sa_family==AF_INET) {
+              tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+              char addressBuffer[INET_ADDRSTRLEN];
+              inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+              if(memcmp(ifa->ifa_name,interface_name,sizeof(interface_name))==0) {
+                //printf("'%s': %s\n", ifa->ifa_name, addressBuffer);
+
+                return std::string(addressBuffer);
+              }
+          }
+      }
+      if (ifAddrStruct!=NULL)
+          freeifaddrs(ifAddrStruct);
+      return temp;
+    }
+
+
+    std::string psql_insert_impl::get_mac() {
+      std::string interface_name = "wlp2s0";
+      std::string command = "ifconfig " + interface_name + " | grep HWaddr | awk '{print $5}'";
+      return exec(command.c_str());
+    }
+
     psql_insert_impl::psql_insert_impl(int N, int num_channels)
       : gr::sync_block("psql_insert",
               gr::io_signature::make(1, 1, N*sizeof(float)),
@@ -96,14 +141,33 @@ namespace gr {
       } else {
          cout << "Can't open database" << endl;
       }
+      //build nodeid from MAC
+      /*
+      std::string temp = get_ip();
+      printf("IP: %s\n",temp.c_str());
+      unsigned long h = std::hash<std::string>{}(temp);
+      printf("Hash: %lu\n",h);
+      */
+      std::string temp = get_mac();
+      printf("MAC: %s",temp.c_str());
+      unsigned long h = std::hash<std::string>{}(temp);
+      printf("Hash/Node ID: %lu\n",h);
 
       latitude=0;
       longitude=0;
       latstr<<latitude;
       longstr<<longitude;
+      nodeid = h;
+      nodeidstr<<nodeid;
       bwstr<<0.0;
       occ = new float[num_channels];
       occstr<<0.0;
+
+      //add nodeid to table
+
+      //std::cout<<sql;
+  
+
       //message
       message_port_register_in(pmt::mp("latlong"));
       message_port_register_in(pmt::mp("center_freq"));
@@ -141,7 +205,7 @@ namespace gr {
 
       //std::cout << "'" << buf.size() << "'\n";
 
-      std::string sql = "INSERT INTO SpectrumInfo (timetag, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
+      std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
       //std::cout<<sql;
       w.exec( sql);
 

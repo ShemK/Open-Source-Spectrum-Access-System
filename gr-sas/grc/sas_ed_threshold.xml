@@ -42,4 +42,10 @@
     <type>message</type>
     <optional>1</optional>
   </source>
+
+   <source>
+    <name>noise_floor</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
 </block>

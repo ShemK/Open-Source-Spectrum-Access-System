@@ -37,6 +37,7 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_psql_insert.xml"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_sas_buffer.xml"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_ed_threshold.xml"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_send_data.xml"
     )
 endif()
 
