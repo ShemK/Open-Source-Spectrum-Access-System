@@ -37,6 +37,7 @@ bool CentralRemConnector::connect()
         {
             dprintf("Connected to database\n");
             db_connection = true;
+            prepareKnownAttributes();
             return true;
         }
         else
@@ -51,10 +52,32 @@ bool CentralRemConnector::connect()
     }
 }
 
+void CentralRemConnector::prepareKnownAttributes()
+{
+    pqxx::work worker(*db_handler);
+    std::string query = "SELECT nodeID from NodeInfo;";
+    pqxx::result r = worker.exec(query);
+
+    if (r.size() > 0)
+    {
+        for (auto row : r)
+        {
+            known_nodes.push_back(row[0].as<int>());
+        }
+    }
+    dprintf("Known Nodes: \n");
+    for (int i = 0; i < known_nodes.size(); i++)
+    {
+        dprintf("NodeID: %d\n", known_nodes.at(i));
+    }
+    worker.commit();
+}
+
 void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
 {
     pqxx::work worker(*db_handler);
     std::string received_string;
+    pmt::pmt_t nodeParam;
     if (recv_len > 0)
     {
         for (int i = 0; i < recv_len; i++)
@@ -66,8 +89,30 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
         // std::cout << received_dict << "\n";
         pmt_t key_list = pmt::dict_keys(received_dict);
         pmt::pmt_t not_found = pmt::mp(0);
+
+        nodeParam = dict_ref(received_dict, pmt::string_to_symbol("NodeParam"), not_found);
+
+        if (nodeParam != not_found)
+        {
+            pmt_t attributes = pmt::dict_ref(nodeParam, pmt::string_to_symbol("attributes"), not_found);
+
+            pmt::pmt_t nodeID = pmt::dict_ref(attributes, pmt::string_to_symbol("nodeID"), not_found);
+
+            if (nodeID != not_found)
+            {
+                if (!nodeKnown(pmt::to_long(nodeID)))
+                {
+                    std::string query = insert(attributes, "NodeInfo");
+                    worker.exec(query);
+                    //worker.commit();
+                }
+            }
+        }
+
+
         for (size_t i = 0; i < pmt::length(key_list); i++)
-        {    std::string query;
+        {
+            std::string query;
             pmt_t individual_dict = pmt::dict_ref(received_dict, pmt::nth(i, key_list), not_found);
             if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "INSERT")
             {
@@ -233,4 +278,17 @@ std::string CentralRemConnector::update(pmt::pmt_t attributes, pmt::pmt_t condit
     query = query + ";";
     dprintf("%s\n", query.c_str());
     return query;
+}
+
+// TODO: Efficient search needed
+bool CentralRemConnector::nodeKnown(int nodeID)
+{
+    for (int i = 0; i < known_nodes.size(); i++)
+    {
+        if (nodeID == known_nodes[i])
+        {
+            return true;
+        }
+    }
+    return false;
 }

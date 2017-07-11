@@ -24,4 +24,7 @@ public:
     void analyze(const char * recv_buffer, int buffer_len);
     std::string insert(pmt::pmt_t dict, std::string table);
     std::string update(pmt::pmt_t dict, pmt::pmt_t conditions, std::string table);
+    void prepareKnownAttributes();
+    bool nodeKnown(int NodeID);
+    std::vector<int> known_nodes;
 };

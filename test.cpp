@@ -21,9 +21,9 @@ int main()
     signal(SIGQUIT, terminate);
     signal(SIGTERM, terminate);
 
-    CentralRemConnector db_connector("wireless", "wireless", "wireless", "127.0.0.1");
+    CentralRemConnector db_connector("rem", "wireless", "wireless", "127.0.0.1");
     db_connector.connect();
-
+    
     struct sockaddr_in udp_server_addr;
     struct sockaddr_in udp_client_addr;
     socklen_t addr_len = sizeof(udp_server_addr);

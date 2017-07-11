@@ -23,6 +23,16 @@ command = pmt.dict_add(command, pmt.string_to_symbol("attributes"),attributes)
 
 pmt_to_send = pmt.dict_add(pmt_to_send, pmt.string_to_symbol("INSERT"),command)
 
+attributes = pmt.make_dict();
+attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeID"),pmt.from_long(random.randint(1, 1000)))
+attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeMac"),pmt.string_to_symbol("1A:12:71:12:91:14"))
+attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeIp"),pmt.string_to_symbol("192.168.1.3"));
+attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeType"),pmt.from_long(1));
+command = pmt.make_dict()
+command = pmt.dict_add(command, pmt.string_to_symbol("attributes"),attributes)
+
+pmt_to_send = pmt.dict_add(pmt_to_send, pmt.string_to_symbol("NodeParam"),command)
+
 serialized_pmt = pmt.serialize_str(pmt_to_send)
 
 #print pmt_to_send
