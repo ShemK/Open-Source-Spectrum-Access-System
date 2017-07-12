@@ -36,6 +36,7 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/__init__.py"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/send_data.py"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/uhd_control.py"
     )
 endif()
 
@@ -43,8 +44,10 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyc"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyc"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/uhd_control.pyc"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyo"
     "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyo"
+    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/uhd_control.pyo"
     )
 endif()
 

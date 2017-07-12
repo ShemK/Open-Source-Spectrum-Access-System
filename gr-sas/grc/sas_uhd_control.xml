@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<block>
+  <name>uhd_control</name>
+  <key>sas_uhd_control</key>
+  <category>SAS</category>
+  <import>import sas</import>
+  <make>sas.uhd_control()</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+  
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+ 
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+  <source>
+    <name>control</name>
+    <type>message</type>
+  </source>
+</block>
+

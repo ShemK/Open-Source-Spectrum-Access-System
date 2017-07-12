@@ -31,7 +31,8 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    send_data.py DESTINATION ${GR_PYTHON_DIR}/sas
+    send_data.py
+    uhd_control.py DESTINATION ${GR_PYTHON_DIR}/sas
 )
 
 ########################################################################

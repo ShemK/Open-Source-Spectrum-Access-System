@@ -32,4 +32,5 @@ except ImportError:
 
 # import any pure python here
 from send_data import send_data
+from uhd_control import uhd_control
 #
