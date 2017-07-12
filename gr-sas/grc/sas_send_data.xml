@@ -51,4 +51,18 @@
     <type>message</type>
   </sink>
   
+  <sink>
+    <name>ip</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>nodeid</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>mac</name>
+    <type>message</type>
+  </sink>
 </block>

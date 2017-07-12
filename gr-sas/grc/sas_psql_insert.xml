@@ -58,4 +58,21 @@
     <optional>1</optional>
   </sink>
 
+  <source>
+    <name>nodeid</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>mac</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>ip</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
 </block>

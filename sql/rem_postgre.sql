@@ -5,11 +5,12 @@ DROP TABLE IF EXISTS ChannelStates;
 DROP TABLE IF EXISTS ChannelInfo;
 
 CREATE TABLE IF NOT EXISTS NodeInfo(
-	nodeID serial PRIMARY KEY,
+	nodeID bigserial PRIMARY KEY,
 	nodeType INT NOT NULL, /*our network, competing network, incumbent, unknown*/
 	nodeMAC VARCHAR(20) NOT NULL,
 	nodeIP VARCHAR(20) NOT NULL,
-	loc POINT DEFAULT NULL, /*last known location*/
+	latitude FLOAT DEFAULT NULL,
+	longitude FLOAT DEFAULT NULL, /*last known location*/
 	last_active timestamp,	/*last known time of contact*/
 	Stat INT); /*indicator for node status, deprecated. can be reused for as counter for last known
 --Add m-sequence for each node, validate parameters (IP, MAC)*/
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS ChannelStates(
 
 
 CREATE TABLE IF NOT EXISTS SpectrumInfo(
-	nodeID INT ,
+	nodeID bigint ,
 	channelID INT ,
 	timetag timestamp,
 	latitude float DEFAULT NULL,

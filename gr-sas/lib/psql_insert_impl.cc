@@ -42,23 +42,23 @@ namespace gr {
     void
     psql_insert_impl::msg_samp_rate(pmt::pmt_t msg)
     {
-    bandwidth = pmt::to_float(msg);
-    bwstr.str("");
-    bwstr.clear();
-    bwstr<<bandwidth;
+      bandwidth = pmt::to_float(msg);
+      bwstr.str("");
+      bwstr.clear();
+      bwstr<<bandwidth;
     }
 
     void
     psql_insert_impl::gps(pmt::pmt_t msg)
     {
-    latitude=pmt::to_float(pmt::vector_ref(msg,0));
-		longitude = pmt::to_float(pmt::vector_ref(msg,1));
-		latstr.str("");
-		latstr.clear();
-		longstr.str("");
-		longstr.clear();
-		latstr<<latitude;
-		longstr<<longitude;
+      latitude=pmt::to_float(pmt::vector_ref(msg,0));
+      longitude = pmt::to_float(pmt::vector_ref(msg,1));
+      latstr.str("");
+      latstr.clear();
+      longstr.str("");
+      longstr.clear();
+      latstr<<latitude;
+      longstr<<longitude;
     }
 
     void
@@ -97,33 +97,15 @@ namespace gr {
     }
 
     std::string psql_insert_impl::get_ip() {
-      std::string temp = "Not Found";
-      struct ifaddrs * ifAddrStruct=NULL;
-      struct ifaddrs * ifa=NULL;
-      void * tmpAddrPtr=NULL;
-      char interface_name[INET_ADDRSTRLEN] = "wlp2s0";
-
-      getifaddrs(&ifAddrStruct);
-      for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-          if (ifa ->ifa_addr->sa_family==AF_INET) {
-              tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-              char addressBuffer[INET_ADDRSTRLEN];
-              inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-              if(memcmp(ifa->ifa_name,interface_name,sizeof(interface_name))==0) {
-                //printf("'%s': %s\n", ifa->ifa_name, addressBuffer);
-
-                return std::string(addressBuffer);
-              }
-          }
-      }
-      if (ifAddrStruct!=NULL)
-          freeifaddrs(ifAddrStruct);
-      return temp;
+      
+      std::string interface_name = "wlan0";
+      std::string command =   "ifconfig " + interface_name + " | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'";
+      return exec(command.c_str());
     }
 
 
     std::string psql_insert_impl::get_mac() {
-      std::string interface_name = "wlp2s0";
+      std::string interface_name = "wlan0";
       std::string command = "ifconfig " + interface_name + " | grep HWaddr | awk '{print $5}'";
       return exec(command.c_str());
     }
@@ -133,6 +115,19 @@ namespace gr {
               gr::io_signature::make(1, 1, N*sizeof(float)),
               gr::io_signature::make(0, 0, 0))
     {
+      flag =0;
+      //message
+      message_port_register_in(pmt::mp("latlong"));
+      message_port_register_in(pmt::mp("center_freq"));
+      message_port_register_in(pmt::mp("decision"));
+      message_port_register_in(pmt::mp("samp_rate"));
+      message_port_register_out(pmt::mp("mac"));
+      message_port_register_out(pmt::mp("ip"));
+      message_port_register_out(pmt::mp("nodeid"));
+      set_msg_handler(pmt::mp("latlong"), boost::bind(&psql_insert_impl::gps, this, _1));
+      set_msg_handler(pmt::mp("center_freq"), boost::bind(&psql_insert_impl::center_freq, this, _1));
+      set_msg_handler(pmt::mp("decision"), boost::bind(&psql_insert_impl::decision, this, _1));
+      set_msg_handler(pmt::mp("samp_rate"), boost::bind(&psql_insert_impl::msg_samp_rate, this, _1));
       this->N = N;
       this->num_channels = num_channels;
       c = new pqxx::connection(dbstring);
@@ -141,42 +136,40 @@ namespace gr {
       } else {
          cout << "Can't open database" << endl;
       }
+      nodeid =1;
+      ip = "";
+      mac = "";
       //build nodeid from MAC
-      /*
-      std::string temp = get_ip();
-      printf("IP: %s\n",temp.c_str());
-      unsigned long h = std::hash<std::string>{}(temp);
-      printf("Hash: %lu\n",h);
-      */
-      std::string temp = get_mac();
-      printf("MAC: %s",temp.c_str());
-      unsigned long h = std::hash<std::string>{}(temp);
-      printf("Hash/Node ID: %lu\n",h);
-
+      
+      std::cout<<"Building nodeid from db"<<std::endl;
+      ip = psql_insert_impl::get_ip();
+      printf("IP: %s\n",ip.c_str());
+      
+      mac = psql_insert_impl::get_mac();
+      printf("MAC: %s",mac.c_str());
+      nodeid = std::hash<std::string>{}(mac);
+      printf("Hash/Node ID: %d\n",nodeid);
       latitude=0;
       longitude=0;
       latstr<<latitude;
       longstr<<longitude;
-      nodeid = h;
       nodeidstr<<nodeid;
       bwstr<<0.0;
       occ = new float[num_channels];
       occstr<<0.0;
 
       //add nodeid to table
-
-      //std::cout<<sql;
-  
-
-      //message
-      message_port_register_in(pmt::mp("latlong"));
-      message_port_register_in(pmt::mp("center_freq"));
-      message_port_register_in(pmt::mp("decision"));
-      message_port_register_in(pmt::mp("samp_rate"));
-      set_msg_handler(pmt::mp("latlong"), boost::bind(&psql_insert_impl::gps, this, _1));
-      set_msg_handler(pmt::mp("center_freq"), boost::bind(&psql_insert_impl::center_freq, this, _1));
-      set_msg_handler(pmt::mp("decision"), boost::bind(&psql_insert_impl::decision, this, _1));
-      set_msg_handler(pmt::mp("samp_rate"), boost::bind(&psql_insert_impl::msg_samp_rate, this, _1));
+      pqxx::work w(*(c));
+      std::string sql = "INSERT INTO nodeinfo (nodeid, nodetype, nodemac, nodeip) SELECT "+nodeidstr.str()+",1,'"+mac+"','"+ip+"' WHERE NOT EXISTS (SELECT nodeid FROM nodeinfo WHERE nodeid="+nodeidstr.str()+");";
+      w.exec(sql);
+      //std::cout<<sql<<endl;
+      sql = "CREATE TABLE IF NOT EXISTS channel_state_"+nodeidstr.str()+" (timetag timestamp, latitude float, longitude float, channels float array[64]);";
+      //std::cout<<sql<<endl;
+      w.exec(sql);
+      w.commit();
+      
+      
+      
     }
 
     /*
@@ -204,7 +197,7 @@ namespace gr {
       r = r.substr(0, r.length()-1);  // get rid of the trailing space
 
       //std::cout << "'" << buf.size() << "'\n";
-
+      
       std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
       //std::cout<<sql;
       w.exec( sql);
@@ -213,7 +206,7 @@ namespace gr {
       float decision = decision_maker.getDecision(occ[0],std::stod (cent_freq.str(),0));
       if(decision != -1) {
         std::cout << "Actual Channel " <<  cent_freq.str() << std::endl;
-        double frequency = decision_maker.get_previous_center_frequency() - 1e6;
+        double frequency = decision_maker.get_previous_center_frequency() - (bandwidth/2);
         sql = "UPDATE ChannelInfo SET occ = "+ std::to_string(decision)
                   + " WHERE startfreq = " + std::to_string(frequency) + ";";
         std::cout << sql << std::endl;
@@ -224,6 +217,13 @@ namespace gr {
 
       }
       w.commit();
+      if(!flag)
+      {
+      message_port_pub(pmt::intern("mac"), pmt::intern(mac.c_str()));
+      message_port_pub(pmt::intern("ip"), pmt::intern(ip.c_str()));
+      message_port_pub(pmt::intern("nodeid"), pmt::from_long(nodeid));
+      flag++;
+      }
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }

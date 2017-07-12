@@ -57,6 +57,7 @@ namespace gr {
     class psql_insert_impl : public psql_insert
     {
      private:
+     int flag;
       std::vector<tag_t> d_tags;
       std::vector<tag_t>::iterator d_tags_itr;
       pmt::pmt_t d_filter;
@@ -65,11 +66,12 @@ namespace gr {
       std::vector<float> *oldbuf;
       float *noise_floor,*cur_noise_floor,rx_rate,wbnoise_floor,*fcstates;
 	    float *thresholds, *means, *variances;
-      std::string dbstring = "dbname = rem user = wireless password = wireless hostaddr = 127.0.0.1 port = 5432";
+      std::string dbstring = "dbname = rem user = wireless password = wireless hostaddr = 127.0.0.1 port = 5432",ip,mac;
 
       pqxx::connection *c;
       double bandwidth;
-      float latitude, longitude, center_frequency, nodeid;
+      unsigned short nodeid;
+      float latitude, longitude, center_frequency;
       std::ostringstream latstr,longstr, cent_freq, occstr,bwstr, nodeidstr;
 
      public:
@@ -79,7 +81,7 @@ namespace gr {
       std::string exec(const char *cmd);
       std::string get_mac();
       std::string get_ip();
-      
+
       void gps(pmt::pmt_t msg);
 
       void center_freq(pmt::pmt_t msg);

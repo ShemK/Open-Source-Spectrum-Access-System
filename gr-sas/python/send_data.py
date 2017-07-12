@@ -37,7 +37,11 @@ class send_data(gr.sync_block):
         self.noise_floor  = -200.0
         self.host = host
         self.port =  port
-        self.nodeid = 0
+        self.nodeid = 1
+        self.latitude = 0
+        self.longitude = 0
+        self.mac = ""
+        self.ip = ""
         gr.sync_block.__init__(self,
             name="send_data",
             in_sig=[numpy.float32],
@@ -46,10 +50,20 @@ class send_data(gr.sync_block):
         self.message_port_register_in(pmt.intern("occ"))
         self.message_port_register_in(pmt.intern("bw"))
         self.message_port_register_in(pmt.intern("noise_floor"))
+        self.message_port_register_in(pmt.intern("nodeid"))
+        self.message_port_register_in(pmt.intern("mac"))
+        self.message_port_register_in(pmt.intern("ip"))
+        self.message_port_register_in(pmt.intern("gps"))
+
+
         self.set_msg_handler(pmt.intern("center_freq"), self.center_freq_handler_method)
         self.set_msg_handler(pmt.intern("occ"), self.occ_handler_method)
         self.set_msg_handler(pmt.intern("bw"), self.bw_handler_method)
         self.set_msg_handler(pmt.intern("noise_floor"), self.noise_floor_handler_method)
+        self.set_msg_handler(pmt.intern("nodeid"), self.nodeid_handler_method)
+        self.set_msg_handler(pmt.intern("mac"), self.mac_handler_method)
+        self.set_msg_handler(pmt.intern("ip"), self.ip_handler_method)
+        self.set_msg_handler(pmt.intern("gps"), self.gps_handler_method)
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
@@ -73,7 +87,7 @@ class send_data(gr.sync_block):
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("bandwidth"),pmt.from_double(self.bw))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("timetag"),pmt.intern(curtime))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("noise_floor"),pmt.from_double(self.noise_floor))
-        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeid"),pmt.from_double(self.nodeid))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeid"),pmt.from_long(self.nodeid))
 
         command = pmt.make_dict()
         command = pmt.dict_add(command,pmt.string_to_symbol("table"),pmt.string_to_symbol("spectruminfo"))
@@ -94,4 +108,40 @@ class send_data(gr.sync_block):
     
     def noise_floor_handler_method(self, msg):
         self.noise_floor = pmt.to_double(msg)
-        
+    
+    def nodeid_handler_method(self, msg):
+        self.nodeid = pmt.to_long(msg)
+        pmt_to_send  = pmt.make_dict()
+
+        attributes = pmt.make_dict()
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeid"),pmt.from_long(self.nodeid))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("mac"),pmt.intern(self.mac))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("ip"),pmt.intern(self.ip))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("latitude"),pmt.from_double(self.latitude))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("longitude"),pmt.from_double(self.longitude))
+
+        command = pmt.make_dict()
+        command = pmt.dict_add(command, pmt.string_to_symbol("attributes"),attributes)
+
+        pmt_to_send = pmt.dict_add(pmt_to_send, pmt.string_to_symbol("Node_Param"),command)
+
+        serialized_pmt = pmt.serialize_str(pmt_to_send)
+
+        #print pmt_to_send
+
+        UDP_IP = self.host
+        UDP_PORT = self.port
+
+        sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) 
+        sock.sendto(serialized_pmt, (UDP_IP, UDP_PORT))
+        print "sending node data", pmt_to_send
+
+    def gps_handler_method(self, msg): 
+        self.latitude =  pmt.to_double(pmt.vector_ref(msg,0))
+        self.longitude =  pmt.to_double(pmt.vector_ref(msg,1))
+
+    def mac_handler_method(self, msg): 
+        self.mac =  pmt.symbol_to_string(msg)
+
+    def ip_handler_method(self, msg): 
+        self.ip =  pmt.symbol_to_string(msg)
