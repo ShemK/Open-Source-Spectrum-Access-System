@@ -123,7 +123,6 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
                 occ = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("occ"), not_found));
                 center_freq = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("center_freq"), not_found));
                 pushData(occ,center_freq);
-                std::cout<<"Pushing to decisionmaker"<<std::endl;
             }
             else if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "UPDATE")
             {
