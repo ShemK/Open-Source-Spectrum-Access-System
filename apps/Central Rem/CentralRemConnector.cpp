@@ -109,7 +109,7 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
         {
           std::string query = insert(attributes, "NodeInfo");
           worker.exec(query);
-          //worker.commit();
+        //  worker.commit();
         }
       }
     }
@@ -143,6 +143,7 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
       }
       catch (const std::exception &e){
         printf("Error writing to database\n");
+        std::cerr << e.what();
         db_connection = false;
       }
 
@@ -339,6 +340,7 @@ void CentralRemConnector::pushData(float occ, double center_freq, int nodeID, fl
 
         }catch (const std::exception &e){
           printf("Error writing to channel info database\n");
+          std::cerr << e.what();
         }
         //w.exec( sql);
         //  worker.commit();

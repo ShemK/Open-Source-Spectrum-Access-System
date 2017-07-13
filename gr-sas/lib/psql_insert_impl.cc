@@ -215,13 +215,13 @@ namespace gr {
 
       }
       w.commit();
-      if(!flag)
-      {
+      //if(!flag)
+      //{
       message_port_pub(pmt::intern("mac"), pmt::intern(mac.c_str()));
       message_port_pub(pmt::intern("ip"), pmt::intern(ip.c_str()));
       message_port_pub(pmt::intern("nodeid"), pmt::from_long(nodeid));
       flag++;
-      }
+      //}
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
