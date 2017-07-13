@@ -11,23 +11,45 @@ DecisionMaker::~DecisionMaker(){
 }
 
 float DecisionMaker::getDecision(float occ, double center_frequency){
-  if(this->center_frequency == 0){
-    //printf("Starting Up\n");
-    occ_values.push_back(occ);
+
+  if(occ_values.size()==0) {
+    struct timeval ts;
+    gettimeofday(&ts, NULL);
+    startTime = ts.tv_sec;
+  }
+
+  if(this->center_frequency == 0) {
     this->center_frequency = center_frequency;
-    previous_center_frequency = this->center_frequency;
-    return -1;
-  } 
-    
+    this->previous_center_frequency = center_frequency;
+  }
+  if(center_frequency != this->center_frequency) {
+    frequency_change = true;
+    printf("Frequency Changed\n");
+  }
+  if(!frequency_change){
+    struct timeval tp;
+    gettimeofday(&tp, NULL);
+    long int currentTime  = tp.tv_sec;
+    double secondsPassed = currentTime - startTime;
+    //printf("secondsPassed: %f\n", secondsPassed);
+
+    if(secondsPassed < 3){
+      occ_values.push_back(occ);
+      //printf("OCC SIZE:%lu\n",occ_values.size());
+      return -1;
+    } else{
+      printf("Times Up\n");
+    }
+  }
   previous_center_frequency = this->center_frequency;
   //printf("Changed Frequency: %f\n",this->center_frequency);
-  std::cout << "Changed Frequency " << this->center_frequency << std::endl;
+  //std::cout << "Changed Frequency " << this->center_frequency << std::endl;
   this->center_frequency = center_frequency;
   float result = average();
-  occ_values.push_back(occ);
+  frequency_change = false;
   return result;
 
-  }
+}
 
 float DecisionMaker::average(){
   float result = 0;

@@ -80,7 +80,7 @@ namespace gr {
       occstr<<occ[0];
       //TODO add case for split psd
     }
-    
+
     std::string psql_insert_impl::exec(const char *cmd)
     {
       std::array<char, 128> buffer;
@@ -97,15 +97,15 @@ namespace gr {
     }
 
     std::string psql_insert_impl::get_ip() {
-      
-      std::string interface_name = "wlan0";
+
+      std::string interface_name = "eth0";
       std::string command =   "ifconfig " + interface_name + " | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'";
       return exec(command.c_str());
     }
 
 
     std::string psql_insert_impl::get_mac() {
-      std::string interface_name = "wlan0";
+      std::string interface_name = "eth0";
       std::string command = "ifconfig " + interface_name + " | grep HWaddr | awk '{print $5}'";
       return exec(command.c_str());
     }
@@ -140,11 +140,11 @@ namespace gr {
       ip = "";
       mac = "";
       //build nodeid from MAC
-      
+
       std::cout<<"Building nodeid from db"<<std::endl;
       ip = psql_insert_impl::get_ip();
       printf("IP: %s\n",ip.c_str());
-      
+
       mac = psql_insert_impl::get_mac();
       printf("MAC: %s",mac.c_str());
       nodeid = std::hash<std::string>{}(mac);
@@ -167,9 +167,7 @@ namespace gr {
       //std::cout<<sql<<endl;
       w.exec(sql);
       w.commit();
-      
-      
-      
+
     }
 
     /*
@@ -197,7 +195,7 @@ namespace gr {
       r = r.substr(0, r.length()-1);  // get rid of the trailing space
 
       //std::cout << "'" << buf.size() << "'\n";
-      
+
       std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
       //std::cout<<sql;
       w.exec( sql);

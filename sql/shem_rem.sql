@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS blacklisted_cbsds (
   UNIQUE ("cbsdId")
 );
 
-INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{\n				\"latitude\": 37.425056,\n				\"longitude\": -122.084113,\n				\"height\": 9.3,\n				\"heightType\": \"AGL\",\n				\"indoorDeployment\": false,\n				\"antennaAzimuth\": 271,\n				\"antennaDowntilt\": 3,\n				\"antennaGain\": 16,\n				\"antennaBeamwidth\": 30\n			}',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n						\"EUTRA_CARRIER_RSSI_NON_TX\"\n			]','1237gasd9yfa');
+INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{\n        \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
 
 CREATE TABLE registered_cbsds (
   "userId" varchar(19) NOT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE registered_cbsds (
   "cbsdId" varchar(45) NOT NULL,
   PRIMARY KEY ("userId","fccId","cbsdId"),
   UNIQUE("cbsdId")
-); 
+);
 
-INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n				\"latitude\": 37.425056,\n				\"longitude\": -122.084113,\n				\"height\": 9.3,\n				\"heightType\": \"AGL\",\n				\"indoorDeployment\": false,\n				\"antennaAzimuth\": 271,\n				\"antennaDowntilt\": 3,\n				\"antennaGain\": 16,\n				\"antennaBeamwidth\": 30\n			}',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n						\"EUTRA_CARRIER_RSSI_NON_TX\"\n			]','1237gasd9yfa');
+INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
 
 DROP TABLE IF EXISTS cbsd_channels;
 
@@ -79,22 +79,22 @@ CREATE TABLE IF NOT EXISTS grants (
   "grantState" grant_category DEFAULT 'GRANTED',
   PRIMARY KEY ("grantId"),
   UNIQUE ("grantId")
-); 
+);
 
 CREATE OR REPLACE function populate_cbsd_channels(LowerFreq FLOAT)
 RETURNS void as $$
 DECLARE
-	i INTEGER DEFAULT 1;
-	LF FLOAT DEFAULT 1000000000;
-	t text;
-	sql text;
+  i INTEGER DEFAULT 1;
+  LF FLOAT DEFAULT 1000000000;
+  t text;
+  sql text;
 BEGIN
-		LF:= LowerFreq;
+    LF:= LowerFreq;
     FOR i in 1..15
-		LOOP
+    LOOP
     INSERT INTO cbsd_channels("lowFrequency", "highFrequency","available","channelType") VALUES (LF, LF + 10000000,0,'PAL');
-		i := i+1;
-		LF := LF + 10000000;
+    i := i+1;
+    LF := LF + 10000000;
     END LOOP;
 END
 $$ LANGUAGE plpgsql;
@@ -114,16 +114,38 @@ DROP FUNCTION IF EXISTS CREATE_NODE_CHANNEL_TABLE();
 DROP TABLE IF EXISTS NodeInfo;
 
 CREATE TABLE IF NOT EXISTS NodeInfo(
-	nodeID bigserial PRIMARY KEY,
-	nodeType INT NOT NULL, /*our network, competing network, incumbent, unknown*/
-	nodeMAC VARCHAR(20) NOT NULL,
-	nodeIP VARCHAR(20) NOT NULL,
-	latitude FLOAT DEFAULT NULL,
-	longitude FLOAT DEFAULT NULL, /*last known location*/
-	last_active timestamp,	/*last known time of contact*/
-	Stat INT); /*indicator for node status, deprecated. can be reused for as counter for last known
+  nodeID bigserial PRIMARY KEY,
+  nodeType INT NOT NULL, /*our network, competing network, incumbent, unknown*/
+  nodeMAC VARCHAR(20) NOT NULL,
+  nodeIP VARCHAR(20) NOT NULL,
+  latitude FLOAT DEFAULT NULL,
+  longitude FLOAT DEFAULT NULL, /*last known location*/
+  last_active timestamp,  /*last known time of contact*/
+  Stat INT); /*indicator for node status, deprecated. can be reused for as counter for last known
 --Add m-sequence for each node, validate parameters (IP, MAC)*/
 
+
+CREATE OR REPLACE function populate_node_table(LowerFreq FLOAT, nodeID BIGINT)
+RETURNS void as $$
+DECLARE
+  i INTEGER DEFAULT 1;
+  LF FLOAT DEFAULT 1000000000;
+  t text;
+  sql text;
+BEGIN
+    LF:= LowerFreq;
+    FOR i in 1..75
+    LOOP
+
+    EXECUTE format('
+      INSERT INTO %s(startfreq, endfreq) VALUES(%s,%s);',
+      'channelinfo_'||nodeID,LF,LF + 2000000);
+
+    i := i+1;
+    LF := LF + 2000000;
+    END LOOP;
+END
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION CREATE_NODE_CHANNEL_TABLE()
 RETURNS trigger AS $$
@@ -132,12 +154,17 @@ BEGIN
 
 EXECUTE format('
   CREATE TABLE IF NOT EXISTS %s(
-    timetag timestamp,
-    latitude float,
-    longitude float,
-    channels float array[64]
-  );', 'nodechannelstate_'||NEW.nodeID);
-RETURN NEW;
+    channelID serial PRIMARY KEY,
+    startfreq FLOAT,
+    endfreq FLOAT,
+    occ FLOAT DEFAULT NULL
+  );', 'channelinfo_'||NEW.nodeID);
+
+  perform populate_node_table(400000000.0,NEW.nodeID);
+  perform populate_node_table(800000000.0,NEW.nodeID);
+  perform populate_node_table(1000000000.0,NEW.nodeID);
+  perform populate_node_table(3500000000.0,NEW.nodeID);
+  RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
 
@@ -156,7 +183,7 @@ CREATE OR REPLACE FUNCTION DELETE_NODE_CHANNEL_TABLE()
 RETURNS trigger AS $$
 BEGIN
 
-EXECUTE format('DROP TABLE %s ;', 'nodechannelstate_'||OLD.nodeID);
+EXECUTE format('DROP TABLE %s ;', 'channelinfo_'||OLD.nodeID);
 
 RETURN NEW;
 END
@@ -166,36 +193,36 @@ CREATE TRIGGER delete_node_id_trigger
   AFTER DELETE ON nodeInfo
   FOR EACH ROW
   EXECUTE PROCEDURE DELETE_NODE_CHANNEL_TABLE();
-  
+
 CREATE TABLE IF NOT EXISTS ChannelInfo(
-	channelID serial PRIMARY KEY,
-	startfreq FLOAT,
-	endfreq FLOAT,
-	occ INT DEFAULT NULL
+  channelID serial PRIMARY KEY,
+  startfreq FLOAT,
+  endfreq FLOAT,
+  occ FLOAT DEFAULT NULL
 ); /*dummy indicator for occupancy
 --should csv for channel quality matrix be attached to this table?*/
 
 
 CREATE TABLE IF NOT EXISTS ChannelStates(
-	timetag timestamp,
-	latitude float,
-	longitude float,
-	channels float array[64]
+  timetag timestamp,
+  latitude float,
+  longitude float,
+  channels float array[64]
 );
 
 
 CREATE TABLE IF NOT EXISTS SpectrumInfo(
-	nodeID bigint ,
-	channelID INT ,
-	timetag timestamp,
-	latitude float DEFAULT NULL,
-	longitude float DEFAULT NULL, /*check if precision is enough for GPS, else just use separate lat long*/
-	psd float[] DEFAULT NULL, 
-	occ real DEFAULT 1.0,
-	center_freq float DEFAULT NULL,
-	bandwidth float DEFAULT NULL, 
-	noise_floor float DEFAULT NULL,
-	FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID)
+  nodeID bigint ,
+  channelID INT ,
+  timetag timestamp,
+  latitude float DEFAULT NULL,
+  longitude float DEFAULT NULL, /*check if precision is enough for GPS, else just use separate lat long*/
+  psd float[] DEFAULT NULL,
+  occ real DEFAULT 1.0,
+  center_freq float DEFAULT NULL,
+  bandwidth float DEFAULT NULL,
+  noise_floor float DEFAULT NULL,
+  FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID)
 );
 
 CREATE TABLE IF NOT EXISTS truncatetime(
@@ -207,20 +234,21 @@ CREATE TABLE IF NOT EXISTS truncatetime(
 CREATE OR REPLACE function populate(LowerFreq FLOAT)
 RETURNS void as $$
 DECLARE
-	i INTEGER DEFAULT 1;
-	LF FLOAT DEFAULT 1000000000;
-	t text;
-	sql text;
+  i INTEGER DEFAULT 1;
+  LF FLOAT DEFAULT 1000000000;
+  t text;
+  sql text;
 BEGIN
-		LF:= LowerFreq;
+    LF:= LowerFreq;
     FOR i in 1..75
-		LOOP
+    LOOP
     INSERT INTO ChannelInfo(startfreq, endfreq) VALUES (LF, LF + 2000000);
-		i := i+1;
-		LF := LF + 2000000;
+    i := i+1;
+    LF := LF + 2000000;
     END LOOP;
 END
 $$ LANGUAGE plpgsql;
+
 
 INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
 
