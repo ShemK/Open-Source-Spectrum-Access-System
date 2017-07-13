@@ -23,13 +23,13 @@ int main()
 
     CentralRemConnector db_connector("rem", "wireless", "wireless", "127.0.0.1");
     db_connector.connect();
-    
+
     struct sockaddr_in udp_server_addr;
     struct sockaddr_in udp_client_addr;
     socklen_t addr_len = sizeof(udp_server_addr);
     memset(&udp_server_addr, 0, addr_len);
     udp_server_addr.sin_family = AF_INET;
-    udp_server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    udp_server_addr.sin_addr.s_addr = inet_addr("0.0.0.0");
     udp_server_addr.sin_port = htons(6000);
     int udp_server_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     int status = bind(udp_server_sock, (sockaddr *)&udp_server_addr, addr_len);
@@ -51,6 +51,6 @@ int main()
             db_connector.analyze((const char *)recv_buffer, recv_len);
         }
     }
-    
+
     close(udp_server_sock);
 }
