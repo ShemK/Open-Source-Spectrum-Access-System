@@ -35,9 +35,11 @@ class uhd_control(gr.sync_block):
             in_sig=None,
             out_sig=[np.float32])
         self.message_port_register_out(pmt.intern("control"))
+        self.message_port_register_out(pmt.intern("center_freq"))
+        self.message_port_register_out(pmt.intern("bandwidth"))
         self.base_freq = 1e9
         self.freq = self.base_freq
-        self.bw = 2e6
+        self.bw = 4e6
         self.max_count = (150e6)/self.bw
         self.count = 0
 
@@ -51,7 +53,10 @@ class uhd_control(gr.sync_block):
             self.count = self.count + 1
             print "Frequency ",self.freq
             print "Max ", self.max_count
+            print "BW ", self.bw
             self.message_port_pub(pmt.intern("control"),self.send_command(self.freq,self.bw))
+            self.message_port_pub(pmt.intern("center_freq"), pmt.from_double(self.freq))
+            self.message_port_pub(pmt.intern("bandwidth"), pmt.from_double(self.bw))
             if self.count > self.max_count:
                 self.freq = self.base_freq
                 self.count = 0

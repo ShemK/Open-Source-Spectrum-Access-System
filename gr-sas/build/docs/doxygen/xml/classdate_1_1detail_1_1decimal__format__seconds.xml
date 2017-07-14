@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
-  <compounddef id="classdate_1_1detail_1_1decimal__format__seconds" kind="class" prot="public">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="classdate_1_1detail_1_1decimal__format__seconds" kind="class" language="C++" prot="public">
     <compoundname>date::detail::decimal_format_seconds</compoundname>
     <includes refid="date_8h" local="no">date.h</includes>
     <templateparamlist>
@@ -28,7 +28,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3471" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3471" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3471" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3471" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-attrib">
@@ -44,7 +44,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3472" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3472" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3472" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3472" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -59,7 +59,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3475" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3475" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3475" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3475" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classdate_1_1detail_1_1decimal__format__seconds_1a6cf3d5168e8cf8baf5f0649442a621ba" prot="private" static="no" mutable="no">
         <type><ref refid="classdate_1_1detail_1_1decimal__format__seconds_1ac3c300d92b80b857b59094168d75e344" kindref="member">precision</ref></type>
@@ -72,7 +72,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3476" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3476" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3476" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3476" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -87,7 +87,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3479" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3479" bodyend="3482"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3479" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3479" bodyend="3482"/>
       </memberdef>
       <memberdef kind="function" id="classdate_1_1detail_1_1decimal__format__seconds_1a4676803cdafd9fc94ce83778761b4efe" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref></type>
@@ -104,7 +104,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3484" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3484" bodyend="3487"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3484" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3484" bodyend="3487"/>
       </memberdef>
       <memberdef kind="function" id="classdate_1_1detail_1_1decimal__format__seconds_1a86102b53dc7c21c84650401dc311839e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kindref="member">CONSTCD14</ref> std::chrono::seconds &amp;</type>
@@ -117,7 +117,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3489" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3489" bodyend="3489"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3489" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3489" bodyend="3489"/>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1ac58301763d6ba14558fab602d1605382" compoundref="date_8h" startline="3890" endline="3890">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::second &gt;::seconds</referencedby>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a28f44e4e58542706624729bb21f7b21c" compoundref="date_8h" startline="3999" endline="3999">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;::seconds</referencedby>
       </memberdef>
       <memberdef kind="function" id="classdate_1_1detail_1_1decimal__format__seconds_1a28e60ff38ed6a4c624acd6a9cb1416d4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref> std::chrono::seconds</type>
@@ -130,7 +132,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3490" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3490" bodyend="3490"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3490" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3490" bodyend="3490"/>
       </memberdef>
       <memberdef kind="function" id="classdate_1_1detail_1_1decimal__format__seconds_1a3a53bee1d7e21d0034b6c2b845e3fd70" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref> <ref refid="classdate_1_1detail_1_1decimal__format__seconds_1ac3c300d92b80b857b59094168d75e344" kindref="member">precision</ref></type>
@@ -143,7 +145,8 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3491" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3491" bodyend="3491"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3491" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3491" bodyend="3491"/>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a38b8c3c8163e2ab00dd2539f43d28b6b" compoundref="date_8h" startline="4001" endline="4001">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;::subseconds</referencedby>
       </memberdef>
       <memberdef kind="function" id="classdate_1_1detail_1_1decimal__format__seconds_1aa8f5fe78f580a335a0aa56d48d4fbf71" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kindref="member">CONSTCD14</ref> <ref refid="classdate_1_1detail_1_1decimal__format__seconds_1ac3c300d92b80b857b59094168d75e344" kindref="member">precision</ref></type>
@@ -156,7 +159,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3493" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3493" bodyend="3496"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3493" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3493" bodyend="3496"/>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a2586435cac9b71f80acd478ef480e08e" compoundref="date_8h" startline="3894" endline="3900">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::second &gt;::operator precision</referencedby>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1aa3cb87f3c983e35508107901ec74cb3b" compoundref="date_8h" startline="4004" endline="4010">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;::operator precision</referencedby>
       </memberdef>
       <memberdef kind="function" id="classdate_1_1detail_1_1decimal__format__seconds_1a67d3fda6ee99a818f348aa88772640ec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref> bool</type>
@@ -169,7 +174,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3498" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3498" bodyend="3502"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3498" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3498" bodyend="3502"/>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f_1a0cbcf51fa7bb0a94941dcacdb1aae68a" compoundref="date_8h" startline="3910" endline="3914">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::second &gt;::in_conventional_range</referencedby>
+        <referencedby refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63_1a3f0f65978f107cf11eb683aba582d850" compoundref="date_8h" startline="4020" endline="4024">date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;::in_conventional_range</referencedby>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -200,14 +207,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3505" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3507" bodyend="3518"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3505" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3507" bodyend="3518"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3469" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3468" bodyend="3519"/>
+    <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3469" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3468" bodyend="3519"/>
     <listofallmembers>
       <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a624d788b6a98c279dabfa40aa2114b23" prot="public" virt="non-virtual"><scope>date::detail::decimal_format_seconds</scope><name>decimal_format_seconds</name></member>
       <member refid="classdate_1_1detail_1_1decimal__format__seconds_1a4676803cdafd9fc94ce83778761b4efe" prot="public" virt="non-virtual"><scope>date::detail::decimal_format_seconds</scope><name>decimal_format_seconds</name></member>

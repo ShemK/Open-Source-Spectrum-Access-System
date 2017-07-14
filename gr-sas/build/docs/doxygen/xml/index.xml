@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.6">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.11">
   <compound refid="structdate_1_1detail_1_1choose__trunc__type" kind="struct"><name>date::detail::choose_trunc_type</name>
     <member refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" kind="typedef"><name>type</name></member>
     <member refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" kind="variable"><name>digits</name></member>
@@ -192,6 +192,7 @@
     <member refid="classgr_1_1sas_1_1psql__insert_1a12862f3b247ac97477e8aa11306b01c6" kind="function"><name>make</name></member>
   </compound>
   <compound refid="classgr_1_1sas_1_1psql__insert__impl" kind="class"><name>gr::sas::psql_insert_impl</name>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1aade5c656643e8ab71f7c3dd3028df321" kind="variable"><name>flag</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a420b180b23fb7389361cbf0e779b3fb5" kind="variable"><name>d_tags</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1acc04fd1dac3f3544ae738ad361ef285c" kind="variable"><name>d_tags_itr</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a2603b894bf8cea4d246de95e50ef3f52" kind="variable"><name>d_filter</name></member>
@@ -214,7 +215,11 @@
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a7a1e240a8190094150e34a5a4fe00725" kind="variable"><name>means</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a5d2e754658d1fa1c0763e7a6c2534fbf" kind="variable"><name>variances</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1afbf89328e1e956d6c94d0be5d3a4f0be" kind="variable"><name>dbstring</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a25483bc0d522fd421fd3c8101077803d" kind="variable"><name>ip</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab5f652e603f86385806e5c0e37c6f6e5" kind="variable"><name>mac</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab0767fabcf46d2ddc00e83d9a745537a" kind="variable"><name>c</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a29dc2a9fed76cd8aa0f4f8b631093e60" kind="variable"><name>bandwidth</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6ac4878806c35b07a719e21404e46e87" kind="variable"><name>nodeid</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac2105f9051850a70d1abab2c82d44c3e" kind="variable"><name>latitude</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a0aaf73da8c7485f5c522c18acb56eaf0" kind="variable"><name>longitude</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a30336a97dcb52369c46b2c75f30703eb" kind="variable"><name>center_frequency</name></member>
@@ -222,11 +227,17 @@
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a88d6eb933d3a316ea20c71c17f25f8f7" kind="variable"><name>longstr</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ace34b18f984a8de03e2fd3e0eb8502a7" kind="variable"><name>cent_freq</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a5c2d59d343bd52a024ffd9b04f829dbb" kind="variable"><name>occstr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1aaffd2c701bc7e7eccf9774fb972a155c" kind="variable"><name>bwstr</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6b16d2918d156c38fccf2cb59fd5ec94" kind="variable"><name>nodeidstr</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a4ba3b616d36aedf3d2788c0520ea2666" kind="variable"><name>decision_maker</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ad5357050c70b1ee0e831c60c5585566a" kind="function"><name>psql_insert_impl</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a6ceb774961b346af43b30908ba0714b6" kind="function"><name>~psql_insert_impl</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1aa1d42493c3f4c33b88038e03d2e21c81" kind="function"><name>exec</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1af8cec6cbdcdb66c148487bdb3189429b" kind="function"><name>get_mac</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1af77d61fb4cc74877aa302bb5500bf822" kind="function"><name>get_ip</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ac79f4e93360bea3adafa2a4fc18504b2" kind="function"><name>gps</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1abf41f2c9da2de4d4a283eaf4c3e9cd60" kind="function"><name>center_freq</name></member>
+    <member refid="classgr_1_1sas_1_1psql__insert__impl_1a1c167bd3dff7769b71b438099337cc92" kind="function"><name>msg_samp_rate</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1ab245603ab79b7d3d99c137d71423fe56" kind="function"><name>decision</name></member>
     <member refid="classgr_1_1sas_1_1psql__insert__impl_1a3b83debb7bebb58468548fc58323f728" kind="function"><name>work</name></member>
   </compound>

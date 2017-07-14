@@ -1,8 +1,8 @@
-# Install script for directory: /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/swig
+# Install script for directory: /home/neutron/SAS_REM/gr-sas/swig
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/wireless/GNURadio_2")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,11 +39,13 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas/_sas_swig.so"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE MODULE FILES "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/_sas_swig.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE MODULE FILES "/home/neutron/SAS_REM/gr-sas/build/swig/_sas_swig.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas/_sas_swig.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas/_sas_swig.so")
-    file(RPATH_REMOVE
-         FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas/_sas_swig.so")
+    file(RPATH_CHANGE
+         FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas/_sas_swig.so"
+         OLD_RPATH "/home/neutron/SAS_REM/gr-sas/build/lib:/usr/local/lib:"
+         NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas/_sas_swig.so")
     endif()
@@ -51,20 +53,20 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES "/home/neutron/SAS_REM/gr-sas/build/swig/sas_swig.py")
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig.pyc"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig.pyo"
+    "/home/neutron/SAS_REM/gr-sas/build/swig/sas_swig.pyc"
+    "/home/neutron/SAS_REM/gr-sas/build/swig/sas_swig.pyo"
     )
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/sas/sas/swig" TYPE FILE FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/swig/sas_swig.i"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swig_doc.i"
+    "/home/neutron/SAS_REM/gr-sas/swig/sas_swig.i"
+    "/home/neutron/SAS_REM/gr-sas/build/swig/sas_swig_doc.i"
     )
 endif()
 

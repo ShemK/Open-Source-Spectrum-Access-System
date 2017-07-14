@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
-  <compounddef id="structdate_1_1detail_1_1classify__duration" kind="struct" prot="public">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="structdate_1_1detail_1_1classify__duration" kind="struct" language="C++" prot="public">
     <compoundname>date::detail::classify_duration</compoundname>
     <includes refid="date_8h" local="no">date.h</includes>
     <templateparamlist>
@@ -30,14 +30,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3574" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3574" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3574" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3574" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3573" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3572" bodyend="3584"/>
+    <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="3573" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="3572" bodyend="3584"/>
     <listofallmembers>
       <member refid="structdate_1_1detail_1_1classify__duration_1acdabae23983dbe488747f2eaf7cd96ea" prot="public" virt="non-virtual"><scope>date::detail::classify_duration</scope><name>value</name></member>
     </listofallmembers>

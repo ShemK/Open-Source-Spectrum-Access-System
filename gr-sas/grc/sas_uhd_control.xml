@@ -14,4 +14,12 @@
     <name>control</name>
     <type>message</type>
   </source>
+  <source>
+    <name>center_freq</name>
+    <type>message</type>
+  </source>
+  <source>
+    <name>bandwidth</name>
+    <type>message</type>
+  </source>
 </block>

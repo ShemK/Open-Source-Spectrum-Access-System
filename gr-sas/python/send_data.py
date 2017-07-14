@@ -120,7 +120,7 @@ class send_data(gr.sync_block):
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("latitude"),pmt.from_double(self.latitude))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("longitude"),pmt.from_double(self.longitude))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeType"),pmt.from_long(1));
-        
+
         command = pmt.make_dict()
         command = pmt.dict_add(command, pmt.string_to_symbol("attributes"),attributes)
 

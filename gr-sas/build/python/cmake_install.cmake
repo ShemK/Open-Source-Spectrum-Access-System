@@ -1,8 +1,8 @@
-# Install script for directory: /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python
+# Install script for directory: /home/neutron/SAS_REM/gr-sas/python
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/wireless/GNURadio_2")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,20 +34,20 @@ endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/__init__.py"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/send_data.py"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/python/uhd_control.py"
+    "/home/neutron/SAS_REM/gr-sas/python/__init__.py"
+    "/home/neutron/SAS_REM/gr-sas/python/send_data.py"
+    "/home/neutron/SAS_REM/gr-sas/python/uhd_control.py"
     )
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyc"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyc"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/uhd_control.pyc"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyo"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyo"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/python/uhd_control.pyo"
+    "/home/neutron/SAS_REM/gr-sas/build/python/__init__.pyc"
+    "/home/neutron/SAS_REM/gr-sas/build/python/send_data.pyc"
+    "/home/neutron/SAS_REM/gr-sas/build/python/uhd_control.pyc"
+    "/home/neutron/SAS_REM/gr-sas/build/python/__init__.pyo"
+    "/home/neutron/SAS_REM/gr-sas/build/python/send_data.pyo"
+    "/home/neutron/SAS_REM/gr-sas/build/python/uhd_control.pyo"
     )
 endif()
 

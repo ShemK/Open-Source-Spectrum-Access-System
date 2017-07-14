@@ -157,7 +157,7 @@ namespace gr {
       bwstr<<0.0;
       occ = new float[num_channels];
       occstr<<0.0;
-
+      cent_freq<<2e6;
       //add nodeid to table
       pqxx::work w(*(c));
       std::string sql = "INSERT INTO nodeinfo (nodeid, nodetype, nodemac, nodeip) SELECT "+nodeidstr.str()+",1,'"+mac+"','"+ip+"' WHERE NOT EXISTS (SELECT nodeid FROM nodeinfo WHERE nodeid="+nodeidstr.str()+");";

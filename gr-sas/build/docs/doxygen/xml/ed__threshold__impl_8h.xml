@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
-  <compounddef id="ed__threshold__impl_8h" kind="file">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="ed__threshold__impl_8h" kind="file" language="C++">
     <compoundname>ed_threshold_impl.h</compoundname>
     <includes refid="ed__threshold_8h" local="no">sas/ed_threshold.h</includes>
     <includes local="no">boost/accumulators/accumulators.hpp</includes>
@@ -23,57 +23,10 @@
     <includes local="no">vector</includes>
     <includes local="no">algorithm</includes>
     <incdepgraph>
-      <node id="207">
-        <label>volk/volk.h</label>
-      </node>
-      <node id="201">
-        <label>boost/mpl/clear.hpp</label>
-      </node>
-      <node id="208">
-        <label>cmath</label>
-      </node>
-      <node id="192">
-        <label>gnuradio/sync_block.h</label>
-      </node>
       <node id="195">
-        <label>boost/accumulators/statistics/moment.hpp</label>
-      </node>
-      <node id="191">
-        <label>gnuradio/attributes.h</label>
-      </node>
-      <node id="194">
-        <label>boost/accumulators/statistics/mean.hpp</label>
-      </node>
-      <node id="190">
-        <label>sas/api.h</label>
-        <link refid="api_8h"/>
-        <childnode refid="191" relation="include">
-        </childnode>
-      </node>
-      <node id="198">
-        <label>boost/accumulators/statistics/max.hpp</label>
-      </node>
-      <node id="202">
-        <label>boost/date_time/posix_time/posix_time.hpp</label>
-      </node>
-      <node id="188">
         <label>ed_threshold_impl.h</label>
         <link refid="ed_threshold_impl.h"/>
-        <childnode refid="189" relation="include">
-        </childnode>
-        <childnode refid="193" relation="include">
-        </childnode>
-        <childnode refid="194" relation="include">
-        </childnode>
-        <childnode refid="195" relation="include">
-        </childnode>
         <childnode refid="196" relation="include">
-        </childnode>
-        <childnode refid="197" relation="include">
-        </childnode>
-        <childnode refid="198" relation="include">
-        </childnode>
-        <childnode refid="199" relation="include">
         </childnode>
         <childnode refid="200" relation="include">
         </childnode>
@@ -99,50 +52,97 @@
         </childnode>
         <childnode refid="211" relation="include">
         </childnode>
+        <childnode refid="212" relation="include">
+        </childnode>
+        <childnode refid="213" relation="include">
+        </childnode>
+        <childnode refid="214" relation="include">
+        </childnode>
+        <childnode refid="215" relation="include">
+        </childnode>
+        <childnode refid="216" relation="include">
+        </childnode>
+        <childnode refid="217" relation="include">
+        </childnode>
+        <childnode refid="218" relation="include">
+        </childnode>
       </node>
-      <node id="205">
-        <label>string.h</label>
+      <node id="214">
+        <label>volk/volk.h</label>
       </node>
-      <node id="203">
-        <label>ctime</label>
+      <node id="208">
+        <label>boost/mpl/clear.hpp</label>
       </node>
-      <node id="210">
-        <label>vector</label>
-      </node>
-      <node id="193">
-        <label>boost/accumulators/accumulators.hpp</label>
+      <node id="215">
+        <label>cmath</label>
       </node>
       <node id="199">
-        <label>boost/accumulators/statistics/variance.hpp</label>
+        <label>gnuradio/sync_block.h</label>
       </node>
-      <node id="206">
-        <label>sstream</label>
+      <node id="202">
+        <label>boost/accumulators/statistics/moment.hpp</label>
       </node>
-      <node id="200">
-        <label>boost/utility.hpp</label>
+      <node id="198">
+        <label>gnuradio/attributes.h</label>
       </node>
-      <node id="189">
-        <label>sas/ed_threshold.h</label>
-        <link refid="ed__threshold_8h"/>
-        <childnode refid="190" relation="include">
-        </childnode>
-        <childnode refid="192" relation="include">
-        </childnode>
+      <node id="201">
+        <label>boost/accumulators/statistics/mean.hpp</label>
+      </node>
+      <node id="205">
+        <label>boost/accumulators/statistics/max.hpp</label>
       </node>
       <node id="209">
+        <label>boost/date_time/posix_time/posix_time.hpp</label>
+      </node>
+      <node id="212">
+        <label>string.h</label>
+      </node>
+      <node id="210">
+        <label>ctime</label>
+      </node>
+      <node id="217">
+        <label>vector</label>
+      </node>
+      <node id="200">
+        <label>boost/accumulators/accumulators.hpp</label>
+      </node>
+      <node id="206">
+        <label>boost/accumulators/statistics/variance.hpp</label>
+      </node>
+      <node id="213">
+        <label>sstream</label>
+      </node>
+      <node id="207">
+        <label>boost/utility.hpp</label>
+      </node>
+      <node id="216">
         <label>iostream</label>
       </node>
-      <node id="204">
-        <label>chrono</label>
-      </node>
       <node id="196">
-        <label>boost/accumulators/statistics/stats.hpp</label>
-      </node>
-      <node id="197">
-        <label>boost/accumulators/statistics/rolling_mean.hpp</label>
+        <label>sas/ed_threshold.h</label>
+        <link refid="ed__threshold_8h"/>
+        <childnode refid="197" relation="include">
+        </childnode>
+        <childnode refid="199" relation="include">
+        </childnode>
       </node>
       <node id="211">
+        <label>chrono</label>
+      </node>
+      <node id="203">
+        <label>boost/accumulators/statistics/stats.hpp</label>
+      </node>
+      <node id="204">
+        <label>boost/accumulators/statistics/rolling_mean.hpp</label>
+      </node>
+      <node id="218">
         <label>algorithm</label>
+      </node>
+      <node id="197">
+        <label>sas/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="198" relation="include">
+        </childnode>
       </node>
     </incdepgraph>
     <innerclass refid="classgr_1_1sas_1_1ed__threshold__impl" prot="public">gr::sas::ed_threshold_impl</innerclass>
@@ -152,6 +152,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h"/>
+    <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h"/>
   </compounddef>
 </doxygen>

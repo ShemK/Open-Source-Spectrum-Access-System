@@ -1,8 +1,8 @@
-# Install script for directory: /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/docs
+# Install script for directory: /home/neutron/SAS_REM/gr-sas/docs
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/wireless/GNURadio_2")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/docs/doxygen/cmake_install.cmake")
+  include("/home/neutron/SAS_REM/gr-sas/build/docs/doxygen/cmake_install.cmake")
 
 endif()
 

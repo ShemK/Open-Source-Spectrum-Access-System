@@ -1,8 +1,8 @@
-# Install script for directory: /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc
+# Install script for directory: /home/neutron/SAS_REM/gr-sas/grc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/wireless/GNURadio_2")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,11 +34,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/grc/blocks" TYPE FILE FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_psql_insert.xml"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_sas_buffer.xml"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_ed_threshold.xml"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_send_data.xml"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_uhd_control.xml"
+    "/home/neutron/SAS_REM/gr-sas/grc/sas_psql_insert.xml"
+    "/home/neutron/SAS_REM/gr-sas/grc/sas_sas_buffer.xml"
+    "/home/neutron/SAS_REM/gr-sas/grc/sas_ed_threshold.xml"
+    "/home/neutron/SAS_REM/gr-sas/grc/sas_send_data.xml"
+    "/home/neutron/SAS_REM/gr-sas/grc/sas_uhd_control.xml"
     )
 endif()
 

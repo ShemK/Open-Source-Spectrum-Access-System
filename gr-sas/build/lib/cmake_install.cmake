@@ -1,8 +1,8 @@
-# Install script for directory: /home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib
+# Install script for directory: /home/neutron/SAS_REM/gr-sas/lib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/wireless/GNURadio_2")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,8 +45,8 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_run
     endif()
   endforeach()
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so"
+    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
+    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so"
     )
   foreach(file
       "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
@@ -54,6 +54,10 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_run
       )
     if(EXISTS "${file}" AND
        NOT IS_SYMLINK "${file}")
+      file(RPATH_CHANGE
+           FILE "${file}"
+           OLD_RPATH "/usr/local/lib:"
+           NEW_RPATH "")
       if(CMAKE_INSTALL_DO_STRIP)
         execute_process(COMMAND "/usr/bin/strip" "${file}")
       endif()
@@ -63,8 +67,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_runtime")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE FILE FILES
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas.so"
-    "/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0"
+    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas.so"
+    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0"
     )
 endif()
 

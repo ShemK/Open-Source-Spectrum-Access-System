@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
-  <compounddef id="classgr_1_1sas_1_1ed__threshold__impl" kind="class" prot="public">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="classgr_1_1sas_1_1ed__threshold__impl" kind="class" language="C++" prot="public">
     <compoundname>gr::sas::ed_threshold_impl</compoundname>
     <basecompoundref refid="classgr_1_1sas_1_1ed__threshold" prot="public" virt="non-virtual">gr::sas::ed_threshold</basecompoundref>
     <includes refid="ed__threshold__impl_8h" local="no">ed_threshold_impl.h</includes>
@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1aa582b8a9cee70808e6d5337934bdef5f" prot="private" static="no" mutable="no">
         <type>int</type>
@@ -29,7 +29,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1ad82290df5958f91289b9338a6b927e32" prot="private" static="no" mutable="no">
         <type>int *</type>
@@ -42,7 +42,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1ad224fac5043f9c193f9f9e949a7025be" prot="private" static="no" mutable="no">
         <type>int *</type>
@@ -55,7 +55,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="53" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="53" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a727677dcd33185ca85ef9fa72e5389d3" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -68,7 +68,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a58afd635cee52a803235879d12c57de2" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -81,7 +81,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a4613a9618138dcfe7a2e68477e4381d3" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -94,7 +94,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a81bb4ccc095935af9f0acf857734162a" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -107,7 +107,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="54" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1ab5047cdb7142debedcf92278100f754e" prot="private" static="no" mutable="no">
         <type>std::vector&lt; float &gt; *</type>
@@ -120,7 +120,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="55" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="55" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="55" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="55" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a747f22d94aa3497a8713886a081c7c68" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -133,7 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a59a485255ecc28cce675799b07a0caa9" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -146,7 +146,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a5a25c5c0820c89f37414d5826f066bbe" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -159,7 +159,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a369af11c73b458a4aff30d9726c7a127" prot="private" static="no" mutable="no">
         <type>float</type>
@@ -172,7 +172,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1ae6373a06582efe068b4c3d334853d394" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -185,7 +185,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="56" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="56" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a0aa40dbc58aa8ffa183cdafcb96e4411" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -198,7 +198,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="57" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="57" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="57" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="57" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a32a7e5b52f7cddacb623444496a997a1" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -211,7 +211,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="57" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="57" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="57" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="57" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classgr_1_1sas_1_1ed__threshold__impl_1a2b5c34c7360a0196a813da17c69f5b3c" prot="private" static="no" mutable="no">
         <type>float *</type>
@@ -224,7 +224,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="57" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="57" bodyend="-1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="57" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="57" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -251,7 +251,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="60" column="1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="60" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classgr_1_1sas_1_1ed__threshold__impl_1a6a11504243123120619709d319286802" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -264,7 +264,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="61" column="1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="61" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classgr_1_1sas_1_1ed__threshold__impl_1afaef83f9ed71dd4e4f13d988bc9da600" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -289,7 +289,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="64" column="1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="64" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classgr_1_1sas_1_1ed__threshold__impl_1ab8de53c89bad3e8ea366006c0babf870" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>pmt::pmt_t</type>
@@ -310,7 +310,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="68" column="1"/>
+        <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="68" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -351,7 +351,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" line="51" column="1" bodyfile="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/lib/ed_threshold_impl.h" bodystart="50" bodyend="69"/>
+    <location file="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" line="51" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/lib/ed_threshold_impl.h" bodystart="50" bodyend="69"/>
     <listofallmembers>
       <member refid="classgr_1_1sas_1_1ed__threshold__impl_1ad82290df5958f91289b9338a6b927e32" prot="private" virt="non-virtual"><scope>gr::sas::ed_threshold_impl</scope><name>cstates</name></member>
       <member refid="classgr_1_1sas_1_1ed__threshold__impl_1a59a485255ecc28cce675799b07a0caa9" prot="private" virt="non-virtual"><scope>gr::sas::ed_threshold_impl</scope><name>cur_noise_floor</name></member>

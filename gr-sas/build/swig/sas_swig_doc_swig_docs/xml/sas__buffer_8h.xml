@@ -1,10 +1,18 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
-  <compounddef id="sas__buffer_8h" kind="file">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="sas__buffer_8h" kind="file" language="C++">
     <compoundname>sas_buffer.h</compoundname>
     <includes refid="api_8h" local="no">sas/api.h</includes>
     <includes local="no">gnuradio/sync_block.h</includes>
     <incdepgraph>
+      <node id="46">
+        <label>/home/neutron/SAS_REM/gr-sas/include/sas/sas_buffer.h</label>
+        <link refid="sas_buffer.h"/>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+      </node>
       <node id="49">
         <label>gnuradio/sync_block.h</label>
       </node>
@@ -15,14 +23,6 @@
         <label>sas/api.h</label>
         <link refid="api_8h"/>
         <childnode refid="48" relation="include">
-        </childnode>
-      </node>
-      <node id="46">
-        <label>/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer.h</label>
-        <link refid="sas_buffer.h"/>
-        <childnode refid="47" relation="include">
-        </childnode>
-        <childnode refid="49" relation="include">
         </childnode>
       </node>
     </incdepgraph>
@@ -55,13 +55,13 @@
 <codeline lineno="19"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="20"><highlight class="normal"></highlight></codeline>
 <codeline lineno="21"><highlight class="normal"></highlight></codeline>
-<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>INCLUDED_SAS_SAS_BUFFER_H</highlight></codeline>
-<codeline lineno="23"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>INCLUDED_SAS_SAS_BUFFER_H</highlight></codeline>
-<codeline lineno="24"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>INCLUDED_SAS_SAS_BUFFER_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>INCLUDED_SAS_SAS_BUFFER_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
 <codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="api_8h" kindref="compound">sas/api.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;gnuradio/sync_block.h&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="27"><highlight class="normal"></highlight></codeline>
-<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">gr<sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacegr" kindref="compound">gr</ref><sp/>{</highlight></codeline>
 <codeline lineno="29"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">sas<sp/>{</highlight></codeline>
 <codeline lineno="30"><highlight class="normal"></highlight></codeline>
 <codeline lineno="36" refid="classgr_1_1sas_1_1sas__buffer" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="api_8h_1ad559be21ddcacf19ab6f84dc5de3869c" kindref="member">SAS_API</ref><sp/><ref refid="classgr_1_1sas_1_1sas__buffer" kindref="compound">sas_buffer</ref><sp/>:<sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>gr::sync_block</highlight></codeline>
@@ -69,15 +69,15 @@
 <codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
 <codeline lineno="39" refid="classgr_1_1sas_1_1sas__buffer_1a6ec1dc778ac08f3715ae2f1fa0e057e1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>boost::shared_ptr&lt;sas_buffer&gt;<sp/><ref refid="classgr_1_1sas_1_1sas__buffer_1a6ec1dc778ac08f3715ae2f1fa0e057e1" kindref="member">sptr</ref>;</highlight></codeline>
 <codeline lineno="40"><highlight class="normal"></highlight></codeline>
-<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classgr_1_1sas_1_1sas__buffer_1a6ec1dc778ac08f3715ae2f1fa0e057e1" kindref="member">sptr</ref><sp/>make(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>sptr<sp/>make(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N);</highlight></codeline>
 <codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
 <codeline lineno="51"><highlight class="normal"></highlight></codeline>
 <codeline lineno="52"><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>sas</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="53"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>gr</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="54"><highlight class="normal"></highlight></codeline>
-<codeline lineno="55"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>INCLUDED_SAS_SAS_BUFFER_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
-<codeline lineno="56"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>INCLUDED_SAS_SAS_BUFFER_H<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
     </programlisting>
-    <location file="/home/wireless/git/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer.h"/>
+    <location file="/home/neutron/SAS_REM/gr-sas/include/sas/sas_buffer.h"/>
   </compounddef>
 </doxygen>

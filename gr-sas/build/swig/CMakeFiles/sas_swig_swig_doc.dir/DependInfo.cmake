@@ -7,19 +7,5 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_TARGET_LINKED_INFO_FILES
   )
 
-# The include file search paths:
-set(CMAKE_C_TARGET_INCLUDE_PATH
-  "../lib"
-  "../include"
-  "lib"
-  "include"
-  "/home/wireless/GNURadio_2/include"
-  "/usr/include/pqxx"
-  "swig"
-  "../swig"
-  "/home/wireless/GNURadio_2/include/gnuradio/swig"
-  "/usr/include/python2.7"
-  )
-set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")
