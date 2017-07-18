@@ -129,7 +129,7 @@ public:
   pthread_t rx_process; // thread for transmission
   pthread_mutex_t rx_mutex;
 
-  void transmit_frame(char *frame, int frame_len, char ip_protocol, int &frame_num);
+  void transmit_frame(char *segment, int segment_len, char ip_protocol, int &frame_num);
 
   char *getControlFrame(FrameControl temp);
   void create_frame(char *&data, int data_len, ProtocolType newType,
@@ -184,6 +184,13 @@ public:
 
   FrameControl extractFrameControl(char *header);
   void sendACK(char *recv_payload, int frame_num);
+  int frames_before_last_frame = 0;
+  bool last_frame_sent = false;
+  bool ack_received = false;
+  bool ack_reception_failed = false;
+  int burst_packets = 0;
+  int retransmissions = 0;
+
 };
 
 void *MAC_tx_worker(void *_arg);

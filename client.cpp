@@ -47,6 +47,9 @@ int main()
     //  printf("Hello %d\n",packet_number);
     int send_return = sendto(udp_client_sock, (char *)message, packet_number, 0,
                              (struct sockaddr *)&udp_server_addr, sizeof(udp_server_addr));
+    if(send_return < 0){
+      printf("Failed to write tp socket\n");
+    }
     //  printf("Sent %d\n",send_return);
 
     fd_set read_fds;

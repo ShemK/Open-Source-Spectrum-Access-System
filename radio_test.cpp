@@ -147,4 +147,6 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->set_tx_crc(np->tx_crc);
   PHY->set_tx_fec0(np->tx_fec0);
   PHY->set_tx_fec1(np->tx_fec1);
+  PHY->set_tx_subcarrier_alloc(NULL);
+  PHY->set_rx_subcarrier_alloc(NULL);
 }
