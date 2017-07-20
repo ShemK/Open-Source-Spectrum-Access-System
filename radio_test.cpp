@@ -97,11 +97,11 @@ void initialize_node_parameters(struct node_parameters *np)
   // initial USRP settings
   np->rx_freq = 1000e6;
   np->rx_rate = 2e6;
-  np->rx_gain = 20.0;
+  np->rx_gain = 0.0;
 
   np->tx_freq = 1000e6;
   np->tx_rate = 2e6;
-  np->tx_gain = 20.0;
+  np->tx_gain = 15.0;
 
   // initial liquid OFDM settings
   np->tx_gain_soft = 0;

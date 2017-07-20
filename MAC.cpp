@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -224,6 +224,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
   {
     dprintf(YEL "\n----------------Transmitting-------------------\n" RESET);
     dprintf(CYN "Current TX Queue Length: %lu\n" RESET, ip_tx_queue.size());
+    dprintf(RED "Current Retransmissions: %d\n" RESET, retransmissions);
     bool last_segment = false;
     if (last_frame_sent)
     {
@@ -338,7 +339,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
       if (last_segment)
       {
         last_frame_sent = true;
-        usleep(1000);
+        usleep(10000);
         if (ack_received)
         {
           dprintf(CYN "Last Frame Acknowledged: %d\n" RESET, frames_sent);
@@ -355,7 +356,8 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
           {
             retransmissions = 0;
             ip_tx_queue.pop();
-             dprintf(RED "Packet dropped due to lack of ACK\n" RESET);
+            dprintf(RED "Packet dropped due to lack of ACK\n" RESET);
+            ack_reception_failed = false;
           }
           else
           {
@@ -363,7 +365,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
             retransmissions++;
           }
         }
-        if (retransmissions > 1)
+        if (retransmissions > 2)
         {
           ack_reception_failed = true;
           retransmissions = 0;
@@ -812,7 +814,7 @@ int MAC::getPeerPosition(char peer_address[6])
 
 void MAC::sendACK(char *recv_payload, int frame_num)
 {
-  printf("Sending ACK\n");
+  printf(GRN "Sending ACK\n" RESET);
   char *ack_frame = new char[50];
   memcpy(ack_frame, recv_payload, ETH_HEADER_LEN);
   char *sourceMAC = extractSourceMAC(recv_payload);
