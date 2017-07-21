@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -27,6 +27,7 @@ MAC::MAC()
   sprintf(systemCMD, "sudo ip link set dev %s up", tun_name);
   system(systemCMD);
 
+  memset(prev_packet, 0, MAX_BUF);
   // Get reference to TUN interface
   tunfd = tun_alloc(tun_name, IFF_TAP);
 
@@ -173,7 +174,12 @@ void *MAC_tx_worker(void *_arg)
             if (!mac->isAddressBanned(peer_address))
             {
               new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
-              dprintf(YEL "IP Packet with Frame Number: %d\n" RESET, new_segment.frame_num);
+              printf(YEL "IP Packet with Frame Number: %d for Peer: ", new_segment.frame_num);
+              for (int i = 0; i < 6; i++)
+              {
+                printf("%02x:", (unsigned char)peer_address[i]);
+              }
+              printf("\n" RESET);
               memset(new_segment.segment, 0, nread);
               new_segment.size = nread;
               memcpy(new_segment.segment, frame, nread);
@@ -335,7 +341,8 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
     {
       dprintf(CYN "mq_send successful with frame_num: %d\n" RESET, frame_num);
       //frame_num++;
-      if(ip_tx_queue.front().arp_packet) {
+      if (ip_tx_queue.front().arp_packet)
+      {
         retransmissions = 1000;
       }
       if (last_segment)
@@ -344,7 +351,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
         usleep(1000);
         if (ack_received)
         {
-         // dprintf(CYN "Last Frame Acknowledged: %d\n" RESET, frames_sent);
+          // dprintf(CYN "Last Frame Acknowledged: %d\n" RESET, frames_sent);
           frames_sent++;
           dprintf(CYN "Frames Sent: %d\n" RESET, frames_sent);
           ip_tx_queue.pop();
@@ -590,31 +597,49 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     {
       if (incomingFrameControl.frame_protocol_subtype == ACK)
       {
-        printf("Received ACK For Last Frame Transmitted\n");
+        printf(MAG "Received ACK For Last Frame Transmitted\n" RESET);
         ack_received = true;
       }
       if (incomingFrameControl.frame_protocol_type == DATA)
       {
         dprintf(GRN "Received Payload Sent to Me\n" RESET);
-        uint16 ether_type = -1;
-        memcpy(&ether_type,recv_payload + 2, sizeof(ether_type));
-        ether_type = htons(ether_type);
-
-        if(ether_type == ETH_P_IP) {
-          printf("IP Packet Received : %d\n",ether_type);
-          updatePeerRxStatistics(sourceMAC, frame_num, buf_len);
-        } else if(ether_type == ETH_P_ARP) {
-           printf("ARP Packet Received : %d\n",ether_type);
-        }
-        sendToIPLayer(recv_payload, recv_payload_len);
-        if (isLastAlienFrame(recv_header))
+        if (memcmp(prev_packet, recv_payload, recv_payload_len) == 0)
         {
-          sendACK(recv_payload, frame_num);
+          printf(RED "Duplicate Packet Received and Discarded\n" RESET);
+          printf(RED "Resending ACK\n" RESET);
+          if (isLastAlienFrame(recv_header))
+          {
+            sendACK(recv_payload, frame_num);
+          }
         }
         else
         {
-          frames_before_last_frame++;
+          memcpy(prev_packet, recv_payload, recv_payload_len);
+
+          uint16 ether_type = -1;
+          memcpy(&ether_type, recv_payload + 2, sizeof(ether_type));
+          ether_type = htons(ether_type);
+
+          if (ether_type == ETH_P_IP)
+          {
+            printf("IP Packet Received : %d\n", ether_type);
+            updatePeerRxStatistics(sourceMAC, frame_num, buf_len);
+          }
+          else if (ether_type == ETH_P_ARP)
+          {
+            printf("ARP Packet Received : %d\n", ether_type);
+          }
+          sendToIPLayer(recv_payload, recv_payload_len);
+          if (isLastAlienFrame(recv_header))
+          {
+            sendACK(recv_payload, frame_num);
+          }
+          else
+          {
+            frames_before_last_frame++;
+          }
         }
+
         //ack_received = false;
       }
     }
@@ -798,7 +823,7 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, i
     MAC::Peer *new_peer = new Peer;
     memcpy(new_peer->mac_address, peer_address, 6);
     new_peer->frames_sent = 0;
-    new_peer->frames_received = frame_num_received+1;
+    new_peer->frames_received = frame_num_received + 1;
     new_peer->frame_errors = 0;
     peerlist.push_back(*new_peer);
     printf("New RX Peer Added\n");
@@ -854,7 +879,9 @@ void MAC::sendACK(char *recv_payload, int frame_num)
     {
       perror(RED "mq_send failure\n" RESET);
     }
-  }else{
+  }
+  else
+  {
     printf(GRN "ACK Packet Sent to PHY\n" RESET);
   }
   delete[] ack_frame;

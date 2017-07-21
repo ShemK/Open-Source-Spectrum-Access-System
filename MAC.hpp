@@ -190,7 +190,7 @@ public:
   bool ack_reception_failed = false;
   int burst_packets = 0;
   int retransmissions = 0;
-
+  char prev_packet[MAX_BUF];
 };
 
 void *MAC_tx_worker(void *_arg);
