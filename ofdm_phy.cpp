@@ -376,7 +376,7 @@ void *PHY_tx_worker(void *_arg)
         // time_t t = time(0);
         // struct tm *now = localtime(&t);
         // log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
-      /*  for (int i = 0; i < 6; i++)
+        /*  for (int i = 0; i < 6; i++)
         {
           printf("%02x:", (unsigned char)payload[i]);
         }
@@ -439,9 +439,9 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
 
   // assemble frame
   ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
-  // dprintf("Transmitting Frame!!!!\n");
- // printf("-----------------Transmitting--------------\n");
- // printf("Frame_num transmitted: %d with %d bytes\n", frame_num - 1, _payload_len);
+  printf("Transmitting Frame!!!!\n");
+  printf("-----------------Transmitting--------------\n");
+  printf("Frame_num transmitted: %d with %d bytes\n", frame_num - 1, _payload_len);
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
