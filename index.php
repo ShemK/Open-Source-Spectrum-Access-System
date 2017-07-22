@@ -89,6 +89,86 @@ echo $query."<br>";
 
 printf("uniqid(): %s\r\n", uniqid());
 
+echo "<br>";
+
+function create_update_query($update_table,$set_array,$where_array) {
+  $query = "UPDATE ".$update_table." ";
+
+  if($set_array!=null){
+    if(is_array($set_array)) {
+      $query = $query." SET ";
+      $i = 0;
+      foreach ($set_array as $key => $value) {
+        $query = $query.'"'.$key.'"'." = "."'".$value."'";
+        if($i!=count($set_array)-1){
+          $query = $query.",";
+        }
+        $i = $i+1;
+      }
+    }
+  }
+
+  if($where_array!=null){
+    if(is_array($where_array)) {
+      $query = $query." WHERE ";
+      $i = 0;
+      foreach ($where_array as $key => $value) {
+        $query = $query.'"'.$key.'"'." = "."'".$value."'";
+        if($i!=count($where_array)-1){
+          $query = $query." AND ";
+        }
+        $i = $i+1;
+      }
+      $query = $query.";";
+    } else{
+      $query = $query.";";
+    }
+  } else{
+    $query = $query.";";
+  }
+  return $query;
+}
+
+$update_table = "registered_cbsds";
+$set_array = array("people"=>"Life","classes"=>"Many");
+$where_array = array("name"=>"john","class"=>"sophomore");
+$query = create_update_query($update_table,$set_array,$where_array);
+
+echo $query."<br>";
+
+
+function create_insert_query($insert_table,$attributes) {
+  $query = "INSERT INTO ".$insert_table." ";
+
+  if($attributes!=null){
+    if(is_array($attributes)) {
+      $query = $query."(";
+      $keys = array_keys($attributes);
+      for ($i=0; $i<count($keys);$i++) {
+        $query = $query.'"'.$keys[$i].'"';
+        if($i!=count($keys)-1){
+          $query = $query.",";
+        }
+      }
+      $query = $query.") VALUES(";
+
+      $values = array_values($attributes);
+      for ($i=0; $i<count($values);$i++) {
+        $query = $query."'".$values[$i]."'";
+        if($i!=count($values)-1){
+          $query = $query.",";
+        }
+      }
+      $query = $query.");";
+    }
+  }
+  return $query;
+}
+
+$query = create_insert_query('aTable',array('name'=>'life','age'=>0));
+
+echo $query."<br>";
+
 /*
 include_once("serverpsql.class.php");
 

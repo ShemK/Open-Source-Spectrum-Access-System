@@ -108,7 +108,7 @@ class JsonListener{
 							$where_array = array('userId'=>$userId,'fccId'=>$fccId);
 							$query = $this->create_select_query($select_array,$from_array,$where_array);
 							$result = $this->myDBHandler->query($query);
-				
+
 							// check if there is a result in the query with the provided parameters
 							if($row = $this->myDBHandler->fetchResults($result)) {
 								$cbsdId = uniqid();
@@ -129,10 +129,10 @@ class JsonListener{
 												foreach ($newRegistrationRequestObj as $key => $value) {
 													if($key == 'cbsdInfo' || 'airInterface' || 'installationParam' || 'groupingParam' || 'measCapability') {
 														if(is_array($value) || is_object($value)) {
-
 															$value = json_encode($value);
 														}
-														$this->updateParameter($key,$value,$cbsdId,'registrationRequest');
+														$query = $this->create_update_query('registered_cbsds',array($key => $value),array("cbsdId" => $cbsdId));
+														$result = $this->myDBHandler->query($query);
 													}
 
 												}
@@ -205,10 +205,10 @@ class JsonListener{
 					//AND highFrequency = ".$highFrequency.";";
 					$select_array = array('available','channelType');
 					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
-					$query = $this->create_select_query($select_array,'channels',$where_array);
+					$query = $this->create_select_query($select_array,'cbsd_channels',$where_array);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
-						if($row['available'] == TRUE) {
+						if($row['available'] == 1) {
 							array_push($availableChannel,
 							(object)['lowFrequency'=>$lowFrequency,
 							'highFrequency'=>$highFrequency,
@@ -241,20 +241,18 @@ class JsonListener{
 		$replyObj = (object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
 		if(property_exists($grantInquiryObj, 'cbsdId')) {
 			$cbsdId = $grantInquiryObj->{'cbsdId'};
-			//echo json_encode($grantInquiryObj);
+
 			$replyObj = (object) ['cbsdId'=>$cbsdId];
 			$operationParam = $grantInquiryObj->{'operationParam'};
 			$maxEirp = $operationParam->{'maxEirp'};
 			$lowFrequency = $operationParam->{'operationalFrequencyRange'}->{'lowFrequency'};
 			$highFrequency = $operationParam->{'operationalFrequencyRange'}->{'highFrequency'};
-//$query = "SELECT available,channelType FROM channels
-//			WHERE lowFrequency = ".$lowFrequency."
-//			AND highFrequency = ".$highFrequency.";";
+
 			$where_array = array('lowFrequency' => $lowFrequency,'highFrequency'=>$highFrequency);
-			$query = $this->create_select_query(array('available','channelType'),'channels',$where_array);
+			$query = $this->create_select_query(array('available','channelType'),'cbsd_channels',$where_array);
 			$result = $this->myDBHandler->query($query);
 			if($row = $this->myDBHandler->fetchResults($result)) {
-				if($row['available'] == TRUE) {
+				if($row['available'] == 1) {
 
 					//echo time();
 					date_default_timezone_set ('UTC');
@@ -265,18 +263,16 @@ class JsonListener{
 					$replyObj->{'heartbeatInterval'} = 2;
 					$replyObj->{'grantId'} = $cbsdId."_".$grantExpireDate;
 					$replyObj->{'response'}->{'responseCode'} = '0';
-					$query =  'INSERT INTO grants ("grantId", "grantExpireTime","heartBeatInterval","maxEirp") '
-					. "VALUES ( '".$replyObj->{'grantId'}. "','".$grantExpireTime."','".
-					$replyObj->{'heartbeatInterval'}."','".$maxEirp."' );";
+
+					$attributes =  array('grantId'=>$replyObj->{'grantId'},'grantExpireTime'=>$grantExpireTime,
+																'heartBeatInterval'=>$replyObj->{'heartbeatInterval'},"maxEirp"=>$maxEirp);
+
+					$query = $this->create_insert_query('grants',$attributes);
 					$result = $this->myDBHandler->query($query);
 
-					// change channel to not available
-					//					$query = "UPDATE channels SET cbsdId = "."'".$cbsdId."'"
-					//									.",available = 0 WHERE lowFrequency = "."'".$lowFrequency."';";
 					$query = 'UPDATE cbsd_channels SET "grantId" = '."'".$replyObj->{'grantId'}."'"
 					.',available = 0 WHERE "lowFrequency" = '."'".$lowFrequency."';";
 					$result = $this->myDBHandler->query($query);
-
 				}
 			}
 
@@ -302,18 +298,17 @@ class JsonListener{
 			if(property_exists($newHeartBeatInquiryObj, 'grantId')) {
 				$grantId = $newHeartBeatInquiryObj->{'grantId'};
 
-//				$query = "SELECT * FROM grants WHERE grantId = '".$grantId."';";
+				//				$query = "SELECT * FROM grants WHERE grantId = '".$grantId."';";
 				$query = $this->create_select_query('*','grants',array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				if($row = $this->myDBHandler->fetchResults($result)) {
 
 					if($row['grantState'] == 'GRANTED') {
-						$this->updateParameter('grantState','AUTHORIZED',$grantId,'heartbeatRequest');
+						$query = $this->create_update_query('grants',array('grantState' => 'AUTHORIZED'),array('grantId'=>$grantId));
+						$result = $this->myDBHandler->query($query);
 						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
 						'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
 						'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
-
-
 					}
 					else if($row['grantState'] == 'AUTHORIZED'){
 						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
@@ -333,19 +328,20 @@ class JsonListener{
 	*/
 
 	private function relinquishmentRequest($newRelinquishmentInquiryObj) {
-		//	echo $newRelinquishmentInquiryObj;
+
 		if(property_exists($newRelinquishmentInquiryObj, 'cbsdId')) {
 
 			$cbsdId = $newRelinquishmentInquiryObj->{'cbsdId'};
 			if(property_exists($newRelinquishmentInquiryObj, 'grantId')) {
 				$grantId = $newRelinquishmentInquiryObj->{'grantId'};
-				$this->updateParameter('available',1,$grantId,'relinquishmentRequest');
+				$query = $this->create_update_query('cbsd_channels',array('available' => 1),array('grantId'=>$grantId));
+				$result = $this->myDBHandler->query($query);
 			}
 
 		}
 		$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId];
 		$replyObj->{'response'}->{'responseCode'} = '0';
-		//	echo "yo";
+
 		return $replyObj;
 	}
 
@@ -354,43 +350,6 @@ class JsonListener{
 	*/
 
 	private function deregistrationRequest($newDeregistrationInquiryObj) {
-
-	}
-
-	private function updateParameter($key,$value,$primaryKey,$requestType) {
-		switch ($requestType) {
-			case 'registrationRequest':
-			$query = 'UPDATE registered_cbsds SET '.'"'.$key.'"'." = "."'".$value."'".' WHERE "cbsdId" = '."'".$primaryKey."';";
-			$result = $this->myDBHandler->query($query);
-			break;
-			case 'spectrumInquiryRequest':
-
-			break;
-			case 'grantRequest':
-
-			break;
-			case 'heartbeatRequest':
-			if($key = 'grantState') {
-				$query = "UPDATE grants SET ".$key." = "."'".$value."'"." WHERE grantId = "."'".$primaryKey."';";
-				$result = $this->myDBHandler->query($query);
-			}
-
-			if($key = 'cbsdId') {
-
-			}
-
-			break;
-			case 'relinquishmentRequest':
-			$query = "UPDATE channels SET ".$key." = ".$value." WHERE grantId = '".$primaryKey."';";
-			$result = $this->myDBHandler->query($query);
-			break;
-			case 'deregistrationRequest':
-
-			break;
-			default:
-
-			break;
-		}
 
 	}
 
@@ -407,57 +366,122 @@ class JsonListener{
 
 
 	public function create_select_query($select_array,$from_array,$where_array) {
-	  $query = "SELECT ";
-	  if (is_array($select_array)) {
-	    for ($i=0; $i<count($select_array);$i++) {
-	      $query = $query.$select_array[$i];
-	      if($i!=count($select_array)-1){
-	        $query = $query.",";
-	      }
-	    }
-	    $query = $query." ";
-	  } else {
-		if($select_array=='*'){
-			$query = $query.$select_array." ";
+		$query = "SELECT ";
+		if (is_array($select_array)) {
+			for ($i=0; $i<count($select_array);$i++) {
+				$query = $query.'"'.$select_array[$i].'"';
+				if($i!=count($select_array)-1){
+					$query = $query.",";
+				}
+			}
+			$query = $query." ";
 		} else {
-			$query = $query.'"'.$select_array.'"'." ";
+			if($select_array=='*'){
+				$query = $query.$select_array." ";
+			} else {
+				$query = $query.'"'.$select_array.'"'." ";
+			}
 		}
-	  }
 
-	  $query = $query." FROM ";
+		$query = $query." FROM ";
 
-	  if(is_array($from_array)){
-	    for ($i=0; $i<count($from_array);$i++) {
-	      $query = $query.$from_array[$i];
-	      if($i!=count($from_array)-1){
-	        $query = $query." JOIN ";
-	      }
-	    }
-	    $query = $query." ";
-	  } else{
-	    $query = $query.$from_array." ";
-	  }
+		if(is_array($from_array)){
+			for ($i=0; $i<count($from_array);$i++) {
+				$query = $query.$from_array[$i];
+				if($i!=count($from_array)-1){
+					$query = $query." JOIN ";
+				}
+			}
+			$query = $query." ";
+		} else{
+			$query = $query.$from_array." ";
+		}
 
-	  if($where_array!=null){
-	    if(is_array($where_array)) {
-	      $query = $query." WHERE ";
-	      $i = 0;
-	      foreach ($where_array as $key => $value) {
-	        $query = $query.'"'.$key.'"'." = "."'".$value."'";
-	        if($i!=count($where_array)-1){
-	          $query = $query." AND ";
-	        }
-	        $i = $i+1;
-	      }
-	      $query = $query.";";
-	    } else{
-	      $query = $query.";";
-	    }
-	  } else{
-	    $query = $query.";";
-	  }
-	  return $query;
+		if($where_array!=null){
+			if(is_array($where_array)) {
+				$query = $query." WHERE ";
+				$i = 0;
+				foreach ($where_array as $key => $value) {
+					$query = $query.'"'.$key.'"'." = "."'".$value."'";
+					if($i!=count($where_array)-1){
+						$query = $query." AND ";
+					}
+					$i = $i+1;
+				}
+				$query = $query.";";
+			} else{
+				$query = $query.";";
+			}
+		} else{
+			$query = $query.";";
+		}
+		return $query;
 	}
 
+	public function create_update_query($update_table,$set_array,$where_array) {
+		$query = "UPDATE ".$update_table." ";
+
+		if($set_array!=null){
+			if(is_array($set_array)) {
+				$query = $query." SET ";
+				$i = 0;
+				foreach ($set_array as $key => $value) {
+					$query = $query.'"'.$key.'"'." = "."'".$value."'";
+					if($i!=count($set_array)-1){
+						$query = $query.",";
+					}
+					$i = $i+1;
+				}
+			}
+		}
+
+		if($where_array!=null){
+			if(is_array($where_array)) {
+				$query = $query." WHERE ";
+				$i = 0;
+				foreach ($where_array as $key => $value) {
+					$query = $query.'"'.$key.'"'." = "."'".$value."'";
+					if($i!=count($where_array)-1){
+						$query = $query." AND ";
+					}
+					$i = $i+1;
+				}
+				$query = $query.";";
+			} else{
+				$query = $query.";";
+			}
+		} else{
+			$query = $query.";";
+		}
+		return $query;
+	}
+
+	public function create_insert_query($insert_table,$attributes) {
+		$query = "INSERT INTO ".$insert_table." ";
+
+		if($attributes!=null){
+			if(is_array($attributes)) {
+				$query = $query."(";
+				$keys = array_keys($attributes);
+				for ($i=0; $i<count($keys);$i++) {
+					$query = $query.'"'.$keys[$i].'"';
+					if($i!=count($keys)-1){
+						$query = $query.",";
+					}
+				}
+				$query = $query.") VALUES(";
+
+				$values = array_values($attributes);
+				for ($i=0; $i<count($values);$i++) {
+					$query = $query."'".$values[$i]."'";
+					if($i!=count($values)-1){
+						$query = $query.",";
+					}
+				}
+				$query = $query.");";
+			}
+		}
+		return $query;
+	}
 }
 ?>
