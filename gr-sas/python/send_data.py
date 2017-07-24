@@ -37,6 +37,7 @@ class send_data(gr.sync_block):
         self.noise_floor  = -200.0
         self.host = host
         self.port =  port
+        self.num_split = num_split
         self.nodeid = 1
         self.latitude = 0
         self.longitude = 0
