@@ -81,7 +81,7 @@ class send_data(gr.sync_block):
         occvec = [] 
         
         for i in range(0,self.num_split):
-            pccvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
+            occvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
 
         pmt_to_send  = pmt.make_dict()
         
