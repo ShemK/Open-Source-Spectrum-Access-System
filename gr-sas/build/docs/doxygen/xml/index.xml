@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.11">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.6">
   <compound refid="structdate_1_1detail_1_1choose__trunc__type" kind="struct"><name>date::detail::choose_trunc_type</name>
     <member refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" kind="typedef"><name>type</name></member>
     <member refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" kind="variable"><name>digits</name></member>

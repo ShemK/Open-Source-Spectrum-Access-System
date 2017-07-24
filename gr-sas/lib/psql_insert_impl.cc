@@ -73,11 +73,17 @@ namespace gr {
     void
     psql_insert_impl::decision(pmt::pmt_t msg)
     {
+      float occvec=0;
       for(int i=0;i<num_channels;i++)
+      {
           occ[i]=pmt::to_float(pmt::vector_ref(msg,i));
+          if(occ[i]>occvec)
+            occvec=occ[i];
+      }
       occstr.str("");
       occstr.clear();
-      occstr<<occ[0];
+      occstr<<occvec;
+        
       //TODO add case for split psd
     }
 

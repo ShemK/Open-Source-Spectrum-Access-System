@@ -1,8 +1,8 @@
-# Install script for directory: /home/neutron/SAS_REM/gr-sas/lib
+# Install script for directory: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "/home/wireless/gnuradio_1")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,7 +32,12 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
-if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_runtime")
+# Is this installation the result of a crosscompile?
+if(NOT DEFINED CMAKE_CROSSCOMPILING)
+  set(CMAKE_CROSSCOMPILING "FALSE")
+endif()
+
+if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   foreach(file
       "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
       "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-sas-1.0.0git.so"
@@ -45,8 +50,8 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_run
     endif()
   endforeach()
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES
-    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
-    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so"
     )
   foreach(file
       "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-sas-1.0.0git.so.0.0.0"
@@ -54,10 +59,6 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_run
       )
     if(EXISTS "${file}" AND
        NOT IS_SYMLINK "${file}")
-      file(RPATH_CHANGE
-           FILE "${file}"
-           OLD_RPATH "/usr/local/lib:"
-           NEW_RPATH "")
       if(CMAKE_INSTALL_DO_STRIP)
         execute_process(COMMAND "/usr/bin/strip" "${file}")
       endif()
@@ -65,10 +66,10 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_run
   endforeach()
 endif()
 
-if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_runtime")
+if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "sas_runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE FILE FILES
-    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas.so"
-    "/home/neutron/SAS_REM/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas.so"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas-1.0.0git.so.0"
     )
 endif()
 

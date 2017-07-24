@@ -30,7 +30,7 @@ class send_data(gr.sync_block):
     """
     docstring for block send_data
     """
-    def __init__(self, port, host):
+    def __init__(self, port, host, num_split):
         self.center_freq = 1e9
         self.bw = 2e6
         self.occ = 1
@@ -77,13 +77,18 @@ class send_data(gr.sync_block):
         self.bw =  pmt.to_double(msg)
 
     def occ_handler_method(self, msg):
-        self.occ = pmt.to_double(pmt.vector_ref(msg,0))
+        occvec = [] 
+        
+        for i in range(0,self.num_split):
+            pccvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
+
         pmt_to_send  = pmt.make_dict()
+        
 
         curtime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         attributes = pmt.make_dict()
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("center_freq"),pmt.from_double(self.center_freq))
-        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("occ"),pmt.from_double(self.occ))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("occ"),pmt.init_f32vector(self.num_split, occve))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("bandwidth"),pmt.from_double(self.bw))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("timetag"),pmt.intern(curtime))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("noise_floor"),pmt.from_double(self.noise_floor))

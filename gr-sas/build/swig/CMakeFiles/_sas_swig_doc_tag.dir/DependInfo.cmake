@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/neutron/SAS_REM/gr-sas/build/swig/_sas_swig_doc_tag.cpp" "/home/neutron/SAS_REM/gr-sas/build/swig/CMakeFiles/_sas_swig_doc_tag.dir/_sas_swig_doc_tag.cpp.o"
+  "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/swig/_sas_swig_doc_tag.cpp" "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/_sas_swig_doc_tag.dir/_sas_swig_doc_tag.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -14,10 +14,11 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
   "lib"
   "include"
-  "/usr/local/include"
+  "/home/wireless/gnuradio_1/include"
+  "/usr/include/pqxx"
   "swig"
   "../swig"
-  "/usr/local/include/gnuradio/swig"
+  "/home/wireless/gnuradio_1/include/gnuradio/swig"
   "/usr/include/python2.7"
   )
 

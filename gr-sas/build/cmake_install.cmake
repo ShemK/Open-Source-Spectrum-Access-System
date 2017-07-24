@@ -1,8 +1,8 @@
-# Install script for directory: /home/neutron/SAS_REM/gr-sas
+# Install script for directory: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "/home/wireless/gnuradio_1")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,19 +32,24 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
-if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/sas" TYPE FILE FILES "/home/neutron/SAS_REM/gr-sas/cmake/Modules/sasConfig.cmake")
+# Is this installation the result of a crosscompile?
+if(NOT DEFINED CMAKE_CROSSCOMPILING)
+  set(CMAKE_CROSSCOMPILING "FALSE")
+endif()
+
+if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/sas" TYPE FILE FILES "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/cmake/Modules/sasConfig.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/neutron/SAS_REM/gr-sas/build/include/sas/cmake_install.cmake")
-  include("/home/neutron/SAS_REM/gr-sas/build/lib/cmake_install.cmake")
-  include("/home/neutron/SAS_REM/gr-sas/build/swig/cmake_install.cmake")
-  include("/home/neutron/SAS_REM/gr-sas/build/python/cmake_install.cmake")
-  include("/home/neutron/SAS_REM/gr-sas/build/grc/cmake_install.cmake")
-  include("/home/neutron/SAS_REM/gr-sas/build/apps/cmake_install.cmake")
-  include("/home/neutron/SAS_REM/gr-sas/build/docs/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/include/sas/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/swig/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/grc/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/apps/cmake_install.cmake")
+  include("/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/docs/cmake_install.cmake")
 
 endif()
 
@@ -56,5 +61,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/neutron/SAS_REM/gr-sas/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

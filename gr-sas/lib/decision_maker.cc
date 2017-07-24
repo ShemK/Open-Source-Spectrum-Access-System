@@ -44,6 +44,17 @@ float DecisionMaker::average(){
   return result;
 }
 
+
+float DecisionMaker::max(){
+  float result = 0;
+  for(int i = 0; i < occ_values.size(); i++) {
+    if(occ_values.at(i)>result)
+    result = occ_values.at(i);
+  }
+  occ_values.clear();
+  return result;
+}
+
 double DecisionMaker::get_previous_center_frequency(){
   return previous_center_frequency;
 }

@@ -1,8 +1,8 @@
-# Install script for directory: /home/neutron/SAS_REM/gr-sas/python
+# Install script for directory: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/python
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "/home/wireless/gnuradio_1")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,22 +32,27 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
-if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+# Is this installation the result of a crosscompile?
+if(NOT DEFINED CMAKE_CROSSCOMPILING)
+  set(CMAKE_CROSSCOMPILING "FALSE")
+endif()
+
+if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
-    "/home/neutron/SAS_REM/gr-sas/python/__init__.py"
-    "/home/neutron/SAS_REM/gr-sas/python/send_data.py"
-    "/home/neutron/SAS_REM/gr-sas/python/uhd_control.py"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/python/__init__.py"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/python/send_data.py"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/python/uhd_control.py"
     )
 endif()
 
-if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python2.7/dist-packages/sas" TYPE FILE FILES
-    "/home/neutron/SAS_REM/gr-sas/build/python/__init__.pyc"
-    "/home/neutron/SAS_REM/gr-sas/build/python/send_data.pyc"
-    "/home/neutron/SAS_REM/gr-sas/build/python/uhd_control.pyc"
-    "/home/neutron/SAS_REM/gr-sas/build/python/__init__.pyo"
-    "/home/neutron/SAS_REM/gr-sas/build/python/send_data.pyo"
-    "/home/neutron/SAS_REM/gr-sas/build/python/uhd_control.pyo"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyc"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyc"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/uhd_control.pyc"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/__init__.pyo"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/send_data.pyo"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/python/uhd_control.pyo"
     )
 endif()
 

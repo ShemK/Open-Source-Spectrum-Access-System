@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
-  <compounddef id="structdate_1_1last__spec" kind="struct" language="C++" prot="public">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="structdate_1_1last__spec" kind="struct" prot="public">
     <compoundname>date::last_spec</compoundname>
     <includes refid="date_8h" local="no">date.h</includes>
       <sectiondef kind="public-func">
@@ -15,14 +15,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="139" column="1"/>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="139" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="138" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="137" bodyend="140"/>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="138" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="137" bodyend="140"/>
     <listofallmembers>
       <member refid="structdate_1_1last__spec_1a6cf23973360d965051f7a5d735af2530" prot="public" virt="non-virtual"><scope>date::last_spec</scope><name>last_spec</name></member>
     </listofallmembers>

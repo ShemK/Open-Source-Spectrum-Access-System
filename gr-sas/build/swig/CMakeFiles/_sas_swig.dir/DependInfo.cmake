@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/neutron/SAS_REM/gr-sas/build/swig/sas_swigPYTHON_wrap.cxx" "/home/neutron/SAS_REM/gr-sas/build/swig/CMakeFiles/_sas_swig.dir/sas_swigPYTHON_wrap.cxx.o"
+  "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/swig/sas_swigPYTHON_wrap.cxx" "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/swig/CMakeFiles/_sas_swig.dir/sas_swigPYTHON_wrap.cxx.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -14,16 +14,17 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
   "lib"
   "include"
-  "/usr/local/include"
+  "/home/wireless/gnuradio_1/include"
+  "/usr/include/pqxx"
   "swig"
   "../swig"
-  "/usr/local/include/gnuradio/swig"
+  "/home/wireless/gnuradio_1/include/gnuradio/swig"
   "/usr/include/python2.7"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/neutron/SAS_REM/gr-sas/build/lib/CMakeFiles/gnuradio-sas.dir/DependInfo.cmake"
+  "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/CMakeFiles/gnuradio-sas.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
-  <compounddef id="structdate_1_1detail_1_1choose__trunc__type" kind="struct" language="C++" prot="public">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="structdate_1_1detail_1_1choose__trunc__type" kind="struct" prot="public">
     <compoundname>date::detail::choose_trunc_type</compoundname>
     <includes refid="date_8h" local="no">date.h</includes>
     <templateparamlist>
@@ -22,7 +22,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="920" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="934" bodyend="-1"/>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="920" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="934" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-attrib">
@@ -38,14 +38,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="919" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="919" bodyend="-1"/>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="919" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="919" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" line="918" column="1" bodyfile="/home/neutron/SAS_REM/gr-sas/include/sas/date.h" bodystart="917" bodyend="935"/>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="918" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="917" bodyend="935"/>
     <listofallmembers>
       <member refid="structdate_1_1detail_1_1choose__trunc__type_1a9f9a710c13a24da255120b935031171b" prot="public" virt="non-virtual"><scope>date::detail::choose_trunc_type</scope><name>digits</name></member>
       <member refid="structdate_1_1detail_1_1choose__trunc__type_1ae143a42902d17cf643ed962787421fc9" prot="public" virt="non-virtual"><scope>date::detail::choose_trunc_type</scope><name>type</name></member>

@@ -11,4 +11,5 @@ public:
   float getDecision(float occ, double center_frequency);
   double get_previous_center_frequency();
   float average();
+  float max();
 };

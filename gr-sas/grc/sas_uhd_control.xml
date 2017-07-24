@@ -4,7 +4,29 @@
   <key>sas_uhd_control</key>
   <category>SAS</category>
   <import>import sas</import>
-  <make>sas.uhd_control()</make>
+  <make>sas.uhd_control($hop_time, $bw, $freq)</make>
+
+
+  <param>
+  <name>Bandwidth</name>
+  <key>bw</key>
+  <value>4e6</value>
+  <type>float</type>
+  </param>
+
+  <param>
+  <name>Base Frequency</name>
+  <key>freq</key>
+  <value>1e9</value>
+  <type>float</type>
+  </param>
+
+  <param>
+  <name>Hop Time</name>
+  <key>hop_time</key>
+  <value>5</value>
+  <type>float</type>
+  </param>
 
   <source>
     <name>out</name>
@@ -22,4 +44,6 @@
     <name>bandwidth</name>
     <type>message</type>
   </source>
+
+  
 </block>
