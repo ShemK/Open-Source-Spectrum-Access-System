@@ -89,7 +89,7 @@ class send_data(gr.sync_block):
         curtime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         attributes = pmt.make_dict()
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("center_freq"),pmt.from_double(self.center_freq))
-        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("occ"),pmt.init_f32vector(self.num_split, occve))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("occ"),pmt.init_f32vector(self.num_split, occvec))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("bandwidth"),pmt.from_double(self.bw))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("timetag"),pmt.intern(curtime))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("noise_floor"),pmt.from_double(self.noise_floor))
