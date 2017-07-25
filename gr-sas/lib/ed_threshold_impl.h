@@ -55,7 +55,7 @@ namespace gr {
       std::vector<float> *oldbuf;
       float *noise_floor,*cur_noise_floor,rx_rate,wbnoise_floor,*fcstates;
       float *thresholds, *means, *variances;
-
+  
      public:
       ed_threshold_impl(int fft_len, int num_channels, float threshold);
       ~ed_threshold_impl();

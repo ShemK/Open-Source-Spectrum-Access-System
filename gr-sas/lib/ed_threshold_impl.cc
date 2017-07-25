@@ -132,7 +132,7 @@ namespace gr {
         //channelstate ranking as quality
         
       }
-
+      add_item_tag(0, nitems_written(0), pmt::intern("occ"), pack_decision(fcstates, num_channels));
       message_port_pub(pmt::intern("decision"), pack_decision(fcstates, num_channels));
       message_port_pub(pmt::intern("noise_floor"), pmt::from_float(noise_floor[num_channels/2]));
       //TODO: EXTEND TO SUBCHANNEL SENSING

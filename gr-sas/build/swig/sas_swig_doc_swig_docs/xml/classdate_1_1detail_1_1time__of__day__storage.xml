@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1detail_1_1time__of__day__storage" kind="class" prot="public">
+    <compoundname>date::detail::time_of_day_storage</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class Duration</type>
+      </param>
+      <param>
+        <type><ref refid="namespacedate_1_1detail_1aac75d20e6362fd00d7c741621c74054a" kindref="member">detail::classify</ref></type>
+        <defval><ref refid="structdate_1_1detail_1_1classify__duration" kindref="compound">detail::classify_duration</ref>&lt;Duration&gt;::value</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="3698" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="3698" bodyend="-1"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

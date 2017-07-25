@@ -1,0 +1,272 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1year__month__weekday__last" kind="class" prot="public">
+    <compoundname>date::year_month_weekday_last</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdate_1_1year__month__weekday__last_1a095004d499399631b6999949fc39675e" prot="private" static="no" mutable="no">
+        <type><ref refid="classdate_1_1year" kindref="compound">date::year</ref></type>
+        <definition>date::year date::year_month_weekday_last::y_</definition>
+        <argsstring></argsstring>
+        <name>y_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="789" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="789" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1year__month__weekday__last_1a5b85108c3cadd05588abd9479d5c9ab1" prot="private" static="no" mutable="no">
+        <type><ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>date::month date::year_month_weekday_last::m_</definition>
+        <argsstring></argsstring>
+        <name>m_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="790" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="790" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1year__month__weekday__last_1a0cb3ffc322547fec73495e1a5687759c" prot="private" static="no" mutable="no">
+        <type><ref refid="classdate_1_1weekday__last" kindref="compound">date::weekday_last</ref></type>
+        <definition>date::weekday_last date::year_month_weekday_last::wdl_</definition>
+        <argsstring></argsstring>
+        <name>wdl_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="791" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="791" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a23764fc93efb7f2014a0375e310b6e0a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr</type>
+        <definition>constexpr date::year_month_weekday_last::year_month_weekday_last</definition>
+        <argsstring>(const date::year &amp;y, const date::month &amp;m, const date::weekday_last &amp;wdl) noexcept</argsstring>
+        <name>year_month_weekday_last</name>
+        <param>
+          <type>const <ref refid="classdate_1_1year" kindref="compound">date::year</ref> &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classdate_1_1month" kindref="compound">date::month</ref> &amp;</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classdate_1_1weekday__last" kindref="compound">date::weekday_last</ref> &amp;</type>
+          <declname>wdl</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="794" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2891" bodyend="2897"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a43ab907a88b67e140b54bdd6e8a953bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classdate_1_1year__month__weekday__last" kindref="compound">year_month_weekday_last</ref> &amp;</type>
+        <definition>year_month_weekday_last &amp; date::year_month_weekday_last::operator+=</definition>
+        <argsstring>(const months &amp;m) noexcept</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1a005843da29d15b8741d6d744fd0bc5bf" kindref="member">months</ref> &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="797" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2902" bodyend="2906"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1ab899b7f5cb45227e4caeb7d5060f9c2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classdate_1_1year__month__weekday__last" kindref="compound">year_month_weekday_last</ref> &amp;</type>
+        <definition>year_month_weekday_last &amp; date::year_month_weekday_last::operator-=</definition>
+        <argsstring>(const months &amp;m) noexcept</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1a005843da29d15b8741d6d744fd0bc5bf" kindref="member">months</ref> &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="798" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2911" bodyend="2915"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a3c8a2335d9fa54ce26293f84407d16b4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classdate_1_1year__month__weekday__last" kindref="compound">year_month_weekday_last</ref> &amp;</type>
+        <definition>year_month_weekday_last &amp; date::year_month_weekday_last::operator+=</definition>
+        <argsstring>(const years &amp;y) noexcept</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1acb8b946ca6b26e58f3cb8eff45b60936" kindref="member">years</ref> &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="799" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2920" bodyend="2924"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a0661ac8891cda5edc751a8cd81a2f20a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classdate_1_1year__month__weekday__last" kindref="compound">year_month_weekday_last</ref> &amp;</type>
+        <definition>year_month_weekday_last &amp; date::year_month_weekday_last::operator-=</definition>
+        <argsstring>(const years &amp;y) noexcept</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1acb8b946ca6b26e58f3cb8eff45b60936" kindref="member">years</ref> &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="800" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2929" bodyend="2933"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1ab20f01c8b14a5dd3f45b16ed343a3ed5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1year" kindref="compound">date::year</ref></type>
+        <definition>constexpr year date::year_month_weekday_last::year</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>year</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="802" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2935" bodyend="2935"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1aba0aa7b3e25985756a04be687f4605a9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>constexpr month date::year_month_weekday_last::month</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>month</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="803" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2936" bodyend="2936"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1aa020997be6804f2e0bffbd0a995962f0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr weekday date::year_month_weekday_last::weekday</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>weekday</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="804" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2941" bodyend="2944"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a7d8a197433ff0f5300fc7153479c2b4b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1weekday__last" kindref="compound">date::weekday_last</ref></type>
+        <definition>constexpr weekday_last date::year_month_weekday_last::weekday_last</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>weekday_last</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="805" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2949" bodyend="2952"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a2ae8b5624e92f7cc9b3fb3ac4116ee09" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>date::year_month_weekday_last::operator sys_days</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator sys_days</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="807" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2956" bodyend="2959"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a800088363b20eaf3c66e899d856c5bd7" prot="public" static="no" const="yes" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>date::year_month_weekday_last::operator local_days</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator local_days</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="808" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2963" bodyend="2966"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1afb61073aadc8bff6588570ae1e8d0837" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr bool</type>
+        <definition>constexpr bool date::year_month_weekday_last::ok</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>ok</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="809" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2971" bodyend="2974"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classdate_1_1year__month__weekday__last_1a459abb119791d019d271579b77f656cb" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacedate_1adf571d57f07056294fc3cff11a1e9f07" kindref="member">days</ref></type>
+        <definition>days date::year_month_weekday_last::to_days</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>to_days</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="812" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="2979" bodyend="2983"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="788" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="787" bodyend="813"/>
+    <listofallmembers>
+      <member refid="classdate_1_1year__month__weekday__last_1a5b85108c3cadd05588abd9479d5c9ab1" prot="private" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>m_</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1aba0aa7b3e25985756a04be687f4605a9" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>month</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1afb61073aadc8bff6588570ae1e8d0837" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>ok</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a800088363b20eaf3c66e899d856c5bd7" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>operator local_days</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a2ae8b5624e92f7cc9b3fb3ac4116ee09" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>operator sys_days</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a43ab907a88b67e140b54bdd6e8a953bf" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>operator+=</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a3c8a2335d9fa54ce26293f84407d16b4" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>operator+=</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1ab899b7f5cb45227e4caeb7d5060f9c2a" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>operator-=</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a0661ac8891cda5edc751a8cd81a2f20a" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>operator-=</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a459abb119791d019d271579b77f656cb" prot="private" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>to_days</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a0cb3ffc322547fec73495e1a5687759c" prot="private" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>wdl_</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1aa020997be6804f2e0bffbd0a995962f0" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>weekday</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a7d8a197433ff0f5300fc7153479c2b4b" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>weekday_last</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a095004d499399631b6999949fc39675e" prot="private" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>y_</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1ab20f01c8b14a5dd3f45b16ed343a3ed5" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>year</name></member>
+      <member refid="classdate_1_1year__month__weekday__last_1a23764fc93efb7f2014a0375e310b6e0a" prot="public" virt="non-virtual"><scope>date::year_month_weekday_last</scope><name>year_month_weekday_last</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

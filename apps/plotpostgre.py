@@ -3,19 +3,29 @@ import pandas.io.sql as psql
 import plotly.offline as offline
 import plotly.graph_objs as go
 from plotly import tools
+import math 
 
 connection = pg.connect("dbname = rem user = wireless password = wireless")
 
-df = psql.read_sql("SELECT channels, latitude, longitude, timetag from ChannelStates LIMIT 100", connection)
+df = psql.read_sql("select occ, timetag, center_freq, bandwidth from spectruminfo order by timetag DESC", connection)
 
 print df.shape
 
-df.rename(columns={0: 'channels', 1:'latitude', 2:'longitude', 3:'timetag'}, inplace = True) 
+print df[df.occ >0.0]
+#print df.keys
+y =  [1]*df['occ'].shape[0]
+#print y
+trace1 = go.Heatmap(
+    z=df['occ'],
+    x=df['center_freq'],
+    y=df['timetag'],
+    colorscale = 'Viridis',
+    
+    zmin=0,
+    zmax=0.1,
+    name =  'Channel State',
 
-y =  [1]*df['timetag'].shape[0]
+)
+fig = [trace1]
 
-a = df['channels'].values
-
-print a.dtype
-
-
+offline.plot(fig, image='png')

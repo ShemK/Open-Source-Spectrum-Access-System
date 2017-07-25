@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classgr_1_1sas_1_1sas__buffer__impl" kind="class" prot="public">
+    <compoundname>gr::sas::sas_buffer_impl</compoundname>
+    <basecompoundref refid="classgr_1_1sas_1_1sas__buffer" prot="public" virt="non-virtual">gr::sas::sas_buffer</basecompoundref>
+    <includes refid="sas__buffer__impl_8h" local="no">sas_buffer_impl.h</includes>
+    <innerclass refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct" prot="private">gr::sas::sas_buffer_impl::ESC_Struct</innerclass>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1a226d7fcb6419306e4f53c6f7e881ab2c" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_impl::d_N</definition>
+        <argsstring></argsstring>
+        <name>d_N</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="39" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1a82879cd9ab056a0037a8974aca2f1e26" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_impl::d_num_channels</definition>
+        <argsstring></argsstring>
+        <name>d_num_channels</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="39" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1aa304fcc415f036b3de90867cb4e005c7" prot="private" static="no" mutable="no">
+        <type>ESC_Struct</type>
+        <definition>ESC_Struct gr::sas::sas_buffer_impl::shared_struct</definition>
+        <argsstring></argsstring>
+        <name>shared_struct</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="47" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1a640066bbf29de4d0c8f82246129f8330" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_impl::sample</definition>
+        <argsstring></argsstring>
+        <name>sample</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="48" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1ad1b7558c9ae2ba8a5003848affd7cd78" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::sas::sas_buffer_impl::frequency</definition>
+        <argsstring></argsstring>
+        <name>frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="49" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1ac2a0ddb8cb061dfa41e08c0549df7922" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::sas::sas_buffer_impl::sample_rate</definition>
+        <argsstring></argsstring>
+        <name>sample_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="50" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__impl_1abf0f385c25c73ad85762f4b19a638a9c" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_impl::num_samples</definition>
+        <argsstring></argsstring>
+        <name>num_samples</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="51" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__impl_1ab2d95536ccb46d074abdffdea60288e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::sas::sas_buffer_impl::sas_buffer_impl</definition>
+        <argsstring>(int N)</argsstring>
+        <name>sas_buffer_impl</name>
+        <param>
+          <type>int</type>
+          <declname>N</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="53" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__impl_1abc772df02e5eec7fe2ff52ff2b0dd05d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::sas::sas_buffer_impl::~sas_buffer_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~sas_buffer_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="54" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__impl_1a89bdd1bba6c7ffb11056644b9e3161db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_impl::work</definition>
+        <argsstring>(int noutput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="57" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="80">
+        <label>gr::sas::sas_buffer_impl</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer__impl"/>
+        <childnode refid="81" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="82">
+        <label>sync_block</label>
+      </node>
+      <node id="81">
+        <label>gr::sas::sas_buffer</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer"/>
+        <childnode refid="82" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="83">
+        <label>gr::sas::sas_buffer_impl</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer__impl"/>
+        <childnode refid="84" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="85">
+        <label>sync_block</label>
+      </node>
+      <node id="84">
+        <label>gr::sas::sas_buffer</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer"/>
+        <childnode refid="85" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" line="36" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_impl.h" bodystart="35" bodyend="60"/>
+    <listofallmembers>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a226d7fcb6419306e4f53c6f7e881ab2c" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>d_N</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a82879cd9ab056a0037a8974aca2f1e26" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>d_num_channels</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ad1b7558c9ae2ba8a5003848affd7cd78" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>frequency</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer_1abe020ca46e631ffca339e7d6acc8c540" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1abf0f385c25c73ad85762f4b19a638a9c" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>num_samples</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a640066bbf29de4d0c8f82246129f8330" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>sample</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ac2a0ddb8cb061dfa41e08c0549df7922" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>sample_rate</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ab2d95536ccb46d074abdffdea60288e1" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>sas_buffer_impl</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1aa304fcc415f036b3de90867cb4e005c7" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>shared_struct</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer_1a6ec1dc778ac08f3715ae2f1fa0e057e1" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a89bdd1bba6c7ffb11056644b9e3161db" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>work</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__impl_1abc772df02e5eec7fe2ff52ff2b0dd05d" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_impl</scope><name>~sas_buffer_impl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1weekday__indexed" kind="class" prot="public">
+    <compoundname>date::weekday_indexed</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdate_1_1weekday__indexed_1a21531a1c273cb3de435f63bc90c0dbdd" prot="private" static="no" mutable="no">
+        <type>unsigned char</type>
+        <definition>unsigned char date::weekday_indexed::wd_</definition>
+        <argsstring></argsstring>
+        <name>wd_</name>
+        <bitfield> 4</bitfield>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="416" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="416" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1weekday__indexed_1a232e4fd63b504b354f81d58c9150c8ca" prot="private" static="no" mutable="no">
+        <type>unsigned char</type>
+        <definition>unsigned char date::weekday_indexed::index_</definition>
+        <argsstring></argsstring>
+        <name>index_</name>
+        <bitfield> 4</bitfield>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="417" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="417" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdate_1_1weekday__indexed_1a8acc5c491fd271f9e0bbac505153e5d7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr</type>
+        <definition>constexpr date::weekday_indexed::weekday_indexed</definition>
+        <argsstring>(const date::weekday &amp;wd, unsigned index) noexcept</argsstring>
+        <name>weekday_indexed</name>
+        <param>
+          <type>const <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="420" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1734" bodyend="1737"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1weekday__indexed_1ac34d390ffa2940a789ca8a7ced58caca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="classdate_1_1weekday" kindref="compound">date::weekday</ref></type>
+        <definition>constexpr weekday date::weekday_indexed::weekday</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>weekday</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="422" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1717" bodyend="1720"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1weekday__indexed_1a42ccf7bd48da69283acde79548431f52" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned date::weekday_indexed::index</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="423" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1722" bodyend="1722"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1weekday__indexed_1aeb368a664c062836a208a7b54a70a67c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr bool</type>
+        <definition>constexpr bool date::weekday_indexed::ok</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>ok</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="424" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1727" bodyend="1730"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="415" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="414" bodyend="425"/>
+    <listofallmembers>
+      <member refid="classdate_1_1weekday__indexed_1a42ccf7bd48da69283acde79548431f52" prot="public" virt="non-virtual"><scope>date::weekday_indexed</scope><name>index</name></member>
+      <member refid="classdate_1_1weekday__indexed_1a232e4fd63b504b354f81d58c9150c8ca" prot="private" virt="non-virtual"><scope>date::weekday_indexed</scope><name>index_</name></member>
+      <member refid="classdate_1_1weekday__indexed_1aeb368a664c062836a208a7b54a70a67c" prot="public" virt="non-virtual"><scope>date::weekday_indexed</scope><name>ok</name></member>
+      <member refid="classdate_1_1weekday__indexed_1a21531a1c273cb3de435f63bc90c0dbdd" prot="private" virt="non-virtual"><scope>date::weekday_indexed</scope><name>wd_</name></member>
+      <member refid="classdate_1_1weekday__indexed_1ac34d390ffa2940a789ca8a7ced58caca" prot="public" virt="non-virtual"><scope>date::weekday_indexed</scope><name>weekday</name></member>
+      <member refid="classdate_1_1weekday__indexed_1a8acc5c491fd271f9e0bbac505153e5d7" prot="public" virt="non-virtual"><scope>date::weekday_indexed</scope><name>weekday_indexed</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

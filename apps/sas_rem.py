@@ -3,31 +3,69 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-# Generated: Tue Jul 25 00:10:43 2017
+# Generated: Tue Jul 25 16:56:04 2017
 ##################################################
 
+if __name__ == '__main__':
+    import ctypes
+    import sys
+    if sys.platform.startswith('linux'):
+        try:
+            x11 = ctypes.cdll.LoadLibrary('libX11.so')
+            x11.XInitThreads()
+        except:
+            print "Warning: failed to XInitThreads()"
+
+from PyQt4 import Qt
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
+from gnuradio import qtgui
 from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
 import sas
+import sip
+import sys
 import time
 import utils
+from gnuradio import qtgui
 
 
-class sas_rem(gr.top_block):
+class sas_rem(gr.top_block, Qt.QWidget):
 
     def __init__(self):
         gr.top_block.__init__(self, "Sas Rem")
+        Qt.QWidget.__init__(self)
+        self.setWindowTitle("Sas Rem")
+        qtgui.util.check_set_qss()
+        try:
+            self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
+        except:
+            pass
+        self.top_scroll_layout = Qt.QVBoxLayout()
+        self.setLayout(self.top_scroll_layout)
+        self.top_scroll = Qt.QScrollArea()
+        self.top_scroll.setFrameStyle(Qt.QFrame.NoFrame)
+        self.top_scroll_layout.addWidget(self.top_scroll)
+        self.top_scroll.setWidgetResizable(True)
+        self.top_widget = Qt.QWidget()
+        self.top_scroll.setWidget(self.top_widget)
+        self.top_layout = Qt.QVBoxLayout(self.top_widget)
+        self.top_grid_layout = Qt.QGridLayout()
+        self.top_layout.addLayout(self.top_grid_layout)
+
+        self.settings = Qt.QSettings("GNU Radio", "sas_rem")
+        self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 8e6
+        self.samp_rate = samp_rate = 4e6
+        self.num_channels = num_channels = 1
+        self.hop_time = hop_time = 1
         self.freq = freq = 1.004e9
         self.fft_len = fft_len = 2048
         self.N = N = 364
@@ -43,33 +81,87 @@ class sas_rem(gr.top_block):
         		channels=range(1),
         	),
         )
+        self.uhd_usrp_source_0.set_subdev_spec('B:0', 0)
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_source_0.set_center_freq(0, 0)
+        self.uhd_usrp_source_0.set_center_freq(1e9, 0)
         self.uhd_usrp_source_0.set_gain(20, 0)
-        self.sas_uhd_control_0 = sas.uhd_control(5, samp_rate, freq)
-        self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', 10)
-        self.sas_psql_insert_0 = sas.psql_insert(fft_len, 1)
-        self.sas_ed_threshold_0 = sas.ed_threshold(fft_len, 10, 200)
+        self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_bandwidth(samp_rate, 0)
+        self.sas_uhd_control_0 = sas.uhd_control(hop_time, samp_rate, freq)
+        self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels)
+        self.sas_psql_insert_0 = sas.psql_insert(fft_len, num_channels)
+        self.sas_ed_threshold_0 = sas.ed_threshold(fft_len, num_channels, 200)
+        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
+        	4096, #size
+        	firdes.WIN_BLACKMAN_hARRIS, #wintype
+        	0, #fc
+        	samp_rate, #bw
+        	"", #name
+        	1 #number of inputs
+        )
+        self.qtgui_freq_sink_x_0.set_update_time(0.10)
+        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
+        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
+        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_AUTO, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0.enable_autoscale(True)
+        self.qtgui_freq_sink_x_0.enable_grid(True)
+        self.qtgui_freq_sink_x_0.set_fft_average(0.2)
+        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
+        self.qtgui_freq_sink_x_0.enable_control_panel(True)
+
+        if not True:
+          self.qtgui_freq_sink_x_0.disable_legend()
+
+        if "complex" == "float" or "complex" == "msg_float":
+          self.qtgui_freq_sink_x_0.set_plot_pos_half(not True)
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+                  1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+        for i in xrange(1):
+            if len(labels[i]) == 0:
+                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.blocks_null_sink_2 = blocks.null_sink(gr.sizeof_float*1)
         self.analog_noise_source_x_0 = analog.noise_source_f(analog.GR_GAUSSIAN, 1, 0)
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.sas_ed_threshold_0, 'decision'), (self.sas_psql_insert_0, 'decision'))
         self.msg_connect((self.sas_ed_threshold_0, 'decision'), (self.sas_send_data_0, 'occ'))
         self.msg_connect((self.sas_ed_threshold_0, 'noise_floor'), (self.sas_send_data_0, 'noise_floor'))
         self.msg_connect((self.sas_psql_insert_0, 'ip'), (self.sas_send_data_0, 'ip'))
         self.msg_connect((self.sas_psql_insert_0, 'mac'), (self.sas_send_data_0, 'mac'))
         self.msg_connect((self.sas_psql_insert_0, 'nodeid'), (self.sas_send_data_0, 'nodeid'))
+        self.msg_connect((self.sas_uhd_control_0, 'center_freq'), (self.qtgui_freq_sink_x_0, 'freq'))
+        self.msg_connect((self.sas_uhd_control_0, 'bandwidth'), (self.sas_psql_insert_0, 'samp_rate'))
+        self.msg_connect((self.sas_uhd_control_0, 'center_freq'), (self.sas_psql_insert_0, 'center_freq'))
         self.msg_connect((self.sas_uhd_control_0, 'bandwidth'), (self.sas_send_data_0, 'bw'))
         self.msg_connect((self.sas_uhd_control_0, 'center_freq'), (self.sas_send_data_0, 'center_freq'))
         self.msg_connect((self.sas_uhd_control_0, 'control'), (self.uhd_usrp_source_0, 'command'))
         self.connect((self.analog_noise_source_x_0, 0), (self.sas_send_data_0, 0))
         self.connect((self.sas_ed_threshold_0, 0), (self.sas_psql_insert_0, 0))
         self.connect((self.sas_uhd_control_0, 0), (self.blocks_null_sink_2, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.utils_psd_cvf_0, 0))
         self.connect((self.utils_psd_cvf_0, 0), (self.sas_ed_threshold_0, 0))
+
+    def closeEvent(self, event):
+        self.settings = Qt.QSettings("GNU Radio", "sas_rem")
+        self.settings.setValue("geometry", self.saveGeometry())
+        event.accept()
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -78,6 +170,20 @@ class sas_rem(gr.top_block):
         self.samp_rate = samp_rate
         self.utils_psd_cvf_0.set_samp_rate(self.samp_rate)
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
+        self.uhd_usrp_source_0.set_bandwidth(self.samp_rate, 0)
+        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
+
+    def get_num_channels(self):
+        return self.num_channels
+
+    def set_num_channels(self, num_channels):
+        self.num_channels = num_channels
+
+    def get_hop_time(self):
+        return self.hop_time
+
+    def set_hop_time(self, hop_time):
+        self.hop_time = hop_time
 
     def get_freq(self):
         return self.freq
@@ -101,14 +207,21 @@ class sas_rem(gr.top_block):
 
 def main(top_block_cls=sas_rem, options=None):
 
+    from distutils.version import StrictVersion
+    if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
+        style = gr.prefs().get_string('qtgui', 'style', 'raster')
+        Qt.QApplication.setGraphicsSystem(style)
+    qapp = Qt.QApplication(sys.argv)
+
     tb = top_block_cls()
     tb.start()
-    try:
-        raw_input('Press Enter to quit: ')
-    except EOFError:
-        pass
-    tb.stop()
-    tb.wait()
+    tb.show()
+
+    def quitting():
+        tb.stop()
+        tb.wait()
+    qapp.connect(qapp, Qt.SIGNAL("aboutToQuit()"), quitting)
+    qapp.exec_()
 
 
 if __name__ == '__main__':

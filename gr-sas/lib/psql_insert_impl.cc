@@ -83,8 +83,7 @@ namespace gr {
       occstr.str("");
       occstr.clear();
       occstr<<occvec;
-        
-      //TODO add case for split psd
+     //TODO add case for split psd
     }
 
     std::string psql_insert_impl::exec(const char *cmd)
@@ -163,7 +162,8 @@ namespace gr {
       bwstr<<0.0;
       occ = new float[num_channels];
       occstr<<0.0;
-      cent_freq<<2e6;
+      center_frequency =2e6;
+      cent_freq<<center_frequency;
       //add nodeid to table
       pqxx::work w(*(c));
       std::string sql = "INSERT INTO nodeinfo (nodeid, nodetype, nodemac, nodeip) SELECT "+nodeidstr.str()+",1,'"+mac+"','"+ip+"' WHERE NOT EXISTS (SELECT nodeid FROM nodeinfo WHERE nodeid="+nodeidstr.str()+");";
@@ -188,11 +188,45 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
+      
       pqxx::work w(*(c));
       std::vector<float> buf;
       float *   in = (float *) input_items[0];
       std::string s= date::format("%F %T\n", std::chrono::system_clock::now());
+      uint64_t abs_N, end_N;
+      
+      abs_N = nitems_read(0);
+      end_N = abs_N + (uint64_t)(noutput_items);
+      d_tags.clear();
+      get_tags_in_range(d_tags, 0, abs_N, end_N);
+          
+      
 
+      for(d_tags_itr = d_tags.begin(); d_tags_itr != d_tags.end(); d_tags_itr++) {
+
+          if(pmt::symbol_to_string(d_tags_itr->key) == "occ")
+            {
+              float occvec=0;
+              for(int i=0;i<num_channels;i++)
+              {
+                  occ[i]=pmt::to_float(pmt::vector_ref(d_tags_itr->value,i));
+                  if(occ[i]>occvec)
+                    occvec=occ[i];
+              }
+              occstr.str("");
+              occstr.clear();
+              occstr<<occvec;
+            }  //find a way to get gps time
+          
+
+                std::cout << std::setw(10) << "Offset: " << d_tags_itr->offset
+                    << std::setw(10) << "Source: "
+                    << (pmt::is_symbol(d_tags_itr->srcid) ? pmt::symbol_to_string(d_tags_itr->srcid) : "n/a")
+                    << std::setw(10) << "Key: " << pmt::symbol_to_string(d_tags_itr->key)
+                    << std::setw(10) << "Value: ";
+                std::cout << d_tags_itr->value << std::endl;
+
+      }
       buf.assign( in, in+N);
 
       std::stringstream result;
@@ -204,7 +238,9 @@ namespace gr {
 
       std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
       //std::cout<<sql;
-      w.exec( sql);
+      
+      if(center_frequency!= 2e6)
+        w.exec( sql);
 
 
       float decision = decision_maker.getDecision(occ[0],std::stod (cent_freq.str(),0));

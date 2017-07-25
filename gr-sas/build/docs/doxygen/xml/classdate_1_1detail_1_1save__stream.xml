@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1detail_1_1save__stream" kind="class" prot="public">
+    <compoundname>date::detail::save_stream</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>CharT</declname>
+        <defname>CharT</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>Traits</declname>
+        <defname>Traits</defname>
+        <defval>std::char_traits&lt;CharT&gt;</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdate_1_1detail_1_1save__stream_1aee0b9ed15b74dad061ad3c4071107eaf" prot="private" static="no" mutable="no">
+        <type>std::basic_ostream&lt; CharT, Traits &gt; &amp;</type>
+        <definition>std::basic_ostream&lt;CharT, Traits&gt;&amp; date::detail::save_stream&lt; CharT, Traits &gt;::os_</definition>
+        <argsstring></argsstring>
+        <name>os_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="892" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="892" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1detail_1_1save__stream_1a58292321b20e05b4c631612624120e57" prot="private" static="no" mutable="no">
+        <type>CharT</type>
+        <definition>CharT date::detail::save_stream&lt; CharT, Traits &gt;::fill_</definition>
+        <argsstring></argsstring>
+        <name>fill_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="893" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="893" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1detail_1_1save__stream_1a59d7e473faedb74f812f7999b10687ec" prot="private" static="no" mutable="no">
+        <type>std::ios::fmtflags</type>
+        <definition>std::ios::fmtflags date::detail::save_stream&lt; CharT, Traits &gt;::flags_</definition>
+        <argsstring></argsstring>
+        <name>flags_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="894" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="894" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1detail_1_1save__stream_1aa59b450bc9675eb0548718006f29edb1" prot="private" static="no" mutable="no">
+        <type>std::locale</type>
+        <definition>std::locale date::detail::save_stream&lt; CharT, Traits &gt;::loc_</definition>
+        <argsstring></argsstring>
+        <name>loc_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="895" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="895" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdate_1_1detail_1_1save__stream_1a5f9ea5e47463e1f75d68c3a4fb5a2317" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>date::detail::save_stream&lt; CharT, Traits &gt;::~save_stream</definition>
+        <argsstring>()</argsstring>
+        <name>~save_stream</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="898" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="898" bodyend="903"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1detail_1_1save__stream_1ab1798017d61cbbb680f160fc63580e7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>date::detail::save_stream&lt; CharT, Traits &gt;::save_stream</definition>
+        <argsstring>(const save_stream &amp;)=delete</argsstring>
+        <name>save_stream</name>
+        <param>
+          <type>const <ref refid="classdate_1_1detail_1_1save__stream" kindref="compound">save_stream</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="905" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1detail_1_1save__stream_1ab0b15db5f1b8ecee88d0db7ca6907e33" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classdate_1_1detail_1_1save__stream" kindref="compound">save_stream</ref> &amp;</type>
+        <definition>save_stream&amp; date::detail::save_stream&lt; CharT, Traits &gt;::operator=</definition>
+        <argsstring>(const save_stream &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="classdate_1_1detail_1_1save__stream" kindref="compound">save_stream</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="906" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1detail_1_1save__stream_1aa74b6e463705b2ac68d13267385e86ff" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>date::detail::save_stream&lt; CharT, Traits &gt;::save_stream</definition>
+        <argsstring>(std::basic_ostream&lt; CharT, Traits &gt; &amp;os)</argsstring>
+        <name>save_stream</name>
+        <param>
+          <type>std::basic_ostream&lt; CharT, Traits &gt; &amp;</type>
+          <declname>os</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="908" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="908" bodyend="913"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="891" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="890" bodyend="914"/>
+    <listofallmembers>
+      <member refid="classdate_1_1detail_1_1save__stream_1a58292321b20e05b4c631612624120e57" prot="private" virt="non-virtual"><scope>date::detail::save_stream</scope><name>fill_</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1a59d7e473faedb74f812f7999b10687ec" prot="private" virt="non-virtual"><scope>date::detail::save_stream</scope><name>flags_</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1aa59b450bc9675eb0548718006f29edb1" prot="private" virt="non-virtual"><scope>date::detail::save_stream</scope><name>loc_</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1ab0b15db5f1b8ecee88d0db7ca6907e33" prot="public" virt="non-virtual"><scope>date::detail::save_stream</scope><name>operator=</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1aee0b9ed15b74dad061ad3c4071107eaf" prot="private" virt="non-virtual"><scope>date::detail::save_stream</scope><name>os_</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1ab1798017d61cbbb680f160fc63580e7d" prot="public" virt="non-virtual"><scope>date::detail::save_stream</scope><name>save_stream</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1aa74b6e463705b2ac68d13267385e86ff" prot="public" virt="non-virtual"><scope>date::detail::save_stream</scope><name>save_stream</name></member>
+      <member refid="classdate_1_1detail_1_1save__stream_1a5f9ea5e47463e1f75d68c3a4fb5a2317" prot="public" virt="non-virtual"><scope>date::detail::save_stream</scope><name>~save_stream</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

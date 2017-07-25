@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1year__month" kind="class" prot="public">
+    <compoundname>date::year_month</compoundname>
+    <includes refid="date_8h" local="no">date.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classdate_1_1year__month_1a28a3eba5edcd3070b5489d660b000c8a" prot="private" static="no" mutable="no">
+        <type><ref refid="classdate_1_1year" kindref="compound">date::year</ref></type>
+        <definition>date::year date::year_month::y_</definition>
+        <argsstring></argsstring>
+        <name>y_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="458" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="458" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdate_1_1year__month_1a51e9a93093dce1c0e6397a7099547980" prot="private" static="no" mutable="no">
+        <type><ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>date::month date::year_month::m_</definition>
+        <argsstring></argsstring>
+        <name>m_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="459" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="459" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdate_1_1year__month_1a223184a2fbe2aaee59ebafbeb2220666" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>date::year_month::year_month</definition>
+        <argsstring>()=default</argsstring>
+        <name>year_month</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="462" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1a72bc1f9b228071ddf311ca69df7c2206" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref></type>
+        <definition>CONSTCD11 date::year_month::year_month</definition>
+        <argsstring>(const date::year &amp;y, const date::month &amp;m) NOEXCEPT</argsstring>
+        <name>year_month</name>
+        <param>
+          <type>const <ref refid="classdate_1_1year" kindref="compound">date::year</ref> &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classdate_1_1month" kindref="compound">date::month</ref> &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="463" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1813" bodyend="1816"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1a9456ddd47089912798d2cff01a44b119" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref> <ref refid="classdate_1_1year" kindref="compound">date::year</ref></type>
+        <definition>CONSTCD11 year date::year_month::year</definition>
+        <argsstring>() const NOEXCEPT</argsstring>
+        <name>year</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="465" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1818" bodyend="1818"/>
+        <referencedby refid="namespacedate_1a3b5a1a87e5ee8092e23e90a206363a1b" compoundref="date_8h" startline="3269" endline="3272">date::operator/</referencedby>
+        <referencedby refid="namespacedate_1ab85a0e2fa0a5c6e590c9f938689baa73" compoundref="date_8h" startline="1971" endline="1974">date::operator&lt;&lt;</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1a504e045dc6565c34c0bfa0b360660589" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref> <ref refid="classdate_1_1month" kindref="compound">date::month</ref></type>
+        <definition>CONSTCD11 month date::year_month::month</definition>
+        <argsstring>() const NOEXCEPT</argsstring>
+        <name>month</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="466" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1819" bodyend="1819"/>
+        <referencedby refid="namespacedate_1a3b5a1a87e5ee8092e23e90a206363a1b" compoundref="date_8h" startline="3269" endline="3272">date::operator/</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1afa4315ba9728e051267f4eb759d5fb03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kindref="member">CONSTCD14</ref> <ref refid="classdate_1_1year__month" kindref="compound">year_month</ref> &amp;</type>
+        <definition>CONSTCD14 year_month &amp; date::year_month::operator+=</definition>
+        <argsstring>(const months &amp;dm) NOEXCEPT</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1a005843da29d15b8741d6d744fd0bc5bf" kindref="member">months</ref> &amp;</type>
+          <declname>dm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="468" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1825" bodyend="1829"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1a566e134511d508231d5ca855e5bf6489" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kindref="member">CONSTCD14</ref> <ref refid="classdate_1_1year__month" kindref="compound">year_month</ref> &amp;</type>
+        <definition>CONSTCD14 year_month &amp; date::year_month::operator-=</definition>
+        <argsstring>(const months &amp;dm) NOEXCEPT</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1a005843da29d15b8741d6d744fd0bc5bf" kindref="member">months</ref> &amp;</type>
+          <declname>dm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="469" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1834" bodyend="1838"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1a418b944033d78990060d6a2ec7cd35fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kindref="member">CONSTCD14</ref> <ref refid="classdate_1_1year__month" kindref="compound">year_month</ref> &amp;</type>
+        <definition>CONSTCD14 year_month &amp; date::year_month::operator+=</definition>
+        <argsstring>(const years &amp;dy) NOEXCEPT</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1acb8b946ca6b26e58f3cb8eff45b60936" kindref="member">years</ref> &amp;</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="470" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1843" bodyend="1847"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1afc31d8209e88397cd14c333f43f959a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a3893ed763f820a91f169a2e9777aa325" kindref="member">CONSTCD14</ref> <ref refid="classdate_1_1year__month" kindref="compound">year_month</ref> &amp;</type>
+        <definition>CONSTCD14 year_month &amp; date::year_month::operator-=</definition>
+        <argsstring>(const years &amp;dy) NOEXCEPT</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const <ref refid="namespacedate_1acb8b946ca6b26e58f3cb8eff45b60936" kindref="member">years</ref> &amp;</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="471" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1852" bodyend="1856"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1year__month_1ab43240a2a592694e7c1fc65862299b55" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="date_8h_1a98c025909efef28d356780da89fc44b6" kindref="member">CONSTCD11</ref> bool</type>
+        <definition>CONSTCD11 bool date::year_month::ok</definition>
+        <argsstring>() const NOEXCEPT</argsstring>
+        <name>ok</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="473" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="1820" bodyend="1820"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="457" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="456" bodyend="474"/>
+    <listofallmembers>
+      <member refid="classdate_1_1year__month_1a51e9a93093dce1c0e6397a7099547980" prot="private" virt="non-virtual"><scope>date::year_month</scope><name>m_</name></member>
+      <member refid="classdate_1_1year__month_1a504e045dc6565c34c0bfa0b360660589" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>month</name></member>
+      <member refid="classdate_1_1year__month_1ab43240a2a592694e7c1fc65862299b55" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>ok</name></member>
+      <member refid="classdate_1_1year__month_1afa4315ba9728e051267f4eb759d5fb03" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>operator+=</name></member>
+      <member refid="classdate_1_1year__month_1a418b944033d78990060d6a2ec7cd35fd" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>operator+=</name></member>
+      <member refid="classdate_1_1year__month_1a566e134511d508231d5ca855e5bf6489" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>operator-=</name></member>
+      <member refid="classdate_1_1year__month_1afc31d8209e88397cd14c333f43f959a3" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>operator-=</name></member>
+      <member refid="classdate_1_1year__month_1a28a3eba5edcd3070b5489d660b000c8a" prot="private" virt="non-virtual"><scope>date::year_month</scope><name>y_</name></member>
+      <member refid="classdate_1_1year__month_1a9456ddd47089912798d2cff01a44b119" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>year</name></member>
+      <member refid="classdate_1_1year__month_1a223184a2fbe2aaee59ebafbeb2220666" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>year_month</name></member>
+      <member refid="classdate_1_1year__month_1a72bc1f9b228071ddf311ca69df7c2206" prot="public" virt="non-virtual"><scope>date::year_month</scope><name>year_month</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

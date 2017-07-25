@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classdate_1_1time__of__day" kind="class" prot="public">
+    <compoundname>date::time_of_day</compoundname>
+    <basecompoundref refid="classdate_1_1detail_1_1time__of__day__storage" prot="public" virt="non-virtual">date::detail::time_of_day_storage&lt; Duration &gt;</basecompoundref>
+    <includes refid="date_8h" local="no">date.h</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>Duration</declname>
+        <defname>Duration</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classdate_1_1time__of__day_1ad9ddb72b050bdfe73378bd24ebff84e9" prot="private" static="no">
+        <type><ref refid="classdate_1_1detail_1_1time__of__day__storage" kindref="compound">detail::time_of_day_storage</ref>&lt; Duration &gt;</type>
+        <definition>using date::time_of_day&lt; Duration &gt;::base =  detail::time_of_day_storage&lt;Duration&gt;</definition>
+        <argsstring></argsstring>
+        <name>base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="4075" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="4075" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdate_1_1time__of__day_1a50c451df0f4dd7bc539c03cd47bfae20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr</type>
+        <definition>constexpr date::time_of_day&lt; Duration &gt;::time_of_day</definition>
+        <argsstring>() noexcept=default</argsstring>
+        <name>time_of_day</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="4078" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1time__of__day_1a605f0073265aefbf203f3e9cac5b6889" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type>constexpr</type>
+        <definition>constexpr date::time_of_day&lt; Duration &gt;::time_of_day</definition>
+        <argsstring>(Duration since_midnight) noexcept</argsstring>
+        <name>time_of_day</name>
+        <param>
+          <type>Duration</type>
+          <declname>since_midnight</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="4080" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="4080" bodyend="4082"/>
+      </memberdef>
+      <memberdef kind="function" id="classdate_1_1time__of__day_1af6451e0cb1993d92aefb3fa2cbfe64ea" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Arg0</type>
+          </param>
+          <param>
+            <type>class Arg1</type>
+          </param>
+          <param>
+            <type>class...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type>constexpr</type>
+        <definition>constexpr date::time_of_day&lt; Duration &gt;::time_of_day</definition>
+        <argsstring>(Arg0 &amp;&amp;arg0, Arg1 &amp;&amp;arg1, Args &amp;&amp;...args) noexcept</argsstring>
+        <name>time_of_day</name>
+        <param>
+          <type>Arg0 &amp;&amp;</type>
+          <declname>arg0</declname>
+        </param>
+        <param>
+          <type>Arg1 &amp;&amp;</type>
+          <declname>arg1</declname>
+        </param>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="4086" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="4086" bodyend="4088"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="72">
+        <label>date::detail::time_of_day_storage&lt; Duration &gt;</label>
+        <link refid="classdate_1_1detail_1_1time__of__day__storage"/>
+      </node>
+      <node id="71">
+        <label>date::time_of_day&lt; Duration &gt;</label>
+        <link refid="classdate_1_1time__of__day"/>
+        <childnode refid="72" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="74">
+        <label>date::detail::time_of_day_storage&lt; Duration &gt;</label>
+        <link refid="classdate_1_1detail_1_1time__of__day__storage"/>
+      </node>
+      <node id="73">
+        <label>date::time_of_day&lt; Duration &gt;</label>
+        <link refid="classdate_1_1time__of__day"/>
+        <childnode refid="74" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" line="4074" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h" bodystart="4072" bodyend="4097"/>
+    <listofallmembers>
+      <member refid="classdate_1_1time__of__day_1ad9ddb72b050bdfe73378bd24ebff84e9" prot="private" virt="non-virtual"><scope>date::time_of_day</scope><name>base</name></member>
+      <member refid="classdate_1_1time__of__day_1a50c451df0f4dd7bc539c03cd47bfae20" prot="public" virt="non-virtual"><scope>date::time_of_day</scope><name>time_of_day</name></member>
+      <member refid="classdate_1_1time__of__day_1a605f0073265aefbf203f3e9cac5b6889" prot="public" virt="non-virtual"><scope>date::time_of_day</scope><name>time_of_day</name></member>
+      <member refid="classdate_1_1time__of__day_1af6451e0cb1993d92aefb3fa2cbfe64ea" prot="public" virt="non-virtual"><scope>date::time_of_day</scope><name>time_of_day</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
