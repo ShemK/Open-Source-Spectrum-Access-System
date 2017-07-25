@@ -4,6 +4,8 @@
 #include <pmt/pmt.h>
 #include <vector>
 #include "decision_maker.h"
+#include "InformationParser.hpp"
+
 using namespace pmt;
 
 class CentralRemConnector{
@@ -34,6 +36,8 @@ public:
       double bandwidth;
       DecisionMaker decision_maker;
     };
-
+    InformationParser informationParser;
     std::vector<node_info> node_info_vector;
+
+    void parseData(float occ, double lowerFreq, int nodeID);
 };

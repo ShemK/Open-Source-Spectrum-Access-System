@@ -5,7 +5,8 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <sys/socket.h>
-//g++ test.cpp CentralRemConnector.cpp -lpqxx -lgnuradio-pmt -std=c++11
+//g++ -o test test.cpp CentralRemConnector.cpp decision_maker.cc InformationParser.cpp -lpqxx -lgnuradio-pmt -std=c++11
+
 int sig_terminate = 0;
 
 void terminate(int signum)

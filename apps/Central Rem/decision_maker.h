@@ -14,6 +14,7 @@ public:
   float getDecision(float occ, double center_frequency);
   double get_previous_center_frequency();
   float average();
+  float max_occ();
   long int startTime;
   long int currentTime;
   bool frequency_change = false;

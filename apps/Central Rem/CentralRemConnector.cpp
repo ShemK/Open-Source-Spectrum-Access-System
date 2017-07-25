@@ -107,8 +107,8 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
       {
         if (!nodeKnown(pmt::to_long(nodeID)))
         {
-          std::string query = insert(attributes, "NodeInfo");
-          worker.exec(query);
+          //std::string query = insert(attributes, "NodeInfo");
+          //worker.exec(query);
         //  worker.commit();
         }
       }
@@ -124,21 +124,38 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
         pmt_t attributes = pmt::dict_ref(individual_dict, pmt::string_to_symbol("attributes"), not_found);
         std::string table = pmt::symbol_to_string(pmt::dict_ref(individual_dict, pmt::string_to_symbol("table"), not_found));
         query = insert(attributes, table);
-        occ = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("occ"), not_found));
         center_freq = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("center_freq"), not_found));
         float bandwidth = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("bandwidth"), not_found));
         int nodeID = pmt::to_long(pmt::dict_ref(attributes, pmt::intern("nodeid"), not_found));
-        pushData(occ,center_freq,nodeID,bandwidth,&worker);
+        double noise_floor = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("noise_floor"), not_found));
+
+        pmt::pmt_t occ_pmt = pmt::dict_ref(attributes, pmt::intern("occ"), not_found);
+        if(pmt::is_number(occ_pmt)){
+            //printf("Number\n" );
+            occ = pmt::to_double(occ_pmt);
+            pushData(occ,center_freq,nodeID,bandwidth,&worker);
+        }
+        else if (pmt::is_f32vector(occ_pmt))
+        {
+          //printf("vector\n" );
+          std::vector<float> occ_vector = pmt::f32vector_elements(occ_pmt);
+          for(unsigned int i = 0; i < occ_vector.size();i++){
+              occ = occ_vector[i];
+              pushData(occ,center_freq,nodeID,bandwidth,&worker);
+          }
+        }
+        //std::cout << "Noise Floor: " << noise_floor<< std::endl;
+
       }
       else if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "UPDATE")
       {
         pmt_t attributes = pmt::dict_ref(individual_dict, pmt::string_to_symbol("attributes"), not_found);
         pmt_t conditions = pmt::dict_ref(individual_dict, pmt::string_to_symbol("conditions"), not_found);
         std::string table = pmt::symbol_to_string(pmt::dict_ref(individual_dict, pmt::string_to_symbol("table"), not_found));
-        query = update(attributes, conditions, table);
+        //query = update(attributes, conditions, table);
       }
       try{
-        worker.exec(query);
+        //worker.exec(query);
         db_connection = true;
       }
       catch (const std::exception &e){
@@ -325,15 +342,16 @@ void CentralRemConnector::pushData(float occ, double center_freq, int nodeID, fl
       if(decision != -1) {
 
         double frequency = node_info_vector[i].decision_maker.get_previous_center_frequency() - bandwidth/2;
-        std::cout<<"Channel at "<<frequency<<"has occupancy "<<decision<<std::endl;
-        std::cout << "Actual Channel " <<  center_freq << std::endl;
+        std::cout<<"Channel with Center Freq:  "<< node_info_vector[i].decision_maker.get_previous_center_frequency() <<" has occupancy "<<decision<<std::endl;
+        std::cout << "Current Channel " <<  center_freq << " at Node: " << std::to_string(nodeID) << std::endl;
         std::string sql = "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
         + " WHERE startfreq = " + std::to_string(frequency) + ";";
         for(int i = 0; i < (bandwidth/(2e6))-1;i++) {
           sql = sql + "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
           + " WHERE startfreq = " + std::to_string(frequency+2e6) + ";";
         }
-        std::cout << sql << std::endl;
+        //std::cout << sql << std::endl;
+        parseData(occ,frequency,nodeID);
         dprintf("%s\n", sql.c_str());
         try{
           worker->exec(sql);
@@ -349,4 +367,19 @@ void CentralRemConnector::pushData(float occ, double center_freq, int nodeID, fl
       }
     }
   }
+}
+
+
+void CentralRemConnector::parseData(float occ, double lowerFreq, int nodeID){
+  pmt::pmt_t info = pmt::make_dict();
+  pmt::pmt_t key = pmt::string_to_symbol("nodeID");
+  pmt::pmt_t value = pmt::mp(nodeID);
+  info = pmt::dict_add(info,key,value);
+  key = pmt::string_to_symbol("lowerFreq");
+  value = pmt::from_double(lowerFreq);
+  info = pmt::dict_add(info,key,value);
+  key = pmt::string_to_symbol("occ");
+  value = pmt::from_double(occ);
+  info = pmt::dict_add(info,key,value);
+  informationParser.sendData(info);
 }

@@ -33,7 +33,7 @@ float DecisionMaker::getDecision(float occ, double center_frequency){
     double secondsPassed = currentTime - startTime;
     //printf("secondsPassed: %f\n", secondsPassed);
 
-    if(secondsPassed < 3){
+    if(secondsPassed < 1){
       occ_values.push_back(occ);
       //printf("OCC SIZE:%lu\n",occ_values.size());
       return -1;
@@ -45,7 +45,8 @@ float DecisionMaker::getDecision(float occ, double center_frequency){
   //printf("Changed Frequency: %f\n",this->center_frequency);
   //std::cout << "Changed Frequency " << this->center_frequency << std::endl;
   this->center_frequency = center_frequency;
-  float result = average();
+  float result = max_occ();
+  //float result = average();
   frequency_change = false;
   return result;
 
@@ -57,6 +58,19 @@ float DecisionMaker::average(){
     result = result + occ_values.at(i);
   }
   result = result/occ_values.size();
+  occ_values.clear();
+  return result;
+}
+
+float DecisionMaker::max_occ(){
+  float result = 0;
+  for(int i = 0; i < occ_values.size(); i++) {
+    if(occ_values[i]>result){
+      result = occ_values[i];
+    }
+    //result = result + occ_values.at(i);
+  }
+  //result = result/occ_values.size();
   occ_values.clear();
   return result;
 }
