@@ -351,7 +351,8 @@ void CentralRemConnector::pushData(float occ, double center_freq, int nodeID, fl
           + " WHERE startfreq = " + std::to_string(frequency+2e6) + ";";
         }
         //std::cout << sql << std::endl;
-        parseData(occ,frequency,nodeID);
+        std::cout << "OCC: " << decision << std::endl;
+        parseData(decision,frequency,nodeID);
         dprintf("%s\n", sql.c_str());
         try{
           worker->exec(sql);
@@ -370,7 +371,7 @@ void CentralRemConnector::pushData(float occ, double center_freq, int nodeID, fl
 }
 
 
-void CentralRemConnector::parseData(float occ, double lowerFreq, int nodeID){
+void CentralRemConnector::parseData(double occ, double lowerFreq, int nodeID){
   pmt::pmt_t info = pmt::make_dict();
   pmt::pmt_t key = pmt::string_to_symbol("nodeID");
   pmt::pmt_t value = pmt::mp(nodeID);

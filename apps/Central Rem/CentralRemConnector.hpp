@@ -39,5 +39,5 @@ public:
     InformationParser informationParser;
     std::vector<node_info> node_info_vector;
 
-    void parseData(float occ, double lowerFreq, int nodeID);
+    void parseData(double occ, double lowerFreq, int nodeID);
 };

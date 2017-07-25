@@ -78,13 +78,13 @@ class send_data(gr.sync_block):
         self.bw =  pmt.to_double(msg)
 
     def occ_handler_method(self, msg):
-        occvec = [] 
-        
+        occvec = []
+
         for i in range(0,self.num_split):
             occvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
 
         pmt_to_send  = pmt.make_dict()
-        
+
 
         curtime = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         attributes = pmt.make_dict()
@@ -110,7 +110,7 @@ class send_data(gr.sync_block):
 
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         sock.sendto(serialized_pmt, (UDP_IP, UDP_PORT))
-        print "sending data", pmt_to_send
+        #print "sending data", pmt_to_send
 
     def noise_floor_handler_method(self, msg):
         self.noise_floor = pmt.to_double(msg)
@@ -141,7 +141,7 @@ class send_data(gr.sync_block):
 
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         sock.sendto(serialized_pmt, (UDP_IP, UDP_PORT))
-        print "sending node data", pmt_to_send
+        #print "sending node data", pmt_to_send
 
     def gps_handler_method(self, msg):
         self.latitude =  pmt.to_double(pmt.vector_ref(msg,0))
