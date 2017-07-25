@@ -114,8 +114,8 @@ namespace gr {
 
         volk_32f_s32f_calc_spectral_noise_floor_32f(&cur_noise_floor[i], &buf[i][0],15, fft_len);
         
-        wbnoise_floor = (cur_noise_floor[i] < wbnoise_floor || wbnoise_floor < -150 || wbnoise_floor < -200) ? cur_noise_floor[i] :  wbnoise_floor;
-        noise_floor[i] = (cur_noise_floor[i] - wbnoise_floor > 15) ? wbnoise_floor :  cur_noise_floor[i];
+        wbnoise_floor = (cur_noise_floor[i] < wbnoise_floor || wbnoise_floor < -150) ? cur_noise_floor[i] :  wbnoise_floor;
+        noise_floor[i] = (cur_noise_floor[i] - wbnoise_floor > 15 || cur_noise_floor[i]< -200) ? wbnoise_floor :  cur_noise_floor[i];
         //noise_floor[i] = (cur_noise_floor[i] - cur_noise_floor[i-1] < 10 || cur_noise_floor[i] - cur_noise_floor[i+1] < 10) ? cur_noise_floor[i] :  std::min(cur_noise_floor[i-1],cur_noise_floor[i+1]);
         
         acc=for_each(buf[i].begin(), buf[i].end(),acc);
@@ -134,7 +134,7 @@ namespace gr {
       }
 
       message_port_pub(pmt::intern("decision"), pack_decision(fcstates, num_channels));
-      message_port_pub(pmt::intern("noise_floor"), pmt::from_float(wbnoise_floor));
+      message_port_pub(pmt::intern("noise_floor"), pmt::from_float(noise_floor[num_channels/2]));
       //TODO: EXTEND TO SUBCHANNEL SENSING
       memcpy(out,in, fft_len*sizeof(float) );
       // Tell runtime system how many output items we produced.
