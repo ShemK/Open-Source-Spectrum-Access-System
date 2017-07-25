@@ -30,6 +30,9 @@ class uhd_control(gr.sync_block):
     """
     def __init__(self, hop_time, bw, freq):
         self.st = time.time()
+        self.bw = bw
+        self.freq = freq
+        self.hop_time = hop_time
         gr.sync_block.__init__(self,
             name="uhd_control",
             in_sig=None,
