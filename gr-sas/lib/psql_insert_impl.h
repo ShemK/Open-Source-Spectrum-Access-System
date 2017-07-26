@@ -66,7 +66,7 @@ namespace gr {
       std::vector<float> *oldbuf;
       float *noise_floor,*cur_noise_floor,rx_rate,wbnoise_floor,*fcstates;
 	    float *thresholds, *means, *variances;
-      std::string dbstring = "dbname = rem user = wireless password = rem hostaddr = 127.0.0.1 port = 5432",ip,mac;
+      std::string dbstring = "dbname = rem user = wireless password = wireless hostaddr = 127.0.0.1 port = 5432",ip,mac;
 
       pqxx::connection *c;
       double bandwidth;
