@@ -104,6 +104,13 @@
     <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1a151de507bdca598cb001de10d8148e22" kind="variable"><name>num_samples</name></member>
     <member refid="structgr_1_1sas_1_1sas__buffer__impl_1_1ESC__Struct_1a7e2be4a7ab73dde2a5ded1a023a7f9a6" kind="variable"><name>data</name></member>
   </compound>
+  <compound refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct" kind="struct"><name>gr::sas::sas_buffer_write_impl::ESC_Struct</name>
+    <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a0a2fa8da5bf02d12fd6e4dee8e154155" kind="variable"><name>sample</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a0c0f5be050d9b4848fcee8572173c101" kind="variable"><name>frequency</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a492c5738214d43041f3e337bedcabdfa" kind="variable"><name>sample_rate</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1ad2b6ac489f85638f524936c52937b830" kind="variable"><name>num_samples</name></member>
+    <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1afd12b17d782cc56916806fc9f8e13907" kind="variable"><name>data</name></member>
+  </compound>
   <compound refid="structdate_1_1fields" kind="struct"><name>date::fields</name>
     <member refid="structdate_1_1fields_1a7ad38573327cf02a071d32ac089e51de" kind="variable"><name>ymd</name></member>
     <member refid="structdate_1_1fields_1a8dca608f10995a52fed6cd91db54ae03" kind="variable"><name>wd</name></member>
@@ -272,6 +279,23 @@
     <member refid="classgr_1_1sas_1_1sas__buffer__impl_1ab2d95536ccb46d074abdffdea60288e1" kind="function"><name>sas_buffer_impl</name></member>
     <member refid="classgr_1_1sas_1_1sas__buffer__impl_1abc772df02e5eec7fe2ff52ff2b0dd05d" kind="function"><name>~sas_buffer_impl</name></member>
     <member refid="classgr_1_1sas_1_1sas__buffer__impl_1a89bdd1bba6c7ffb11056644b9e3161db" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1sas__buffer__write" kind="class"><name>gr::sas::sas_buffer_write</name>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write_1ad5231a9494a3377b8fbccaff26a3bb7c" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write_1a9369a2e86b3245c991fc3f420168a82b" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1sas_1_1sas__buffer__write__impl" kind="class"><name>gr::sas::sas_buffer_write_impl</name>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a0241449000307c613d34cdd7a78f61b8" kind="variable"><name>d_N</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a866b8b1361622b23364e46bbceb5fb77" kind="variable"><name>shared_struct</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a8cfbedf7fb10bf59586f86c711e73d83" kind="variable"><name>sample</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1abfbbce0c23c634418f07aa184781d891" kind="variable"><name>frequency</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a9b874bd329f7f7e5b3d40e680d052233" kind="variable"><name>sample_rate</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1ae8d43d7a8443c463bd611b675056184f" kind="variable"><name>num_samples</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1ae5dfe9987dca86cc1bd06e7b84e32adc" kind="function"><name>sas_buffer_write_impl</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1aa847fd8b87b5705e0d36f785f62de0c4" kind="function"><name>~sas_buffer_write_impl</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a5e9ace4a0ffcecbbf084363b6d455277" kind="function"><name>handle_frequency</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a8e67887522894adab52d90acc8f6c692" kind="function"><name>handle_samp_rate</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1afa9cf7b596d6894b024291be4ed16e2a" kind="function"><name>work</name></member>
   </compound>
   <compound refid="classdate_1_1detail_1_1save__stream" kind="class"><name>date::detail::save_stream</name>
     <member refid="classdate_1_1detail_1_1save__stream_1aee0b9ed15b74dad061ad3c4071107eaf" kind="variable"><name>os_</name></member>
@@ -877,6 +901,11 @@
   </compound>
   <compound refid="sas__buffer__impl_8h" kind="file"><name>sas_buffer_impl.h</name>
     <member refid="sas__buffer__impl_8h_1a9148708527d1c6fa46eda4a937382662" kind="define"><name>MAX_ESC_BUFFER</name></member>
+  </compound>
+  <compound refid="sas__buffer__write_8h" kind="file"><name>sas_buffer_write.h</name>
+  </compound>
+  <compound refid="sas__buffer__write__impl_8h" kind="file"><name>sas_buffer_write_impl.h</name>
+    <member refid="sas__buffer__write__impl_8h_1a9148708527d1c6fa46eda4a937382662" kind="define"><name>MAX_ESC_BUFFER</name></member>
   </compound>
   <compound refid="group__block" kind="group"><name>block</name>
   </compound>

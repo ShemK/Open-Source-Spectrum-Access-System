@@ -35,7 +35,6 @@ namespace gr {
     class sas_buffer_impl : public sas_buffer
     {
      private:
-      
       int d_N, d_num_channels;
       struct ESC_Struct{
         int sample;

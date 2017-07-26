@@ -26,5 +26,9 @@ var files =
     [ "sas_buffer.h", "sas__buffer_8h.html", [
       [ "sas_buffer", "classgr_1_1sas_1_1sas__buffer.html", "classgr_1_1sas_1_1sas__buffer" ]
     ] ],
-    [ "sas_buffer_impl.h", "sas__buffer__impl_8h.html", "sas__buffer__impl_8h" ]
+    [ "sas_buffer_impl.h", "sas__buffer__impl_8h.html", "sas__buffer__impl_8h" ],
+    [ "sas_buffer_write.h", "sas__buffer__write_8h.html", [
+      [ "sas_buffer_write", "classgr_1_1sas_1_1sas__buffer__write.html", "classgr_1_1sas_1_1sas__buffer__write" ]
+    ] ],
+    [ "sas_buffer_write_impl.h", "sas__buffer__write__impl_8h.html", "sas__buffer__write__impl_8h" ]
 ];

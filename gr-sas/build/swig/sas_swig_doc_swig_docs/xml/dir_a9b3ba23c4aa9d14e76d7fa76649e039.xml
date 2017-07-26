@@ -9,6 +9,7 @@
     <innerfile refid="ed__threshold_8h">ed_threshold.h</innerfile>
     <innerfile refid="psql__insert_8h">psql_insert.h</innerfile>
     <innerfile refid="sas__buffer_8h">sas_buffer.h</innerfile>
+    <innerfile refid="sas__buffer__write_8h">sas_buffer_write.h</innerfile>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

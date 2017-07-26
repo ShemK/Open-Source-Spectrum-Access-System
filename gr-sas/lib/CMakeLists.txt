@@ -33,7 +33,7 @@ list(APPEND sas_sources
     sas_buffer_impl.cc
     ed_threshold_impl.cc
     decision_maker.cc
-    )
+    sas_buffer_write_impl.cc )
 
 set(sas_sources "${sas_sources}" PARENT_SCOPE)
 if(NOT sas_sources)

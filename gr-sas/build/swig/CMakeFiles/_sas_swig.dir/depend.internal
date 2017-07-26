@@ -6,6 +6,7 @@ swig/CMakeFiles/_sas_swig.dir/sas_swigPYTHON_wrap.cxx.o
  ../include/sas/ed_threshold.h
  ../include/sas/psql_insert.h
  ../include/sas/sas_buffer.h
+ ../include/sas/sas_buffer_write.h
  /home/wireless/gnuradio_1/include/gnuradio/api.h
  /home/wireless/gnuradio_1/include/gnuradio/attributes.h
  /home/wireless/gnuradio_1/include/gnuradio/basic_block.h

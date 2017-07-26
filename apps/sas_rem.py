@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-# Generated: Tue Jul 25 16:56:04 2017
+# Generated: Wed Jul 26 13:25:44 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -17,19 +17,16 @@ if __name__ == '__main__':
             print "Warning: failed to XInitThreads()"
 
 from PyQt4 import Qt
-from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
 from gnuradio import qtgui
-from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
 import sas
 import sip
 import sys
-import time
 import utils
 from gnuradio import qtgui
 
@@ -68,31 +65,54 @@ class sas_rem(gr.top_block, Qt.QWidget):
         self.hop_time = hop_time = 1
         self.freq = freq = 1.004e9
         self.fft_len = fft_len = 2048
-        self.N = N = 364
+        self.N = N = 2048
 
         ##################################################
         # Blocks
         ##################################################
         self.utils_psd_cvf_0 = utils.psd_cvf(samp_rate,  fft_len, firdes.WIN_BLACKMAN_hARRIS, 0.8)
-        self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(("", "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
-        )
-        self.uhd_usrp_source_0.set_subdev_spec('B:0', 0)
-        self.uhd_usrp_source_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_source_0.set_center_freq(1e9, 0)
-        self.uhd_usrp_source_0.set_gain(20, 0)
-        self.uhd_usrp_source_0.set_antenna('RX2', 0)
-        self.uhd_usrp_source_0.set_bandwidth(samp_rate, 0)
-        self.sas_uhd_control_0 = sas.uhd_control(hop_time, samp_rate, freq)
-        self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels)
+        self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels, N)
+        self.sas_sas_buffer_0 = sas.sas_buffer(N)
         self.sas_psql_insert_0 = sas.psql_insert(fft_len, num_channels)
         self.sas_ed_threshold_0 = sas.ed_threshold(fft_len, num_channels, 200)
+        self.qtgui_vector_sink_f_0 = qtgui.vector_sink_f(
+            fft_len,
+            0,
+            1.0,
+            "x-Axis",
+            "y-Axis",
+            "",
+            1 # Number of inputs
+        )
+        self.qtgui_vector_sink_f_0.set_update_time(0.10)
+        self.qtgui_vector_sink_f_0.set_y_axis(-140, 10)
+        self.qtgui_vector_sink_f_0.enable_autoscale(False)
+        self.qtgui_vector_sink_f_0.enable_grid(False)
+        self.qtgui_vector_sink_f_0.set_x_axis_units("")
+        self.qtgui_vector_sink_f_0.set_y_axis_units("")
+        self.qtgui_vector_sink_f_0.set_ref_level(0)
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+                  1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+        for i in xrange(1):
+            if len(labels[i]) == 0:
+                self.qtgui_vector_sink_f_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_vector_sink_f_0.set_line_label(i, labels[i])
+            self.qtgui_vector_sink_f_0.set_line_width(i, widths[i])
+            self.qtgui_vector_sink_f_0.set_line_color(i, colors[i])
+            self.qtgui_vector_sink_f_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_vector_sink_f_0_win = sip.wrapinstance(self.qtgui_vector_sink_f_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_vector_sink_f_0_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
-        	4096, #size
+        	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
         	0, #fc
         	samp_rate, #bw
@@ -102,12 +122,12 @@ class sas_rem(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
         self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
         self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
-        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_AUTO, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(True)
-        self.qtgui_freq_sink_x_0.enable_grid(True)
-        self.qtgui_freq_sink_x_0.set_fft_average(0.2)
+        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0.enable_autoscale(False)
+        self.qtgui_freq_sink_x_0.enable_grid(False)
+        self.qtgui_freq_sink_x_0.set_fft_average(1.0)
         self.qtgui_freq_sink_x_0.enable_axis_labels(True)
-        self.qtgui_freq_sink_x_0.enable_control_panel(True)
+        self.qtgui_freq_sink_x_0.enable_control_panel(False)
 
         if not True:
           self.qtgui_freq_sink_x_0.disable_legend()
@@ -134,8 +154,7 @@ class sas_rem(gr.top_block, Qt.QWidget):
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.blocks_null_sink_2 = blocks.null_sink(gr.sizeof_float*1)
-        self.analog_noise_source_x_0 = analog.noise_source_f(analog.GR_GAUSSIAN, 1, 0)
+        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, N)
 
         ##################################################
         # Connections
@@ -145,17 +164,16 @@ class sas_rem(gr.top_block, Qt.QWidget):
         self.msg_connect((self.sas_psql_insert_0, 'ip'), (self.sas_send_data_0, 'ip'))
         self.msg_connect((self.sas_psql_insert_0, 'mac'), (self.sas_send_data_0, 'mac'))
         self.msg_connect((self.sas_psql_insert_0, 'nodeid'), (self.sas_send_data_0, 'nodeid'))
-        self.msg_connect((self.sas_uhd_control_0, 'center_freq'), (self.qtgui_freq_sink_x_0, 'freq'))
-        self.msg_connect((self.sas_uhd_control_0, 'bandwidth'), (self.sas_psql_insert_0, 'samp_rate'))
-        self.msg_connect((self.sas_uhd_control_0, 'center_freq'), (self.sas_psql_insert_0, 'center_freq'))
-        self.msg_connect((self.sas_uhd_control_0, 'bandwidth'), (self.sas_send_data_0, 'bw'))
-        self.msg_connect((self.sas_uhd_control_0, 'center_freq'), (self.sas_send_data_0, 'center_freq'))
-        self.msg_connect((self.sas_uhd_control_0, 'control'), (self.uhd_usrp_source_0, 'command'))
-        self.connect((self.analog_noise_source_x_0, 0), (self.sas_send_data_0, 0))
+        self.msg_connect((self.sas_sas_buffer_0, 'center_freq'), (self.sas_psql_insert_0, 'center_freq'))
+        self.msg_connect((self.sas_sas_buffer_0, 'samp_rate'), (self.sas_psql_insert_0, 'samp_rate'))
+        self.msg_connect((self.sas_sas_buffer_0, 'center_freq'), (self.sas_send_data_0, 'center_freq'))
+        self.msg_connect((self.sas_sas_buffer_0, 'samp_rate'), (self.sas_send_data_0, 'bw'))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.utils_psd_cvf_0, 0))
+        self.connect((self.sas_ed_threshold_0, 0), (self.qtgui_vector_sink_f_0, 0))
         self.connect((self.sas_ed_threshold_0, 0), (self.sas_psql_insert_0, 0))
-        self.connect((self.sas_uhd_control_0, 0), (self.blocks_null_sink_2, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_freq_sink_x_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.utils_psd_cvf_0, 0))
+        self.connect((self.sas_ed_threshold_0, 0), (self.sas_send_data_0, 0))
+        self.connect((self.sas_sas_buffer_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.utils_psd_cvf_0, 0), (self.sas_ed_threshold_0, 0))
 
     def closeEvent(self, event):
@@ -169,8 +187,6 @@ class sas_rem(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.utils_psd_cvf_0.set_samp_rate(self.samp_rate)
-        self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
-        self.uhd_usrp_source_0.set_bandwidth(self.samp_rate, 0)
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
 
     def get_num_channels(self):

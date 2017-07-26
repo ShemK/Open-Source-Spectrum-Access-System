@@ -6,6 +6,7 @@
     <includedby refid="ed__threshold_8h" local="no">/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/ed_threshold.h</includedby>
     <includedby refid="psql__insert_8h" local="no">/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/psql_insert.h</includedby>
     <includedby refid="sas__buffer_8h" local="no">/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer.h</includedby>
+    <includedby refid="sas__buffer__write_8h" local="no">/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer_write.h</includedby>
     <incdepgraph>
       <node id="1">
         <label>gnuradio/attributes.h</label>
@@ -35,6 +36,12 @@
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer_write.h</label>
+        <link refid="sas__buffer__write_8h"/>
       </node>
       <node id="5">
         <label>/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer.h</label>

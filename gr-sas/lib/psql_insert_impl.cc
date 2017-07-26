@@ -191,7 +191,7 @@ namespace gr {
       
       pqxx::work w(*(c));
       std::vector<float> buf;
-      float *   in = (float *) input_items[0];
+      float *  in = (float *) input_items[0];
       std::string s= date::format("%F %T\n", std::chrono::system_clock::now());
       uint64_t abs_N, end_N;
       

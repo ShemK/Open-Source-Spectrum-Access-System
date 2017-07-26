@@ -28,11 +28,12 @@ class uhd_control(gr.sync_block):
     """
     docstring for block uhd_control
     """
-    def __init__(self, hop_time, bw, freq):
+    def __init__(self, hop_time, bw, freq, gain):
         self.st = time.time()
         self.bw = bw
         self.freq = freq
         self.base_freq = freq
+        self.gain = gain
         self.hop_time = hop_time
         gr.sync_block.__init__(self,
             name="uhd_control",
@@ -40,6 +41,7 @@ class uhd_control(gr.sync_block):
             out_sig=[np.float32])
         self.message_port_register_out(pmt.intern("control"))
         self.message_port_register_out(pmt.intern("center_freq"))
+        self.message_port_register_out(pmt.intern("gain"))
         self.message_port_register_out(pmt.intern("bandwidth"))
         self.max_count = (150e6)/self.bw
         self.count = 0
@@ -55,11 +57,13 @@ class uhd_control(gr.sync_block):
             print "Frequency ",self.freq
             print "Max ", self.max_count
             print "BW ", self.bw
+            print "Gain", self.gain
             print "count", self.count
 
-            self.message_port_pub(pmt.intern("control"),self.send_command(self.freq,self.bw))
+            self.message_port_pub(pmt.intern("control"),self.send_command(self.freq,self.bw, self.gain))
             self.message_port_pub(pmt.intern("center_freq"), pmt.from_double(self.freq))
             self.message_port_pub(pmt.intern("bandwidth"), pmt.from_double(self.bw))
+            self.message_port_pub(pmt.intern("gain"), pmt.from_double(self.gain))
             self.max_count = (50e6)/self.bw
             if self.count > self.max_count:
                 self.freq = self.base_freq
@@ -69,8 +73,10 @@ class uhd_control(gr.sync_block):
             self.st = time.time()
         return len(output_items[0])
 
-    def send_command(self, freq, bw):
+    def send_command(self, freq, bw, gain):
         command = pmt.make_dict()
         command = pmt.dict_add(command, pmt.intern("freq"),pmt.from_double(freq))
         command = pmt.dict_add(command, pmt.intern("bandwidth"),pmt.from_double(bw))
+        command = pmt.dict_add(command, pmt.intern("gain"),pmt.from_double(gain))
+
         return command

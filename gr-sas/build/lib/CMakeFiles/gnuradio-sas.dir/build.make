@@ -153,12 +153,37 @@ lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.provides: lib/CMakeFiles/gnu
 lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.provides.build: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o
 
 
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o: lib/CMakeFiles/gnuradio-sas.dir/flags.make
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o: ../lib/sas_buffer_write_impl.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o"
+	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.cc
+
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.i"
+	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.cc > CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.i
+
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.s"
+	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.cc -o CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.s
+
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.requires:
+
+.PHONY : lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.requires
+
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.provides: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.requires
+	$(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.provides.build
+.PHONY : lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.provides
+
+lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.provides.build: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o
+
+
 # Object files for target gnuradio-sas
 gnuradio__sas_OBJECTS = \
 "CMakeFiles/gnuradio-sas.dir/psql_insert_impl.cc.o" \
 "CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.o" \
 "CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o" \
-"CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o"
+"CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o" \
+"CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o"
 
 # External object files for target gnuradio-sas
 gnuradio__sas_EXTERNAL_OBJECTS =
@@ -167,6 +192,7 @@ lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/psql_inse
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.o
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o
+lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/build.make
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: /usr/lib/x86_64-linux-gnu/libboost_system.so
@@ -175,7 +201,7 @@ lib/libgnuradio-sas-1.0.0git.so.0.0.0: /home/wireless/gnuradio_1/lib/libgnuradio
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: /usr/lib/liblog4cpp.so
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: /usr/lib/libpqxx.so
 lib/libgnuradio-sas-1.0.0git.so.0.0.0: lib/CMakeFiles/gnuradio-sas.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX shared library libgnuradio-sas-1.0.0git.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX shared library libgnuradio-sas-1.0.0git.so"
 	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/gnuradio-sas.dir/link.txt --verbose=$(VERBOSE)
 	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib && $(CMAKE_COMMAND) -E cmake_symlink_library libgnuradio-sas-1.0.0git.so.0.0.0 libgnuradio-sas-1.0.0git.so.0.0.0 libgnuradio-sas-1.0.0git.so
 	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib && /usr/local/bin/cmake -E create_symlink libgnuradio-sas-1.0.0git.so.0.0.0 /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/lib/libgnuradio-sas.so
@@ -194,6 +220,7 @@ lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/psql_i
 lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.o.requires
 lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/ed_threshold_impl.cc.o.requires
 lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/decision_maker.cc.o.requires
+lib/CMakeFiles/gnuradio-sas.dir/requires: lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o.requires
 
 .PHONY : lib/CMakeFiles/gnuradio-sas.dir/requires
 

@@ -332,6 +332,33 @@ sas_buffer_impl.cc.s:
 	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_impl.cc.s
 .PHONY : sas_buffer_impl.cc.s
 
+sas_buffer_write_impl.o: sas_buffer_write_impl.cc.o
+
+.PHONY : sas_buffer_write_impl.o
+
+# target to build an object file
+sas_buffer_write_impl.cc.o:
+	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.o
+.PHONY : sas_buffer_write_impl.cc.o
+
+sas_buffer_write_impl.i: sas_buffer_write_impl.cc.i
+
+.PHONY : sas_buffer_write_impl.i
+
+# target to preprocess a source file
+sas_buffer_write_impl.cc.i:
+	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.i
+.PHONY : sas_buffer_write_impl.cc.i
+
+sas_buffer_write_impl.s: sas_buffer_write_impl.cc.s
+
+.PHONY : sas_buffer_write_impl.s
+
+# target to generate assembly for a file
+sas_buffer_write_impl.cc.s:
+	cd /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build && $(MAKE) -f lib/CMakeFiles/gnuradio-sas.dir/build.make lib/CMakeFiles/gnuradio-sas.dir/sas_buffer_write_impl.cc.s
+.PHONY : sas_buffer_write_impl.cc.s
+
 test_sas.o: test_sas.cc.o
 
 .PHONY : test_sas.o
@@ -389,6 +416,9 @@ help:
 	@echo "... sas_buffer_impl.o"
 	@echo "... sas_buffer_impl.i"
 	@echo "... sas_buffer_impl.s"
+	@echo "... sas_buffer_write_impl.o"
+	@echo "... sas_buffer_write_impl.i"
+	@echo "... sas_buffer_write_impl.s"
 	@echo "... test_sas.o"
 	@echo "... test_sas.i"
 	@echo "... test_sas.s"

@@ -101,26 +101,26 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="93">
+      <node id="106">
         <label>date::detail::time_of_day_storage&lt; Duration &gt;</label>
         <link refid="classdate_1_1detail_1_1time__of__day__storage"/>
       </node>
-      <node id="92">
+      <node id="105">
         <label>date::time_of_day&lt; Duration &gt;</label>
         <link refid="classdate_1_1time__of__day"/>
-        <childnode refid="93" relation="public-inheritance">
+        <childnode refid="106" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="95">
+      <node id="108">
         <label>date::detail::time_of_day_storage&lt; Duration &gt;</label>
         <link refid="classdate_1_1detail_1_1time__of__day__storage"/>
       </node>
-      <node id="94">
+      <node id="107">
         <label>date::time_of_day&lt; Duration &gt;</label>
         <link refid="classdate_1_1time__of__day"/>
-        <childnode refid="95" relation="public-inheritance">
+        <childnode refid="108" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

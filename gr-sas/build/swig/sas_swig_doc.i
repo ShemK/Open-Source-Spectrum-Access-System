@@ -80,6 +80,28 @@ To avoid accidental use of raw pointers, sas::sas_buffer's constructor is in a p
 Args:
     N : "
 
+%feature("docstring") gr::sas::sas_buffer_write "<+description of block+>
+
+Constructor Specific Documentation:
+
+Return a shared_ptr to a new instance of sas::sas_buffer_write.
+
+To avoid accidental use of raw pointers, sas::sas_buffer_write's constructor is in a private implementation class. sas::sas_buffer_write::make is the public interface for creating new instances.
+
+Args:
+    N : "
+
+%feature("docstring") gr::sas::sas_buffer_write::make "<+description of block+>
+
+Constructor Specific Documentation:
+
+Return a shared_ptr to a new instance of sas::sas_buffer_write.
+
+To avoid accidental use of raw pointers, sas::sas_buffer_write's constructor is in a private implementation class. sas::sas_buffer_write::make is the public interface for creating new instances.
+
+Args:
+    N : "
+
 
 
 

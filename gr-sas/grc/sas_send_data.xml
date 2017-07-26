@@ -4,7 +4,7 @@
   <key>sas_send_data</key>
   <category>[sas]</category>
   <import>import sas</import>
-  <make>sas.send_data($port, $host, $num_split)</make>
+  <make>sas.send_data($port, $host, $num_split, $N)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name
@@ -16,6 +16,13 @@
     <key>port</key>
     <type>int</type>
   </param>
+
+  <param>
+    <name>Number of Samples</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+
 
   <param>
     <name>Number of Splits for ED</name>
@@ -32,6 +39,7 @@
   <sink>
     <name>in</name>
     <type>float</type>
+    <vlen>N</vlen>
   </sink>
 
   <sink>

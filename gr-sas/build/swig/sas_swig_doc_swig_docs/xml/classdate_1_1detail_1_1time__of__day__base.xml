@@ -164,31 +164,31 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="76">
+      <node id="80">
         <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::hour &gt;</label>
         <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814"/>
-        <childnode refid="75" relation="private-inheritance">
+        <childnode refid="79" relation="private-inheritance">
         </childnode>
       </node>
-      <node id="77">
+      <node id="81">
         <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::minute &gt;</label>
         <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_f2584e46b5dce74236c208f17bb6e58c"/>
-        <childnode refid="75" relation="private-inheritance">
+        <childnode refid="79" relation="private-inheritance">
+        </childnode>
+      </node>
+      <node id="83">
+        <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;</label>
+        <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63"/>
+        <childnode refid="79" relation="private-inheritance">
+        </childnode>
+      </node>
+      <node id="82">
+        <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::second &gt;</label>
+        <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f"/>
+        <childnode refid="79" relation="private-inheritance">
         </childnode>
       </node>
       <node id="79">
-        <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::subsecond &gt;</label>
-        <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_8c019a4707fe95599e064c7b7698ce63"/>
-        <childnode refid="75" relation="private-inheritance">
-        </childnode>
-      </node>
-      <node id="78">
-        <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::second &gt;</label>
-        <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_eb61018323bf96c03a0f8628804ff31f"/>
-        <childnode refid="75" relation="private-inheritance">
-        </childnode>
-      </node>
-      <node id="75">
         <label>date::detail::time_of_day_base</label>
         <link refid="classdate_1_1detail_1_1time__of__day__base"/>
       </node>

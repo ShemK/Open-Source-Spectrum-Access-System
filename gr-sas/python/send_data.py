@@ -30,8 +30,9 @@ class send_data(gr.sync_block):
     """
     docstring for block send_data
     """
-    def __init__(self, port, host, num_split):
+    def __init__(self, port, host, num_split,N):
         self.center_freq = 1e9
+        self.N = N
         self.bw = 2e6
         self.occ = 1
         self.noise_floor  = -200.0
@@ -45,7 +46,7 @@ class send_data(gr.sync_block):
         self.ip = ""
         gr.sync_block.__init__(self,
             name="send_data",
-            in_sig=[numpy.float32],
+            in_sig=[(numpy.float32, self.N)],
             out_sig=None)
         self.message_port_register_in(pmt.intern("center_freq"))
         self.message_port_register_in(pmt.intern("occ"))

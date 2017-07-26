@@ -37,8 +37,8 @@ var NAVTREEINDEX =
 [
 "annotated.html",
 "classdate_1_1year__month__day__last.html#afa41eb8ace00d798bfae92d805f16426",
-"date_8h.html#a993185da6863a07a708e63e7ef660a1d",
-"structdate_1_1detail_1_1ru.html#a41002680bd9cc3deb36ae1254b500c9a"
+"date_8h.html#a9078347ae9a1f6e4e9ab4cc100ef8037",
+"structdate_1_1detail_1_1make__string_3_01char_01_4.html#ad89425f9bfbaf380462fc018b9b00b2c"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

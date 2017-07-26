@@ -44,6 +44,7 @@ if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMP
     "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/date.h"
     "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer.h"
     "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/ed_threshold.h"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include/sas/sas_buffer_write.h"
     )
 endif()
 

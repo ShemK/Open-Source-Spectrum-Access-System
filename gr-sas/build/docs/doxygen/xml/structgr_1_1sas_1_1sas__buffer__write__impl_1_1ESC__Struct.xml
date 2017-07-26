@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct" kind="struct" prot="private">
+    <compoundname>gr::sas::sas_buffer_write_impl::ESC_Struct</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a0a2fa8da5bf02d12fd6e4dee8e154155" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_write_impl::ESC_Struct::sample</definition>
+        <argsstring></argsstring>
+        <name>sample</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="40" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a0c0f5be050d9b4848fcee8572173c101" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::sas::sas_buffer_write_impl::ESC_Struct::frequency</definition>
+        <argsstring></argsstring>
+        <name>frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="41" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a492c5738214d43041f3e337bedcabdfa" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::sas::sas_buffer_write_impl::ESC_Struct::sample_rate</definition>
+        <argsstring></argsstring>
+        <name>sample_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="42" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1ad2b6ac489f85638f524936c52937b830" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_write_impl::ESC_Struct::num_samples</definition>
+        <argsstring></argsstring>
+        <name>num_samples</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="43" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1afd12b17d782cc56916806fc9f8e13907" prot="public" static="no" mutable="no">
+        <type>gr_complex</type>
+        <definition>gr_complex gr::sas::sas_buffer_write_impl::ESC_Struct::data[MAX_ESC_BUFFER]</definition>
+        <argsstring>[MAX_ESC_BUFFER]</argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="44" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="39" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="39" bodyend="45"/>
+    <listofallmembers>
+      <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1afd12b17d782cc56916806fc9f8e13907" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl::ESC_Struct</scope><name>data</name></member>
+      <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a0c0f5be050d9b4848fcee8572173c101" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl::ESC_Struct</scope><name>frequency</name></member>
+      <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1ad2b6ac489f85638f524936c52937b830" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl::ESC_Struct</scope><name>num_samples</name></member>
+      <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a0a2fa8da5bf02d12fd6e4dee8e154155" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl::ESC_Struct</scope><name>sample</name></member>
+      <member refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct_1a492c5738214d43041f3e337bedcabdfa" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl::ESC_Struct</scope><name>sample_rate</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

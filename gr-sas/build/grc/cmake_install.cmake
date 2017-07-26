@@ -44,6 +44,7 @@ if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMP
     "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_ed_threshold.xml"
     "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_send_data.xml"
     "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_uhd_control.xml"
+    "/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/grc/sas_sas_buffer_write.xml"
     )
 endif()
 

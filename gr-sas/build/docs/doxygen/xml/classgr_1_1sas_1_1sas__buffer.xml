@@ -44,30 +44,30 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="77">
+      <node id="79">
         <label>gr::sas::sas_buffer_impl</label>
         <link refid="classgr_1_1sas_1_1sas__buffer__impl"/>
-        <childnode refid="75" relation="public-inheritance">
+        <childnode refid="77" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="76">
+      <node id="78">
         <label>sync_block</label>
       </node>
-      <node id="75">
+      <node id="77">
         <label>gr::sas::sas_buffer</label>
         <link refid="classgr_1_1sas_1_1sas__buffer"/>
-        <childnode refid="76" relation="public-inheritance">
+        <childnode refid="78" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="79">
+      <node id="81">
         <label>sync_block</label>
       </node>
-      <node id="78">
+      <node id="80">
         <label>gr::sas::sas_buffer</label>
         <link refid="classgr_1_1sas_1_1sas__buffer"/>
-        <childnode refid="79" relation="public-inheritance">
+        <childnode refid="81" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

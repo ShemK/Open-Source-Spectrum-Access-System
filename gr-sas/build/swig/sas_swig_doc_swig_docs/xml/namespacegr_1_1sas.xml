@@ -5,6 +5,7 @@
     <innerclass refid="classgr_1_1sas_1_1ed__threshold" prot="public">gr::sas::ed_threshold</innerclass>
     <innerclass refid="classgr_1_1sas_1_1psql__insert" prot="public">gr::sas::psql_insert</innerclass>
     <innerclass refid="classgr_1_1sas_1_1sas__buffer" prot="public">gr::sas::sas_buffer</innerclass>
+    <innerclass refid="classgr_1_1sas_1_1sas__buffer__write" prot="public">gr::sas::sas_buffer_write</innerclass>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

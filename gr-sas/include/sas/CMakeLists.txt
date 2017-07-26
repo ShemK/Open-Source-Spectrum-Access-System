@@ -26,5 +26,5 @@ install(FILES
     date.h
     sas_buffer.h
     ed_threshold.h
-    DESTINATION include/sas
+    sas_buffer_write.h DESTINATION include/sas
 )

@@ -213,21 +213,21 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="27">
+      <node id="29">
         <label>date::year_month_day</label>
         <link refid="classdate_1_1year__month__day"/>
       </node>
-      <node id="28">
+      <node id="30">
         <label>date::weekday</label>
         <link refid="classdate_1_1weekday"/>
       </node>
-      <node id="26">
+      <node id="28">
         <label>date::fields&lt; Duration &gt;</label>
         <link refid="structdate_1_1fields"/>
-        <childnode refid="27" relation="usage">
+        <childnode refid="29" relation="usage">
           <edgelabel>ymd</edgelabel>
         </childnode>
-        <childnode refid="28" relation="usage">
+        <childnode refid="30" relation="usage">
           <edgelabel>wd</edgelabel>
         </childnode>
       </node>

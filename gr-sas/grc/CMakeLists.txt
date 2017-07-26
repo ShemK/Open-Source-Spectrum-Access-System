@@ -21,5 +21,6 @@ install(FILES
     sas_sas_buffer.xml
     sas_ed_threshold.xml
     sas_send_data.xml
-    sas_uhd_control.xml DESTINATION share/gnuradio/grc/blocks
+    sas_uhd_control.xml
+    sas_sas_buffer_write.xml DESTINATION share/gnuradio/grc/blocks
 )

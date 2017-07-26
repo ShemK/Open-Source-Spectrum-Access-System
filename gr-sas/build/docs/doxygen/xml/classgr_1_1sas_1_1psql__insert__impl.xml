@@ -680,43 +680,43 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="63">
+      <node id="65">
         <label>gr::sas::psql_insert</label>
         <link refid="classgr_1_1sas_1_1psql__insert"/>
-        <childnode refid="64" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="62">
-        <label>gr::sas::psql_insert_impl</label>
-        <link refid="classgr_1_1sas_1_1psql__insert__impl"/>
-        <childnode refid="63" relation="public-inheritance">
+        <childnode refid="66" relation="public-inheritance">
         </childnode>
       </node>
       <node id="64">
+        <label>gr::sas::psql_insert_impl</label>
+        <link refid="classgr_1_1sas_1_1psql__insert__impl"/>
+        <childnode refid="65" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="66">
         <label>gr::sync_block</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="66">
+      <node id="68">
         <label>gr::sas::psql_insert</label>
         <link refid="classgr_1_1sas_1_1psql__insert"/>
-        <childnode refid="67" relation="public-inheritance">
+        <childnode refid="69" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="65">
+      <node id="67">
         <label>gr::sas::psql_insert_impl</label>
         <link refid="classgr_1_1sas_1_1psql__insert__impl"/>
-        <childnode refid="66" relation="public-inheritance">
+        <childnode refid="68" relation="public-inheritance">
         </childnode>
-        <childnode refid="68" relation="usage">
+        <childnode refid="70" relation="usage">
           <edgelabel>decision_maker</edgelabel>
         </childnode>
       </node>
-      <node id="68">
+      <node id="70">
         <label>DecisionMaker</label>
         <link refid="classDecisionMaker"/>
       </node>
-      <node id="67">
+      <node id="69">
         <label>gr::sync_block</label>
       </node>
     </collaborationgraph>

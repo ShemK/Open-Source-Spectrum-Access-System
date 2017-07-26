@@ -28,28 +28,28 @@ The C compiler identification is GNU, found in "/home/wireless/workspace/Open-So
 Determining if the CXX compiler works passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b1e15/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b1e15.dir/build.make CMakeFiles/cmTC_b1e15.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_08897/fast"
+/usr/bin/make -f CMakeFiles/cmTC_08897.dir/build.make CMakeFiles/cmTC_08897.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_b1e15.dir/testCXXCompiler.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_b1e15.dir/testCXXCompiler.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_b1e15
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1e15.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_b1e15.dir/testCXXCompiler.cxx.o  -o cmTC_b1e15 
+Building CXX object CMakeFiles/cmTC_08897.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_08897.dir/testCXXCompiler.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_08897
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_08897.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_08897.dir/testCXXCompiler.cxx.o  -o cmTC_08897 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_8d02f/fast"
-/usr/bin/make -f CMakeFiles/cmTC_8d02f.dir/build.make CMakeFiles/cmTC_8d02f.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_b1019/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b1019.dir/build.make CMakeFiles/cmTC_b1019.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++     -o CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_8d02f
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8d02f.dir/link.txt --verbose=1
-/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_8d02f 
+Building CXX object CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++     -o CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_b1019
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1019.dir/link.txt --verbose=1
+/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_b1019 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper
@@ -59,8 +59,8 @@ Thread model: posix
 gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/home/wireless/gnuradio_1/lib/../lib/:/home/wireless/gnuradio_1/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/wireless/gnuradio_1/lib/:/home/wireless/gnuradio_1/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_8d02f' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_8d02f /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_b1019' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_b1019 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -68,14 +68,14 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_8d02f/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_8d02f.dir/build.make CMakeFiles/cmTC_8d02f.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_b1019/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_b1019.dir/build.make CMakeFiles/cmTC_b1019.dir/build]
   ignore line: [make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_8d02f]
-  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8d02f.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_8d02f ]
+  ignore line: [Building CXX object CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.9/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_b1019]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1019.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_b1019 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper]
@@ -85,8 +85,8 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/home/wireless/gnuradio_1/lib/../lib/:/home/wireless/gnuradio_1/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/wireless/gnuradio_1/lib/:/home/wireless/gnuradio_1/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_8d02f' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_8d02f /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_b1019' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_b1019 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/collect2] ==> ignore
     arg [--sysroot=/] ==> ignore
     arg [--build-id] ==> ignore
@@ -100,7 +100,7 @@ Parsed CXX implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_8d02f] ==> ignore
+    arg [cmTC_b1019] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o] ==> ignore
@@ -117,7 +117,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/home/wireless/gnuradio_1/lib] ==> dir [/home/wireless/gnuradio_1/lib]
     arg [-L.] ==> ignore
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..]
-    arg [CMakeFiles/cmTC_8d02f.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_b1019.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -149,14 +149,14 @@ Parsed CXX implicit link information from above output:
 Detecting CXX [-std=c++1y] compiler features compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_fc570/fast"
-/usr/bin/make -f CMakeFiles/cmTC_fc570.dir/build.make CMakeFiles/cmTC_fc570.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_81c7d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_81c7d.dir/build.make CMakeFiles/cmTC_81c7d.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_fc570.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++1y -o CMakeFiles/cmTC_fc570.dir/feature_tests.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_fc570
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fc570.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_fc570.dir/feature_tests.cxx.o  -o cmTC_fc570 
+Building CXX object CMakeFiles/cmTC_81c7d.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++1y -o CMakeFiles/cmTC_81c7d.dir/feature_tests.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_81c7d
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_81c7d.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_81c7d.dir/feature_tests.cxx.o  -o cmTC_81c7d 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -222,14 +222,14 @@ make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_7a74c/fast"
-/usr/bin/make -f CMakeFiles/cmTC_7a74c.dir/build.make CMakeFiles/cmTC_7a74c.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_130ee/fast"
+/usr/bin/make -f CMakeFiles/cmTC_130ee.dir/build.make CMakeFiles/cmTC_130ee.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_7a74c.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_7a74c.dir/feature_tests.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_7a74c
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a74c.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_7a74c.dir/feature_tests.cxx.o  -o cmTC_7a74c 
+Building CXX object CMakeFiles/cmTC_130ee.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_130ee.dir/feature_tests.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_130ee
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_130ee.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_130ee.dir/feature_tests.cxx.o  -o cmTC_130ee 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -295,14 +295,14 @@ make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_e8e94/fast"
-/usr/bin/make -f CMakeFiles/cmTC_e8e94.dir/build.make CMakeFiles/cmTC_e8e94.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_362fa/fast"
+/usr/bin/make -f CMakeFiles/cmTC_362fa.dir/build.make CMakeFiles/cmTC_362fa.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e8e94.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_e8e94.dir/feature_tests.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_e8e94
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e8e94.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_e8e94.dir/feature_tests.cxx.o  -o cmTC_e8e94 
+Building CXX object CMakeFiles/cmTC_362fa.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_362fa.dir/feature_tests.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_362fa
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_362fa.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_362fa.dir/feature_tests.cxx.o  -o cmTC_362fa 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -366,28 +366,28 @@ make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_f13ef/fast"
-/usr/bin/make -f CMakeFiles/cmTC_f13ef.dir/build.make CMakeFiles/cmTC_f13ef.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_600fd/fast"
+/usr/bin/make -f CMakeFiles/cmTC_600fd.dir/build.make CMakeFiles/cmTC_600fd.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_f13ef.dir/testCCompiler.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_f13ef.dir/testCCompiler.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_f13ef
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f13ef.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_f13ef.dir/testCCompiler.c.o  -o cmTC_f13ef 
+Building C object CMakeFiles/cmTC_600fd.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_600fd.dir/testCCompiler.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_600fd
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_600fd.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_600fd.dir/testCCompiler.c.o  -o cmTC_600fd 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_bffe2/fast"
-/usr/bin/make -f CMakeFiles/cmTC_bffe2.dir/build.make CMakeFiles/cmTC_bffe2.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_cc931/fast"
+/usr/bin/make -f CMakeFiles/cmTC_cc931.dir/build.make CMakeFiles/cmTC_cc931.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.9/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_bffe2
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bffe2.dir/link.txt --verbose=1
-/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o  -o cmTC_bffe2 
+Building C object CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.9/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_cc931
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cc931.dir/link.txt --verbose=1
+/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o  -o cmTC_cc931 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper
@@ -397,8 +397,8 @@ Thread model: posix
 gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/home/wireless/gnuradio_1/lib/../lib/:/home/wireless/gnuradio_1/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/wireless/gnuradio_1/lib/:/home/wireless/gnuradio_1/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_bffe2' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_bffe2 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_cc931' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_cc931 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -406,14 +406,14 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_bffe2/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_bffe2.dir/build.make CMakeFiles/cmTC_bffe2.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_cc931/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_cc931.dir/build.make CMakeFiles/cmTC_cc931.dir/build]
   ignore line: [make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.9/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_bffe2]
-  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bffe2.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o  -o cmTC_bffe2 ]
+  ignore line: [Building C object CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.9/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_cc931]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cc931.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o  -o cmTC_cc931 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper]
@@ -423,8 +423,8 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/home/wireless/gnuradio_1/lib/../lib/:/home/wireless/gnuradio_1/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/home/wireless/gnuradio_1/lib/:/home/wireless/gnuradio_1/lib/:./:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_bffe2' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_bffe2 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_cc931' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_cc931 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/home/wireless/gnuradio_1/lib/../lib -L/home/wireless/gnuradio_1/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/home/wireless/gnuradio_1/lib -L/home/wireless/gnuradio_1/lib -L. -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/collect2] ==> ignore
     arg [--sysroot=/] ==> ignore
     arg [--build-id] ==> ignore
@@ -438,7 +438,7 @@ Parsed C implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_bffe2] ==> ignore
+    arg [cmTC_cc931] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o] ==> ignore
@@ -455,7 +455,7 @@ Parsed C implicit link information from above output:
     arg [-L/home/wireless/gnuradio_1/lib] ==> dir [/home/wireless/gnuradio_1/lib]
     arg [-L.] ==> ignore
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..]
-    arg [CMakeFiles/cmTC_bffe2.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_cc931.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -489,14 +489,14 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_2fcff/fast"
-/usr/bin/make -f CMakeFiles/cmTC_2fcff.dir/build.make CMakeFiles/cmTC_2fcff.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_6987e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6987e.dir/build.make CMakeFiles/cmTC_6987e.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_2fcff.dir/feature_tests.c.o
-/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_2fcff.dir/feature_tests.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_2fcff
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2fcff.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_2fcff.dir/feature_tests.c.o  -o cmTC_2fcff 
+Building C object CMakeFiles/cmTC_6987e.dir/feature_tests.c.o
+/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_6987e.dir/feature_tests.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_6987e
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6987e.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_6987e.dir/feature_tests.c.o  -o cmTC_6987e 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -509,14 +509,14 @@ make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_95e8c/fast"
-/usr/bin/make -f CMakeFiles/cmTC_95e8c.dir/build.make CMakeFiles/cmTC_95e8c.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_0742a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0742a.dir/build.make CMakeFiles/cmTC_0742a.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_95e8c.dir/feature_tests.c.o
-/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_95e8c.dir/feature_tests.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_95e8c
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_95e8c.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_95e8c.dir/feature_tests.c.o  -o cmTC_95e8c 
+Building C object CMakeFiles/cmTC_0742a.dir/feature_tests.c.o
+/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_0742a.dir/feature_tests.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_0742a
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0742a.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_0742a.dir/feature_tests.c.o  -o cmTC_0742a 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -529,14 +529,14 @@ make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_3dd1b/fast"
-/usr/bin/make -f CMakeFiles/cmTC_3dd1b.dir/build.make CMakeFiles/cmTC_3dd1b.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_7d4e5/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7d4e5.dir/build.make CMakeFiles/cmTC_7d4e5.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_3dd1b.dir/feature_tests.c.o
-/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_3dd1b.dir/feature_tests.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_3dd1b
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3dd1b.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_3dd1b.dir/feature_tests.c.o  -o cmTC_3dd1b 
+Building C object CMakeFiles/cmTC_7d4e5.dir/feature_tests.c.o
+/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_7d4e5.dir/feature_tests.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_7d4e5
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7d4e5.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_7d4e5.dir/feature_tests.c.o  -o cmTC_7d4e5 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
@@ -547,84 +547,84 @@ make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access
 Determining if the include file sys/types.h exists passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_0a898/fast"
-/usr/bin/make -f CMakeFiles/cmTC_0a898.dir/build.make CMakeFiles/cmTC_0a898.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_c33ab/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c33ab.dir/build.make CMakeFiles/cmTC_c33ab.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_0a898.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_0a898.dir/CheckIncludeFile.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_0a898
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0a898.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_0a898.dir/CheckIncludeFile.c.o  -o cmTC_0a898 
+Building C object CMakeFiles/cmTC_c33ab.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_c33ab.dir/CheckIncludeFile.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_c33ab
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c33ab.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_c33ab.dir/CheckIncludeFile.c.o  -o cmTC_c33ab 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Determining if the include file stdint.h exists passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b5642/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b5642.dir/build.make CMakeFiles/cmTC_b5642.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_686d9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_686d9.dir/build.make CMakeFiles/cmTC_686d9.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b5642.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_b5642.dir/CheckIncludeFile.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_b5642
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b5642.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_b5642.dir/CheckIncludeFile.c.o  -o cmTC_b5642 
+Building C object CMakeFiles/cmTC_686d9.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_686d9.dir/CheckIncludeFile.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_686d9
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_686d9.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_686d9.dir/CheckIncludeFile.c.o  -o cmTC_686d9 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Determining if the include file stddef.h exists passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_37874/fast"
-/usr/bin/make -f CMakeFiles/cmTC_37874.dir/build.make CMakeFiles/cmTC_37874.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_25596/fast"
+/usr/bin/make -f CMakeFiles/cmTC_25596.dir/build.make CMakeFiles/cmTC_25596.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_37874.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_37874.dir/CheckIncludeFile.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_37874
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_37874.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_37874.dir/CheckIncludeFile.c.o  -o cmTC_37874 
+Building C object CMakeFiles/cmTC_25596.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_25596.dir/CheckIncludeFile.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_25596
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_25596.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_25596.dir/CheckIncludeFile.c.o  -o cmTC_25596 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Determining size of size_t passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_3e700/fast"
-/usr/bin/make -f CMakeFiles/cmTC_3e700.dir/build.make CMakeFiles/cmTC_3e700.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_18180/fast"
+/usr/bin/make -f CMakeFiles/cmTC_18180.dir/build.make CMakeFiles/cmTC_18180.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_3e700.dir/SIZEOF_SIZE_T.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_3e700.dir/SIZEOF_SIZE_T.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CheckTypeSize/SIZEOF_SIZE_T.c
-Linking C executable cmTC_3e700
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3e700.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_3e700.dir/SIZEOF_SIZE_T.c.o  -o cmTC_3e700 
+Building C object CMakeFiles/cmTC_18180.dir/SIZEOF_SIZE_T.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_18180.dir/SIZEOF_SIZE_T.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CheckTypeSize/SIZEOF_SIZE_T.c
+Linking C executable cmTC_18180
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_18180.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_18180.dir/SIZEOF_SIZE_T.c.o  -o cmTC_18180 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Determining size of unsigned int passed with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_1fa05/fast"
-/usr/bin/make -f CMakeFiles/cmTC_1fa05.dir/build.make CMakeFiles/cmTC_1fa05.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_226e9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_226e9.dir/build.make CMakeFiles/cmTC_226e9.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_1fa05.dir/SIZEOF_UINT.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_1fa05.dir/SIZEOF_UINT.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CheckTypeSize/SIZEOF_UINT.c
-Linking C executable cmTC_1fa05
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1fa05.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_1fa05.dir/SIZEOF_UINT.c.o  -o cmTC_1fa05 
+Building C object CMakeFiles/cmTC_226e9.dir/SIZEOF_UINT.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_226e9.dir/SIZEOF_UINT.c.o   -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CheckTypeSize/SIZEOF_UINT.c
+Linking C executable cmTC_226e9
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_226e9.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_226e9.dir/SIZEOF_UINT.c.o  -o cmTC_226e9 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 
 Performing C++ SOURCE FILE Test HAVE_WNO_UNUSED_BUT_SET_VARIABLE succeeded with the following output:
 Change Dir: /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_d9c44/fast"
-/usr/bin/make -f CMakeFiles/cmTC_d9c44.dir/build.make CMakeFiles/cmTC_d9c44.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_d34de/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d34de.dir/build.make CMakeFiles/cmTC_d34de.dir/build
 make[1]: Entering directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_d9c44.dir/src.cxx.o
-/usr/bin/c++    -DHAVE_WNO_UNUSED_BUT_SET_VARIABLE   -Wno-unused-but-set-variable -o CMakeFiles/cmTC_d9c44.dir/src.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/src.cxx
-Linking CXX executable cmTC_d9c44
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d9c44.dir/link.txt --verbose=1
-/usr/bin/c++   -DHAVE_WNO_UNUSED_BUT_SET_VARIABLE    -rdynamic CMakeFiles/cmTC_d9c44.dir/src.cxx.o  -o cmTC_d9c44 
+Building CXX object CMakeFiles/cmTC_d34de.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_WNO_UNUSED_BUT_SET_VARIABLE   -Wno-unused-but-set-variable -o CMakeFiles/cmTC_d34de.dir/src.cxx.o -c /home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_d34de
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d34de.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAVE_WNO_UNUSED_BUT_SET_VARIABLE    -rdynamic CMakeFiles/cmTC_d34de.dir/src.cxx.o  -o cmTC_d34de 
 make[1]: Leaving directory `/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/build/CMakeFiles/CMakeTmp'
 
 Source file was:

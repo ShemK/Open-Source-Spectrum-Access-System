@@ -180,6 +180,10 @@
     <member refid="classgr_1_1sas_1_1sas__buffer_1a6ec1dc778ac08f3715ae2f1fa0e057e1" kind="typedef"><name>sptr</name></member>
     <member refid="classgr_1_1sas_1_1sas__buffer_1abe020ca46e631ffca339e7d6acc8c540" kind="function"><name>make</name></member>
   </compound>
+  <compound refid="classgr_1_1sas_1_1sas__buffer__write" kind="class"><name>gr::sas::sas_buffer_write</name>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write_1ad5231a9494a3377b8fbccaff26a3bb7c" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1sas_1_1sas__buffer__write_1a9369a2e86b3245c991fc3f420168a82b" kind="function"><name>make</name></member>
+  </compound>
   <compound refid="classdate_1_1detail_1_1save__stream" kind="class"><name>date::detail::save_stream</name>
     <member refid="classdate_1_1detail_1_1save__stream_1aee0b9ed15b74dad061ad3c4071107eaf" kind="variable"><name>os_</name></member>
     <member refid="classdate_1_1detail_1_1save__stream_1a58292321b20e05b4c631612624120e57" kind="variable"><name>fill_</name></member>
@@ -779,6 +783,8 @@
   <compound refid="psql__insert_8h" kind="file"><name>psql_insert.h</name>
   </compound>
   <compound refid="sas__buffer_8h" kind="file"><name>sas_buffer.h</name>
+  </compound>
+  <compound refid="sas__buffer__write_8h" kind="file"><name>sas_buffer_write.h</name>
   </compound>
   <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/include</name>
   </compound>

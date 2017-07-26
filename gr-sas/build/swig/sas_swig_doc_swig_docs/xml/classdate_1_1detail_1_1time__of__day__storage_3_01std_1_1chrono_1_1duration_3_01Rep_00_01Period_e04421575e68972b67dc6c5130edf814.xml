@@ -222,25 +222,25 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="83">
+      <node id="87">
         <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::hour &gt;</label>
         <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814"/>
-        <childnode refid="84" relation="private-inheritance">
+        <childnode refid="88" relation="private-inheritance">
         </childnode>
       </node>
-      <node id="84">
+      <node id="88">
         <label>date::detail::time_of_day_base</label>
         <link refid="classdate_1_1detail_1_1time__of__day__base"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="85">
+      <node id="89">
         <label>date::detail::time_of_day_storage&lt; std::chrono::duration&lt; Rep, Period &gt;, detail::classify::hour &gt;</label>
         <link refid="classdate_1_1detail_1_1time__of__day__storage_3_01std_1_1chrono_1_1duration_3_01Rep_00_01Period_e04421575e68972b67dc6c5130edf814"/>
-        <childnode refid="86" relation="private-inheritance">
+        <childnode refid="90" relation="private-inheritance">
         </childnode>
       </node>
-      <node id="86">
+      <node id="90">
         <label>date::detail::time_of_day_base</label>
         <link refid="classdate_1_1detail_1_1time__of__day__base"/>
       </node>

@@ -41,6 +41,9 @@ var hierarchy =
       ] ],
       [ "gr::sas::sas_buffer", "classgr_1_1sas_1_1sas__buffer.html", [
         [ "gr::sas::sas_buffer_impl", "classgr_1_1sas_1_1sas__buffer__impl.html", null ]
+      ] ],
+      [ "gr::sas::sas_buffer_write", "classgr_1_1sas_1_1sas__buffer__write.html", [
+        [ "gr::sas::sas_buffer_write_impl", "classgr_1_1sas_1_1sas__buffer__write__impl.html", null ]
       ] ]
     ] ],
     [ "date::detail::time_of_day_base", "classdate_1_1detail_1_1time__of__day__base.html", [

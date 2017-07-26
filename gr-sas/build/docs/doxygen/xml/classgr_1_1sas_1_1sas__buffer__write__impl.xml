@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classgr_1_1sas_1_1sas__buffer__write__impl" kind="class" prot="public">
+    <compoundname>gr::sas::sas_buffer_write_impl</compoundname>
+    <basecompoundref refid="classgr_1_1sas_1_1sas__buffer__write" prot="public" virt="non-virtual">gr::sas::sas_buffer_write</basecompoundref>
+    <includes refid="sas__buffer__write__impl_8h" local="no">sas_buffer_write_impl.h</includes>
+    <innerclass refid="structgr_1_1sas_1_1sas__buffer__write__impl_1_1ESC__Struct" prot="private">gr::sas::sas_buffer_write_impl::ESC_Struct</innerclass>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__write__impl_1a0241449000307c613d34cdd7a78f61b8" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_write_impl::d_N</definition>
+        <argsstring></argsstring>
+        <name>d_N</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="38" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__write__impl_1a866b8b1361622b23364e46bbceb5fb77" prot="private" static="no" mutable="no">
+        <type>ESC_Struct</type>
+        <definition>ESC_Struct gr::sas::sas_buffer_write_impl::shared_struct</definition>
+        <argsstring></argsstring>
+        <name>shared_struct</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="46" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__write__impl_1a8cfbedf7fb10bf59586f86c711e73d83" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_write_impl::sample</definition>
+        <argsstring></argsstring>
+        <name>sample</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="47" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__write__impl_1abfbbce0c23c634418f07aa184781d891" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::sas::sas_buffer_write_impl::frequency</definition>
+        <argsstring></argsstring>
+        <name>frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="48" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__write__impl_1a9b874bd329f7f7e5b3d40e680d052233" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::sas::sas_buffer_write_impl::sample_rate</definition>
+        <argsstring></argsstring>
+        <name>sample_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="49" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1sas_1_1sas__buffer__write__impl_1ae8d43d7a8443c463bd611b675056184f" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_write_impl::num_samples</definition>
+        <argsstring></argsstring>
+        <name>num_samples</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="50" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__write__impl_1ae5dfe9987dca86cc1bd06e7b84e32adc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::sas::sas_buffer_write_impl::sas_buffer_write_impl</definition>
+        <argsstring>(int N)</argsstring>
+        <name>sas_buffer_write_impl</name>
+        <param>
+          <type>int</type>
+          <declname>N</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="53" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__write__impl_1aa847fd8b87b5705e0d36f785f62de0c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::sas::sas_buffer_write_impl::~sas_buffer_write_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~sas_buffer_write_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="54" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__write__impl_1a5e9ace4a0ffcecbbf084363b6d455277" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::sas::sas_buffer_write_impl::handle_frequency</definition>
+        <argsstring>(pmt::pmt_t msg)</argsstring>
+        <name>handle_frequency</name>
+        <param>
+          <type>pmt::pmt_t</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="56" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__write__impl_1a8e67887522894adab52d90acc8f6c692" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::sas::sas_buffer_write_impl::handle_samp_rate</definition>
+        <argsstring>(pmt::pmt_t msg)</argsstring>
+        <name>handle_samp_rate</name>
+        <param>
+          <type>pmt::pmt_t</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="57" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1sas_1_1sas__buffer__write__impl_1afa9cf7b596d6894b024291be4ed16e2a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::sas::sas_buffer_write_impl::work</definition>
+        <argsstring>(int noutput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="59" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="94">
+        <label>gr::sas::sas_buffer_write</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer__write"/>
+        <childnode refid="95" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="95">
+        <label>sync_block</label>
+      </node>
+      <node id="93">
+        <label>gr::sas::sas_buffer_write_impl</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer__write__impl"/>
+        <childnode refid="94" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="97">
+        <label>gr::sas::sas_buffer_write</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer__write"/>
+        <childnode refid="98" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="98">
+        <label>sync_block</label>
+      </node>
+      <node id="96">
+        <label>gr::sas::sas_buffer_write_impl</label>
+        <link refid="classgr_1_1sas_1_1sas__buffer__write__impl"/>
+        <childnode refid="97" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" line="36" column="1" bodyfile="/home/wireless/workspace/Open-Source-Spectrum-Access-System/gr-sas/lib/sas_buffer_write_impl.h" bodystart="35" bodyend="62"/>
+    <listofallmembers>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a0241449000307c613d34cdd7a78f61b8" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>d_N</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1abfbbce0c23c634418f07aa184781d891" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>frequency</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a5e9ace4a0ffcecbbf084363b6d455277" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>handle_frequency</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a8e67887522894adab52d90acc8f6c692" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>handle_samp_rate</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write_1a9369a2e86b3245c991fc3f420168a82b" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1ae8d43d7a8443c463bd611b675056184f" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>num_samples</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a8cfbedf7fb10bf59586f86c711e73d83" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>sample</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a9b874bd329f7f7e5b3d40e680d052233" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>sample_rate</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1ae5dfe9987dca86cc1bd06e7b84e32adc" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>sas_buffer_write_impl</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1a866b8b1361622b23364e46bbceb5fb77" prot="private" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>shared_struct</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write_1ad5231a9494a3377b8fbccaff26a3bb7c" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1afa9cf7b596d6894b024291be4ed16e2a" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>work</name></member>
+      <member refid="classgr_1_1sas_1_1sas__buffer__write__impl_1aa847fd8b87b5705e0d36f785f62de0c4" prot="public" virt="non-virtual"><scope>gr::sas::sas_buffer_write_impl</scope><name>~sas_buffer_write_impl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
