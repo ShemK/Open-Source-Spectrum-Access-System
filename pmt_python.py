@@ -40,7 +40,7 @@ serialized_pmt = pmt.serialize_str(pmt_to_send)
 UDP_IP = "127.0.0.1"
 UDP_PORT = 6000
 
-sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) 
+sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sock.sendto(serialized_pmt, (UDP_IP, UDP_PORT))
 
 
