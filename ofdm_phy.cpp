@@ -32,7 +32,7 @@
 #include <ctime>
 
 #define DEBUG 1
-#if DEBUG == 1
+#if DEBUG == 1 || DEBUG > 2
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
