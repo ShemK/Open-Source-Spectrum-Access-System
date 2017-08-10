@@ -942,13 +942,15 @@ void MAC::sendACK(char *recv_payload, int frame_num)
     printf(GRN "Sending ACK\n" RESET);
   }
 
-  char *ack_frame = new char[50];
+  char *ack_frame = new char[200];
   memcpy(ack_frame, recv_payload, ETH_HEADER_LEN);
   char *sourceMAC = extractSourceMAC(recv_payload);
   char *destinationMAC = extractDestinationMAC(recv_payload);
   memcpy(ack_frame + TAP_EXTRA_LOAD, sourceMAC, 6);
   memcpy(ack_frame + TAP_EXTRA_LOAD + 6, destinationMAC, 6);
   int frame_len = TAP_EXTRA_LOAD + 6 + 6;
+  //memset(ack_frame+frame_len,'-',100);
+  //frame_len = frame_len + 100;
   create_frame(ack_frame, frame_len, MANAGEMENT, ACK);
   unsigned int conv_frame_num = htonl(frame_num);
   memcpy(ack_frame + FRAME_NUM_POS, &conv_frame_num, 4);

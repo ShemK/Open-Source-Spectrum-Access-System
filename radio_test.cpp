@@ -23,7 +23,7 @@
 #include "radio.hpp"
 
 #define DEBUG 0
-#if DEBUG == 1 || DEBUG > 2
+#if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -101,14 +101,14 @@ void initialize_node_parameters(struct node_parameters *np)
 
   np->tx_freq = 1000e6;
   np->tx_rate = 2e6;
-  np->tx_gain = 15.0;
+  np->tx_gain = 20.0;
 
   // initial liquid OFDM settings
   np->tx_gain_soft = 0;
-  np->tx_modulation =  LIQUID_MODEM_QAM4;
+  np->tx_modulation = LIQUID_MODEM_QAM8;
   np->tx_crc = LIQUID_CRC_32;
-  np->tx_fec0 = LIQUID_FEC_GOLAY2412;
-  np->tx_fec1 = LIQUID_FEC_CONV_V615;
+  np->tx_fec0 = LIQUID_FEC_HAMMING128;
+  np->tx_fec1 = LIQUID_FEC_HAMMING74;
   np->tx_cp_len = 16;
   np->rx_cp_len = 16;
   np->tx_taper_len = 4;
@@ -147,6 +147,4 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->set_tx_crc(np->tx_crc);
   PHY->set_tx_fec0(np->tx_fec0);
   PHY->set_tx_fec1(np->tx_fec1);
-  PHY->set_tx_subcarrier_alloc(NULL);
-  PHY->set_rx_subcarrier_alloc(NULL);
 }

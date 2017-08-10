@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include "timer.h"
 #include "MAC.hpp"
+#include <sys/time.h>
 
 #define PHY_CONTROL_INFO_BYTES 6
 
@@ -61,7 +62,6 @@ class PhyLayer
 public:
   PhyLayer();
   ~PhyLayer();
-
 
   mqd_t phy_tx_queue;
   mqd_t phy_rx_queue;
@@ -636,7 +636,6 @@ public:
   void set_attributes();
   void set_ip(char *ip);
 
-
   //=================================================================================
   // Private Network Interface Objects
   //=================================================================================
@@ -645,7 +644,7 @@ public:
   // String for TUN interface name
   // String for commands for TUN interface
   char systemCMD[200];
-/// \brief Allows you to set the tx buffer length for the virtual network interface
+  /// \brief Allows you to set the tx buffer length for the virtual network interface
   /// This could be useful in trading off between dropped packets and latency with a
   /// UDP connection
   void set_tx_queue_len(int queue_len);
@@ -665,6 +664,7 @@ public:
 
   friend void uhd_msg_handler(uhd::msg::type_t type, const std::string &msg);
   static int uhd_msg;
+
 private:
   //=================================================================================
   // Private Receiver Objects

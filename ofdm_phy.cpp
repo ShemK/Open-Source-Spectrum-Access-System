@@ -5,7 +5,6 @@
 //
 //
 */
-
 #include <stdio.h>
 #include <net/if.h>
 #include <arpa/inet.h>
@@ -31,8 +30,9 @@
 #include <sys/stat.h>
 #include <ctime>
 
-#define DEBUG 1
-#if DEBUG == 1 || DEBUG > 2
+
+#define DEBUG 0
+#if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -144,7 +144,6 @@ PhyLayer::~PhyLayer()
   mq_close(phy_rx_queue);
   mq_unlink("/mac2phy");
   mq_unlink("/phy2mac");
-
   // sleep so tx/rx threads are ready for signal
   usleep(1e4);
 
@@ -303,12 +302,12 @@ void *PHY_tx_worker(void *_arg)
   PhyLayer *PHY = (PhyLayer *)_arg;
 
   // set up transmit buffer
-  int buffer_len = MAX_BUF;
-  char buffer[MAX_BUF];
-  unsigned char *payload = new unsigned char[MAX_BUF];
+   int buffer_len = MAX_BUF;
+   char buffer[MAX_BUF];
+ unsigned char *payload = new unsigned char[MAX_BUF];
   unsigned int payload_len;
   int nread;
-  //std::ofstream log("yo.txt");
+  std::ofstream log("yo.txt");
   unsigned int count = 0;
   while (PHY->tx_thread_running)
   {
@@ -335,9 +334,9 @@ void *PHY_tx_worker(void *_arg)
 
     // run transmitter
     bool tx_continue = true;
-    dprintf("tx worker starting to transmit\n");
     while (tx_continue)
     {
+      dprintf("tx worker starting to transmit\n");
       pthread_mutex_lock(&PHY->tx_params_mutex);
       if (PHY->update_tx_flag)
       {
@@ -349,6 +348,7 @@ void *PHY_tx_worker(void *_arg)
       ///// TODO: Add reading from tuntap interface
       /////
       /////
+
       /*
       // getting information from the mac
       */
@@ -404,7 +404,6 @@ void *PHY_tx_worker(void *_arg)
       }
       pthread_mutex_unlock(&PHY->tx_params_mutex);
       count++;
-
     } // while tx_running
 
     dprintf("tx_worker finished running\n");
@@ -436,12 +435,14 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // TODO: flush buffers
 
   pthread_mutex_lock(&tx_mutex);
-
+  struct timeval ts;
+  gettimeofday(&ts, NULL);
   // assemble frame
   ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
-  printf("Transmitting Frame!!!!\n");
+  // dprintf("Transmitting Frame!!!!\n");
   printf("-----------------Transmitting--------------\n");
-  printf("Frame_num transmitted: %d with %d bytes\n", frame_num - 1, _payload_len);
+  printf("Frame_num transmitted: %d with %d bytes at %lus and %luus \n",
+         frame_num - 1, _payload_len, ts.tv_sec, ts.tv_usec);
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
@@ -449,7 +450,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   {
 
     // generate symbol
-    last_symbol = ofdmflexframegen_writesymbol(fg, fgbuffer);
+     last_symbol = ofdmflexframegen_writesymbol(fg, fgbuffer);
 
     // copy symbol and apply gain
     for (i = 0; i < fgbuffer_len; i++)
@@ -1048,7 +1049,9 @@ int rxCallback(unsigned char *_header, int _header_valid,
   printf("\n---------------------Received---------------\n");
   unsigned int frame_num = ((_header[0] & 0x3F) << 8 | _header[1]);
   printf("Frame_num received: %d\n", frame_num);
-  printf("Received %d bytes\n", _payload_len);
+  struct timeval ts;
+  gettimeofday(&ts, NULL);
+  printf("Received %d bytes at %lus and %luus\n", _payload_len,ts.tv_sec,ts.tv_usec);
   if (_header_valid == 1)
   {
     if (_payload_valid == 1)
@@ -1076,6 +1079,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
   {
     dprintf("Invalid Header\n");
   }
+
   return 0;
 }
 // set receiver frequency
