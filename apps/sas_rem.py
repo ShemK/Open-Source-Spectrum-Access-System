@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-# Generated: Wed Jul 26 13:31:51 2017
+# Generated: Wed Aug  2 18:26:51 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -61,9 +61,9 @@ class sas_rem(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 4e6
-        self.num_channels = num_channels = 1
+        self.num_channels = num_channels = 10
         self.hop_time = hop_time = 1
-        self.freq = freq = 1.004e9
+        self.freq = freq = 1.000e9
         self.fft_len = fft_len = 2048
         self.N = N = 2048
 
@@ -71,7 +71,7 @@ class sas_rem(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self.utils_psd_cvf_0 = utils.psd_cvf(samp_rate,  fft_len, firdes.WIN_BLACKMAN_hARRIS, 0.8)
-        self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels, N)
+        self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels, fft_len)
         self.sas_sas_buffer_0 = sas.sas_buffer(N)
         self.sas_psql_insert_0 = sas.psql_insert(fft_len, num_channels)
         self.sas_ed_threshold_0 = sas.ed_threshold(fft_len, num_channels, 200)
@@ -155,6 +155,7 @@ class sas_rem(gr.top_block, Qt.QWidget):
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, N)
+        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
 
         ##################################################
         # Connections
@@ -168,11 +169,11 @@ class sas_rem(gr.top_block, Qt.QWidget):
         self.msg_connect((self.sas_sas_buffer_0, 'samp_rate'), (self.sas_psql_insert_0, 'samp_rate'))
         self.msg_connect((self.sas_sas_buffer_0, 'center_freq'), (self.sas_send_data_0, 'center_freq'))
         self.msg_connect((self.sas_sas_buffer_0, 'samp_rate'), (self.sas_send_data_0, 'bw'))
+        self.connect((self.blocks_null_source_0, 0), (self.sas_send_data_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.utils_psd_cvf_0, 0))
         self.connect((self.sas_ed_threshold_0, 0), (self.qtgui_vector_sink_f_0, 0))
         self.connect((self.sas_ed_threshold_0, 0), (self.sas_psql_insert_0, 0))
-        self.connect((self.sas_ed_threshold_0, 0), (self.sas_send_data_0, 0))
         self.connect((self.sas_sas_buffer_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.utils_psd_cvf_0, 0), (self.sas_ed_threshold_0, 0))
 

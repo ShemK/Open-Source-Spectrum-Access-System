@@ -46,7 +46,7 @@ class send_data(gr.sync_block):
         self.ip = ""
         gr.sync_block.__init__(self,
             name="send_data",
-            in_sig=[(numpy.float32, self.N)],
+            in_sig=[numpy.float32],
             out_sig=None)
         self.message_port_register_in(pmt.intern("center_freq"))
         self.message_port_register_in(pmt.intern("occ"))

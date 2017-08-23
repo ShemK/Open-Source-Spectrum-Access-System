@@ -188,7 +188,7 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      
+      std::cout<<"Starting work"<<std::endl;
       pqxx::work w(*(c));
       std::vector<float> buf;
       float *  in = (float *) input_items[0];

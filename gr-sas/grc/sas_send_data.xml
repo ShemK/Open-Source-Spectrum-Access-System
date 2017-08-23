@@ -39,7 +39,6 @@
   <sink>
     <name>in</name>
     <type>float</type>
-    <vlen>N</vlen>
   </sink>
 
   <sink>
