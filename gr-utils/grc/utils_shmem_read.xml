@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<block>
+  <name>shmem_read</name>
+  <key>utils_shmem_read</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.shmem_read($N, $num_channels)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Vector Length</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>number of channels</name>
+    <key>num_channels</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+ 
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>$N</vlen>
+    <nports>$num_channels</nports>
+  </source>
+</block>

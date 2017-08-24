@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="pipe__sink_8h" kind="file">
+    <compoundname>pipe_sink.h</compoundname>
+    <includes refid="api_8h" local="no">utils/api.h</includes>
+    <includes local="no">gnuradio/sync_block.h</includes>
+    <includedby refid="pipe__sink__impl_8h" local="no">pipe_sink_impl.h</includedby>
+    <incdepgraph>
+      <node id="148">
+        <label>gnuradio/sync_block.h</label>
+      </node>
+      <node id="147">
+        <label>gnuradio/attributes.h</label>
+      </node>
+      <node id="145">
+        <label>pipe_sink.h</label>
+        <link refid="pipe_sink.h"/>
+        <childnode refid="146" relation="include">
+        </childnode>
+        <childnode refid="148" relation="include">
+        </childnode>
+      </node>
+      <node id="146">
+        <label>utils/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="147" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="149">
+        <label>pipe_sink.h</label>
+        <link refid="pipe_sink.h"/>
+        <childnode refid="150" relation="include">
+        </childnode>
+      </node>
+      <node id="150">
+        <label>pipe_sink_impl.h</label>
+        <link refid="pipe__sink__impl_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classgr_1_1utils_1_1pipe__sink" prot="public">gr::utils::pipe_sink</innerclass>
+    <innernamespace refid="namespacegr">gr</innernamespace>
+    <innernamespace refid="namespacegr_1_1utils">gr::utils</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/pipe_sink.h"/>
+  </compounddef>
+</doxygen>

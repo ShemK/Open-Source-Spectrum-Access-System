@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<block>
+  <name>reader</name>
+  <key>utils_reader</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.reader()</make>
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  <sink>
+		<name>print</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+</block>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct" kind="struct" prot="private">
+    <compoundname>gr::utils::liquid_buffer_impl::ESC_Struct</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a0a921bd1d2fcfa424e2c7377e47d5d31" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::utils::liquid_buffer_impl::ESC_Struct::sample</definition>
+        <argsstring></argsstring>
+        <name>sample</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" line="41" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a2731e68eceedc93807cab37f1da42f6d" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::utils::liquid_buffer_impl::ESC_Struct::frequency</definition>
+        <argsstring></argsstring>
+        <name>frequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" line="42" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1ac65ccba93ca81a7cbc84f029c8edb419" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gr::utils::liquid_buffer_impl::ESC_Struct::sample_rate</definition>
+        <argsstring></argsstring>
+        <name>sample_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" line="43" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1ae0715748b59b0d529d883078f0c97370" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::utils::liquid_buffer_impl::ESC_Struct::num_samples</definition>
+        <argsstring></argsstring>
+        <name>num_samples</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" line="44" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a12f55fbe369575cce5c5afd3579db5ba" prot="public" static="no" mutable="no">
+        <type>gr_complex</type>
+        <definition>gr_complex gr::utils::liquid_buffer_impl::ESC_Struct::data[MAX_ESC_BUFFER]</definition>
+        <argsstring>[MAX_ESC_BUFFER]</argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" line="45" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" line="40" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/liquid_buffer_impl.h" bodystart="40" bodyend="46"/>
+    <listofallmembers>
+      <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a12f55fbe369575cce5c5afd3579db5ba" prot="public" virt="non-virtual"><scope>gr::utils::liquid_buffer_impl::ESC_Struct</scope><name>data</name></member>
+      <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a2731e68eceedc93807cab37f1da42f6d" prot="public" virt="non-virtual"><scope>gr::utils::liquid_buffer_impl::ESC_Struct</scope><name>frequency</name></member>
+      <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1ae0715748b59b0d529d883078f0c97370" prot="public" virt="non-virtual"><scope>gr::utils::liquid_buffer_impl::ESC_Struct</scope><name>num_samples</name></member>
+      <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a0a921bd1d2fcfa424e2c7377e47d5d31" prot="public" virt="non-virtual"><scope>gr::utils::liquid_buffer_impl::ESC_Struct</scope><name>sample</name></member>
+      <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1ac65ccba93ca81a7cbc84f029c8edb419" prot="public" virt="non-virtual"><scope>gr::utils::liquid_buffer_impl::ESC_Struct</scope><name>sample_rate</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

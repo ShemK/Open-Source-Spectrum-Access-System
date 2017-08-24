@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="namespacegr_1_1utils" kind="namespace">
+    <compoundname>gr::utils</compoundname>
+    <innerclass refid="classgr_1_1utils_1_1cstates__read" prot="public">gr::utils::cstates_read</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1fbpsd__cvf" prot="public">gr::utils::fbpsd_cvf</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1gps__reader" prot="public">gr::utils::gps_reader</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1liquid__buffer" prot="public">gr::utils::liquid_buffer</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1log10__vfvf" prot="public">gr::utils::log10_vfvf</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1multichan__ed" prot="public">gr::utils::multichan_ed</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1pipe__sink" prot="public">gr::utils::pipe_sink</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1psd__cvf" prot="public">gr::utils::psd_cvf</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1reader" prot="public">gr::utils::reader</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1shmem__read" prot="public">gr::utils::shmem_read</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1shmem__write" prot="public">gr::utils::shmem_write</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1cstates__read__impl" prot="public">gr::utils::cstates_read_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1fbpsd__cvf__impl" prot="public">gr::utils::fbpsd_cvf_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1gps__reader__impl" prot="public">gr::utils::gps_reader_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1liquid__buffer__impl" prot="public">gr::utils::liquid_buffer_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1log10__vfvf__impl" prot="public">gr::utils::log10_vfvf_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1multichan__ed__impl" prot="public">gr::utils::multichan_ed_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1pipe__sink__impl" prot="public">gr::utils::pipe_sink_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1psd__cvf__impl" prot="public">gr::utils::psd_cvf_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1reader__impl" prot="public">gr::utils::reader_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1shmem__read__impl" prot="public">gr::utils::shmem_read_impl</innerclass>
+    <innerclass refid="classgr_1_1utils_1_1shmem__write__impl" prot="public">gr::utils::shmem_write_impl</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/cstates_read.h" line="29" column="1"/>
+  </compounddef>
+</doxygen>

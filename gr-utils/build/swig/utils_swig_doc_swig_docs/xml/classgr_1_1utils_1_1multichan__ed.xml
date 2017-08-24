@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classgr_1_1utils_1_1multichan__ed" kind="class" prot="public">
+    <compoundname>gr::utils::multichan_ed</compoundname>
+    <basecompoundref prot="public" virt="virtual">sync_block</basecompoundref>
+    <includes refid="multichan__ed_8h" local="no">multichan_ed.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgr_1_1utils_1_1multichan__ed_1a03ff82c81636dba1743719c9b54f5d93" prot="public" static="no">
+        <type>boost::shared_ptr&lt; <ref refid="classgr_1_1utils_1_1multichan__ed" kindref="compound">multichan_ed</ref> &gt;</type>
+        <definition>typedef boost::shared_ptr&lt;multichan_ed&gt; gr::utils::multichan_ed::sptr</definition>
+        <argsstring></argsstring>
+        <name>sptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/multichan_ed.h" line="39" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/multichan_ed.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classgr_1_1utils_1_1multichan__ed_1a538bbc022220b031d4ad97e342dcae40" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classgr_1_1utils_1_1multichan__ed_1a03ff82c81636dba1743719c9b54f5d93" kindref="member">sptr</ref></type>
+        <definition>static sptr gr::utils::multichan_ed::make</definition>
+        <argsstring>(int fft_len, float threshold, int num_channels)</argsstring>
+        <name>make</name>
+        <param>
+          <type>int</type>
+          <declname>fft_len</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>threshold</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_channels</declname>
+        </param>
+        <briefdescription>
+<para>Return a shared_ptr to a new instance of <ref refid="classgr_1_1utils_1_1multichan__ed" kindref="compound">utils::multichan_ed</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>To avoid accidental use of raw pointers, <ref refid="classgr_1_1utils_1_1multichan__ed" kindref="compound">utils::multichan_ed</ref>&apos;s constructor is in a private implementation class. <ref refid="classgr_1_1utils_1_1multichan__ed_1a538bbc022220b031d4ad97e342dcae40" kindref="member">utils::multichan_ed::make</ref> is the public interface for creating new instances. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/multichan_ed.h" line="49" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>&lt;+description of block+&gt; </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="20">
+        <label>gr::utils::multichan_ed</label>
+        <link refid="classgr_1_1utils_1_1multichan__ed"/>
+        <childnode refid="21" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>sync_block</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="22">
+        <label>gr::utils::multichan_ed</label>
+        <link refid="classgr_1_1utils_1_1multichan__ed"/>
+        <childnode refid="23" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>sync_block</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/multichan_ed.h" line="37" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/multichan_ed.h" bodystart="36" bodyend="50"/>
+    <listofallmembers>
+      <member refid="classgr_1_1utils_1_1multichan__ed_1a538bbc022220b031d4ad97e342dcae40" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed</scope><name>make</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed_1a03ff82c81636dba1743719c9b54f5d93" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed</scope><name>sptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

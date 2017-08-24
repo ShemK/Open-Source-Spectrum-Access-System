@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="log10__vfvf_8h" kind="file">
+    <compoundname>log10_vfvf.h</compoundname>
+    <includes refid="api_8h" local="no">utils/api.h</includes>
+    <includes local="no">gnuradio/sync_block.h</includes>
+    <includedby refid="log10__vfvf__impl_8h" local="no">log10_vfvf_impl.h</includedby>
+    <incdepgraph>
+      <node id="100">
+        <label>gnuradio/sync_block.h</label>
+      </node>
+      <node id="99">
+        <label>gnuradio/attributes.h</label>
+      </node>
+      <node id="98">
+        <label>utils/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="99" relation="include">
+        </childnode>
+      </node>
+      <node id="97">
+        <label>log10_vfvf.h</label>
+        <link refid="log10_vfvf.h"/>
+        <childnode refid="98" relation="include">
+        </childnode>
+        <childnode refid="100" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="101">
+        <label>log10_vfvf.h</label>
+        <link refid="log10_vfvf.h"/>
+        <childnode refid="102" relation="include">
+        </childnode>
+      </node>
+      <node id="102">
+        <label>log10_vfvf_impl.h</label>
+        <link refid="log10__vfvf__impl_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classgr_1_1utils_1_1log10__vfvf" prot="public">gr::utils::log10_vfvf</innerclass>
+    <innernamespace refid="namespacegr">gr</innernamespace>
+    <innernamespace refid="namespacegr_1_1utils">gr::utils</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/log10_vfvf.h"/>
+  </compounddef>
+</doxygen>

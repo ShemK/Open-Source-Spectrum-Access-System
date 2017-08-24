@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.6">
+  <compound refid="classgr_1_1utils_1_1cstates__read" kind="class"><name>gr::utils::cstates_read</name>
+    <member refid="classgr_1_1utils_1_1cstates__read_1a652ab633b8181cabb1e6ad3a6000a9b9" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1cstates__read_1ac43ff4fa801607c0494304c1c1bef485" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1cstates__read__impl" kind="class"><name>gr::utils::cstates_read_impl</name>
+    <member refid="classgr_1_1utils_1_1cstates__read__impl_1ab832a104c5ff3fad3b3f8844dba15217" kind="variable"><name>d_num_channels</name></member>
+    <member refid="classgr_1_1utils_1_1cstates__read__impl_1add76c35267addaa65daf0b5c04b67ee5" kind="function"><name>cstates_read_impl</name></member>
+    <member refid="classgr_1_1utils_1_1cstates__read__impl_1a9857a62fb0b5eb0184ce77eb857a8f3b" kind="function"><name>~cstates_read_impl</name></member>
+    <member refid="classgr_1_1utils_1_1cstates__read__impl_1a6ed62b9ed57a902bd91776f34d506f34" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct" kind="struct"><name>gr::utils::liquid_buffer_impl::ESC_Struct</name>
+    <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a0a921bd1d2fcfa424e2c7377e47d5d31" kind="variable"><name>sample</name></member>
+    <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a2731e68eceedc93807cab37f1da42f6d" kind="variable"><name>frequency</name></member>
+    <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1ac65ccba93ca81a7cbc84f029c8edb419" kind="variable"><name>sample_rate</name></member>
+    <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1ae0715748b59b0d529d883078f0c97370" kind="variable"><name>num_samples</name></member>
+    <member refid="structgr_1_1utils_1_1liquid__buffer__impl_1_1ESC__Struct_1a12f55fbe369575cce5c5afd3579db5ba" kind="variable"><name>data</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1fbpsd__cvf" kind="class"><name>gr::utils::fbpsd_cvf</name>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf_1acd181a41214cf0ed87c2b78daa939006" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf_1a76ae58863193b29c5bf938a76f05960d" kind="function"><name>make</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf_1a6bbaa9f2275d0d45db7ff708a64d6ccd" kind="function"><name>set_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf_1a8726bf948e4dda2e6684b1fe7ec6588c" kind="function"><name>set_fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf_1a528ab7743e27c132ca15cd3088b23b92" kind="function"><name>set_window_type</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf_1a6ca80586d126dae407bb9f9f89dcec31" kind="function"><name>set_average</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1fbpsd__cvf__impl" kind="class"><name>gr::utils::fbpsd_cvf_impl</name>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1af64775ca5fa97130caf554003b564dc2" kind="variable"><name>d_fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1aa1012fb333888b37bb6191d016307ed1" kind="variable"><name>d_num_channels</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a7011eb55154fe27937becc8712014884" kind="variable"><name>d_tmpbuflen</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a6a3bc451b2907d12e4cb9b0848c2f4cb" kind="variable"><name>d_alpha</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1aeaf85aca79a8390f5c08a46ec4f3397d" kind="variable"><name>d_pxx</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a7f2dc83b28c6e21d4db2ab23d4f65250" kind="variable"><name>d_pxx_out</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a75f435e24f6b7f20df28d711aa30171b" kind="variable"><name>d_tmpbuf</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a29fd39ef828a219d016c7345e7a97690" kind="variable"><name>d_tmp_pxx</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1ad63581d8176449fbf22916e9077c9300" kind="variable"><name>d_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a96fdaf63128b09edee30c5e3f1fb869c" kind="variable"><name>d_avg_filter</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a8f34f26f1db4369f5a6270a6b8074e5c" kind="variable"><name>d_window_type</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a0df458fb9c6da3bcdf8e25371f913cac" kind="variable"><name>d_window</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a6e3ae4c796d643cbe138f63b72d3a97e" kind="variable"><name>d_fft</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a120388d0e2123bb39fe1fa060e14e8f3" kind="variable"><name>d_freq</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1ab8bbd2d61dfa4a00b9e7f0b6fc96435f" kind="function"><name>fbpsd_cvf_impl</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1ac80c246ad484563a43719003b51694ae" kind="function"><name>~fbpsd_cvf_impl</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a81bbf4f3e794c7a058becfe25ba8f8ae" kind="function"><name>build_window</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1aa03325b9fc0522c12ab4aa8fe9934656" kind="function"><name>build_freq</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a49ec3d567c0f9afee87713c0f3dd116f" kind="function"><name>periodogram</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a3a7200a60a0db06e30ac6e983ef37a9d" kind="function"><name>work</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a803ca0d87c9f6d5cbdc5b4b7d397fdbf" kind="function"><name>set_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a47230c21402508452e432ed2f6e3f329" kind="function"><name>set_fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a2ab781efe7cce713a769ae243d43a786" kind="function"><name>set_window_type</name></member>
+    <member refid="classgr_1_1utils_1_1fbpsd__cvf__impl_1a807cfa89d454109a77cdc93fb65122a9" kind="function"><name>set_average</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1gps__reader" kind="class"><name>gr::utils::gps_reader</name>
+    <member refid="classgr_1_1utils_1_1gps__reader_1af82e83f2ffc19436dad7ba0ce6e7397e" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader_1ad4325efc0feb977315a8ee450d57ff84" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1gps__reader__impl" kind="class"><name>gr::utils::gps_reader_impl</name>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1aa5899baefe6957307a16632853144ce4" kind="variable"><name>recv_buffer_len</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1aa574888173de5ebc75596796c046b15e" kind="variable"><name>tcp_client_sock</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a63fd5c0476c4765f973fbc04add25bbe" kind="variable"><name>status</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1ab54d75d099b6dae81eb852839e68befb" kind="variable"><name>recv_len</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a8149b70bed0bcc6a8cecfa0e8a618e57" kind="variable"><name>recv_buffer</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a721db83801840f571b82e957d20e4ce2" kind="variable"><name>pch</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1aa93e2cf521ccec016a9c099e54d28663" kind="variable"><name>prev</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1af9951c917df00a038f39a55cbd900e07" kind="variable"><name>longitude</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1ab5a1a3fe88cccbc061657eae953f29d1" kind="variable"><name>latitude</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a6711442cece2ab894030c2ff66b4ca5f" kind="variable"><name>clientlen</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a1356cc3764a3051e3d95831fda987702" kind="variable"><name>tcp_client_addr</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a9138c47b6f281f233911eeeb8e6e3dda" kind="function"><name>gps_reader_impl</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a2a96d3f4833d73c283b1e5fe49e0467f" kind="function"><name>~gps_reader_impl</name></member>
+    <member refid="classgr_1_1utils_1_1gps__reader__impl_1a3bd1d44333b99bc12d205be264805165" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1liquid__buffer" kind="class"><name>gr::utils::liquid_buffer</name>
+    <member refid="classgr_1_1utils_1_1liquid__buffer_1a908b2e9cd9bfba6841ab6c07ac463bac" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer_1a18340dde61387a322eef0934974269af" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1liquid__buffer__impl" kind="class"><name>gr::utils::liquid_buffer_impl</name>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1ae0b06d238511d74543142d4bedf33a03" kind="variable"><name>d_N</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a030bb77f925df8aa94d0ebb3d6b6b1c7" kind="variable"><name>d_num_channels</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1ac4e5690cdc18fbb0f71b3677f4d37ec3" kind="variable"><name>shared_struct</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a8cc1bfb42323ab3d93c0c4df484dd976" kind="variable"><name>buf_struct</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a1be976f9276aed25ad843c9ce3814ba2" kind="variable"><name>sample</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a12c4421e403de44f4b54b254c73c21ee" kind="variable"><name>frequency</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1ad6d3f7341276536880e846f0b8c4cf0e" kind="variable"><name>sample_rate</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1accecbd30756eed5a9dda3e81ac117824" kind="variable"><name>num_samples</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1ab9087be76068265374ec680fd0d35988" kind="function"><name>liquid_buffer_impl</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a2c230ad0f8efda19b4a07806e4ad9eb1" kind="function"><name>~liquid_buffer_impl</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1ad07902ebad9fb5a8e040142f9e35f005" kind="function"><name>pack_frequency</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a24a6642854ee67c24933751dc34cbecc" kind="function"><name>pack_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a068c524b2cf1853b27aa37efdee41142" kind="function"><name>pack_number_of_samps</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a7934bc2326fee4e5aec1400816a6bc76" kind="function"><name>pack_samp_number</name></member>
+    <member refid="classgr_1_1utils_1_1liquid__buffer__impl_1a6eb851e8dcaba0623720981a0c60b555" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1log10__vfvf" kind="class"><name>gr::utils::log10_vfvf</name>
+    <member refid="classgr_1_1utils_1_1log10__vfvf_1a0074790f3279fc8935825f178f1de755" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf_1ac95e9307d4ce166f53460e2f90581b5c" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1log10__vfvf__impl" kind="class"><name>gr::utils::log10_vfvf_impl</name>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1a970fb9a9f62b1dd8d004c590981829a5" kind="variable"><name>d_pxx_in</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1a4468d68a5c27288014c1294428d2e3cb" kind="variable"><name>d_pxx_out</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1ab3bc56c9859fe698176ef2967b7c13f8" kind="variable"><name>d_tmp_buf</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1a50a5109bb1f7f739a3df1104932bab5c" kind="variable"><name>dbw2m</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1af595ab8f9c1a53702402c0e32d595163" kind="variable"><name>n</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1af2a1b42196c863639433c917f1ac2bb2" kind="function"><name>log10_vfvf_impl</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1ab804a0413b1814e964464fe099386492" kind="function"><name>~log10_vfvf_impl</name></member>
+    <member refid="classgr_1_1utils_1_1log10__vfvf__impl_1ac46cf85d3abdd95facb896aba00d9cab" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1multichan__ed" kind="class"><name>gr::utils::multichan_ed</name>
+    <member refid="classgr_1_1utils_1_1multichan__ed_1a03ff82c81636dba1743719c9b54f5d93" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed_1a538bbc022220b031d4ad97e342dcae40" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1multichan__ed__impl" kind="class"><name>gr::utils::multichan_ed_impl</name>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1aab7a657e11442bce4947cd4637531143" kind="variable"><name>fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a6e381c62e5a46f991aa967daf7cefb9a" kind="variable"><name>num_channels</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a537febcbb9b914881b8336f2110f17a7" kind="variable"><name>cstates</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a7b46be7d191e0896ac995ac96d0401dd" kind="variable"><name>state</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a20b1b77d90b767399f5a5927c88d95f1" kind="variable"><name>threshold</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1abc0be608db6fd816fe3dc366f650b1f6" kind="variable"><name>sensitivity</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a849c8836bcbffe594b8b5db0f095a7e2" kind="variable"><name>last_mean</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a4d54f44d63c8970463e5447182374cdb" kind="variable"><name>last_variance</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a67cc22986a519b01ae5891328e5403b0" kind="variable"><name>oldbuf</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a605ba90f890da845538305c942cb1849" kind="variable"><name>noise_floor</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1aaa44c584df1c09353947e82d4c41f67d" kind="variable"><name>cur_noise_floor</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1ace6b6074781134218d098943510cba91" kind="variable"><name>rx_rate</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a95ea1441db1406a5188311b5c1435487" kind="variable"><name>wbnoise_floor</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1adf895ea79e4c302135a4b721e0620177" kind="variable"><name>fcstates</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a452cf0885fcdaf98d70f973197099d98" kind="variable"><name>thresholds</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a5ba80c1d45604702317160851187a2d6" kind="variable"><name>means</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a3dd4467a30910da7d7f6e952409f0a2c" kind="variable"><name>variances</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a4e639d3c901747dfd02169b5d7092688" kind="function"><name>multichan_ed_impl</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1aca37c53039c430817f1db90e4becbb12" kind="function"><name>~multichan_ed_impl</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1ac0a93de5a6392d375571248bc2555757" kind="function"><name>work</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a321f20cbabdf3b988386831953fd14c3" kind="function"><name>pack_decision</name></member>
+    <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a13eaa5516ced15d462758d7b9e057a9f" kind="function"><name>pack_noise_floor</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1pipe__sink" kind="class"><name>gr::utils::pipe_sink</name>
+    <member refid="classgr_1_1utils_1_1pipe__sink_1a3caec3262a0cdeb957f20256c4904ebd" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1pipe__sink_1a6145a9fadcb1af0aa1918265e7474ebf" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1pipe__sink__impl" kind="class"><name>gr::utils::pipe_sink_impl</name>
+    <member refid="classgr_1_1utils_1_1pipe__sink__impl_1a4daa9f0833f136d73dbc5e53e9b10dff" kind="variable"><name>N</name></member>
+    <member refid="classgr_1_1utils_1_1pipe__sink__impl_1a6b1573e84505089e6c4c9ac886fd1af8" kind="variable"><name>fd</name></member>
+    <member refid="classgr_1_1utils_1_1pipe__sink__impl_1ab985918dd1a1edbb41e82a875302579c" kind="function"><name>pipe_sink_impl</name></member>
+    <member refid="classgr_1_1utils_1_1pipe__sink__impl_1a3eecf74cd0987bf4f2ebd6ae7fb23756" kind="function"><name>~pipe_sink_impl</name></member>
+    <member refid="classgr_1_1utils_1_1pipe__sink__impl_1af8f0efaf60939e0ee3b807518fa7c032" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1psd__cvf" kind="class"><name>gr::utils::psd_cvf</name>
+    <member refid="classgr_1_1utils_1_1psd__cvf_1ab76b31beafe3b912c671940bc06d4c57" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf_1a37c839cc8afd6986282e83cf6db7e5aa" kind="function"><name>make</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf_1aab274d8128c38af70a355831edfbe81d" kind="function"><name>set_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf_1a4cc62fd1cad21c82f62cfbb7e4c73e64" kind="function"><name>set_fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf_1aa189c8e8d264912a23526a5782cc5dc0" kind="function"><name>set_window_type</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf_1a6b2222ffa22de1dd2173b49e0ddd991b" kind="function"><name>set_average</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1psd__cvf__impl" kind="class"><name>gr::utils::psd_cvf_impl</name>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a3765b1ecf9b0e091a4fe5936916e1fd3" kind="variable"><name>d_fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1ad014ddbf055c82bd87a008ff305ea74d" kind="variable"><name>d_tmpbuflen</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a8166ea3edadb20ad7a4c466f832c3310" kind="variable"><name>d_alpha</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a69d35a7a6e447551602df6f01acc6244" kind="variable"><name>d_pxx</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a62414d97c61a78c490efbc87f214ea97" kind="variable"><name>d_pxx_out</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a16bfecf8b6b053f6076ccb1cc6a91f45" kind="variable"><name>d_tmpbuf</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a24d730e73af7c2c193436b0f90d936e6" kind="variable"><name>d_tmp_pxx</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1aa7e5c27bbfb9a628b0bf062ebd84bd5b" kind="variable"><name>d_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a0325b5d06f6cd64259b35db01fca894d" kind="variable"><name>d_avg_filter</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a2a1c4c5211f31f41c8b96ecf73ac595c" kind="variable"><name>d_window_type</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1aca2dc66cf4b39fe585e3a84a2d155275" kind="variable"><name>d_window</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a0aedd2b9ff05484d36cdd961be1869c3" kind="variable"><name>d_fft</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1ad301a27777018de52a491d6f8f2385a9" kind="variable"><name>d_freq</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1ade3f6ba4f2363f928a3054f6fba35ac5" kind="function"><name>psd_cvf_impl</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a7621a083b3d57e52189d3635f2c5a29d" kind="function"><name>~psd_cvf_impl</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a9826391207b9f071c071a76dc474e012" kind="function"><name>build_window</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a3c917720933941a8f05fef5af31baf17" kind="function"><name>build_freq</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1ac6c5920f277cbbceddd5075021cfcf9c" kind="function"><name>periodogram</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1ae5e35a064ec16ad2d841f37c959df60a" kind="function"><name>work</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1ad40a5a8292698aaab3b7df392b514a42" kind="function"><name>msg_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a7091353980e1c4cea57abdf63d4efb19" kind="function"><name>set_samp_rate</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a6e9cb966ef7e1eb5d47299f397d9fa9c" kind="function"><name>set_fft_len</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1a19ca20c6f1b13614d0ac0a0e99a7fa1b" kind="function"><name>set_window_type</name></member>
+    <member refid="classgr_1_1utils_1_1psd__cvf__impl_1acd1c35dcfa8afe780c8c7e212be51ea7" kind="function"><name>set_average</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1reader" kind="class"><name>gr::utils::reader</name>
+    <member refid="classgr_1_1utils_1_1reader_1a5c72a358e2ad5b819f520a7d77b3001b" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1reader_1ad1c229fce938853ddf0598faa5b92978" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1reader__impl" kind="class"><name>gr::utils::reader_impl</name>
+    <member refid="classgr_1_1utils_1_1reader__impl_1ad1a6be8835dadfafa1972736e0e936b8" kind="function"><name>reader_impl</name></member>
+    <member refid="classgr_1_1utils_1_1reader__impl_1a333d4ace9433cadbb71b2a319840ad61" kind="function"><name>~reader_impl</name></member>
+    <member refid="classgr_1_1utils_1_1reader__impl_1a2d0cbf246ea934dfaf7f0ed5bfd36ba2" kind="function"><name>print</name></member>
+    <member refid="classgr_1_1utils_1_1reader__impl_1ade3ebefe8377d78ff65f49ba77fb1b75" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1shmem__read" kind="class"><name>gr::utils::shmem_read</name>
+    <member refid="classgr_1_1utils_1_1shmem__read_1a7dcb76e32702d475399fa65ee53c920d" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__read_1a03964b2ee6bbecfeccf42c281f942bd1" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1shmem__read__impl" kind="class"><name>gr::utils::shmem_read_impl</name>
+    <member refid="classgr_1_1utils_1_1shmem__read__impl_1a8cb6b60e0f060fe4dc5268258d4dfedc" kind="variable"><name>d_N</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__read__impl_1ab1f4a213662aa666f3f6ec3f47a231f0" kind="variable"><name>d_num_channels</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__read__impl_1a5f3ea59c99bf07f3b03ef336d6b40c55" kind="function"><name>shmem_read_impl</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__read__impl_1a9eafd480adc57bf9cf8d7e11272b4533" kind="function"><name>~shmem_read_impl</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__read__impl_1a471411ebefc4fe37909d436a749e3b48" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1shmem__write" kind="class"><name>gr::utils::shmem_write</name>
+    <member refid="classgr_1_1utils_1_1shmem__write_1af6aad370252f6a002a31b1668f2e54f8" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__write_1ac9069a286f03d268dfcb8cf33e74c796" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1utils_1_1shmem__write__impl" kind="class"><name>gr::utils::shmem_write_impl</name>
+    <member refid="classgr_1_1utils_1_1shmem__write__impl_1a0574c9102269457397cb3ea1a2b1aa26" kind="variable"><name>d_N</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__write__impl_1a48a7e79fa389dbd671c47f968b1c2c44" kind="variable"><name>d_num_channels</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__write__impl_1ae9ae5ceef829786968f7114843e979fc" kind="function"><name>shmem_write_impl</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__write__impl_1afba4ea7774ccd19584aef808dbf98a78" kind="function"><name>~shmem_write_impl</name></member>
+    <member refid="classgr_1_1utils_1_1shmem__write__impl_1a0d5ffa609d6066b11a1b67465dfe7e42" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="namespacegr" kind="namespace"><name>gr</name>
+  </compound>
+  <compound refid="namespacegr_1_1utils" kind="namespace"><name>gr::utils</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="api_8h" kind="file"><name>api.h</name>
+    <member refid="api_8h_1a0644fef940e460e58c347f3c1d6fe4d8" kind="define"><name>UTILS_API</name></member>
+  </compound>
+  <compound refid="cstates__read_8h" kind="file"><name>cstates_read.h</name>
+  </compound>
+  <compound refid="cstates__read__impl_8h" kind="file"><name>cstates_read_impl.h</name>
+  </compound>
+  <compound refid="fbpsd__cvf_8h" kind="file"><name>fbpsd_cvf.h</name>
+  </compound>
+  <compound refid="fbpsd__cvf__impl_8h" kind="file"><name>fbpsd_cvf_impl.h</name>
+  </compound>
+  <compound refid="gps__reader_8h" kind="file"><name>gps_reader.h</name>
+  </compound>
+  <compound refid="gps__reader__impl_8h" kind="file"><name>gps_reader_impl.h</name>
+  </compound>
+  <compound refid="group__defs_8dox" kind="file"><name>group_defs.dox</name>
+  </compound>
+  <compound refid="liquid__buffer_8h" kind="file"><name>liquid_buffer.h</name>
+  </compound>
+  <compound refid="liquid__buffer__impl_8h" kind="file"><name>liquid_buffer_impl.h</name>
+    <member refid="liquid__buffer__impl_8h_1a9148708527d1c6fa46eda4a937382662" kind="define"><name>MAX_ESC_BUFFER</name></member>
+  </compound>
+  <compound refid="log10__vfvf_8h" kind="file"><name>log10_vfvf.h</name>
+  </compound>
+  <compound refid="log10__vfvf__impl_8h" kind="file"><name>log10_vfvf_impl.h</name>
+  </compound>
+  <compound refid="main__page_8dox" kind="file"><name>main_page.dox</name>
+  </compound>
+  <compound refid="multichan__ed_8h" kind="file"><name>multichan_ed.h</name>
+  </compound>
+  <compound refid="multichan__ed__impl_8h" kind="file"><name>multichan_ed_impl.h</name>
+  </compound>
+  <compound refid="pipe__sink_8h" kind="file"><name>pipe_sink.h</name>
+  </compound>
+  <compound refid="pipe__sink__impl_8h" kind="file"><name>pipe_sink_impl.h</name>
+  </compound>
+  <compound refid="psd__cvf_8h" kind="file"><name>psd_cvf.h</name>
+  </compound>
+  <compound refid="psd__cvf__impl_8h" kind="file"><name>psd_cvf_impl.h</name>
+  </compound>
+  <compound refid="reader_8h" kind="file"><name>reader.h</name>
+  </compound>
+  <compound refid="reader__impl_8h" kind="file"><name>reader_impl.h</name>
+  </compound>
+  <compound refid="shmem__read_8h" kind="file"><name>shmem_read.h</name>
+  </compound>
+  <compound refid="shmem__read__impl_8h" kind="file"><name>shmem_read_impl.h</name>
+  </compound>
+  <compound refid="shmem__write_8h" kind="file"><name>shmem_write.h</name>
+  </compound>
+  <compound refid="shmem__write__impl_8h" kind="file"><name>shmem_write_impl.h</name>
+  </compound>
+  <compound refid="group__block" kind="group"><name>block</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_97aefd0d527b934f1d99a682da8fe6a9" kind="dir"><name>lib</name>
+  </compound>
+  <compound refid="dir_821002d4f10779a80d4fb17bc32f21f1" kind="dir"><name>utils</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

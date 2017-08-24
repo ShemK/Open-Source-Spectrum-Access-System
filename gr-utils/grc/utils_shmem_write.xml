@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+  <name>shmem_write</name>
+  <key>utils_shmem_write</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.shmem_write($N, $num_channels)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Vector Length</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>number of channels</name>
+    <key>num_channels</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$N</vlen>
+    <nports>$num_channels</nports>
+  </sink>
+</block>

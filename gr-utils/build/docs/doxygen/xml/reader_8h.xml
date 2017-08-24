@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="reader_8h" kind="file">
+    <compoundname>reader.h</compoundname>
+    <includes refid="api_8h" local="no">utils/api.h</includes>
+    <includes local="no">gnuradio/sync_block.h</includes>
+    <includedby refid="reader__impl_8h" local="no">reader_impl.h</includedby>
+    <incdepgraph>
+      <node id="180">
+        <label>gnuradio/sync_block.h</label>
+      </node>
+      <node id="179">
+        <label>gnuradio/attributes.h</label>
+      </node>
+      <node id="177">
+        <label>reader.h</label>
+        <link refid="reader.h"/>
+        <childnode refid="178" relation="include">
+        </childnode>
+        <childnode refid="180" relation="include">
+        </childnode>
+      </node>
+      <node id="178">
+        <label>utils/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="179" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="182">
+        <label>reader_impl.h</label>
+        <link refid="reader__impl_8h"/>
+      </node>
+      <node id="181">
+        <label>reader.h</label>
+        <link refid="reader.h"/>
+        <childnode refid="182" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classgr_1_1utils_1_1reader" prot="public">gr::utils::reader</innerclass>
+    <innernamespace refid="namespacegr">gr</innernamespace>
+    <innernamespace refid="namespacegr_1_1utils">gr::utils</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/include/utils/reader.h"/>
+  </compounddef>
+</doxygen>

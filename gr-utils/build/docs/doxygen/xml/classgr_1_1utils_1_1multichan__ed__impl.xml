@@ -1,0 +1,403 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.6">
+  <compounddef id="classgr_1_1utils_1_1multichan__ed__impl" kind="class" prot="public">
+    <compoundname>gr::utils::multichan_ed_impl</compoundname>
+    <basecompoundref refid="classgr_1_1utils_1_1multichan__ed" prot="public" virt="non-virtual">gr::utils::multichan_ed</basecompoundref>
+    <includes refid="multichan__ed__impl_8h" local="no">multichan_ed_impl.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1aab7a657e11442bce4947cd4637531143" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::utils::multichan_ed_impl::fft_len</definition>
+        <argsstring></argsstring>
+        <name>fft_len</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="57" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a6e381c62e5a46f991aa967daf7cefb9a" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::utils::multichan_ed_impl::num_channels</definition>
+        <argsstring></argsstring>
+        <name>num_channels</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="57" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a537febcbb9b914881b8336f2110f17a7" prot="private" static="no" mutable="no">
+        <type>int *</type>
+        <definition>int * gr::utils::multichan_ed_impl::cstates</definition>
+        <argsstring></argsstring>
+        <name>cstates</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="57" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a7b46be7d191e0896ac995ac96d0401dd" prot="private" static="no" mutable="no">
+        <type>int *</type>
+        <definition>int * gr::utils::multichan_ed_impl::state</definition>
+        <argsstring></argsstring>
+        <name>state</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="57" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a20b1b77d90b767399f5a5927c88d95f1" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::utils::multichan_ed_impl::threshold</definition>
+        <argsstring></argsstring>
+        <name>threshold</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="58" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1abc0be608db6fd816fe3dc366f650b1f6" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::utils::multichan_ed_impl::sensitivity</definition>
+        <argsstring></argsstring>
+        <name>sensitivity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="58" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a849c8836bcbffe594b8b5db0f095a7e2" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::utils::multichan_ed_impl::last_mean</definition>
+        <argsstring></argsstring>
+        <name>last_mean</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="58" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a4d54f44d63c8970463e5447182374cdb" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::utils::multichan_ed_impl::last_variance</definition>
+        <argsstring></argsstring>
+        <name>last_variance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="58" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a67cc22986a519b01ae5891328e5403b0" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; float &gt; *</type>
+        <definition>std::vector&lt;float&gt;* gr::utils::multichan_ed_impl::oldbuf</definition>
+        <argsstring></argsstring>
+        <name>oldbuf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="59" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a605ba90f890da845538305c942cb1849" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float* gr::utils::multichan_ed_impl::noise_floor</definition>
+        <argsstring></argsstring>
+        <name>noise_floor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="60" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1aaa44c584df1c09353947e82d4c41f67d" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::utils::multichan_ed_impl::cur_noise_floor</definition>
+        <argsstring></argsstring>
+        <name>cur_noise_floor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="60" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1ace6b6074781134218d098943510cba91" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::utils::multichan_ed_impl::rx_rate</definition>
+        <argsstring></argsstring>
+        <name>rx_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="60" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a95ea1441db1406a5188311b5c1435487" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::utils::multichan_ed_impl::wbnoise_floor</definition>
+        <argsstring></argsstring>
+        <name>wbnoise_floor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="60" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1adf895ea79e4c302135a4b721e0620177" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::utils::multichan_ed_impl::fcstates</definition>
+        <argsstring></argsstring>
+        <name>fcstates</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="60" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a452cf0885fcdaf98d70f973197099d98" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float* gr::utils::multichan_ed_impl::thresholds</definition>
+        <argsstring></argsstring>
+        <name>thresholds</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="61" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a5ba80c1d45604702317160851187a2d6" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::utils::multichan_ed_impl::means</definition>
+        <argsstring></argsstring>
+        <name>means</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="61" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1utils_1_1multichan__ed__impl_1a3dd4467a30910da7d7f6e952409f0a2c" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::utils::multichan_ed_impl::variances</definition>
+        <argsstring></argsstring>
+        <name>variances</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="61" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1utils_1_1multichan__ed__impl_1a4e639d3c901747dfd02169b5d7092688" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::utils::multichan_ed_impl::multichan_ed_impl</definition>
+        <argsstring>(int fft_len, float threshold, int num_channels)</argsstring>
+        <name>multichan_ed_impl</name>
+        <param>
+          <type>int</type>
+          <declname>fft_len</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>threshold</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_channels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="64" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1utils_1_1multichan__ed__impl_1aca37c53039c430817f1db90e4becbb12" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::utils::multichan_ed_impl::~multichan_ed_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~multichan_ed_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="65" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1utils_1_1multichan__ed__impl_1ac0a93de5a6392d375571248bc2555757" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::utils::multichan_ed_impl::work</definition>
+        <argsstring>(int noutput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="68" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1utils_1_1multichan__ed__impl_1a321f20cbabdf3b988386831953fd14c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pmt::pmt_t</type>
+        <definition>pmt::pmt_t gr::utils::multichan_ed_impl::pack_decision</definition>
+        <argsstring>(float *fcstates, int num_channels)</argsstring>
+        <name>pack_decision</name>
+        <param>
+          <type>float *</type>
+          <declname>fcstates</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_channels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="72" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1utils_1_1multichan__ed__impl_1a13eaa5516ced15d462758d7b9e057a9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pmt::pmt_t</type>
+        <definition>pmt::pmt_t gr::utils::multichan_ed_impl::pack_noise_floor</definition>
+        <argsstring>(float *noise_floor, int num_channels)</argsstring>
+        <name>pack_noise_floor</name>
+        <param>
+          <type>float *</type>
+          <declname>noise_floor</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_channels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="73" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="63">
+        <label>gr::utils::multichan_ed</label>
+        <link refid="classgr_1_1utils_1_1multichan__ed"/>
+        <childnode refid="64" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>sync_block</label>
+      </node>
+      <node id="62">
+        <label>gr::utils::multichan_ed_impl</label>
+        <link refid="classgr_1_1utils_1_1multichan__ed__impl"/>
+        <childnode refid="63" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="66">
+        <label>gr::utils::multichan_ed</label>
+        <link refid="classgr_1_1utils_1_1multichan__ed"/>
+        <childnode refid="67" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="67">
+        <label>sync_block</label>
+      </node>
+      <node id="65">
+        <label>gr::utils::multichan_ed_impl</label>
+        <link refid="classgr_1_1utils_1_1multichan__ed__impl"/>
+        <childnode refid="66" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" line="55" column="1" bodyfile="/home/wireless/workspace/darpaSC2/rem/gr-utils/lib/multichan_ed_impl.h" bodystart="54" bodyend="75"/>
+    <listofallmembers>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a537febcbb9b914881b8336f2110f17a7" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>cstates</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1aaa44c584df1c09353947e82d4c41f67d" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>cur_noise_floor</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1adf895ea79e4c302135a4b721e0620177" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>fcstates</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1aab7a657e11442bce4947cd4637531143" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>fft_len</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a849c8836bcbffe594b8b5db0f095a7e2" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>last_mean</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a4d54f44d63c8970463e5447182374cdb" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>last_variance</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed_1a538bbc022220b031d4ad97e342dcae40" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a5ba80c1d45604702317160851187a2d6" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>means</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a4e639d3c901747dfd02169b5d7092688" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>multichan_ed_impl</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a605ba90f890da845538305c942cb1849" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>noise_floor</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a6e381c62e5a46f991aa967daf7cefb9a" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>num_channels</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a67cc22986a519b01ae5891328e5403b0" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>oldbuf</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a321f20cbabdf3b988386831953fd14c3" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>pack_decision</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a13eaa5516ced15d462758d7b9e057a9f" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>pack_noise_floor</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1ace6b6074781134218d098943510cba91" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>rx_rate</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1abc0be608db6fd816fe3dc366f650b1f6" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>sensitivity</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed_1a03ff82c81636dba1743719c9b54f5d93" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a7b46be7d191e0896ac995ac96d0401dd" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>state</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a20b1b77d90b767399f5a5927c88d95f1" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>threshold</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a452cf0885fcdaf98d70f973197099d98" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>thresholds</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a3dd4467a30910da7d7f6e952409f0a2c" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>variances</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1a95ea1441db1406a5188311b5c1435487" prot="private" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>wbnoise_floor</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1ac0a93de5a6392d375571248bc2555757" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>work</name></member>
+      <member refid="classgr_1_1utils_1_1multichan__ed__impl_1aca37c53039c430817f1db90e4becbb12" prot="public" virt="non-virtual"><scope>gr::utils::multichan_ed_impl</scope><name>~multichan_ed_impl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
