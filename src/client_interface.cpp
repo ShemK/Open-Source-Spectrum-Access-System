@@ -24,7 +24,7 @@
 #include "tun.hpp"
 
 #define DEBUG 0
-#if DEBUG == 1
+#if DEBUG == 1 || DEBUG > 2
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -73,11 +73,11 @@ void initialize_node_parameters(struct node_parameters *np) {
   np->generate_octave_logs = 1;
 
   // initial USRP settings
-  np->rx_freq = 862.5e6;
+  np->rx_freq = 1010e6;
   np->rx_rate = 2e6;
   np->rx_gain = 15.0;
 
-  np->tx_freq = 857.5e6;
+  np->tx_freq = 1010e6;
   np->tx_rate = 2e6;
   np->tx_gain = 15.0;
 

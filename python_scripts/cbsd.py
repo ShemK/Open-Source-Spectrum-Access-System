@@ -2,16 +2,17 @@ import server_connection
 import json
 import datetime
 import time
+import cbsd_thread
 
 class Cbsd(object):
     _fccId = "cbd561"
     _cbsdCategory = "A"
     _userId = "cbd1"
-    _state = "Unregistered"
+    _state = "UNREGISTERED"
     _cbsdSerialNumber = "hask124ba"
     _cbsdInfo = "yap";
     _cbsd_registered = False
-    _grant_state = None
+    _grant_state = "IDLE"
     _registrationRequestObj = None
     _cbsdId = None
     _registrationResponseObj = None
@@ -28,11 +29,13 @@ class Cbsd(object):
     _grantExpireTime = None
     _grantExpireTime_seconds = None
     _heartbeatRequestObj = None
+    _heartbeatResponseObj = None
     _grantRenew = False
     _relinquishGrant = False
     _reliquishmentRequestObj = None
-
-
+    _json_encoder = None
+    _json_decoder = None
+    _grantTimeLeft = None
     def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber,cbsdInfo):
         self._fccId = fccId
         self._cbsdCategory = cbsdCategory
@@ -40,6 +43,8 @@ class Cbsd(object):
         self._cbsdSerialNumber = cbsdSerialNumber
         self._cbsdInfo = cbsdInfo
         self._registrationRequestObj = self._create_registration_request_obj()
+        self._json_encoder = json.JSONEncoder()
+        self._json_decoder = json.JSONDecoder()
 
     def _create_registration_request_obj(self):
         temp_registrationObj = {'registrationRequest': {
@@ -71,10 +76,24 @@ class Cbsd(object):
         if(responseCode=="0"):
             self._cbsdId = registrationResponse['registrationResponse'] \
                                                 ['response']['cbsdId']
-            print('registered!')
+            print('REGISTERED!')
             self._cbsd_registered = True
-            self._state = "Registered"
+            self._state = "REGISTERED"
+        if(responseCode == "103"):
+            self._state = "UNREGISTERED"
+            self._cbsd_registered = False
+            responseMessage = registrationResponse['registrationResponse'] \
+                                                ['response']['responseMessage']
+            print "Registration Failed: ", responseMessage
+        if(responseCode == "202"):
+            self._state = "UNREGISTERED"
+            self._cbsd_registered = False
+            responseMessage = registrationResponse['registrationResponse'] \
+                                                ['response']['responseMessage']
+            print "Registration Failed: ", responseMessage
 
+    def get_cbsd_state(self):
+        return self._state;
 
     def add_inquired_channels(self,lowFrequency,highFrequency):
         temp_channel = {'lowFrequency':lowFrequency,'highFrequency':highFrequency}
@@ -130,7 +149,7 @@ class Cbsd(object):
                                                     }
                                             }
                                         }
-                self._grant_state = "Idle"
+                self._grant_state = "IDLE"
                 return True
             else:
                 print("No Operational Frequency Range Selected")
@@ -146,18 +165,20 @@ class Cbsd(object):
     def get_grantExpireTime(self):
         return self._grantExpireTime
 
-    def set_grantResponseObj(self, grantReponse):
-        self._grantResponseObj = grantReponse
-        responseCode = grantReponse['grantResponse'] \
+    def set_grantResponseObj(self, grantResponse):
+        self._grantResponseObj = grantResponse
+        responseCode = grantResponse['grantResponse'] \
                                                 ['response']['responseCode']
 
         if(responseCode=="0"):
-            self._grantId = grantReponse['grantResponse']['grantId']
-            self._heartbeatInterval = grantReponse['grantResponse']['heartbeatInterval']
-            self._grantExpireTime = grantReponse['grantResponse']['grantExpireTime']
-            self._grant_state = "GRANTED"
+            self._grantId = grantResponse['grantResponse']['grantId']
+            if 'heartbeatInterval' in grantResponse['grantResponse']:
+                self._heartbeatInterval = grantResponse['grantResponse']['heartbeatInterval']
+            self._grantExpireTime = grantResponse['grantResponse']['grantExpireTime']
+            self._grant_state = "AUTHORIZED"
             self.get_grantExpireTime_seconds(self._grantExpireTime)
-
+        else:
+            self._grant_state = "IDLE"
 
     def get_grantExpireTime_seconds(self,grantExpireTime=None):
         if grantExpireTime == None:
@@ -179,6 +200,26 @@ class Cbsd(object):
                                                 'operationState': self._grant_state
                                                 }
                                             }
+        else:
+            return None
+
+    def analyze_heartbeatResponseObj(self, heartbeatResponse):
+        if self._grant_state != "IDLE":
+            self._heartbeatResponseObj = heartbeatResponse
+            responseCode = heartbeatResponse['heartbeatResponse'] \
+                                                    ['response']['responseCode']
+
+            if(responseCode=="0"):
+                self._grantId = heartbeatResponse['heartbeatResponse']['grantId']
+                if 'heartbeatInterval' in heartbeatResponse['heartbeatResponse']:
+                    self._heartbeatInterval = heartbeatResponse['heartbeatResponse']['heartbeatInterval']
+                if 'operationParam' in heartbeatResponse['heartbeatResponse']:
+                    print "Change Operational parameters"
+            else:
+                self._grant_state = "IDLE"
+
+        else:
+            print "No Grant Available"
 
     def _create_relinquishment_request_obj(self):
         if((self._grant_state == "GRANTED") \
@@ -225,3 +266,127 @@ class Cbsd(object):
     def clear_channels(self):
         for i in range(0,len(self._available_channels)):
             self._available_channels.pop(len(self._available_channels)-1)
+
+
+
+    '''
+    Functions that connect with SAS
+
+    '''
+    def sendRegistrationRequest(self,my_server_connection):
+        if(my_server_connection.is_connected()):
+            json_request =  self._json_encoder.encode(self.get_registrationRequestObj())
+            response = my_server_connection.send_request(json_request)
+
+            # create json decoder object
+            # get dictionary
+
+            try:
+                json_response = self._json_decoder.decode(response)
+                self.set_registrationResponseObj(json_response)
+            except ValueError:
+                print "Unexpected Message From SAS: Connection Broken"
+                print "Message Received: ", response
+        else:
+            print "No Connection to SAS"
+
+    def sendSpectrumInquiry(self,my_server_connection):
+        if(my_server_connection.is_connected()):
+            if(self._cbsd_registered):
+                print "\n---------------------------------------------------------\n"
+
+                print("Request: sending spectrum Inquiry ")
+
+                print "Sending Inquiry for the Following Channels:"
+
+                for i in self.get_inquired_channels():
+                    print i
+
+                print "\n---------------------------------------------------------\n"
+                # TODO: Need to make functions for different scenarios
+                # TODO: Switch statement will do
+
+                json_request = self._json_encoder.encode(self.get_spectrumInquiryRequestObj())
+
+                response = my_server_connection.send_request(json_request)
+
+                try:
+                    json_response = self._json_decoder.decode(response)
+                    self.set_spectrumInquiryResponseObj(json_response)
+                    print "Below are the Channels Available:"
+
+                    for i in self.get_available_channels():
+                        print i
+
+                    print "\n---------------------------------------------------------\n"
+
+                except ValueError:
+                    print "Unexpected Message From SAS: Connection Broken"
+                    print "Message Received: ", response
+                else:
+                    print "No Connection to SAS"
+            else:
+                print "CBSD is not Registered"
+
+    def sendGrantRequest(self,my_server_connection):
+        if(my_server_connection.is_connected()):
+            if(len(self._available_channels) > 0):
+                try:
+                    json_request = self._json_encoder.encode(self.get_grantRequestObj())
+
+                    print "Requesting Grant for the following Channel"
+                    print self.get_operationFrequencyRange()
+
+                    response = my_server_connection.send_request(json_request)
+
+                    # get dictionary
+                    json_response = self._json_decoder.decode(response)
+                    self.set_grantResponseObj(json_response)
+
+
+                    print "Channel Grant Accepted"
+
+                    print "\n---------------------------------------------------------\n"
+
+                except ValueError:
+                    print "Unexpected Message From SAS: Connection Broken"
+                    print "Message Received: ", response
+            else:
+                print "No channels were provided by the SAS"
+        else:
+            print "No Connection to SAS"
+
+    def startSendingHeartBeats(self, my_server_connection):
+        print "Sending Initial Heartbeat"
+        if(self._grant_state!="IDLE"):
+            operationFrequency = self.get_operationFrequencyRange()
+
+            freq = operationFrequency['lowFrequency']
+
+            heartbeatInterval = self.get_heartbeatInterval()
+            if heartbeatInterval!=None:
+                json_request = self._json_encoder.encode(self.get_heartbeatRequestObj())
+                response = my_server_connection.send_request(json_request)
+                self.my_heartbeat_Thread = cbsd_thread.cbsd_thread(self,my_server_connection,\
+                                          "heartbeat",heartbeatInterval,json_r = json_request)
+
+                print "Heartbeat to be sent every",heartbeatInterval,"s"
+                self.my_heartbeat_Thread.start()
+
+                current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+         #     print("server_time: ",newCbsd.get_grantExpireTime())
+       #     print("client time: ", datetime.datetime.utcnow().timetuple())
+                self._grantTimeLeft = self.get_grantExpireTime_seconds() - current_time
+                print "Grant Ends in: ", self._grantTimeLeft,"s"
+            else:
+                print "No Grants Provided"
+        else:
+            print "Grant State = IDLE, No Grant Provided"
+
+
+    def startGrant(self,my_server_connection,start_radio_Thread):
+        if self._grant_state != "IDLE":
+            my_grant_Thread = cbsd_thread.cbsd_thread(self,my_server_connection,\
+                        "grant",self._grantTimeLeft,heartbeat_thread = self.my_heartbeat_Thread,\
+                        start_radio = start_radio_Thread)
+            my_grant_Thread.start()

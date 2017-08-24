@@ -38,8 +38,12 @@ class Server_connection(object):
 	    print(reply);
         else:
             print("The connection failed. Request cannot be made")
+            self._connection_established = False
             reply = -1
         return reply
-        
+
     def close_connection(self):
         self._http_connection.close()
+
+    def is_connected(self):
+        return self._connection_established

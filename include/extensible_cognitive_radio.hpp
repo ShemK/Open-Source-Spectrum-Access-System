@@ -1047,6 +1047,9 @@ private:
   int ecr_channel = 0;
   ChannelState rx_channels[2];
   ChannelState tx_channels[2];
+
+  double pending_esc_frequency = 0;
+  bool change_esc_frequency = false;
 };
 
 #endif

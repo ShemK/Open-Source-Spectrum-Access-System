@@ -24,7 +24,7 @@
 #include "tun.hpp"
 
 #define DEBUG 0
-#if DEBUG == 1
+#if DEBUG == 1 || DEBUG > 2
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -74,7 +74,7 @@ void initialize_node_parameters(struct node_parameters *np) {
   // initial USRP settings
   np->rx_freq = 1000e6;
   np->rx_rate = 4e6;
-  np->rx_gain = 0.0;
+  np->rx_gain = 30.0;
   np->tx_freq = 1000e6;
   np->tx_rate = 4e6;
   np->tx_gain = 15.0;
@@ -103,7 +103,7 @@ void initialize_node_parameters(struct node_parameters *np) {
   np->rx_pilot_freq = 4;
   np->esc_capable = true;
   np->esc_channel = 0;
-  np->channels = 2;
+  np->channels = 1;
 
 }
 
@@ -156,7 +156,7 @@ void Initialize_CR(struct node_parameters *np, void *ECR_p,
     }
     ECR->change_num_channels(np->channels);
     ECR->reset_log_files();
-    ECR->set_rx_freq(1000e6,1,true);
+    ECR->set_rx_freq(1004e6,1,true);
     /*
     // copy subcarrier allocations if other than liquid-dsp default
     if (np->tx_subcarrier_alloc_method == CUSTOM_SUBCARRIER_ALLOC ||
@@ -257,13 +257,13 @@ int main(int argc, char **argv) {
   udp_server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
   udp_server_addr.sin_port = htons(8000);
   int udp_client_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-  double freq = 1000e6;
+  double freq = 1004e6;
   double initial_freq = freq;
   int count = 0;
   if (send_flag) {
       // send burst of packets
     while(sig_terminate == 0) {
-      
+
       pmt::pmt_t instruction = pmt::make_dict();
       pmt::pmt_t key =  pmt::string_to_symbol("Freq");
       printf("New Freq: %f\n",freq);
@@ -273,14 +273,14 @@ int main(int argc, char **argv) {
       int len = serialized_pmt.length();
       sendto(udp_client_sock, serialized_pmt.c_str(),len,0,
               (struct sockaddr *)&udp_server_addr,sizeof(udp_server_addr));
-      usleep(1e6);
+      usleep(0.5e6);
       count++;
       freq = freq + np.rx_rate;
-      if(count > 150e6/np.rx_rate){
+      if(count > 50e6/np.rx_rate){
         count = 0;
         freq = initial_freq;
       }
-      
+
     }
   }
   close(udp_client_sock);

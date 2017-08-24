@@ -37,7 +37,7 @@
 // EDIT INCLUDE END FLAG
 
 #define DEBUG 0
-#if DEBUG == 1
+#if DEBUG == 1 || DEBUG > 2
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -981,7 +981,7 @@ void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
 
     usrp_tx_streamer->send(buff_ptrs, usrp_buffer.size(), metadata_tx);
 
-    metadata_tx.start_of_burst = false; // never SOB when continuou
+    //metadata_tx.start_of_burst = false; // never SOB when continuou
 
   } // while loop
 
@@ -1324,7 +1324,7 @@ void ExtensibleCognitiveRadio::update_rx_params()
     // need to update all channels
     uhd::tune_request_t tune;
     tune.rf_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
-    tune.dsp_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
+    tune.dsp_freq_policy = uhd::tune_request_t::POLICY_NONE;
     for (int i = 0; i < num_channels; i++)
     {
       if (i == ecr_channel)
@@ -1432,14 +1432,24 @@ void *ECR_rx_worker(void *_arg)
       size_t num_rx_samps = 0;
       pthread_mutex_lock(&(ECR->rx_mutex));
 
-      num_rx_samps = ECR->usrp_rx_streamer->recv(buff_ptrs, ECR->rx_buffer_len, 
-                                                      ECR->metadata_rx,0.01,true);
+      num_rx_samps = ECR->usrp_rx_streamer->recv(buff_ptrs, ECR->rx_buffer_len,
+                                                      ECR->metadata_rx,0.1,true);
 
       memcpy(ECR->rx_buffer, buff_ptrs[0], ECR->rx_buffer_len * sizeof(std::complex<float>));
       ofdmflexframesync_execute(ECR->fs, ECR->rx_buffer, num_rx_samps);
-      if (ECR->send_to_esc && num_rx_samps > 0)
+      if (ECR->send_to_esc)
       {
-        ECR->send_esc_data(buff_ptrs[ECR->get_esc_channel()], num_rx_samps);
+      //  printf("Num Samples: %d\n",num_rx_samps);
+        if(ECR->change_esc_frequency && num_rx_samps < ECR->rx_buffer_len){
+          printf("Frequency changed!\n");
+          ECR->pending_esc_frequency = ECR->rx_channels[ECR->esc_channel].freq;
+          ECR->change_esc_frequency = false;
+      //    printf("Metadata: \n%s\n",  ECR->metadata_rx.to_pp_string(false).c_str());
+          printf("Num Samples: %d\n",num_rx_samps);
+        }
+        if(num_rx_samps == ECR->rx_buffer_len) {
+          ECR->send_esc_data(buff_ptrs[ECR->get_esc_channel()], num_rx_samps);
+        }
       }
       // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
       pthread_mutex_unlock(&(ECR->rx_mutex));
@@ -2189,6 +2199,7 @@ void *ECR_esc_worker(void *_arg)
           {
             if (freq != ECR->rx_channels[ECR->get_esc_channel()].freq)
             {
+              ECR->change_esc_frequency = true;
               ECR->set_rx_freq(freq, ECR->get_esc_channel(), true);
               dprintf("Channel set to: %f\n",freq);
             }
@@ -2241,7 +2252,7 @@ void ExtensibleCognitiveRadio::send_esc_data(std::complex<float> *buffer, int bu
   shared_struct->sample = sample_time;
   memcpy(shared_struct->data, buffer, buffer_len);
   //std::cout << rx_channels[esc_channel].freq << "\n";
-  shared_struct->frequency =  rx_channels[esc_channel].freq;
+  shared_struct->frequency =  pending_esc_frequency;
   shared_struct->sample_rate = get_rx_rate();
   //  std::cout << shared_struct->sample << std::endl;
 }

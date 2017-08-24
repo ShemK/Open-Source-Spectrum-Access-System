@@ -34,10 +34,13 @@ class cbsd_thread(threading.Thread):
             while(self.stop_thread == False):
                 time.sleep(self.my_Interval)
                 print("Sending Heartbeat")
-                self.response = self.my_server_connection.send_request(self.json_request)
-                # TODO: we need to check type of response and make good decision
-                # TODO: The cbsd instance needs to be added to the thread
-
+                try:
+                    self.response = self.my_server_connection.send_request(self.json_request)
+                    # TODO: we need to check type of response and make good decision
+                    # TODO: The cbsd instance needs to be added to the thread
+                except ValueError:
+                    print "Wrong response Received"
+                    self.stop_thread = False
 
             self.stop_thread = False
             print "\n---------------------------------------------------------\n"
@@ -50,10 +53,10 @@ class cbsd_thread(threading.Thread):
             json_encoder = json.JSONEncoder()
 
             print "Sending relinquishmentRequest"
-            
+
             self.json_request = json_encoder.encode(self.my_cbsd.get_relinquishmentRequestObj())
             self.response = self.my_server_connection.send_request(self.json_request)
-
+            #print self.response
             #closing connection
             self.my_server_connection.close_connection()
             self.stopThread()
