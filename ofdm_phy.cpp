@@ -336,7 +336,6 @@ void *PHY_tx_worker(void *_arg)
     bool tx_continue = true;
     while (tx_continue)
     {
-      dprintf("tx worker starting to transmit\n");
       pthread_mutex_lock(&PHY->tx_params_mutex);
       if (PHY->update_tx_flag)
       {
@@ -1064,10 +1063,11 @@ int rxCallback(unsigned char *_header, int _header_valid,
       if (status == -1)
       {
         perror("Queue is full\n");
+        printf("mq_send failure\n");
       }
       else
       {
-        dprintf("mq_send successful\n");
+        printf("mq_send to mac successful\n");
       }
     }
     else

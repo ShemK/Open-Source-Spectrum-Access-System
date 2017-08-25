@@ -34,7 +34,7 @@ int main()
   struct sockaddr_in udp_server_addr;
   memset(&udp_server_addr, 0, sizeof(udp_server_addr));
   udp_server_addr.sin_family = AF_INET;
-  udp_server_addr.sin_addr.s_addr = inet_addr("10.0.0.1"); 
+  udp_server_addr.sin_addr.s_addr = inet_addr("10.0.0.1");
   udp_server_addr.sin_port = htons(5000);
   socklen_t clientlen = sizeof(udp_server_addr);
   int udp_client_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

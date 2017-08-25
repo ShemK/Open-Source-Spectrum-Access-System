@@ -35,7 +35,7 @@ int main() {
   struct sockaddr_in udp_server_addr;
   memset(&udp_server_addr, 0, sizeof(udp_server_addr));
   udp_server_addr.sin_family = AF_INET;
-  udp_server_addr.sin_addr.s_addr = inet_addr(ip.c_str()); 
+  udp_server_addr.sin_addr.s_addr = inet_addr(ip.c_str());
   udp_server_addr.sin_port = htons(5000);
   socklen_t clientlen = sizeof(udp_server_addr);
   int udp_server_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -45,7 +45,7 @@ int main() {
   udp_client_addr.sin_family = AF_INET;
 
   // Bind CRTS server socket
-  bind(udp_server_sock, (sockaddr *)&udp_server_addr, clientlen); 
+  bind(udp_server_sock, (sockaddr *)&udp_server_addr, clientlen);
 
   int packet_number = 0;
   fd_set read_fds;
@@ -70,14 +70,12 @@ int main() {
         char client_ip[20];
         strncpy(client_ip,inet_ntoa(udp_client_addr.sin_addr),20);
         printf("Message Received from %s: %s",client_ip,recv_buffer);
-        for(int i = 0; i < recv_len; i++) {
-          //std::cout << recv_buffer[i];
-        }
         std::string reply = "Message received";
         strncpy(message,reply.c_str(),reply.length());
         int message_length = reply.length();
         sendto(udp_server_sock,(char *)message, message_length, 0,
                   (struct sockaddr *)&udp_client_addr, sizeof(udp_client_addr));
+        memset(recv_buffer,0,recv_len);
         printf("\n");
       }
     }

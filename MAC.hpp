@@ -19,6 +19,7 @@
 #include <future>
 #include <functional>
 #include <cstring>
+#include <bitset>
 
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
@@ -33,12 +34,14 @@ typedef unsigned short uint16;
 
 #define MAX_BUF 2000 // maximum buffer tx frame
 #define MTU 1500
-#define CONTROL_FRAME_LEN 6
+#define CONTROL_FRAME_LEN 7
 #define ETH_HEADER_LEN 18 //14 + 4 for ethernet
 #define IP_HEADER_LEN 20
 #define IP_FLAG_POS 13
 #define PMODE 0777
-#define FRAME_NUM_POS 2
+#define LAST_FRAME_POS 1
+#define FRAME_NUM_POS 3
+#define ARQ_POS 2
 #define DIFS_TIME 50
 #define SLOT_TIME 1000
 
@@ -191,6 +194,11 @@ public:
   int burst_packets = 0;
   int retransmissions = 0;
   char prev_packet[MAX_BUF];
+  int prev_frame_num  = 0;
+
+  void set_frames_sent(char * frame,int tx_continuation);
+  void convert_bits_int(char * frame);
+  char *extractSourceIP(char *payload, int pos);
 };
 
 void *MAC_tx_worker(void *_arg);
@@ -200,3 +208,5 @@ int buffToInteger(char *buffer);
 bool isBitSet(unsigned char c, int n);
 std::string exec(const char *cmd);
 unsigned char hex_digit(char ch);
+char* macAddr_toString(unsigned char* addr);
+char* ipAddr_toString(unsigned char* addr);
