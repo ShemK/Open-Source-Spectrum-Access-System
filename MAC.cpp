@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 2
+#define DEBUG 4
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -273,7 +273,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
 
     if (!last_frame_sent)
     {
-      if (ip_tx_queue.size() > 3)
+      if (ip_tx_queue.size() > 1)
       {
         if (burst_packets < 1)
         {
@@ -298,6 +298,10 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
       burst_packets = 0;
     }
 
+    if (DEBUG == 1 || DEBUG > 2)
+    {
+      dprintf("Burst packets: %d\n",burst_packets);
+    }
     int frame_len = segment_len + CONTROL_FRAME_LEN;
 
     create_frame(frame, segment_len, DATA, UNKNOWN);
@@ -335,12 +339,12 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
       {
         if (DEBUG == 1 || DEBUG > 2)
         {
-          dprintf(YEL "Transmission Continuation - Last Frame\n" RESET);
+          dprintf(YEL "Transmission Continuation %d - Last Frame\n" RESET, tx_continuation);
         }
 
         new_transmission = true;
       }
-      //tx_continuation = 0;
+      tx_continuation = 0;
       myState = IDLE;
     }
     else
@@ -363,7 +367,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
         tx_continuation++;
         if (DEBUG == 1 || DEBUG > 2)
         {
-          dprintf(YEL "Transmission Continuation - More frames to follow\n" RESET);
+          dprintf(YEL "Transmission Continuation %d - More frames to follow\n" RESET, tx_continuation);
         }
       }
       new_transmission = false;
@@ -377,8 +381,9 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
     }
 
     struct timespec timeout;
-    timeout.tv_sec = time(NULL) + 1;
-    timeout.tv_nsec = 0;
+    clock_gettime(CLOCK_REALTIME,&timeout);
+    timeout.tv_sec = timeout.tv_sec + 1;
+    timeout.tv_nsec = timeout.tv_nsec;
     int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
     if (status == -1)
     {
@@ -405,7 +410,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
         {
           last_frame_sent = true;
           // wait for 20 ms to see if ack was received
-          usleep(10000);
+          usleep(20000);
           if (ack_received)
           {
             dprintf(CYN "Last Frame Acknowledged\n" RESET);
@@ -433,6 +438,12 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
               {
                 dprintf(RED "Packet dropped due to lack of ACK\n" RESET);
               }
+
+              last_frame_sent = false;
+              ack_reception_failed = false;
+              retransmissions = 0;
+              ack_received = false;
+              new_transmission = true;
             }
             else
             {
@@ -590,8 +601,9 @@ void *MAC_rx_worker(void *_arg)
   {
     //mac->tx_channel_state = mac->FREE;
     struct timespec timeout;
-    timeout.tv_sec = time(NULL);
-    timeout.tv_nsec = 1e3;
+    clock_gettime(CLOCK_REALTIME,&timeout);
+    timeout.tv_sec = timeout.tv_sec + 1;
+    timeout.tv_nsec = timeout.tv_nsec;
 
     int status = mq_timedreceive(mac->phy_rx_queue, buf, MAX_BUF, 0, &timeout);
 
@@ -602,7 +614,7 @@ void *MAC_rx_worker(void *_arg)
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
           mac->tx_channel_state = mac->FREE;
-          // dprintf(GRN "Nothing Detected - Channel is free\n" RESET);
+          dprintf(GRN "Nothing Detected - Channel is free\n" RESET);
         }
       }
       else
@@ -651,7 +663,7 @@ void *MAC_rx_worker(void *_arg)
 // Analyze any received frame to make decisions on the state of the channel
 void MAC::analyzeReceivedFrame(char *buf, int buf_len)
 {
-  dprintf("Message Received\n");
+  //dprintf("Packet Received\n");
   recv_header = getMACHeader(buf);
   recv_payload = getPayLoad(buf, buf_len);
   int recv_payload_len = buf_len - CONTROL_FRAME_LEN;
@@ -676,34 +688,18 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
       dprintf(GRN "Channel free - ACK Received\n" RESET);
     }
   }
-
+  // is the source address equal to my address`
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
     char *sourceIP = extractSourceIP(recv_payload,14);
     pthread_mutex_lock(&rx_mutex);
-    if (DEBUG == 2 || DEBUG > 2)
-    {
-      dprintf("Source MAC Address: ");
-      for (int i = 0; i < 6; i++)
-      {
-        dprintf("%02x:", (unsigned char)sourceMAC[i]);
-      }
-      dprintf("\n");
-
-      dprintf("Destination MAC Address: ");
-      for (int i = 0; i < 6; i++)
-      {
-        dprintf("%02x:", (unsigned char)destinationMAC[i]);
-      }
-      dprintf("\n");
-    }
 
     if (!isLastAlienFrame(recv_header))
     {
       tx_channel_state = BUSY;
       if (DEBUG == 2 || DEBUG > 2)
       {
-        dprintf("Channel Busy\n");
+        dprintf(RED "Channel Busy\n" RESET);
       }
     }
     else
@@ -713,10 +709,34 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
         dprintf(GRN "Channel free - Last Frame Received\n" RESET);
     }
 
+
+    if (incomingFrameControl.frame_protocol_subtype == ACK)
+    {
+      tx_channel_state = FREE;
+      if (DEBUG == 2 || DEBUG > 2)
+            dprintf(GRN " This is an ACK from another transmitter\n" RESET);
+    }
     pthread_mutex_unlock(&rx_mutex);
 
     if (memcmp(destinationMAC, mac_address, 6) == 0)
     {
+      if (DEBUG == 2 || DEBUG > 2)
+      {
+        dprintf("Source MAC Address: ");
+        for (int i = 0; i < 6; i++)
+        {
+          dprintf("%02x:", (unsigned char)sourceMAC[i]);
+        }
+        dprintf("\n");
+
+        dprintf("Destination MAC Address: ");
+        for (int i = 0; i < 6; i++)
+        {
+          dprintf("%02x:", (unsigned char)destinationMAC[i]);
+        }
+        dprintf("\n");
+      }
+
       sourceIP = extractSourceIP(recv_payload,14);
       uint16 ether_type = -1;
       memcpy(&ether_type, recv_payload + 2, sizeof(ether_type));
@@ -795,7 +815,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   }
   else
   {
-    tx_channel_state = FREE;
+    //tx_channel_state = FREE;
     if (memcmp(sourceMAC, mac_address, 6) == 0)
     {
       if (DEBUG == 2 || DEBUG > 2)
@@ -804,7 +824,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
 
     if (incomingFrameControl.frame_protocol_subtype == ACK)
     {
-      tx_channel_state = FREE;
+      //tx_channel_state = FREE;
       if (DEBUG == 2 || DEBUG > 2)
         dprintf(GRN " This is the ACK that I transmitted\n" RESET);
     }

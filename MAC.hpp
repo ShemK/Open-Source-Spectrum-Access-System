@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/time.h>
 #include <errno.h>
 #include <arpa/inet.h>
 #include <iomanip>
@@ -61,7 +62,7 @@ public:
 
   int frames_received;
   int cw_min = 16;
-  int cw_max = 50; //1024;
+  int cw_max = 256; //1024;
   int cw = 30;
   int back_off_time;
   bool collision_occured = false;
