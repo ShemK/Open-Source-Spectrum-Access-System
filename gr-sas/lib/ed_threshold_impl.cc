@@ -130,7 +130,7 @@ namespace gr {
         
         fcstates[i] = ((means[i]-noise_floor[i])/std::fabs(noise_floor[i]) > 0.0) ? (means[i]-noise_floor[i])/std::fabs(noise_floor[i]) : 0.0;
         //channelstate ranking as quality
-        buf.clear();
+        buf[i].clear();
       }
       add_item_tag(0, nitems_written(0), pmt::intern("occ"), pack_decision(fcstates, num_channels));
       message_port_pub(pmt::intern("decision"), pack_decision(fcstates, num_channels));
