@@ -85,7 +85,7 @@ namespace gr {
       get_tags_in_range(d_tags, 0, abs_N, end_N);
           
       
-
+      /*
       for(d_tags_itr = d_tags.begin(); d_tags_itr != d_tags.end(); d_tags_itr++) {
 
           if(pmt::symbol_to_string(d_tags_itr->key) == "rx_rate")
@@ -98,7 +98,7 @@ namespace gr {
                   shared_struct.frequency=pmt::to_float(d_tags_itr->value);
             }   
       }
-
+      */
 
       try{
           shared_memory_object shm (open_or_create, "sas_buffer", read_write);
