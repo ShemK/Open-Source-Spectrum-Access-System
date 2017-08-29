@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.12'?>
+<?grc format='1' created='3.7.11'?>
 <flow_graph>
   <timestamp>Wed Jul 19 18:10:53 2017</timestamp>
   <block>
@@ -38,7 +38,7 @@
     </param>
     <param>
       <key>generate_options</key>
-      <value>qt_gui</value>
+      <value>no_gui</value>
     </param>
     <param>
       <key>hier_block_src_path</key>
@@ -132,7 +132,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1.004e9</value>
+      <value>3560e6</value>
     </param>
   </block>
   <block>
@@ -159,7 +159,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4e6</value>
+      <value>20e6</value>
     </param>
   </block>
   <block>
@@ -280,7 +280,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -355,7 +355,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>fftsize</key>
@@ -642,7 +642,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>fftsize</key>
@@ -908,7 +908,7 @@
     </param>
     <param>
       <key>hop_time</key>
-      <value>5</value>
+      <value>1</value>
     </param>
     <param>
       <key>id</key>
@@ -921,6 +921,10 @@
     <param>
       <key>minoutbuf</key>
       <value>0</value>
+    </param>
+    <param>
+      <key>gain</key>
+      <value>20</value>
     </param>
   </block>
   <block>
@@ -2127,7 +2131,7 @@
     </param>
     <param>
       <key>sd_spec0</key>
-      <value>B:0</value>
+      <value></value>
     </param>
     <param>
       <key>time_source0</key>

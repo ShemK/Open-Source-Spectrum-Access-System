@@ -49,6 +49,60 @@ CREATE TABLE registered_cbsds (
   UNIQUE("cbsdId")
 );
 
+CREATE OR REPLACE function populate_cbsd_table(LowerFreq FLOAT, cbsdID varchar(45))
+RETURNS void as $$
+DECLARE
+  i INTEGER DEFAULT 1;
+  LF FLOAT DEFAULT 1000000000;
+  t text;
+  sql text;
+BEGIN
+    LF:= LowerFreq;
+    FOR i in 1..15
+    LOOP
+
+    EXECUTE format('
+      INSERT INTO %s("lowFrequency", "highFrequency") VALUES(%s,%s);',
+      'cbsdinfo_'||cbsdID,LF,LF + 10000000);
+
+    i := i+1;
+    LF := LF + 10000000;
+    END LOOP;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION CREATE_CBSD_CHANNEL_TABLE()
+RETURNS trigger AS $$
+
+BEGIN
+EXECUTE format('DROP TABLE IF EXISTS %s ;', 'cbsdinfo_'||OLD."cbsdId");
+EXECUTE format('
+  CREATE TABLE IF NOT EXISTS %s(
+    "lowFrequency" float NOT NULL,
+    "highFrequency" float NOT NULL,
+    available smallint DEFAULT 0,
+    "grantId" varchar(45),
+    PRIMARY KEY ("lowFrequency","highFrequency")
+  );', 'cbsdinfo_'||NEW."cbsdId");
+
+  perform populate_cbsd_table(400000000.0,NEW."cbsdId");
+  perform populate_cbsd_table(800000000.0,NEW."cbsdId");
+  perform populate_cbsd_table(1000000000.0,NEW."cbsdId");
+  perform populate_cbsd_table(3500000000.0,NEW."cbsdId");
+
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER cbsd_id_update_trigger ON registered_cbsds;
+
+CREATE TRIGGER cbsd_id_update_trigger
+  AFTER UPDATE OF "cbsdId" ON registered_cbsds
+  FOR EACH ROW
+  EXECUTE PROCEDURE CREATE_CBSD_CHANNEL_TABLE();
+
+
 INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
 
 DROP TABLE IF EXISTS cbsd_channels;
@@ -155,7 +209,7 @@ BEGIN
 EXECUTE format('
   CREATE TABLE IF NOT EXISTS %s(
     channelID serial PRIMARY KEY,
-    startfreq FLOAT,
+    startfreq FLOAT UNIQUE,
     endfreq FLOAT,
     occ FLOAT DEFAULT NULL
   );', 'channelinfo_'||NEW.nodeID);
@@ -216,10 +270,10 @@ CREATE TABLE IF NOT EXISTS SpectrumInfo(
 	timetag timestamp,
 	latitude float DEFAULT NULL,
 	longitude float DEFAULT NULL, /*check if precision is enough for GPS, else just use separate lat long*/
-	psd float[] DEFAULT NULL, 
+	psd float[] DEFAULT NULL,
 	occ float[64] DEFAULT NULL,
 	center_freq float DEFAULT NULL,
-	bandwidth float DEFAULT NULL, 
+	bandwidth float DEFAULT NULL,
 	noise_floor float[] DEFAULT NULL,
 	FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID),
 	FOREIGN KEY (channelID) REFERENCES ChannelInfo (channelID)
