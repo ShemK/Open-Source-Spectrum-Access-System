@@ -1,7 +1,7 @@
 #include "CentralRemConnector.hpp"
 
 #define DEBUG 0
-#if DEBUG == 1
+#if DEBUG == 1 || DEBUG > 2
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -109,7 +109,7 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
         {
           std::string query = insert(attributes, "NodeInfo");
           worker.exec(query);
-        //  worker.commit();
+          //  worker.commit();
         }
       }
     }
@@ -127,48 +127,65 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
         center_freq = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("center_freq"), not_found));
         float bandwidth = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("bandwidth"), not_found));
         int nodeID = pmt::to_long(pmt::dict_ref(attributes, pmt::intern("nodeid"), not_found));
-        double noise_floor = pmt::to_double(pmt::dict_ref(attributes, pmt::intern("noise_floor"), not_found));
-
+        pmt::pmt_t noise_pmt = pmt::dict_ref(attributes, pmt::intern("noise_floor"), not_found);
+        double noise_floor;
         pmt::pmt_t occ_pmt = pmt::dict_ref(attributes, pmt::intern("occ"), not_found);
         if(pmt::is_number(occ_pmt)){
-            //printf("Number\n" );
-            occ = pmt::to_double(occ_pmt);
-            pushData(occ,center_freq,nodeID,bandwidth,&worker);
+          //printf("Number\n" );
+          occ = pmt::to_double(occ_pmt);
+
+          //    pushData(occ,center_freq,nodeID,bandwidth,&worker);
         }
         else if (pmt::is_f32vector(occ_pmt))
         {
           //printf("vector\n" );
+
           std::vector<float> occ_vector = pmt::f32vector_elements(occ_pmt);
+          pushData(occ_vector,center_freq,nodeID,bandwidth,&worker);
+          /*
           for(unsigned int i = 0; i < occ_vector.size();i++){
-              occ = occ_vector[i];
-              pushData(occ,center_freq,nodeID,bandwidth,&worker);
-          }
+          occ = occ_vector[i];
+          pushData(occ,center_freq,nodeID,bandwidth,&worker);
         }
-        //std::cout << "Noise Floor: " << noise_floor<< std::endl;
-
+        */
       }
-      else if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "UPDATE")
+
+
+      if(pmt::is_number(noise_pmt)){
+        //printf("Number\n" );
+        noise_floor = pmt::to_double(noise_pmt);
+      }
+      else if (pmt::is_f32vector(noise_pmt))
       {
-        pmt_t attributes = pmt::dict_ref(individual_dict, pmt::string_to_symbol("attributes"), not_found);
-        pmt_t conditions = pmt::dict_ref(individual_dict, pmt::string_to_symbol("conditions"), not_found);
-        std::string table = pmt::symbol_to_string(pmt::dict_ref(individual_dict, pmt::string_to_symbol("table"), not_found));
-        //query = update(attributes, conditions, table);
+        //printf("vector\n" );
+
+        std::vector<float> noise_vector = pmt::f32vector_elements(noise_pmt);
       }
-      try{
-        //worker.exec(query);
-        db_connection = true;
-      }
-      catch (const std::exception &e){
-        printf("Error writing to database\n");
-        std::cerr << e.what();
-        db_connection = false;
-      }
+      //std::cout << "Noise Floor: " << noise_floor<< std::endl;
 
     }
-    if(db_connection) {
-      worker.commit();
+    else if (pmt::symbol_to_string(pmt::nth(i, key_list)) == "UPDATE")
+    {
+      pmt_t attributes = pmt::dict_ref(individual_dict, pmt::string_to_symbol("attributes"), not_found);
+      pmt_t conditions = pmt::dict_ref(individual_dict, pmt::string_to_symbol("conditions"), not_found);
+      std::string table = pmt::symbol_to_string(pmt::dict_ref(individual_dict, pmt::string_to_symbol("table"), not_found));
+      //query = update(attributes, conditions, table);
     }
+    try{
+      //worker.exec(query);
+      db_connection = true;
+    }
+    catch (const std::exception &e){
+      printf("Error writing to database\n");
+      std::cerr << e.what();
+      db_connection = false;
+    }
+
   }
+  if(db_connection) {
+    worker.commit();
+  }
+}
 }
 std::string CentralRemConnector::insert(pmt::pmt_t dict, std::string table)
 {
@@ -332,45 +349,101 @@ bool CentralRemConnector::nodeKnown(int nodeID)
   return false;
 }
 
-void CentralRemConnector::pushData(float occ, double center_freq, int nodeID, float bandwidth,pqxx::work *worker)
+void CentralRemConnector::pushData(std::vector<float> occ_vector , double center_freq, int nodeID, float bandwidth,pqxx::work *worker)
 {
   //  printf("NodeID %d \n",nodeID);
+  //  printf("center_freq %d \n",center_freq);
+  center_freq = round(center_freq/1e6)*1e6;
   for(int i = 0; i < node_info_vector.size(); i++) {
     if(nodeID == node_info_vector[i].nodeID) {
       //  printf("NodeID %d Found\n",nodeID);
-      float decision = node_info_vector[i].decision_maker.getDecision(occ,center_freq);
-      if(decision > -1) {
+      std::vector<float> decision = node_info_vector[i].decision_maker.getDecision(occ_vector,center_freq);
+      if(decision.size() > 0){
 
         double frequency = node_info_vector[i].decision_maker.get_previous_center_frequency() - bandwidth/2;
-        std::cout<<"Channel with Center Freq:  "<< node_info_vector[i].decision_maker.get_previous_center_frequency() <<" has occupancy "<<decision<<std::endl;
-        std::cout << "Current Channel " <<  center_freq << " at Node: " << std::to_string(nodeID) << std::endl;
-        std::string sql;// = "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
-        + " WHERE startfreq = " + std::to_string(frequency) + ";";
-        for(int i = 0; i < (bandwidth/(2e6));i++) {
-          sql = sql + "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
-          + " WHERE startfreq = " + std::to_string(frequency+(2e6*i)) + ";";
+        double start_freq = frequency/1e6;
+        int channel_bw = round((bandwidth/1e6)/decision.size());
+        if((channel_bw%2) > 0){
+          channel_bw = (channel_bw + 1)*1e6;
+        } else{
+          channel_bw = channel_bw * 1e6;
         }
-      /*  std::cout << "\n------------------------------\n";
-        std::cout << sql << std::endl;
-        std::cout << "\n------------------------------\n";
-        std::cout << "OCC: " << decision << std::endl;
-        */
-        parseData(decision,frequency,bandwidth,nodeID);
-        dprintf("%s\n", sql.c_str());
-        try{
-          worker->exec(sql);
 
-        }catch (const std::exception &e){
-          printf("Error writing to channel info database\n");
-          std::cerr << e.what();
+        if((((int)start_freq)%2) > 0){
+          start_freq = (start_freq-1)*1e6;
+        } else{
+          start_freq= start_freq * 1e6;
         }
-        //w.exec( sql);
-        //  worker.commit();
-      } else{
-        //printf("Decision is -1\n");
+
+        std::cout << "Node ID: " << nodeID << "\n";
+        std::cout << "Start Freq: " << start_freq << "\n";
+        std::cout << "Center Freq: " << node_info_vector[i].decision_maker.get_previous_center_frequency() << "\n";
+        std::cout << "bandwidth: " << bandwidth << "\n";
+        printf("Channel BW: %d\n", channel_bw);
+        std::cout << "Vector: ";
+        for(int i=0; i<decision.size(); ++i){
+          std::cout << decision[i] << " ";
+        }
+        std::cout <<  "\n";
+        for(int k = 0; k < decision.size(); k++){
+          std::string sql;
+          double temp_freq = start_freq + (channel_bw*k);
+          //    printf("Temp Freq: %f\n", temp_freq);
+          //    std::cout << "Start Freq: " << temp_freq << "\n";
+          for(int i = 0; i < (channel_bw/(2e6));i++) {
+            sql = sql + "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision[k])
+            + " WHERE startfreq = " + std::to_string(temp_freq+(2e6*i)) + ";";
+          }
+          /*
+          std::cout << "\n------------------------------\n";
+          std::cout << sql << std::endl;
+          std::cout << "\n------------------------------\n";
+          */
+          parseData(decision[k],temp_freq,channel_bw,nodeID);
+          try{
+            worker->exec(sql);
+
+          }catch (const std::exception &e){
+            printf("Error writing to channel info database\n");
+            std::cerr << e.what();
+          }
+        }
+        //std::cout << "Cn"
       }
+
+
+      /*
+      if(decision > -1) {
+
+      double frequency = node_info_vector[i].decision_maker.get_previous_center_frequency() - bandwidth/2;
+      std::cout<<"Channel with Center Freq:  "<< node_info_vector[i].decision_maker.get_previous_center_frequency() <<" has occupancy "<<decision<<std::endl;
+      std::cout << "Current Channel " <<  center_freq << " at Node: " << std::to_string(nodeID) << std::endl;
+      std::string sql;// = "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
+      + " WHERE startfreq = " + std::to_string(frequency) + ";";
+      for(int i = 0; i < (bandwidth/(2e6));i++) {
+      sql = sql + "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
+      + " WHERE startfreq = " + std::to_string(frequency+(2e6*i)) + ";";
     }
-  }
+    */
+
+    /*
+    parseData(decision,frequency,bandwidth,nodeID);
+    dprintf("%s\n", sql.c_str());
+    try{
+    worker->exec(sql);
+
+  }catch (const std::exception &e){
+  printf("Error writing to channel info database\n");
+  std::cerr << e.what();
+}
+//w.exec( sql);
+//  worker.commit();
+} else{
+//printf("Decision is -1\n");
+}
+*/
+}
+}
 }
 
 void CentralRemConnector::parseData(double occ, double lowerFreq, double bandwidth, int nodeID){

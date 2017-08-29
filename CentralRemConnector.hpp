@@ -23,7 +23,7 @@ public:
     ~CentralRemConnector();
     bool connect();
     int queryDB();
-    void pushData(float occ, double center_freq, int nodeID, float bandwidth,pqxx::work *worker);
+    void pushData(std::vector<float> occ_vector, double center_freq, int nodeID, float bandwidth,pqxx::work *worker);
     void analyze(const char * recv_buffer, int buffer_len);
     std::string insert(pmt::pmt_t dict, std::string table);
     std::string update(pmt::pmt_t dict, pmt::pmt_t conditions, std::string table);

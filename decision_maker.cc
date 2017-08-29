@@ -10,7 +10,7 @@ DecisionMaker::~DecisionMaker(){
   occ_values.clear();
 }
 
-float DecisionMaker::getDecision(float occ, double center_frequency){
+std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, double center_frequency){
 
   if(occ_values.size()==0) {
     struct timeval ts;
@@ -34,9 +34,10 @@ float DecisionMaker::getDecision(float occ, double center_frequency){
     //printf("secondsPassed: %f\n", secondsPassed);
 
     if(secondsPassed < 0.2){
-      occ_values.push_back(occ);
+      occ_values.push_back(occ_vector);
       //printf("OCC SIZE:%lu\n",occ_values.size());
-      return -1;
+      std::vector<float> temp;
+      return temp;
     } else{
       printf("Times Up\n");
     }
@@ -46,31 +47,46 @@ float DecisionMaker::getDecision(float occ, double center_frequency){
   //std::cout << "Changed Frequency " << this->center_frequency << std::endl;
   this->center_frequency = center_frequency;
   //float result = max_occ();
-  float result = average();
+  std::vector<float> result = max_occ();//average();
   frequency_change = false;
   return result;
-
 }
 
-float DecisionMaker::average(){
-  float result = 0;
-  for(int i = 0; i < occ_values.size(); i++) {
-    result = result + occ_values.at(i);
+std::vector<float> DecisionMaker::average(){
+  std::vector<float> result;
+  if(occ_values.size() > 0){
+    int size = occ_values.at(0).size();
+    for(int j = 0; j < size; j++) {
+      float temp_result = 0;
+      for(int i = 0; i < occ_values.size(); i++){
+        //std::cout << "Value Size :" << occ_values.at(i).size() << "\n";
+        temp_result = temp_result + occ_values.at(i).at(j);
+      }
+      temp_result = temp_result/occ_values.size();
+      result.push_back(temp_result);
+    }
+    //std::cout << "Hello " << "\n";
+    //std::cout << "Result Size: " << result.size() << "\n";
   }
-  result = result/occ_values.size();
   occ_values.clear();
   return result;
 }
 
-float DecisionMaker::max_occ(){
-  float result = 0;
-  for(int i = 0; i < occ_values.size(); i++) {
-    if(occ_values[i]>result){
-      result = occ_values[i];
+std::vector<float> DecisionMaker::max_occ(){
+  std::vector<float> result;
+  if(occ_values.size() > 0){
+    int size = occ_values.at(0).size();
+    for(int j = 0; j < size; j++) {
+      float temp_result = 0;
+      for(int i = 0; i < occ_values.size(); i++){
+        //std::cout << "Value Size :" << occ_values.at(i).size() << "\n";
+        if(occ_values.at(i).at(j)>temp_result){
+          temp_result = occ_values.at(i).at(j);
+        }
+      }
+      result.push_back(temp_result);
     }
-    //result = result + occ_values.at(i);
   }
-  //result = result/occ_values.size();
   occ_values.clear();
   return result;
 }

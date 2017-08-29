@@ -3,7 +3,7 @@
 InformationParser::InformationParser() {
   udp_client_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   udp_server_addr.sin_family = AF_INET;
-  udp_server_addr.sin_addr.s_addr = inet_addr("128.173.39.134");
+  udp_server_addr.sin_addr.s_addr = inet_addr("128.173.39.76");
   udp_server_addr.sin_port = htons(4680);
 }
 
