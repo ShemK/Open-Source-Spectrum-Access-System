@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-# Generated: Mon Aug 28 22:03:09 2017
+# Generated: Mon Aug 28 22:49:04 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -61,7 +61,7 @@ class sas_rem(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 4e6
-        self.num_channels = num_channels = 10
+        self.num_channels = num_channels = 16
         self.hop_time = hop_time = 1
         self.freq = freq = 1.000e9
         self.fft_len = fft_len = 4096

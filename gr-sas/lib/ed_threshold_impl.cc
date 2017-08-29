@@ -125,8 +125,8 @@ namespace gr {
 
         volk_32f_s32f_calc_spectral_noise_floor_32f(&cur_noise_floor[i], &buf[i][0],15.0, fft_len/num_channels);
       
-        wbnoise_floor = ((cur_noise_floor[i] > wbnoise_floor && !(isnan(cur_noise_floor[i])) ) || wbnoise_floor < -150.0 ) ? cur_noise_floor[i] :  wbnoise_floor;
-        noise_floor[i] = (cur_noise_floor[i] - wbnoise_floor > 15.0 && !(isnan(cur_noise_floor[i])) ) ? wbnoise_floor :  cur_noise_floor[i];
+        wbnoise_floor = (cur_noise_floor[i] < wbnoise_floor  || wbnoise_floor < -150.0 ) ? cur_noise_floor[i] :  wbnoise_floor;
+        noise_floor[i] = (cur_noise_floor[i] - wbnoise_floor > 15.0 && cur_noise_floor[i] > -200.0) ? wbnoise_floor :  cur_noise_floor[i];
         //noise_floor[i] = (cur_noise_floor[i] - cur_noise_floor[i-1] < 10 || cur_noise_floor[i] - cur_noise_floor[i+1] < 10) ? cur_noise_floor[i] :  std::min(cur_noise_floor[i-1],cur_noise_floor[i+1]);
         //std::cout<<cur_noise_floor[i]<<std::endl;
         //std::cout<<noise_floor[i]<<std::endl;
@@ -134,7 +134,7 @@ namespace gr {
         acc=for_each(buf[i].begin(), buf[i].end(),acc);
         means[i]=mean(acc);
         variances[i]=variance(acc);
-
+        //std::cout<<means[i]<<"\t"<<means[i] - noise_floor[i]<<"\t"<<noise_floor[i]<<"\t"<<i<<std::endl;
         if(means[i]-noise_floor[i]> threshold && means[i]>-150.0)
           {
             fcstates[i]=1;
