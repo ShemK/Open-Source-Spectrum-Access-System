@@ -112,10 +112,10 @@ namespace gr {
         
         buf[i].assign(in, in + (i+1)*fft_len/num_channels);
 
-        volk_32f_s32f_calc_spectral_noise_floor_32f(&cur_noise_floor[i], &buf[i][0],15, fft_len);
+        volk_32f_s32f_calc_spectral_noise_floor_32f(&cur_noise_floor[i], &buf[i][0],15.0, fft_len);
         
-        wbnoise_floor = (cur_noise_floor[i] < wbnoise_floor || wbnoise_floor < -150) ? cur_noise_floor[i] :  wbnoise_floor;
-        noise_floor[i] = (cur_noise_floor[i] - wbnoise_floor > 15 || cur_noise_floor[i]< -200) ? wbnoise_floor :  cur_noise_floor[i];
+        wbnoise_floor = (cur_noise_floor[i] - wbnoise_floor > 15.0 || wbnoise_floor < -150.0) ? cur_noise_floor[i] :  wbnoise_floor;
+        noise_floor[i] = (cur_noise_floor[i] - wbnoise_floor > 15.0 || cur_noise_floor[i]< -200.0) ? wbnoise_floor :  cur_noise_floor[i];
         //noise_floor[i] = (cur_noise_floor[i] - cur_noise_floor[i-1] < 10 || cur_noise_floor[i] - cur_noise_floor[i+1] < 10) ? cur_noise_floor[i] :  std::min(cur_noise_floor[i-1],cur_noise_floor[i+1]);
         
         acc=for_each(buf[i].begin(), buf[i].end(),acc);
