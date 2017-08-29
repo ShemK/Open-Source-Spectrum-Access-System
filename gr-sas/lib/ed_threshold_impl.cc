@@ -47,6 +47,17 @@ namespace gr {
       
       return msg;
     }
+
+
+    pmt::pmt_t ed_threshold_impl::pack_noise_floor(float * noise_floor, int num_channels)
+    {
+      pmt::pmt_t msg = pmt::make_vector(num_channels,pmt::PMT_NIL);
+      for(int i=0;i<num_channels;i++)
+      pmt::vector_set(msg,i,pmt::from_float(noise_floor[i]));
+      return msg;
+    }
+
+
     ed_threshold::sptr
     ed_threshold::make(int fft_len, int num_channels, float threshold)
     {
@@ -133,8 +144,9 @@ namespace gr {
         buf[i].clear();
       }
       add_item_tag(0, nitems_written(0), pmt::intern("occ"), pack_decision(fcstates, num_channels));
+      add_item_tag(0, nitems_written(0), pmt::intern("noise_floor"), pack_noise_floor(noise_floor, num_channels));      
       message_port_pub(pmt::intern("decision"), pack_decision(fcstates, num_channels));
-      message_port_pub(pmt::intern("noise_floor"), pmt::from_float(noise_floor[num_channels/2]));
+      message_port_pub(pmt::intern("noise_floor"), pack_noise_floor(noise_floor, num_channels));
       //TODO: EXTEND TO SUBCHANNEL SENSING
       memcpy(out,in, fft_len*sizeof(float) );
       // Tell runtime system how many output items we produced.

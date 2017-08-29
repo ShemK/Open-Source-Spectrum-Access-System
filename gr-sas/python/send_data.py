@@ -35,7 +35,7 @@ class send_data(gr.sync_block):
         self.N = N
         self.bw = 2e6
         self.occ = 1
-        self.noise_floor  = -200.0
+        self.noise_floor  = []
         self.host = host
         self.port =  port
         self.num_split = num_split
@@ -93,7 +93,7 @@ class send_data(gr.sync_block):
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("occ"),pmt.init_f32vector(self.num_split, occvec))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("bandwidth"),pmt.from_double(self.bw))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("timetag"),pmt.intern(curtime))
-        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("noise_floor"),pmt.from_double(self.noise_floor))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("noise_floor"),pmt.init_f32vector(self.num_split,self.noise_floor))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeid"),pmt.from_long(self.nodeid))
 
         command = pmt.make_dict()
@@ -114,8 +114,11 @@ class send_data(gr.sync_block):
         #print "sending data", pmt_to_send
 
     def noise_floor_handler_method(self, msg):
-        self.noise_floor = pmt.to_double(msg)
+        nfvec = []
 
+        for i in range(0,self.num_split):
+            nfvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
+        self.noise_floor = nfvec
     def nodeid_handler_method(self, msg):
         self.nodeid = pmt.to_long(msg)
         pmt_to_send  = pmt.make_dict()

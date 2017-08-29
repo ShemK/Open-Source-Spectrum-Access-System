@@ -66,6 +66,8 @@ namespace gr {
          gr_vector_void_star &output_items);
          
       pmt::pmt_t pack_decision(float * fcstates, int num_channels);
+      pmt::pmt_t pack_noise_floor(float * noise_floor, int num_channels);
+      
     };
 
   } // namespace sas

@@ -210,20 +210,20 @@ CREATE TABLE IF NOT EXISTS ChannelStates(
   channels float array[64]
 );
 
-
 CREATE TABLE IF NOT EXISTS SpectrumInfo(
-  nodeID bigint ,
-  channelID INT ,
-  timetag timestamp,
-  latitude float DEFAULT NULL,
-  longitude float DEFAULT NULL, /*check if precision is enough for GPS, else just use separate lat long*/
-  psd float[] DEFAULT NULL,
-  occ real DEFAULT 1.0,
-  center_freq float DEFAULT NULL,
-  bandwidth float DEFAULT NULL,
-  noise_floor float DEFAULT NULL,
-  FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID)
-);
+	nodeID bigint ,
+	channelID INT ,
+	timetag timestamp,
+	latitude float DEFAULT NULL,
+	longitude float DEFAULT NULL, /*check if precision is enough for GPS, else just use separate lat long*/
+	psd float[] DEFAULT NULL, 
+	occ float[64] DEFAULT NULL,
+	center_freq float DEFAULT NULL,
+	bandwidth float DEFAULT NULL, 
+	noise_floor float[] DEFAULT NULL,
+	FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID),
+	FOREIGN KEY (channelID) REFERENCES ChannelInfo (channelID)
+) ;
 
 CREATE TABLE IF NOT EXISTS truncatetime(
   id INTEGER UNIQUE PRIMARY KEY,

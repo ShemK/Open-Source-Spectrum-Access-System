@@ -161,6 +161,7 @@ namespace gr {
       nodeidstr<<nodeid;
       bwstr<<0.0;
       occ = new float[num_channels];
+      noise_floor =  new float[num_channels];
       occstr<<0.0;
       center_frequency =2e6;
       cent_freq<<center_frequency;
@@ -190,7 +191,7 @@ namespace gr {
     {
       std::cout<<"Starting work"<<std::endl;
       pqxx::work w(*(c));
-      std::vector<float> buf;
+      std::vector<float> buf, occbuf, nfbuf;
       float *  in = (float *) input_items[0];
       std::string s= date::format("%F %T\n", std::chrono::system_clock::now());
       uint64_t abs_N, end_N;
@@ -210,39 +211,64 @@ namespace gr {
               for(int i=0;i<num_channels;i++)
               {
                   occ[i]=pmt::to_float(pmt::vector_ref(d_tags_itr->value,i));
-                  if(occ[i]>occvec)
-                    occvec=occ[i];
               }
-              occstr.str("");
-              occstr.clear();
-              occstr<<occvec;
-            }  //find a way to get gps time
-          
+              std::cout << std::setw(10) << "Offset: " << d_tags_itr->offset
+              << std::setw(10) << "Source: "
+              << (pmt::is_symbol(d_tags_itr->srcid) ? pmt::symbol_to_string(d_tags_itr->srcid) : "n/a")
+              << std::setw(10) << "Key: " << pmt::symbol_to_string(d_tags_itr->key)
+              << std::setw(10) << "Value: ";
+              std::cout << d_tags_itr->value << std::endl;
+            }  
+            if(pmt::symbol_to_string(d_tags_itr->key) == "noise_floor")
+            {
+            for(int i=0;i<num_channels;i++)
+              {
+                  noise_floor[i]=pmt::to_float(pmt::vector_ref(d_tags_itr->value,i));
+              }
+              std::cout << std::setw(10) << "Offset: " << d_tags_itr->offset
+              << std::setw(10) << "Source: "
+              << (pmt::is_symbol(d_tags_itr->srcid) ? pmt::symbol_to_string(d_tags_itr->srcid) : "n/a")
+              << std::setw(10) << "Key: " << pmt::symbol_to_string(d_tags_itr->key)
+              << std::setw(10) << "Value: ";
+              std::cout << d_tags_itr->value << std::endl;
+            }  
 
-                std::cout << std::setw(10) << "Offset: " << d_tags_itr->offset
-                    << std::setw(10) << "Source: "
-                    << (pmt::is_symbol(d_tags_itr->srcid) ? pmt::symbol_to_string(d_tags_itr->srcid) : "n/a")
-                    << std::setw(10) << "Key: " << pmt::symbol_to_string(d_tags_itr->key)
-                    << std::setw(10) << "Value: ";
-                std::cout << d_tags_itr->value << std::endl;
+           
 
       }
-      buf.assign( in, in+N);
 
-      std::stringstream result;
-      std::copy(buf.begin(), buf.end(), std::ostream_iterator<float>(result,","));
-      std::string r = result.str();
-      r = r.substr(0, r.length()-1);  // get rid of the trailing space
-
-      //std::cout << "'" << buf.size() << "'\n";
-
-      std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, psd) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','"+occstr.str()+"','"+cent_freq.str()+"','"+bwstr.str()+"','{"+r+"}');";
-      //std::cout<<sql;
+      //buf.assign( in, in+N);
       
-      if(center_frequency!= 2e6)
-        w.exec( sql);
+      occbuf.assign(occ, occ+num_channels);
+      nfbuf.assign(noise_floor, noise_floor+num_channels);
+      std::stringstream result;
+      /*
+      std::copy(buf.begin(), buf.end(), std::ostream_iterator<float>(result,","));
+      std::string psd = result.str();
+      psd = psd.substr(0, psd.length()-1);  // get rid of the trailing space
+      
+      result.str(std::string());
+      */
+      std::copy(occbuf.begin(), occbuf.end(), std::ostream_iterator<float>(result,","));
+      std::string occstr = result.str();
+      occstr = occstr.substr(0, occstr.length()-1);  // get rid of the trailing space
 
+      result.str(std::string());
 
+      std::copy(nfbuf.begin(), nfbuf.end(), std::ostream_iterator<float>(result,","));
+      std::string nfstr = result.str();
+      nfstr = nfstr.substr(0, nfstr.length()-1);  // get rid of the trailing space
+
+      result.str(std::string());
+
+      std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, noise_floor) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','{"+occstr+"}','"+cent_freq.str()+"','"+bwstr.str()+"','{"+nfstr+"}');";
+      //std::cout<<sql<<std::endl;
+      w.exec( sql);
+
+      occbuf.clear();
+      //buf.clear();
+      nfbuf.clear();
+      /*
       float decision = decision_maker.getDecision(occ[0],std::stod (cent_freq.str(),0));
       if(decision != -1) {
         std::cout << "Actual Channel " <<  cent_freq.str() << std::endl;
@@ -256,6 +282,7 @@ namespace gr {
         //printf("decision: %f\n", decision);
 
       }
+      */
       w.commit();
       //if(!flag)
       //{
