@@ -25,17 +25,18 @@ from gnuradio import gr
 import socket
 import random
 from time import gmtime, strftime
+import copy 
 
 class send_data(gr.sync_block):
     """
     docstring for block send_data
     """
-    def __init__(self, port, host, num_split,N):
+    def __init__(self, port, host, num_split, N):
         self.center_freq = 1e9
         self.N = N
         self.bw = 2e6
         self.occ = 1
-        self.noise_floor  = []
+        self.noise_floor  = range(10)
         self.host = host
         self.port =  port
         self.num_split = num_split
@@ -118,7 +119,9 @@ class send_data(gr.sync_block):
 
         for i in range(0,self.num_split):
             nfvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
-        self.noise_floor = nfvec
+        print nfvec
+        self.noise_floor = copy.copy(nfvec)
+
     def nodeid_handler_method(self, msg):
         self.nodeid = pmt.to_long(msg)
         pmt_to_send  = pmt.make_dict()
