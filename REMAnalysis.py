@@ -9,6 +9,7 @@ import threading
 import time
 import datetime
 import math
+import logging
 
 class Cbsd():
 
@@ -40,15 +41,31 @@ class REMAnalysis(threading.Thread):
         self.conn = conn
         self.min_distance = 1000000
         self.stop_thread = False
+        self.unavailable_frequencies = []
 
+    def update_cbsd_info(self):
+            logging.debug("Fetching Updating CBSD information for %s",self.cbsd.fccId)
+            df = psql.read_sql("select * from registered_cbsds", self.conn)
+            dim = df.shape
+            row_num = dim[0]
+            for i in range(0,row_num):
+                if df.loc[i]['fccId'] == self.cbsd.fccId:
+                    self.cbsd.cbsdId = df.loc[i]['cbsdId']
 
-    def initialize_table(self):
-        self.channelInfo = psql.read_sql("select startfreq, occ from " + table_name
-                            +" where startfreq > 3570e6 and startfreq < 3600e6", self.conn)
+    def update_table(self, lowFrequency, value):
+        sql_query = 'UPDATE cbsdinfo_'+self.cbsd.cbsdId + ' SET available = '+ str(value) + \
+                                        ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
+        cur = self.conn.cursor()
+        cur.execute(sql_query)
+        self.conn.commit()
+        print sql_query
+
     def run(self):
         while not self.stop_thread:
+            self.update_cbsd_info()
             self.get_nearest_nodes()
-            self.make_decision()
+            if len(self.nearest_sensors) > 0:
+                self.make_decision()
             time.sleep(1)
         pass
 
@@ -56,6 +73,7 @@ class REMAnalysis(threading.Thread):
         self.stop_thread = True
 
     def get_nearest_nodes(self):
+        logging.debug("Fetching info about nearest sensors for %s",self.cbsd.fccId)
         nodeInfo = psql.read_sql("select * from nodeinfo", self.conn)
         dim = nodeInfo.shape
         row_num = dim[0]
@@ -73,12 +91,15 @@ class REMAnalysis(threading.Thread):
                     else:
                         print "sensor_id found: ", sensor_id
                         self.nearest_sensors[sensor_id].fetch_channel_info()
+        if len(self.nearest_sensors) == 0:
+            logging.info("No sensor found near withing a distance of %d for cbsd %s", self.min_distance, self.cbsd.fccId)
 
     def make_decision(self):
         if len(self.nearest_sensors) > 0:
-            keys = self.nearest_sensors.keys()
-            for i in range(0,len(self.nearest_sensors)):
-                spectrum_info = self.nearest_sensors[keys[i]].spectrum_info;
+            #keys = self.nearest_sensors.keys()
+            #for i in range(0,len(self.nearest_sensors)):
+            for sensor_id,sensor in self.nearest_sensors:
+                spectrum_info = sensor.spectrum_info;
                 try:
                     #spectrum_info = spectrum_info.drop_duplicates(keep='first')
                     min_info = spectrum_info.min(axis=0)
@@ -87,24 +108,44 @@ class REMAnalysis(threading.Thread):
                     calculated_info = calculated_info.sort_index()
                     min_info = min_info.sort_index()
                     calculated_info = calculated_info.dropna(axis = 0)
-                    self.nearest_sensors[keys[i]].calculated_info = calculated_info
+                    sensor.calculated_info = calculated_info
+                    logging.debug("Current Sensor Info from %s : %s",sensor_id, calculated_info)
                     print calculated_info
-                    if(len(self.nearest_sensors[keys[i]].normal_info) < len(calculated_info)):
-                        self.nearest_sensors[keys[i]].normal_info = calculated_info
+                    if(len(sensor.normal_info) == 0):
+                        sensor.normal_info = calculated_info
 
-                    elif len(self.nearest_sensors[keys[i]].normal_info) == len(calculated_info):
-                        diff = calculated_info - self.nearest_sensors[keys[i]].normal_info
+                    elif len(sensor.normal_info) == len(calculated_info):
+                        diff = calculated_info - sensor.normal_info
+
+                        self.check_availability(diff)
+
+                        print "Diff: ", diff.max()
                         if diff.max() > 0.005:
                             above_thresh = diff[(diff > 0.005)]
-                            print "Above Normal"
-                            print above_thresh.index.tolist()
+                            logging.info("Found channels with interference")
+                            self.unavailable_frequencies = above_thresh.index.tolist() # TODO: Need to append to list
+                            logging.info("%s",str(self.unavailable_frequencies))
+                            for k in range(0,len(self.unavailable_frequencies)):
+                                lowFrequency = float(self.unavailable_frequencies[k])
+                                print "Frequency", lowFrequency
+                                lowFrequency = round(float(lowFrequency)/10e6)*10e6
+                                self.update_table(lowFrequency,0)
                         else:
-                            self.nearest_sensors[keys[i]].normal_info = calculated_info
+                            sensor.normal_info = calculated_info
 
                 except Exception as e:
                     print "Error with sensor data",e
         else:
             pass
+
+    def check_availability(self,diff):
+        for i in range(0,len(self.unavailable_frequencies)):
+            if diff[self.unavailable_frequencies[i]] < 0.005:
+                lowFrequency = float(self.unavailable_frequencies[i])
+                print "Frequency", lowFrequency
+                lowFrequency = round(float(lowFrequency)/10e6)*10e6
+                self.update_table(lowFrequency,1)
+                self.unavailable_frequencies.pop(i)
 
     def organize_data(self):
         if(len(self.nearest_sensors) > 0):
@@ -135,7 +176,7 @@ class sensor():
         self.count = 1;
     def fetch_channel_info(self):
         table_name = "channelinfo_" + str(self.sensor_id)
-        print "Table Name: ",table_name
+        #print "Table Name: ",table_name
         self.channelInfo = psql.read_sql("select startfreq, occ from " + table_name
                         +" where startfreq > 3570e6 and startfreq < 3600e6", self.conn)
         transposed_info = self.channelInfo.transpose()
@@ -152,7 +193,7 @@ class sensor():
         ind = [current_time]
         temp = DataFrame(info,columns = ind,index = cols)
         temp = temp.transpose()
-        print "Current Time: ",current_time
+        #print "Current Time: ",current_time
         #print temp
         if self.spectrum_info.size == 0 :
             self.spectrum_info = temp
