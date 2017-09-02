@@ -3,6 +3,8 @@
 #include <string>
 #include <pmt/pmt.h>
 #include <vector>
+#include <sys/time.h>
+#include <ctime>
 #include "decision_maker.h"
 #include "InformationParser.hpp"
 
@@ -39,5 +41,7 @@ public:
     InformationParser informationParser;
     std::vector<node_info> node_info_vector;
 
+
     void parseData(double occ, double lowerFreq,double bandwidth, int nodeID);
+    void updateNodeActivity(int nodeID,pqxx::work *worker);
 };

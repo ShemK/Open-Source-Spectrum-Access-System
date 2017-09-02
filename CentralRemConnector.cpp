@@ -407,43 +407,14 @@ void CentralRemConnector::pushData(std::vector<float> occ_vector , double center
             printf("Error writing to channel info database\n");
             std::cerr << e.what();
           }
+
         }
         //std::cout << "Cn"
+        updateNodeActivity(nodeID,worker);
       }
 
-
-      /*
-      if(decision > -1) {
-
-      double frequency = node_info_vector[i].decision_maker.get_previous_center_frequency() - bandwidth/2;
-      std::cout<<"Channel with Center Freq:  "<< node_info_vector[i].decision_maker.get_previous_center_frequency() <<" has occupancy "<<decision<<std::endl;
-      std::cout << "Current Channel " <<  center_freq << " at Node: " << std::to_string(nodeID) << std::endl;
-      std::string sql;// = "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
-      + " WHERE startfreq = " + std::to_string(frequency) + ";";
-      for(int i = 0; i < (bandwidth/(2e6));i++) {
-      sql = sql + "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision)
-      + " WHERE startfreq = " + std::to_string(frequency+(2e6*i)) + ";";
     }
-    */
-
-    /*
-    parseData(decision,frequency,bandwidth,nodeID);
-    dprintf("%s\n", sql.c_str());
-    try{
-    worker->exec(sql);
-
-  }catch (const std::exception &e){
-  printf("Error writing to channel info database\n");
-  std::cerr << e.what();
-}
-//w.exec( sql);
-//  worker.commit();
-} else{
-//printf("Decision is -1\n");
-}
-*/
-}
-}
+  }
 }
 
 void CentralRemConnector::parseData(double occ, double lowerFreq, double bandwidth, int nodeID){
@@ -461,4 +432,26 @@ void CentralRemConnector::parseData(double occ, double lowerFreq, double bandwid
   value = pmt::from_double(bandwidth);
   info = pmt::dict_add(info,key,value);
   informationParser.sendData(info);
+}
+
+void CentralRemConnector::updateNodeActivity(int nodeID,pqxx::work *worker){
+  time_t now = time(0);
+  struct tm  tstruct;
+  char       buf[80];
+  tstruct = *localtime(&now);
+  strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+  std::string current_time(buf);
+
+  std::string sql = "UPDATE nodeinfo SET last_active = '" + current_time + "' WHERE " +
+  "nodeid = " + std::to_string(nodeID);
+
+  std::cout << sql << std::endl;
+
+  try{
+    worker->exec(sql);
+
+  }catch (const std::exception &e){
+    printf("Error writing to channel info database\n");
+    std::cerr << e.what();
+  }
 }
