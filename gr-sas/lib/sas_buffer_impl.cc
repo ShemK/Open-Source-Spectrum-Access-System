@@ -124,7 +124,7 @@ namespace gr {
         catch(std::exception const& e)
         {
           memset(out,0,d_N*sizeof(gr_complex));
-          std::cout<<"Can't read from buffer\n";
+          //std::cout<<"Can't read from buffer\n";
         }
 
       return noutput_items;

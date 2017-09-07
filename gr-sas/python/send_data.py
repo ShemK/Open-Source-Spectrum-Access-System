@@ -96,6 +96,8 @@ class send_data(gr.sync_block):
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("timetag"),pmt.intern(curtime))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("noise_floor"),pmt.init_f32vector(self.num_split,self.noise_floor))
         attributes = pmt.dict_add(attributes, pmt.string_to_symbol("nodeid"),pmt.from_long(self.nodeid))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("latitude"),pmt.from_double(self.latitude))
+        attributes = pmt.dict_add(attributes, pmt.string_to_symbol("longitude"),pmt.from_double(self.longitude))
 
         command = pmt.make_dict()
         command = pmt.dict_add(command,pmt.string_to_symbol("table"),pmt.string_to_symbol("spectruminfo"))
@@ -119,7 +121,6 @@ class send_data(gr.sync_block):
 
         for i in range(0,self.num_split):
             nfvec.append(pmt.to_double(pmt.vector_ref(msg,i)))
-        print nfvec
         self.noise_floor = copy.copy(nfvec)
 
     def nodeid_handler_method(self, msg):

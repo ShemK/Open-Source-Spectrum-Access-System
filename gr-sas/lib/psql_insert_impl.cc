@@ -120,7 +120,7 @@ namespace gr {
               gr::io_signature::make(1, 1, N*sizeof(float)),
               gr::io_signature::make(0, 0, 0))
     {
-      flag =0;
+      ctr =0;
       //message
       message_port_register_in(pmt::mp("latlong"));
       message_port_register_in(pmt::mp("center_freq"));
@@ -174,7 +174,8 @@ namespace gr {
       //std::cout<<sql<<endl;
       w.exec(sql);
       w.commit();
-
+      sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, noise_floor) VALUES";
+      
     }
 
     /*
@@ -189,9 +190,7 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      std::cout<<"Starting work"<<std::endl;
-      pqxx::work w(*(c));
-      std::vector<float> buf, occbuf, nfbuf;
+      
       float *  in = (float *) input_items[0];
       std::string s= date::format("%F %T\n", std::chrono::system_clock::now());
       uint64_t abs_N, end_N;
@@ -212,12 +211,7 @@ namespace gr {
               {
                   occ[i]=pmt::to_float(pmt::vector_ref(d_tags_itr->value,i));
               }
-              std::cout << std::setw(10) << "Offset: " << d_tags_itr->offset
-              << std::setw(10) << "Source: "
-              << (pmt::is_symbol(d_tags_itr->srcid) ? pmt::symbol_to_string(d_tags_itr->srcid) : "n/a")
-              << std::setw(10) << "Key: " << pmt::symbol_to_string(d_tags_itr->key)
-              << std::setw(10) << "Value: ";
-              std::cout << d_tags_itr->value << std::endl;
+              
             }  
             if(pmt::symbol_to_string(d_tags_itr->key) == "noise_floor")
             {
@@ -225,12 +219,7 @@ namespace gr {
               {
                   noise_floor[i]=pmt::to_float(pmt::vector_ref(d_tags_itr->value,i));
               }
-              std::cout << std::setw(10) << "Offset: " << d_tags_itr->offset
-              << std::setw(10) << "Source: "
-              << (pmt::is_symbol(d_tags_itr->srcid) ? pmt::symbol_to_string(d_tags_itr->srcid) : "n/a")
-              << std::setw(10) << "Key: " << pmt::symbol_to_string(d_tags_itr->key)
-              << std::setw(10) << "Value: ";
-              std::cout << d_tags_itr->value << std::endl;
+             
             }  
 
            
@@ -241,7 +230,7 @@ namespace gr {
       
       occbuf.assign(occ, occ+num_channels);
       nfbuf.assign(noise_floor, noise_floor+num_channels);
-      std::stringstream result;
+      
       /*
       std::copy(buf.begin(), buf.end(), std::ostream_iterator<float>(result,","));
       std::string psd = result.str();
@@ -261,12 +250,24 @@ namespace gr {
 
       result.str(std::string());
 
-      std::string sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, noise_floor) VALUES ('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','{"+occstr+"}','"+cent_freq.str()+"','"+bwstr.str()+"','{"+nfstr+"}');";
+      sql +=  "('"+s+"','"+nodeidstr.str()+"','"+latstr.str()+"','"+longstr.str()+"','{"+occstr+"}','"+cent_freq.str()+"','"+bwstr.str()+"','{"+nfstr+"}');";
       //std::cout<<sql<<std::endl;
+      if(ctr==50)
+      {
+      sql = sql+";";
+      pqxx::work w(*(c));
       w.exec( sql);
-
+      w.commit();
+      sql = "INSERT INTO SpectrumInfo (timetag, nodeid, latitude, longitude, occ, center_freq, bandwidth, noise_floor) VALUES";
+      ctr=0;
+      }
+      else
+      {
+        sql = sql+",";
+      }
+      
       occbuf.clear();
-      //buf.clear();
+      buf.clear();
       nfbuf.clear();
       /*
       float decision = decision_maker.getDecision(occ[0],std::stod (cent_freq.str(),0));
@@ -283,13 +284,12 @@ namespace gr {
 
       }
       */
-      w.commit();
+      
       //if(!flag)
       //{
       message_port_pub(pmt::intern("mac"), pmt::intern(mac.c_str()));
       message_port_pub(pmt::intern("ip"), pmt::intern(ip.c_str()));
       message_port_pub(pmt::intern("nodeid"), pmt::from_long(nodeid));
-      flag++;
       //}
       // Tell runtime system how many output items we produced.
       return noutput_items;

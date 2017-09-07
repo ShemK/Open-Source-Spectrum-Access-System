@@ -57,7 +57,7 @@ namespace gr {
     class psql_insert_impl : public psql_insert
     {
      private:
-     int flag;
+     int ctr;
       std::vector<tag_t> d_tags;
       std::vector<tag_t>::iterator d_tags_itr;
       pmt::pmt_t d_filter;
@@ -73,6 +73,9 @@ namespace gr {
       unsigned short nodeid;
       float latitude, longitude, center_frequency;
       std::ostringstream latstr,longstr, cent_freq, occstr,bwstr, nodeidstr;
+      std::string sql;
+      std::stringstream result;
+      std::vector<float> buf, occbuf, nfbuf;
 
      public:
       psql_insert_impl(int N, int num_channels);

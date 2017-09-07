@@ -56,7 +56,11 @@
     <type>message</type>
   </sink>
 
-
+  <sink>
+    <name>gps</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
  
 
 
