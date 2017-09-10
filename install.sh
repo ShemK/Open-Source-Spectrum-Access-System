@@ -131,9 +131,11 @@ git clone https://git.savannah.nongnu.org/git/gpsd.git
 
 
 #install gpsd
-cd gpsd && scons && scons check && sudo scons udev-install
+cd gpsd && sudo scons && sudo scons udev-install
 
 sudo ldconfig
+
+cd ..
 
 echo "--------------------------------------------------------------"
 echo "Downloading and installing service files"
@@ -166,7 +168,7 @@ sudo mkdir /opt/sas/gps/
 
 sudo mv fake.log /opt/sas/gps/
 
-sudo chmod 664 /opt/sas/gps
+sudo chmod 665 /opt/sas/gps
 
 sudo chmod 664 /opt/sas/gps/*
 
