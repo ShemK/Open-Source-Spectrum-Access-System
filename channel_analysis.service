@@ -1,0 +1,14 @@
+[Unit]
+Description=analyses IQ data from phy through shared memory
+# To enable: sudo systemctl stop channel_analysis.service
+
+PartOf=sdr_phy.service
+
+After=sdr_phy.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /opt/sas/sas_rem.py
+
+[Install]
+WantedBy=multi-user.target
