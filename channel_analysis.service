@@ -5,6 +5,8 @@ PartOf=sdr_phy.service
 
 After=sdr_phy.service
 
+After=fakegps.service
+
 [Service]
 Type=simple
 ExecStart=/usr/bin/python /opt/sas/sas_rem.py

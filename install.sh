@@ -118,6 +118,23 @@ sudo mv spectrumAccessSystem /var/www/html/spectrumAccessSystem
 
 sudo chmod 644 /var/www/html/spectrumAccessSystem/*
 
+
+echo "--------------------------------------------------------------"
+echo "Downloading and installing GPSD"
+echo "--------------------------------------------------------------"
+
+#install scons
+sudo apt-get -y install scons
+
+#cloning gpsd repository
+git clone https://git.savannah.nongnu.org/git/gpsd.git
+
+
+#install gpsd
+cd gpsd && scons && scons check && sudo scons udev-install
+
+sudo ldconfig
+
 echo "--------------------------------------------------------------"
 echo "Downloading and installing service files"
 echo "--------------------------------------------------------------"
@@ -135,6 +152,24 @@ sudo cp rem/apps/sas_rem.py /opt/sas/
 
 sudo chmod 665 /opt/sas/*
 
+
+echo "--------------------------------------------------------------"
+echo "Creating fake gps file"
+echo "--------------------------------------------------------------"
+
+echo "\$GPGLL,5036.9881,N,00707.9142,E,125412.480,A*3F
+\$GPGGA,125412.48,5036.9881,N,00707.9142,E,2,04,20.5,00269,M,,,,*17
+\$GPRMC,125412.48,A,5036.9881,N,00707.9142,E,00.0,000.0,230506,00,E*4F
+" > fake.log
+
+sudo mkdir /opt/sas/gps/
+
+sudo mv fake.log /opt/sas/gps/
+
+sudo chmod 664 /opt/sas/gps
+
+sudo chmod 664 /opt/sas/gps/*
+
 git clone -b auto_scripts https://github.com/ShemK/Open-Source-Spectrum-Access-System auto_scripts
 
 sudo cp auto_scripts/channel_analysis.service /etc/systemd/system/
@@ -145,6 +180,14 @@ sudo cp auto_scripts/sdr_phy.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/sdr_phy.service
 
+sudo cp auto_scripts/fakegps.service /etc/systemd/system/
+
+sudo chmod 664 /etc/systemd/system/fakegps.service
+
 sudo systemctl daemon-reload
 
 sudo systemctl enable channel_analysis.service
+
+sudo systemctl enable fakegps.service
+
+sudo systemctl start fakegps.service

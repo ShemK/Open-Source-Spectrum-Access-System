@@ -1,0 +1,11 @@
+[Unit]
+Description=creates a background service that reads gps data from a file
+
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/gpsfake /opt/sas/gps/fake.log
+
+[Install]
+WantedBy=multi-user.target
