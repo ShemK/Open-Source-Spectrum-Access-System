@@ -38,7 +38,11 @@ sudo -i -u postgres psql -c"CREATE USER wireless WITH PASSWORD 'wireless';"
 
 sudo -i -u postgres psql -c"ALTER USER wireless WITH SUPERUSER;"
 
+sudo -i -u postgres psql -c"DROP DATABASE IF EXISTS rem;"
+
 sudo -i -u postgres psql -c"CREATE DATABASE rem;"
+
+
 
 echo "Installing libpqxx-dev for C++ psql connector"
 
@@ -95,6 +99,10 @@ sudo ldconfig
 
 cd ../../../
 
+echo "Populating database"
+
+psql -h localhost -U wireless rem < rem/sql/shem_rem.sql
+
 echo "---------------------------------------------"
 echo "Installing Apache Web Server"
 echo "---------------------------------------------"
@@ -137,6 +145,14 @@ sudo ldconfig
 
 cd ..
 
+sudo chmod -R 755 /usr/lib/python2.7/dist-packages/gps
+
+ip_address=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+
+node_id=$(echo $ip_address | cut -d . -f 4)
+
+node_id=$(($node_id + 100))
+
 echo "--------------------------------------------------------------"
 echo "Downloading and installing service files"
 echo "--------------------------------------------------------------"
@@ -159,10 +175,7 @@ echo "--------------------------------------------------------------"
 echo "Creating fake gps file"
 echo "--------------------------------------------------------------"
 
-echo "\$GPGLL,5036.9881,N,00707.9142,E,125412.480,A*3F
-\$GPGGA,125412.48,5036.9881,N,00707.9142,E,2,04,20.5,00269,M,,,,*17
-\$GPRMC,125412.48,A,5036.9881,N,00707.9142,E,00.0,000.0,230506,00,E*4F
-" > fake.log
+echo "\$GPRMC,125412.48,A,$node_id,N,$node_id,E,00.0,000.0,230506,00,E" > fake.log
 
 sudo mkdir /opt/sas/gps/
 
@@ -171,6 +184,8 @@ sudo mv fake.log /opt/sas/gps/
 sudo chmod 665 /opt/sas/gps
 
 sudo chmod 664 /opt/sas/gps/*
+
+sudo rm -r auto_scripts
 
 git clone -b auto_scripts https://github.com/ShemK/Open-Source-Spectrum-Access-System auto_scripts
 
@@ -192,4 +207,4 @@ sudo systemctl enable channel_analysis.service
 
 sudo systemctl enable fakegps.service
 
-sudo systemctl start fakegps.service
+sudo systemctl restart fakegps.service
