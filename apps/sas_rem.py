@@ -3,11 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-<<<<<<< HEAD
-# Generated: Thu Sep  7 17:42:38 2017
-=======
-# Generated: Tue Aug 29 14:30:22 2017
->>>>>>> 7cb8a74190b04f434b5529102308b36f48850dbb
+# Generated: Mon Sep 11 11:21:28 2017
 ##################################################
 
 from gnuradio import blocks
@@ -39,12 +35,14 @@ class sas_rem(gr.top_block):
         # Blocks
         ##################################################
         self.utils_psd_cvf_0 = utils.psd_cvf(samp_rate,  fft_len, firdes.WIN_BLACKMAN_hARRIS, 0.8)
+        self.utils_nmea_reader_0 = utils.nmea_reader('localhost', 2947, 'nmea')
         self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels, fft_len)
         self.sas_sas_buffer_0 = sas.sas_buffer(N)
         self.sas_psql_insert_0 = sas.psql_insert(fft_len, num_channels)
         self.sas_ed_threshold_0 = sas.ed_threshold(fft_len, num_channels, 200)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, N)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_char*1)
 
         ##################################################
         # Connections
@@ -58,10 +56,13 @@ class sas_rem(gr.top_block):
         self.msg_connect((self.sas_sas_buffer_0, 'samp_rate'), (self.sas_psql_insert_0, 'samp_rate'))
         self.msg_connect((self.sas_sas_buffer_0, 'center_freq'), (self.sas_send_data_0, 'center_freq'))
         self.msg_connect((self.sas_sas_buffer_0, 'samp_rate'), (self.sas_send_data_0, 'bw'))
+        self.msg_connect((self.utils_nmea_reader_0, 'gps_msg'), (self.sas_psql_insert_0, 'latlong'))
+        self.msg_connect((self.utils_nmea_reader_0, 'gps_msg'), (self.sas_send_data_0, 'gps'))
         self.connect((self.blocks_null_source_0, 0), (self.sas_send_data_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.utils_psd_cvf_0, 0))
         self.connect((self.sas_ed_threshold_0, 0), (self.sas_psql_insert_0, 0))
         self.connect((self.sas_sas_buffer_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.connect((self.utils_nmea_reader_0, 0), (self.blocks_null_sink_0, 0))
         self.connect((self.utils_psd_cvf_0, 0), (self.sas_ed_threshold_0, 0))
 
     def get_samp_rate(self):
@@ -107,11 +108,6 @@ def main(top_block_cls=sas_rem, options=None):
 
     tb = top_block_cls()
     tb.start()
-    try:
-        raw_input('Press Enter to quit: ')
-    except EOFError:
-        pass
-    tb.stop()
     tb.wait()
 
 
