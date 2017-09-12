@@ -53,6 +53,14 @@ sudo apt-get -y install libpqxx3-dev
 sudo apt-get -y install pgadmin3
 fi
 
+
+if [[ `lsb_release -rs` == "16.04" ]]
+then
+sudo apt-get -y install libpqxx-dev
+sudo apt-get -y install pgadmin3
+fi
+
+
 if [[ `lsb_release -rs` == "16.04" ]]
 then
 sudo apt-get -y install libpqxx-dev
@@ -66,7 +74,7 @@ git clone -b rem https://github.com/ShemK/Open-Source-Spectrum-Access-System rem
 echo "--------------------------------------------------------------"
 echo "Installing GNURadio Dependencies for REM"
 echo "--------------------------------------------------------------"
-
+#<<COMMENT
 sudo rm -r rem/gr-sas/build
 
 mkdir rem/gr-sas/build
@@ -98,6 +106,7 @@ sudo make install
 sudo ldconfig
 
 cd ../../../
+#COMMENT
 
 echo "Populating database"
 
@@ -150,9 +159,11 @@ sudo chmod -R 755 /usr/lib/python2.7/dist-packages/gps
 ip_address=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 
 node_id=$(echo $ip_address | cut -d . -f 4)
+node_id=$(bc -l <<< "$node_id * 100.0")
 
-node_id=$(($node_id + 100))
+#node_id=5000.1
 
+echo $node_id
 echo "--------------------------------------------------------------"
 echo "Downloading and installing service files"
 echo "--------------------------------------------------------------"
