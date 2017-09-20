@@ -66,6 +66,7 @@ void CentralRemConnector::prepareKnownAttributes()
       known_nodes.push_back(tempID);
       node_info temp;
       temp.nodeID = tempID;
+      temp.decision_maker.nodeID = temp.nodeID;
       node_info_vector.push_back(temp);
     }
   }
@@ -103,17 +104,28 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
 
       pmt::pmt_t nodeID = pmt::dict_ref(attributes, pmt::string_to_symbol("nodeID"), not_found);
 
+
       if (nodeID != not_found)
       {
         if (!nodeKnown(pmt::to_long(nodeID)))
         {
+          pmt::pmt_t not_found = pmt::mp(0);
           std::string query = insert(attributes, "NodeInfo");
           worker.exec(query);
+          node_info temp;
+          temp.nodeID = pmt::to_long(nodeID);
+          temp.decision_maker.nodeID = temp.nodeID;
+          node_info_vector.push_back(temp);
           //  worker.commit();
+        } else{
+          pmt_t conditions = pmt::make_dict();
+          conditions = pmt::dict_add(conditions,pmt::string_to_symbol("nodeID"),nodeID);
+          std::string query = update(attributes, conditions, "NodeInfo");
+          worker.exec(query);
         }
       }
-    }
 
+    }
 
     for (size_t i = 0; i < pmt::length(key_list); i++)
     {

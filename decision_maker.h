@@ -18,4 +18,6 @@ public:
   long int startTime;
   long int currentTime;
   bool frequency_change = false;
+  int times_up;
+  int nodeID;
 };

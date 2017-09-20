@@ -4,6 +4,7 @@
 
 DecisionMaker::DecisionMaker(){
   center_frequency = 0;
+  nodeID = 0;
 }
 
 DecisionMaker::~DecisionMaker(){
@@ -39,8 +40,11 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
       std::vector<float> temp;
       return temp;
     } else{
+      times_up++;
       printf("Times Up\n");
     }
+  } else{
+    times_up = 0;
   }
   previous_center_frequency = this->center_frequency;
   //printf("Changed Frequency: %f\n",this->center_frequency);
@@ -49,6 +53,12 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
   //float result = max_occ();
   std::vector<float> result = max_occ();//average();
   frequency_change = false;
+
+  if(times_up > 5){
+    printf("-------------------------------------------------------------\n");
+    printf("----------Error with sensor %d----------------------------\n",nodeID);
+    printf("-------------------------------------------------------------\n");
+  }
   return result;
 }
 
