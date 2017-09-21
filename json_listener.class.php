@@ -292,7 +292,7 @@ class JsonListener{
 
 	private function heartbeatRequest($newHeartBeatInquiryObj) {
 
-		$replyObj = $newHeartBeatInquiryObj;//(object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
+		$replyObj = (object) [];
 		if(property_exists($newHeartBeatInquiryObj, 'cbsdId')) {
 			$cbsdId = $newHeartBeatInquiryObj->{'cbsdId'};
 			if(property_exists($newHeartBeatInquiryObj, 'grantId')) {
@@ -313,10 +313,14 @@ class JsonListener{
 					else if($row['grantState'] == 'AUTHORIZED'){
 						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
 						'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
-						'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
+						'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime '])];
 
 					}
 					$replyObj->{'response'}->{'responseCode'} = '0';
+				}
+				else {
+				   $replyObj->{'response'}->{'responseCode'} = '103'; //$replyObj =  (object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
+					 $replyObj->{'response'}->{'Error'} = 'No grant exists';
 				}
 			}
 		}
