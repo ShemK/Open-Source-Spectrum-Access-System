@@ -219,3 +219,7 @@ sudo systemctl enable channel_analysis.service
 sudo systemctl enable fakegps.service
 
 sudo systemctl restart fakegps.service
+
+sudo cp auto_scripts/sas_sudoers /etc/sudoers.d/sas
+
+sudo chmod 440 /etc/sudoers.d/sas

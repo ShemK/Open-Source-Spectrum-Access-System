@@ -1,0 +1,41 @@
+# This file, when placed in /etc/sudoers.d/, grants any user the sudo priveledges
+# to run the following commands.
+# These commands are necessary for connecting the CRTS_CR nodes in a network
+# through the TUN interfaces.
+
+# Add commands for start rem
+ALL             ALL = NOPASSWD: /bin/systemctl start fakegps.service
+
+# Add commands to stop rem
+ALL             ALL = NOPASSWD: /bin/systemctl stop fakegps.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl restart fakegps.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl status fakegps.service
+
+# Add commands for start rem
+ALL             ALL = NOPASSWD: /bin/systemctl start channel_analysis.service
+
+# Add commands to stop rem
+ALL             ALL = NOPASSWD: /bin/systemctl stop channel_analysis.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl restart channel_analysis.service
+
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl status channel_analysis.service
+
+# Add commands for start rem
+ALL             ALL = NOPASSWD: /bin/systemctl start sdr_phy.service
+
+# Add commands to stop rem
+ALL             ALL = NOPASSWD: /bin/systemctl stop sdr_phy.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl restart sdr_phy.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl status sdr_phy.service
