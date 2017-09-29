@@ -39,3 +39,16 @@ ALL             ALL = NOPASSWD: /bin/systemctl restart sdr_phy.service
 
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl status sdr_phy.service
+
+
+# Add commands for start rem
+ALL             ALL = NOPASSWD: /bin/systemctl start cbsd_start.service
+
+# Add commands to stop rem
+ALL             ALL = NOPASSWD: /bin/systemctl stop cbsd_start.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl restart cbsd_start.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl status cbsd_start.service

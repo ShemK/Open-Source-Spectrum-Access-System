@@ -7,7 +7,7 @@ echo "Installing pip"
 sudo apt-get -y install python-pip
 
 echo "Python-pip installation complete"
-
+<<COMMENT
 echo "Installing Dependencies - Going to take a long time"
 
 sudo apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran
@@ -153,7 +153,7 @@ cd gpsd && sudo scons && sudo scons udev-install
 sudo ldconfig
 
 cd ..
-
+COMMENT
 sudo chmod -R 755 /usr/lib/python2.7/dist-packages/gps
 
 ip_address=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
@@ -212,6 +212,10 @@ sudo cp auto_scripts/fakegps.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/fakegps.service
 
+sudo cp auto_scripts/cbsd_start.service /etc/systemd/system/
+
+sudo chmod 664 /etc/systemd/system/cbsd_start.service
+
 sudo systemctl daemon-reload
 
 sudo systemctl enable channel_analysis.service
@@ -223,3 +227,29 @@ sudo systemctl restart fakegps.service
 sudo cp auto_scripts/sas_sudoers /etc/sudoers.d/sas
 
 sudo chmod 440 /etc/sudoers.d/sas
+
+cd
+# installing the central controllers
+sudo rm -r central_controller
+
+git clone -b central_controller https://github.com/ShemK/Open-Source-Spectrum-Access-System central_controller
+
+sudo mkdir /opt/sas/central/
+
+sudo cp central_controller/controller.py /opt/sas/central/
+
+sudo chmod 665 /opt/sas/central
+
+sudo chmod 665 /opt/sas/central/*
+
+sudo systemctl daemon-reload
+
+sudo cp auto_scripts/cbsd_control.service /etc/systemd/system/
+
+sudo chmod 664 /etc/systemd/system/cbsd_control.service
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable cbsd_control.service
+
+sudo systemctl restart cbsd_control.service
