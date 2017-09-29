@@ -19,6 +19,7 @@ class Controller(object):
         self.json_decoder = json.JSONDecoder()
         self.instructionListener = InstructionListener(self,self.messageHandler)
         self.instructionListener.start()
+        self.grouped = None
 
     def generate_random_channels(self):
         random.seed()
@@ -30,7 +31,7 @@ class Controller(object):
 
     def package_channel_list(self):
         self.generate_random_channels()
-        self.channel_info = {'channels':self.channels}
+        self.channel_info = {'channels':self.channels,'grouped':self.grouped}
 
     def send_channel_command(self):
         self.package_channel_list()
@@ -54,6 +55,7 @@ class Controller(object):
     def analyze_instruction(self,instruction):
         self.random_distribution = instruction['random_distribution']
         self.period = instruction['max_time']
+        self.grouped = instruction['grouped']
         pass
 
 class TransportHandler(object):
