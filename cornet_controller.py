@@ -4,12 +4,16 @@ import struct
 import fcntl
 import sys
 import os
+import json
 
 class CornetController(object):
     #   initialize ConfigEditor
     def __init__(self):
         self.cornet_setup = dict()
-        pass
+        self.json_encoder = json.JSONEncoder()
+        self.messageHandler = TransportHandler("0.0.0.0",8911)
+
+
 
     #   read a configuration file and return a dictionary
     #   if failure, return empty dict
@@ -26,6 +30,20 @@ class CornetController(object):
             return input_config
 
     def start_secondary_users(self):
+        self.secondary_users = self.cornet_setup.SU.nodeList
+        i = 0
+        while i < len(self.secondary_users):
+            try:
+                self.start_su(self.secondary_users[i])
+            except Exception as e:
+                print "Error With Sensors: ",e
+            i = i+1
+        pass
+
+    def start_su(self,su):
+        self.messageHandler.set_addr(su.ip)
+        data = self.json_encoder.encode(su)
+        self.messageHandler.send(data)
         pass
 
 
@@ -64,10 +82,40 @@ class CornetController(object):
         command = "ssh " + ip + " sudo systemctl status sdr_phy.service"
         os.system(command)
 
+
+class TransportHandler(object):
+
+    def __init__(self,addr,port):
+        self.port  = port
+        self.addr = addr
+        self.sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.my_port = 7180
+        self.sock.bind(("0.0.0.0",self.my_port))
+
+    def set_addr(self, addr):
+        self.addr = addr
+
+    def send(self,info):
+        self.sock.sendto(info, (self.addr, self.port))
+        print "Data Sent", info
+
+    def recv(self):
+        try:
+            data = self.sock.recvfrom(1024)
+            #return self.json_decoder.decode(data)
+            return data
+        except Exception as e:
+            print "JSON Error ",e
+
+    def analyze_instruction(self,instruction):
+        pass
+
+
 def main():
     cornetController = CornetController()
     p = cornetController.read_config_file('cornet.cfg')
-    cornetController.start_sensors()
+    cornetController.start_secondary_users()
+    #cornetController.start_sensors()
     #cornetController.stop_sensors()
     #command = "ssh 192.168.1.19 sudo systemctl restart sdr_phy.service"
     #os.system(command)
