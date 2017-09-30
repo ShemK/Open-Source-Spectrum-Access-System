@@ -129,9 +129,11 @@ echo "--------------------------------------------------------------"
 echo "Downloading Server Files"
 echo "--------------------------------------------------------------"
 
+sudo rm -r /var/www/html/spectrumAccessSystem
+
 git clone -b sas_php https://github.com/ShemK/Open-Source-Spectrum-Access-System spectrumAccessSystem
 
-sudo mv spectrumAccessSystem /var/www/html/spectrumAccessSystem
+sudo mv spectrumAccessSystem/server /var/www/html/spectrumAccessSystem
 
 sudo chmod 644 /var/www/html/spectrumAccessSystem/*
 
@@ -200,19 +202,19 @@ sudo rm -r auto_scripts
 
 git clone -b auto_scripts https://github.com/ShemK/Open-Source-Spectrum-Access-System auto_scripts
 
-sudo cp auto_scripts/channel_analysis.service /etc/systemd/system/
+sudo cp auto_scripts/services/channel_analysis.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/channel_analysis.service
 
-sudo cp auto_scripts/sdr_phy.service /etc/systemd/system/
+sudo cp auto_scripts/services/sdr_phy.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/sdr_phy.service
 
-sudo cp auto_scripts/fakegps.service /etc/systemd/system/
+sudo cp auto_scripts/services/fakegps.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/fakegps.service
 
-sudo cp auto_scripts/cbsd_start.service /etc/systemd/system/
+sudo cp auto_scripts/services/cbsd_start.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/cbsd_start.service
 
@@ -224,7 +226,7 @@ sudo systemctl enable fakegps.service
 
 sudo systemctl restart fakegps.service
 
-sudo cp auto_scripts/sas_sudoers /etc/sudoers.d/sas
+sudo cp auto_scripts/services/sas_sudoers /etc/sudoers.d/sas
 
 sudo chmod 440 /etc/sudoers.d/sas
 
@@ -244,7 +246,7 @@ sudo chmod 665 /opt/sas/central/*
 
 sudo systemctl daemon-reload
 
-sudo cp auto_scripts/cbsd_control.service /etc/systemd/system/
+sudo cp auto_scripts/services/cbsd_control.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/cbsd_control.service
 
