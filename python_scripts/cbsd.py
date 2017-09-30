@@ -3,6 +3,8 @@ import json
 import datetime
 import time
 import cbsd_thread
+import socket
+
 
 class Cbsd(object):
     _fccId = "cbd561"
@@ -264,8 +266,9 @@ class Cbsd(object):
 
     # Clear available channel list
     def clear_channels(self):
-        for i in range(0,len(self._available_channels)):
-            self._available_channels.pop(len(self._available_channels)-1)
+        self._available_channels = []
+#        for i in range(0,len(self._available_channels)):
+#            self._available_channels.pop(len(self._available_channels)-1)
 
 
 
@@ -390,3 +393,15 @@ class Cbsd(object):
                         "grant",self._grantTimeLeft,heartbeat_thread = self.my_heartbeat_Thread,\
                         start_radio = start_radio_Thread)
             my_grant_Thread.start()
+
+    def get_command(self):
+        sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
+        sock.bind(('localhost', 7800))
+        data, addr = sock.recvfrom(1024)
+        json_command = self._json_decoder.decode(data)
+        print json_command
+        channel_list = json_command['channels']
+        i = 0
+        while i < len(channel_list):
+            self.add_inquired_channels(channel_list[i],channel_list[i]+10e6)
+            i = i+1

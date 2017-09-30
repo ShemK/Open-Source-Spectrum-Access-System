@@ -82,3 +82,21 @@ ALL             ALL = NOPASSWD: /sbin/route del -net 10.0.10.0 netmask 255.255.2
 ALL             ALL = NOPASSWD: /sbin/ip tuntap del dev radio_interface mode tun
 # Set the tx queue length for tunCRTS
 ALL             ALL = NOPASSWD: /sbin/ifconfig radio_interface txqueuelen [0-9.]*
+
+# Add commands for start rem
+ALL             ALL = NOPASSWD: /bin/systemctl start fakegps.service
+
+# Add commands to stop rem
+ALL             ALL = NOPASSWD: /bin/systemctl stop fakegps.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl restart fakegps.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl status fakegps.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /usr/local/bin/gpsfake
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl

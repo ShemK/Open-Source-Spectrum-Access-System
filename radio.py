@@ -22,7 +22,7 @@ def main():
     # TODO: the ability for the user to choose input parameters
     # TODO: To check if the input from the socket is a JSON Object
 
-    newCbsd = cbsd.Cbsd("cbd562","A","cbd2","hask124ba","yap")
+    newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba","yap")
     newCbsd.add_registration_parameters("callSign","CB987")
     newCbsd.add_registration_parameters("airInterface","Antenna")
     json_encoder = json.JSONEncoder()
@@ -40,11 +40,14 @@ def main():
     # TODO: Add connection to internal database
     # send channel inquiry in order of importance
     if(newCbsd.get_cbsd_state() == "REGISTERED"):
+        newCbsd.get_command();
+        '''
         newCbsd.add_inquired_channels(890e6,900e6)
         newCbsd.add_inquired_channels(880e6,890e6)
         newCbsd.add_inquired_channels(860e6,870e6)
         newCbsd.add_inquired_channels(870e6,880e6)
-
+        newCbsd.add_inquired_channels(870e6,880e6)
+        '''
 
     '''
     Inquire about the spectrum
