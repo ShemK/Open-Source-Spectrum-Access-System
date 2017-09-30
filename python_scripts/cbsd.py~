@@ -1,0 +1,248 @@
+import server_connection
+import json
+
+class Cbsd(object):
+    _fccId = "cbd561"
+    _cbsdCategory = "A"
+    _userId = "cbd1"
+    _state = "Unregistered"
+    _cbsdSerialNumber = "hask124ba"
+    _cbsd_registered = False
+    _grant_state = None
+    _registrationRequestObj = None
+    _cbsdId = None
+    _registrationResponseObj = None
+    _inquired_channels = []
+    _spectrumInquiryRequestObj = None
+    _available_channels = []
+    _spectrumInquireResponseObj = None
+    _maxEirp = 100
+    _operationFrequencyRange = None
+    _grantRequestObj= None
+    _grantResponseObj = None
+    _heartbeatInterval = 0
+    _grantId = None
+    _grantExpireTime = None
+    def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber):
+        self._fccId = fccId
+        self._cbsdCategory = cbsdCategory
+        self._userId = userId
+        self._cbsdSerialNumber = cbsdSerialNumber
+        self._registrationRequestObj = self._create_registration_request_obj()
+
+    def _create_registration_request_obj(self):
+        temp_registrationObj = {'registrationRequest': {
+        	                            "fccId": self._fccId,
+                                        "cbsdCategory": self._cbsdCategory,
+                                        "userId": self._userId,
+                                        "cbsdSerialNumber": self._cbsdSerialNumber,
+                                        }
+                                }
+        return temp_registrationObj
+
+    def add_registration_parameters(self,key,value):
+        self._registrationRequestObj['registrationRequest'][key] = value
+
+    def get_registrationRequestObj(self):
+        return self._registrationRequestObj
+
+    def set_cbsdId(self,cbsdId):
+        self._cbsdId = cbsdId
+
+    def set_registrationResponseObj(self,registrationResponse):
+        self._registrationResponseObj = registrationResponse
+
+        # \ continues to next line
+        responseCode = registrationResponse['registrationResponse'] \
+                                            ['response']['responseCode']
+
+        if(responseCode=="0"):
+            self._cbsdId = registrationResponse['registrationResponse'] \
+                                                ['response']['cbsdId']
+            print('registered!')
+            self._cbsd_registered = True
+            self._state = "Registered"
+
+
+    def add_inquired_channels(self,lowFrequency,highFrequency):
+        temp_channel = {'lowFrequency':lowFrequency,'highFrequency':highFrequency}
+        self._inquired_channels.append(temp_channel)
+
+    def _create_spectrum_request_obj(self):
+        if(self._cbsd_registered == True):
+            if len(self._inquired_channels) > 0:
+                self._spectrumInquiryRequestObj = { 'spectrumInquiryRequest' : {
+                                                        'cbsdId':self._cbsdId,
+                                                        'inquiredSpectrum':self._inquired_channels
+                                                        }
+                                                    }
+                return True
+            else:
+                print('CBSD has not selected channels to inquire')
+                return False
+        else:
+            print('CBSD has not been registered')
+            return False
+
+
+    def get_spectrumInquiryRequestObj(self):
+        if self._create_spectrum_request_obj() == True:
+            return self._spectrumInquiryRequestObj
+
+    def set_spectrumInquiryResponseObj(self,spectrumInquiryResponse):
+        self._spectrumInquireResponseObj = spectrumInquiryResponse
+        responseCode = spectrumInquiryResponse['spectrumInquiryResponse'] \
+                                                ['response']['responseCode']
+
+        if(responseCode=="0"):
+            self._available_channels = spectrumInquiryResponse['spectrumInquiryResponse'] \
+                                                        ['availableChannel']
+            if(len(self._available_channels) > 0):
+                print("Hurray, There is a space for you, scoot over")
+            else:
+                print("Sorry, No space of you bro!")
+
+    def _create_grant_request_obj(self):
+        if(self._cbsd_registered == True):
+            if len(self._available_channels) > 0:
+                self._operationFrequencyRange = self._available_channels[0]
+                #self._available_channels.clear()
+                self.clear_channels()
+            if(self._operationFrequencyRange!=None):
+                self._grantRequestObj = { 'grantRequest': {
+                                                'cbsdId':self._cbsdId,
+                                                'operationParam': {
+                                                    'maxEirp':self._maxEirp,
+                                                    'operationalFrequencyRange': \
+                                                        self._operationFrequencyRange
+                                                    }
+                                            }
+                                        }
+                self._grant_state = "Idle"
+                return True
+            else:
+                print("No Operational Frequency Range Selected")
+                return False
+        else:
+            print("CBSD is not registered")
+            return False
+
+    def get_grantRequestObj(self):
+        if self._create_grant_request_obj() == True:
+            return self._grantRequestObj
+
+
+    def set_grantResponseObj(self, grantReponse):
+        self._grantResponseObj = grantReponse
+        responseCode = grantReponse['grantResponse'] \
+                                                ['response']['responseCode']
+
+        if(responseCode=="0"):
+            self._grantId = grantReponse['grantResponse']['grantId']
+            self._heartbeatInterval = grantReponse['grantResponse']['heartbeatInterval']
+            self._grantExpireTime = grantReponse['grantResponse']['grantExpireTime']
+            self._grant_state = "Granted"
+
+    # Clear available channel list
+    def clear_channels(self):
+        for i in range(0,len(self._available_channels)):
+            self._available_channels.pop(len(self._available_channels)-1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+
+    newCbsd = Cbsd("cbd561","A","cbd1","hask124ba")
+    newCbsd.add_registration_parameters("callSign","CB987")
+    json_encoder = json.JSONEncoder()
+    json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())
+    my_server_connection = server_connection.Server_connection('172.29.35.76')
+    print("Request: sending registration request")
+    # get response string
+    response = my_server_connection.send_request(json_request)
+
+    # create json decoder object
+    json_decoder = json.JSONDecoder()
+    # get dictionary
+    json_response = json_decoder.decode(response)
+    #json.load(response)
+    #print(json_response['registrationResponse'])
+
+    #change state of cbsd
+    newCbsd.set_registrationResponseObj(json_response)
+
+
+    # send channel inquiry in order of importance
+    newCbsd.add_inquired_channels(3550,3560)
+    newCbsd.add_inquired_channels(3560,3570)
+    newCbsd.add_inquired_channels(3570,3580)
+    newCbsd.add_inquired_channels(3580,3590)
+
+    '''
+        Inquire about the spectrum
+    '''
+    print("Request: sending spectrum Inquiry")
+    json_request = json_encoder.encode(newCbsd.get_spectrumInquiryRequestObj());
+    response = my_server_connection.send_request(json_request)
+    # get dictionary
+    json_response = json_decoder.decode(response)
+
+    newCbsd.set_spectrumInquiryResponseObj(json_response)
+
+    '''
+        Get Grant Request
+    '''
+    json_request = json_encoder.encode(newCbsd.get_grantRequestObj());
+    response = my_server_connection.send_request(json_request)
+    # get dictionary
+    json_response = json_decoder.decode(response)
+    newCbsd.set_grantResponseObj(json_response)
+
+
+
+'''
+    fccId = "cbd561"
+    cbsdCategory = "A"
+    callSign = "CB987"
+    userId = "cbd1"
+    cbsdSerialNumber = "hask124ba"
+
+
+    json_encoder = json.JSONEncoder()
+    json_request =  json_encoder.encode({'registrationRequest': {
+    	                            "fccId": fccId,
+
+                                    "cbsdCategory": cbsdCategory,
+
+                                    "callSign": callSign,
+
+                                    "userId": userId,
+
+                                    "cbsdSerialNumber": cbsdSerialNumber,
+
+                                    "cbsdInfo":"yap",
+
+                                    "airInterface":"Nay",
+                                    }
+                                }
+                            );
+    #print(json_request)
+
+'''
