@@ -280,6 +280,8 @@ void Interferer::BuildOFDMTransmission() {
              TX_BUFFER_LENGTH - num_subcarriers - OFDM_CP_LENGTH) {
     frame_complete = ofdmflexframegen_writesymbol(
         ofdm_fg, &tx_buffer[j * (num_subcarriers + cp_len)]);
+  //  frame_complete = ofdmflexframegen_write(
+  //      ofdm_fg, &tx_buffer[j * (num_subcarriers + cp_len)],num_subcarriers + cp_len);
     buffered_samps += num_subcarriers + cp_len;
     j++;
   }

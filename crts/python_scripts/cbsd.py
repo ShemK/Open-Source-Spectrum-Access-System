@@ -37,7 +37,7 @@ class Cbsd(object):
     _reliquishmentRequestObj = None
     _json_encoder = None
     _json_decoder = None
-    _grantTimeLeft = None
+    grantTimeLeft = None
     def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber,cbsdInfo):
         self._fccId = fccId
         self._cbsdCategory = cbsdCategory
@@ -379,8 +379,8 @@ class Cbsd(object):
                 current_time = time.mktime(datetime.datetime.utcnow().timetuple())
          #     print("server_time: ",newCbsd.get_grantExpireTime())
        #     print("client time: ", datetime.datetime.utcnow().timetuple())
-                self._grantTimeLeft = self.get_grantExpireTime_seconds() - current_time
-                print "Grant Ends in: ", self._grantTimeLeft,"s"
+                self.grantTimeLeft = self.get_grantExpireTime_seconds() - current_time
+                print "Grant Ends in: ", self.grantTimeLeft,"s"
             else:
                 print "No Grants Provided"
         else:
@@ -390,7 +390,7 @@ class Cbsd(object):
     def startGrant(self,my_server_connection,start_radio_Thread):
         if self._grant_state != "IDLE":
             my_grant_Thread = cbsd_thread.cbsd_thread(self,my_server_connection,\
-                        "grant",self._grantTimeLeft,heartbeat_thread = self.my_heartbeat_Thread,\
+                        "grant",self.grantTimeLeft,heartbeat_thread = self.my_heartbeat_Thread,\
                         start_radio = start_radio_Thread)
             my_grant_Thread.start()
 
@@ -401,6 +401,12 @@ class Cbsd(object):
         json_command = self._json_decoder.decode(data)
         print json_command
         channel_list = json_command['channels']
+        self.cornet_config = json_command['cornet_config']
+        self.grouped = None
+        if self.cornet_config != None:
+            self.grouped = self.cornet_config['grouped']
+
+        # NOTE: Need to make variable bandwidth - 10 MHz is current quasi standard
         i = 0
         while i < len(channel_list):
             self.add_inquired_channels(channel_list[i],channel_list[i]+10e6)

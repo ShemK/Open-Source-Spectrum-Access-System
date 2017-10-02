@@ -14,8 +14,10 @@ import cbsd
 import json
 import cbsd_thread
 
-
-
+scripts = os.getcwd()
+scripts = scripts + '/config_scripts'
+sys.path.insert(0, scripts)
+import config_editor
 
 def main():
 
@@ -48,7 +50,7 @@ def main():
         newCbsd.add_inquired_channels(870e6,880e6)
         newCbsd.add_inquired_channels(870e6,880e6)
         '''
-
+    configEditor = config_editor.ConfigEditor()
     '''
     Inquire about the spectrum
     '''
@@ -70,16 +72,16 @@ def main():
         start radio interface
     '''
     start_radio_Thread = cbsd_thread.cbsd_thread(newCbsd,my_server_connection,\
-                                            "start_radio",0);
+                                            "start_radio",0,config_editor = configEditor);
 
     '''
      start grant timer
     '''
     newCbsd.startGrant(my_server_connection,start_radio_Thread)
 
-#    start_radio_Thread.start()
+    start_radio_Thread.start()
 
-
+    #time.sleep(10)
 
     """
     myfifo = "/tmp/myfifo"

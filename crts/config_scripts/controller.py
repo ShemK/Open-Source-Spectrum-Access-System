@@ -5,6 +5,8 @@ import time
 import signal,os
 import threading
 
+# NOTE: Need to just use this class to pass information from the configuration files as is
+# NOTE: To make sure that any changes made in configuration files to do need a change in code
 class Controller(object):
 
     channels = []
@@ -20,6 +22,7 @@ class Controller(object):
         self.instructionListener = InstructionListener(self,self.messageHandler)
         self.instructionListener.start()
         self.grouped = None
+        self.cornet_config = None
 
     def generate_random_channels(self):
         random.seed()
@@ -31,7 +34,7 @@ class Controller(object):
 
     def package_channel_list(self):
         self.generate_random_channels()
-        self.channel_info = {'channels':self.channels,'grouped':self.grouped}
+        self.channel_info = {'channels':self.channels,'cornet_config':self.cornet_config}
 
     def send_channel_command(self):
         self.package_channel_list()
@@ -53,6 +56,7 @@ class Controller(object):
         self.stop = True
 
     def analyze_instruction(self,instruction):
+        self.cornet_config = instruction
         self.random_distribution = instruction['random_distribution']
         self.period = instruction['max_time']
         self.grouped = instruction['grouped']
