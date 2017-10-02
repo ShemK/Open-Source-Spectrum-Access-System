@@ -7,12 +7,6 @@ echo "Installing pip"
 sudo apt-get -y install python-pip
 
 echo "Python-pip installation complete"
-<<COMMENT
-echo "Installing Dependencies - Going to take a long time"
-
-sudo apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran
-
-sudo pip install scipy pynmea2 numpy psycopg2 pandas plotly
 
 #sudo pip install -U pandas
 
@@ -60,11 +54,11 @@ sudo apt-get -y install libpqxx-dev
 sudo apt-get -y install pgadmin3
 fi
 
+echo "Installing Dependencies - Going to take a long time"
 
-if [[ `lsb_release -rs` == "16.04" ]]
-then
-sudo apt-get -y install libpqxx-dev
-fi
+sudo apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran
+
+sudo pip install scipy pynmea2 numpy psycopg2 pandas plotly libconf
 echo "--------------------------------------------------------------"
 echo "Cloning rem branch from github repository"
 echo "--------------------------------------------------------------"
@@ -131,6 +125,8 @@ echo "--------------------------------------------------------------"
 
 sudo rm -r /var/www/html/spectrumAccessSystem
 
+sudo rm -r spectrumAccessSystem
+
 git clone -b sas_php https://github.com/ShemK/Open-Source-Spectrum-Access-System spectrumAccessSystem
 
 sudo mv spectrumAccessSystem/server /var/www/html/spectrumAccessSystem
@@ -155,8 +151,11 @@ cd gpsd && sudo scons && sudo scons udev-install
 sudo ldconfig
 
 cd ..
-COMMENT
+
 sudo chmod -R 755 /usr/lib/python2.7/dist-packages/gps
+
+# make libconf files accessible
+sudo chmod  755 /usr/local/lib/python2.7/dist-packages/libc*
 
 ip_address=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 
@@ -238,7 +237,9 @@ git clone -b central_controller https://github.com/ShemK/Open-Source-Spectrum-Ac
 
 sudo mkdir /opt/sas/central/
 
-sudo cp central_controller/controller.py /opt/sas/central/
+#sudo cp central_controller/controller.py /opt/sas/central/
+
+sudo cp crts_sas/cbsd/config_scripts/controller.py /opt/sas/central/
 
 sudo chmod 665 /opt/sas/central
 
