@@ -44,9 +44,14 @@ class CornetController(object):
         self.messageHandler.set_addr(su.ip)
         data = self.json_encoder.encode(su)
         self.messageHandler.send(data)
+        #FIXME : Need to make it more universal. Go to the folder with the script
+        command = "ssh " + su.ip + " python crts_sas/crts/radio.py >/dev/null 2>&1 &"
+        os.system(command)
         pass
 
-
+    def stop_su(self,su):
+        pass
+        
     def start_sensors(self):
         self.sensors = self.cornet_setup.SENSOR.nodeList
         i = 0
