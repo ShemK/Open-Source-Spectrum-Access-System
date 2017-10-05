@@ -205,7 +205,8 @@ class JsonListener{
 					//AND highFrequency = ".$highFrequency.";";
 					$select_array = array('available','channelType');
 					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
-					$query = $this->create_select_query($select_array,'cbsd_channels',$where_array);
+					$cbsd_table = 'cbsdInfo_' + $cbsdId;
+					$query = $this->create_select_query($select_array, $cbsd_table ,$where_array);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
 						if($row['available'] == 1) {
@@ -257,7 +258,7 @@ class JsonListener{
 					//echo time();
 					date_default_timezone_set ('UTC');
 					// add 10 seconds = 1 * 60 seconds
-					$grantExpireTime = time() + (1*10/60*60);
+					$grantExpireTime = time() + (1*60/60*60);
 					$grantExpireDate = $this->convertTimeToDate($grantExpireTime);
 					$replyObj->{'grantExpireTime'} = $grantExpireDate;
 					$replyObj->{'heartbeatInterval'} = 2;
