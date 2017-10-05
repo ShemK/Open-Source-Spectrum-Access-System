@@ -50,8 +50,9 @@ class CornetController(object):
         pass
 
     def stop_su(self,su):
+        command = "ssh " + su.ip + " python crts_sas/crts/stop_cbsd.py >/dev/null 2>&1 &"
         pass
-        
+
     def start_sensors(self):
         self.sensors = self.cornet_setup.SENSOR.nodeList
         i = 0
@@ -119,8 +120,8 @@ class TransportHandler(object):
 def main():
     cornetController = CornetController()
     p = cornetController.read_config_file('cornet.cfg')
-    cornetController.start_secondary_users()
-    #cornetController.start_sensors()
+    #cornetController.start_secondary_users()
+    cornetController.start_sensors()
     #cornetController.stop_sensors()
     #command = "ssh 192.168.1.19 sudo systemctl restart sdr_phy.service"
     #os.system(command)
