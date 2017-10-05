@@ -82,6 +82,7 @@ EXECUTE format('
     "highFrequency" float NOT NULL,
     available smallint DEFAULT 0,
     "grantId" varchar(45),
+	"channelType" channel_type DEFAULT NULL,
     PRIMARY KEY ("lowFrequency","highFrequency")
   );', 'cbsdinfo_'||NEW."cbsdId");
 
