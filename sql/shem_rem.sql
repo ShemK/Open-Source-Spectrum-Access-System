@@ -80,7 +80,7 @@ EXECUTE format('
   CREATE TABLE IF NOT EXISTS %s(
     "lowFrequency" float NOT NULL,
     "highFrequency" float NOT NULL,
-    available smallint DEFAULT 0,
+    available smallint DEFAULT 1,
     "grantId" varchar(45),
 	"channelType" channel_type DEFAULT NULL,
     PRIMARY KEY ("lowFrequency","highFrequency")
