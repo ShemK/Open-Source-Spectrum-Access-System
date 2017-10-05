@@ -205,7 +205,7 @@ class JsonListener{
 					//AND highFrequency = ".$highFrequency.";";
 					$select_array = array('available','channelType');
 					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
-					$cbsd_table = 'cbsdInfo_' + $cbsdId;
+					$cbsd_table = "cbsdInfo_".$cbsdId;
 					echo $cbsd_table;			//Testing
 					$query = $this->create_select_query($select_array, $cbsd_table ,$where_array);
 					$result = $this->myDBHandler->query($query);
