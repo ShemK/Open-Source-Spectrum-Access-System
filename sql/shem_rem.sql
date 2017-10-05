@@ -146,7 +146,7 @@ BEGIN
     LF:= LowerFreq;
     FOR i in 1..15
     LOOP
-    INSERT INTO cbsd_channels("lowFrequency", "highFrequency","available","channelType") VALUES (LF, LF + 10000000,0,'PAL');
+    INSERT INTO cbsd_channels("lowFrequency", "highFrequency","available","channelType") VALUES (LF, LF + 10000000,1,'PAL');
     i := i+1;
     LF := LF + 10000000;
     END LOOP;
