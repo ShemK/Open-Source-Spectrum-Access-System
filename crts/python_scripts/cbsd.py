@@ -38,6 +38,7 @@ class Cbsd(object):
     _json_encoder = None
     _json_decoder = None
     grantTimeLeft = None
+    my_heartbeat_Thread = None
     def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber,cbsdInfo):
         self._fccId = fccId
         self._cbsdCategory = cbsdCategory
@@ -388,11 +389,13 @@ class Cbsd(object):
 
 
     def startGrant(self,my_server_connection,start_radio_Thread):
+        self.start_radio_thread = start_radio_Thread
         if self._grant_state != "IDLE":
             my_grant_Thread = cbsd_thread.cbsd_thread(self,my_server_connection,\
                         "grant",self.grantTimeLeft,heartbeat_thread = self.my_heartbeat_Thread,\
                         start_radio = start_radio_Thread)
             my_grant_Thread.start()
+            self.clear_channels()
 
     def get_command(self):
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP

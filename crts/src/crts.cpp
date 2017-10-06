@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <liquid/liquid.h>
+#include <limits.h>
+#include <unistd.h>
 #include <cstdint>
 #include "crts.hpp"
 #include "extensible_cognitive_radio.hpp"
@@ -12,6 +14,14 @@
 #else
 #define dprintf(...) /*__VA_ARGS__*/
 #endif
+
+//https://stackoverflow.com/questions/143174/how-do-i-get-the-directory-that-a-program-is-running-from
+std::string getexepath()
+{
+  char result[ PATH_MAX ];
+  ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
+  return std::string( result, (count > 0) ? count : 0 );
+}
 
 int crts_get_str2net_traffic_type(const char * net_traffic_type) {
   if(!strcmp(net_traffic_type, "stream"))
@@ -31,7 +41,7 @@ int crts_get_str2tx_freq_behavior(const char * tx_freq_behavior) {
     return TX_FREQ_BEHAVIOR_SWEEP;
   if (!strcmp(tx_freq_behavior, "random"))
     return TX_FREQ_BEHAVIOR_RANDOM;
-  
+
   return TX_FREQ_BEHAVIOR_UNKNOWN;
 }
 
@@ -50,13 +60,13 @@ void str2argcargv(char *string, char *progName, int &argc, char (**&argv))    {
     (argc)++;
     token = strtok(NULL, " ");
   }
-  
+
   argv = (char **) malloc(sizeof(char*) * (argc+1));
   argv[argc] = 0;
   // Set the name of the program in the first element
   argv[0] = (char *) malloc(sizeof(char) * (strlen(progName)+1));
-  strcpy(argv[0], progName); 
-  
+  strcpy(argv[0], progName);
+
   if ((argc) > 1){
     free(stringCpy);
     stringCpy = (char *) malloc(sizeof(char)*(strlen(string)+1));
@@ -67,7 +77,7 @@ void str2argcargv(char *string, char *progName, int &argc, char (**&argv))    {
       argv[i] = (char *) malloc(sizeof(char)*(strlen(token)+1));
       strcpy( argv[i], token);
       token = strtok(NULL, " ");
-    } 
+    }
   }
 
   free(stringCpy);
@@ -95,8 +105,8 @@ void freeargcargv(int &argc, char **&argv) {
 // Config files
 //////////////////////////////////////////////////////////////////
 
-void read_master_parameters(char *nameMasterScenFile, 
-                            int *num_scenarios, 
+void read_master_parameters(char *nameMasterScenFile,
+                            int *num_scenarios,
                             bool *octave_log_summary) {
   config_t cfg; // Returns all parameters in this structure
   char config_str[30];
@@ -178,8 +188,14 @@ struct scenario_parameters read_scenario_parameters(char *scenario_file) {
   config_init(&cfg);
 
   // string pointing to scenario file
-  char scenario[100];
-  strcpy(scenario, "scenarios/");
+  std::string path = getexepath();
+  int x = path.size() - 16;
+  memset(&path[x],'\0',16);
+  std::cout << "Path: " << path << "\n";
+  char scenario[200];
+  memset(scenario,'\0',200);
+  strcpy(scenario, path.c_str());
+  strcat(scenario,"/scenarios/");
   strcat(scenario, scenario_file);
 
   // Read the file. If there is an error, report it and exit.
@@ -195,18 +211,18 @@ struct scenario_parameters read_scenario_parameters(char *scenario_file) {
   int tmpI;
   double tmpD;
   const char *tmpS;
-  
+
   config_lookup_int(&cfg, "num_nodes", &tmpI);
   sp.num_nodes = tmpI;
   config_lookup_float(&cfg, "run_time", &tmpD);
   // FIXME: Only integer number of seconds are allowed
   sp.run_time = (int64_t)tmpD;
-  
+
   if (config_lookup_string(&cfg, "scenario_controller", &tmpS))
     strcpy(sp.SC, tmpS);
   else
     strcpy(sp.SC, "SC_Template");
-  
+
   if (config_lookup_float(&cfg, "sc_timeout_ms", &tmpD))
     sp.sc_timeout_ms = tmpD;
   else
@@ -220,7 +236,7 @@ struct scenario_parameters read_scenario_parameters(char *scenario_file) {
     strcpy(sp.sc_args, tmpS);
   else
     sp.sc_args[0] = '\0';
-  
+
   config_destroy(&cfg);
 
   return sp;
@@ -228,8 +244,14 @@ struct scenario_parameters read_scenario_parameters(char *scenario_file) {
 
 struct node_parameters read_node_parameters(int node, char *scenario_file) {
   // string pointing to scenario file
-  char scenario[100];
-  strcpy(scenario, "scenarios/");
+  std::string path = getexepath();
+  int x = path.size() - 16;
+  memset(&path[x],'\0',16);
+  std::cout << "Path: " << path << "\n";
+  char scenario[200];
+  memset(scenario,'\0',200);
+  strcpy(scenario, path.c_str());
+  strcat(scenario,"/scenarios/");
   strcat(scenario, scenario_file);
 
   config_t cfg;
@@ -258,7 +280,7 @@ struct node_parameters read_node_parameters(int node, char *scenario_file) {
   strcpy(nodestr, "node");
   strcat(nodestr, node_num.c_str());
   config_setting_t *node_config = config_lookup(&cfg, nodestr);
-  
+
   // read team name for the node
   if(config_setting_lookup_string(node_config, "team_name", &tmpS))
       strcpy(np.team_name, tmpS);
@@ -627,17 +649,17 @@ struct node_parameters read_node_parameters(int node, char *scenario_file) {
   np.tx_crc = LIQUID_CRC_32;
   if (config_setting_lookup_string(node_config, "tx_crc", &tmpS))
     np.tx_crc = liquid_getopt_str2crc(tmpS);
-    
+
   // default tx FEC0 is Hamming 12/8
   np.tx_fec0 = LIQUID_FEC_HAMMING128;
   if (config_setting_lookup_string(node_config, "tx_fec0", &tmpS))
-    np.tx_fec0 = liquid_getopt_str2fec(tmpS); 
+    np.tx_fec0 = liquid_getopt_str2fec(tmpS);
 
   // default rx FEC1 is none
   np.tx_fec1 = LIQUID_FEC_NONE;
   if (config_setting_lookup_string(node_config, "tx_fec1", &tmpS))
     np.tx_fec1 = liquid_getopt_str2fec(tmpS);
-  
+
   if (config_setting_lookup_string(node_config, "interference_type", &tmpS)) {
     if (!strcmp(tmpS, "cw"))
       np.interference_type = INTERFERENCE_TYPE_CW;
@@ -650,7 +672,7 @@ struct node_parameters read_node_parameters(int node, char *scenario_file) {
     if (!strcmp(tmpS, "ofdm"))
       np.interference_type = INTERFERENCE_TYPE_OFDM;
     if (!strcmp(tmpS, "awgn"))
-      np.interference_type = INTERFERENCE_TYPE_AWGN; 
+      np.interference_type = INTERFERENCE_TYPE_AWGN;
   }
 
   if (config_setting_lookup_float(node_config, "period", &tmpD))
@@ -664,7 +686,7 @@ struct node_parameters read_node_parameters(int node, char *scenario_file) {
   // ======================================================
   np.tx_freq_behavior = TX_FREQ_BEHAVIOR_FIXED;
   if (config_setting_lookup_string(node_config, "tx_freq_behavior", &tmpS)) {
-    np.tx_freq_behavior = crts_get_str2tx_freq_behavior(tmpS); 
+    np.tx_freq_behavior = crts_get_str2tx_freq_behavior(tmpS);
   }
 
   if (config_setting_lookup_float(node_config, "tx_freq_min", &tmpD))
@@ -840,7 +862,7 @@ void print_node_parameters(struct node_parameters *np) {
 //////////////////////////////////////////////////////////////////
 
 int get_control_arg_len(int control_type){
-  
+
   int len;
   switch(control_type){
     case CRTS_TX_STATE:
@@ -880,7 +902,7 @@ int get_control_arg_len(int control_type){
 }
 
 int get_feedback_arg_len(int fb_type){
-  
+
   int len;
   switch(fb_type){
     case CRTS_TX_STATE:
@@ -910,7 +932,7 @@ int get_feedback_arg_len(int fb_type){
 }
 
 int crts_get_param_type(int param){
-  
+
   int param_type;
   switch(param){
     case CRTS_TX_STATE:
@@ -952,7 +974,7 @@ int crts_get_param_type(int param){
 }
 
 // define CRTS parameter strings, this needs to match the
-// crts_params enum in include/crts.hpp 
+// crts_params enum in include/crts.hpp
 const char * crts_param_str[CRTS_NUM_PARAM_TYPES] = {
   "tx state",
   "tx frequency",
@@ -962,7 +984,7 @@ const char * crts_param_str[CRTS_NUM_PARAM_TYPES] = {
   "tx CRC",
   "tx inner FEC",
   "tx outter FEC",
-  
+
   "rx state",
   "rx reset",
   "rx frequency",
@@ -974,9 +996,9 @@ const char * crts_param_str[CRTS_NUM_PARAM_TYPES] = {
 
   "network throughput",
   "network traffic type",
-  
+
   "feedback enables",
-  
+
   "tx duty cycle",
   "tx period",
   "tx frequency behavior",
@@ -993,6 +1015,6 @@ int crts_get_str2param(const char* param_str) {
     if (!strcmp(param_str, crts_param_str[i]))
       return i;
   }
-  
+
   return CRTS_UNKNOWN_PARAM;
 }

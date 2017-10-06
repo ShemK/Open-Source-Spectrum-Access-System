@@ -41,8 +41,8 @@ class ConfigEditor(object):
 
     #   read basic information that every node should have
     def create_basic_node_configuration(self):
-        config_path = os.getcwd()
-        config_path = config_path + '/config_scripts/basic_node.cfg'
+        config_path = os.path.dirname(os.path.abspath(__file__))
+        config_path = config_path + '/basic_node.cfg'
         return self.read_config_file(config_path)
 
     #   set the attributes for a node dictionary and return a new dict

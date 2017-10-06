@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import json
+import commands
 
 class cbsd_thread(threading.Thread):
     my_Interval = None
@@ -46,21 +47,22 @@ class cbsd_thread(threading.Thread):
             self.stop_thread = False
             print "\n---------------------------------------------------------\n"
             print "Transmission Done, Grant Relinquished"
-        elif self.interval_type == "grant":
-            if(self.my_Interval > 0):
-                time.sleep(self.my_Interval)
-            self.heartbeat_thread.stopThread()
-            self.start_radio.stopThread()
-            json_encoder = json.JSONEncoder()
 
             print "Sending relinquishmentRequest"
-
+            json_encoder = json.JSONEncoder()
             self.json_request = json_encoder.encode(self.my_cbsd.get_relinquishmentRequestObj())
             self.response = self.my_server_connection.send_request(self.json_request)
             #print self.response
             #closing connection
             self.my_server_connection.close_connection()
             self.stopThread()
+
+        elif self.interval_type == "grant":
+            if(self.my_Interval > 0):
+                time.sleep(self.my_Interval)
+            self.heartbeat_thread.stopThread()
+            self.start_radio.stopThread()
+
             #quit()
            # sys.exit()
 
@@ -70,9 +72,20 @@ class cbsd_thread(threading.Thread):
             print
             if self.my_cbsd.grouped != None:
                 self.create_config_file()
-                os.system("./crts_controller -s sas_scenarios/test")
+                x_path = os.path.dirname(os.path.abspath(__file__))
+                x_path = x_path + "/../crts_controller -s sas_scenarios/test"
+                os.system(x_path)
                 pass
 
+    def stopRadio(self):
+        pids = commands.getoutput("ps -ef | grep crts_controller | grep -v grep | awk '{print $2}'").split()
+        for pid in pids:
+            print pid
+            cmd = 'kill -15 '
+            cmd += pid
+            #print cmd
+            #kill the process
+            commands.getoutput(cmd)
 
 
     def stopThread(self):
@@ -125,7 +138,10 @@ class cbsd_thread(threading.Thread):
             self.configEditor.add_to_output(node_string,nodes[i])
         self.configEditor.add_to_output('num_nodes',len(self.my_cbsd.grouped))
         self.configEditor.add_to_output('run_time',self.my_cbsd.grantTimeLeft)
-        self.configEditor.write_config_file('../crts/scenarios/sas_scenarios/test.cfg')
+        config_path = os.path.dirname(os.path.abspath(__file__))
+        config_path = config_path + "/../scenarios/sas_scenarios/test.cfg"
+        print "Written to : ", config_path
+        self.configEditor.write_config_file(config_path)
 
     def assign_channels(self):
         freq_range = self.my_cbsd.get_operationFrequencyRange()
