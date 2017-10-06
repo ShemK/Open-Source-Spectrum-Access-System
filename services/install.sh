@@ -280,4 +280,6 @@ sudo chmod 664 /etc/systemd/system/aggregator.service
 
 sudo systemctl daemon-reload
 
+sudo systemctl enable aggregator.service
+
 sudo systemctl restart aggregator.service
