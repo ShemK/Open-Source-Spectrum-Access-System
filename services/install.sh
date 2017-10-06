@@ -259,15 +259,18 @@ sudo systemctl restart cbsd_control.service
 
 sudo mkdir /opt/sas/aggregator/
 
-git clone git clone -b aggregator https://github.com/ShemK/Open-Source-Spectrum-Access-System aggregator
 
-cd aggregator
+git clone -b rem_connector https://github.com/ShemK/Open-Source-Spectrum-Access-System aggregator
+
+cd aggregator/aggregator
 
 chmod a+x compile.sh
 
 ./compile.sh
 
-sudo mv test /opt/sas/aggregator/
+sudo cp test /opt/sas/aggregator/
+
+cd
 
 sudo chmod -R 665 /opt/sas/aggregator/
 
@@ -276,3 +279,5 @@ sudo cp auto_scripts/services/aggregator.service /etc/systemd/system/
 sudo chmod 664 /etc/systemd/system/aggregator.service
 
 sudo systemctl daemon-reload
+
+sudo systemctl restart aggregator.service
