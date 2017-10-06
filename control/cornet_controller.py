@@ -88,6 +88,19 @@ class CornetController(object):
         command = "ssh " + ip + " sudo systemctl status sdr_phy.service"
         os.system(command)
 
+    def start_sas_nodes(self):
+        self.sas_nodes= self.cornet_setup.SAS.nodeList
+        i = 0
+        while i < len(self.sas_nodes):
+            try:
+                self.start_sas(self.sas_nodes[i].ip)
+            except Exception as e:
+                print "Error With SAS Nodes: ",e
+            i = i+1
+        passsock.bind((UDP_IP, UDP_PORT))
+    def start_sas(self,ip):
+        command = "ssh " + ip + " 'sudo systemctl restart aggregator.service'"
+        os.system(command)
 
 class TransportHandler(object):
 
@@ -122,6 +135,7 @@ def main():
     p = cornetController.read_config_file('cornet.cfg')
     #cornetController.start_secondary_users()
     cornetController.start_sensors()
+    #cornetController.start_sas_nodes()
     #cornetController.stop_sensors()
     #command = "ssh 192.168.1.19 sudo systemctl restart sdr_phy.service"
     #os.system(command)
