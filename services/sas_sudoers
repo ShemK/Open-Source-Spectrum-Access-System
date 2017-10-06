@@ -52,3 +52,15 @@ ALL             ALL = NOPASSWD: /bin/systemctl restart cbsd_start.service
 
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl status cbsd_start.service
+
+# Add commands for start rem
+ALL             ALL = NOPASSWD: /bin/systemctl start aggregator.service
+
+# Add commands to stop rem
+ALL             ALL = NOPASSWD: /bin/systemctl stop aggregator.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl restart aggregator.service
+
+# Add commands to restart rem
+ALL             ALL = NOPASSWD: /bin/systemctl status aggregator.service

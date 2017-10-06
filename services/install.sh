@@ -239,7 +239,7 @@ sudo mkdir /opt/sas/central/
 
 #sudo cp central_controller/controller.py /opt/sas/central/
 
-sudo cp crts_sas/cbsd/config_scripts/controller.py /opt/sas/central/
+sudo cp crts_sas/crts/config_scripts/controller.py /opt/sas/central/
 
 sudo chmod 665 /opt/sas/central
 
@@ -256,3 +256,23 @@ sudo systemctl daemon-reload
 sudo systemctl enable cbsd_control.service
 
 sudo systemctl restart cbsd_control.service
+
+sudo mkdir /opt/sas/aggregator/
+
+git clone git clone -b aggregator https://github.com/ShemK/Open-Source-Spectrum-Access-System aggregator
+
+cd aggregator
+
+chmod a+x compile.sh
+
+./compile.sh
+
+sudo mv test /opt/sas/aggregator/
+
+sudo chmod -R 665 /opt/sas/aggregator/
+
+sudo cp auto_scripts/services/aggregator.service /etc/systemd/system/
+
+sudo chmod 664 /etc/systemd/system/aggregator.service
+
+sudo systemctl daemon-reload
