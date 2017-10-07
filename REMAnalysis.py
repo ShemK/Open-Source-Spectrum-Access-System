@@ -137,26 +137,38 @@ class REMAnalysis(threading.Thread):
                         calculated_info = calculated_info.dropna(axis = 0)
                         sensor.calculated_info = calculated_info
                         logging.debug("Current Sensor Info from %s : %s",sensor_id, calculated_info)
-                        #print calculated_info
+                        print calculated_info
                         if(len(sensor.normal_info) == 0):
                             sensor.normal_info = calculated_info
 
                         elif len(sensor.normal_info) == len(calculated_info):
                             diff = calculated_info - sensor.normal_info
 
-                            self.check_availability(diff)
+                            sensor.check_availability(self.cbsd,diff)
 
                             print "Diff: ", diff.max()
                             if diff.max() > 0.005:
                                 above_thresh = diff[(diff > 0.005)]
                                 logging.info("Found channels with interference")
-                                self.unavailable_frequencies = above_thresh.index.tolist() # TODO: Need to append to list
-                                logging.info("%s",str(self.unavailable_frequencies))
-                                for k in range(0,len(self.unavailable_frequencies)):
-                                    lowFrequency = float(self.unavailable_frequencies[k])
-                                    print "Frequency", lowFrequency
-                                    lowFrequency = round(float(lowFrequency)/10e6)*10e6
-                                    self.update_table(lowFrequency,0)
+                                print diff
+                                #logging.info("Found channels oci")
+                                #print calculated_info
+
+                                unavailable_temp = above_thresh.index.tolist()
+                                # TODO: Need to append to list
+                                for p in range(0,len(unavailable_temp)):
+                                    if len(sensor.unavailable_frequencies) == 0:
+                                        sensor.unavailable_frequencies.append(unavailable_temp[p])
+                                    else:
+                                        if unavailable_temp[p] not in sensor.unavailable_frequencies:
+                                            sensor.unavailable_frequencies.append(unavailable_temp[p])
+
+                                logging.info("%s",str(sensor.unavailable_frequencies))
+                                for k in range(0,len(sensor.unavailable_frequencies)):
+                                    lowFrequency = float(sensor.unavailable_frequencies[k])
+                                    print "Frequency occupied ",sensor_id," for now: ",lowFrequency
+                                    lowFrequency = math.floor(float(lowFrequency)/10e6)*10e6
+                                    sensor.update_table(self.cbsd,lowFrequency,0)
                             else:
                                 sensor.normal_info = calculated_info
 
@@ -170,7 +182,7 @@ class REMAnalysis(threading.Thread):
             if diff[self.unavailable_frequencies[i]] < 0.005:
                 lowFrequency = float(self.unavailable_frequencies[i])
                 print "Frequency", lowFrequency
-                lowFrequency = round(float(lowFrequency)/10e6)*10e6
+                lowFrequency = math.floor(float(lowFrequency)/10e6)*10e6
                 self.update_table(lowFrequency,1)
                 self.unavailable_frequencies.pop(i)
 
@@ -204,6 +216,7 @@ class sensor():
         self.state = "PASSIVE"
         self.last_active = 0
         self.clock_diff = 0
+        self.unavailable_frequencies = []
     def fetch_channel_info(self):
         table_name = "channelinfo_" + str(self.sensor_id)
         #print "Table Name: ",table_name
@@ -241,3 +254,20 @@ class sensor():
         if(row_num > 20):
             #print self.spectrum_info
             self.spectrum_info = DataFrame()
+
+    def check_availability(self,cbsd, diff):
+        for i in range(0,len(self.unavailable_frequencies)):
+            if diff[self.unavailable_frequencies[i]] < 0.005:
+                lowFrequency = float(self.unavailable_frequencies[i])
+                print "Frequency channel free at ",self.sensor_id,"for now: ", lowFrequency
+                lowFrequency = math.floor(float(lowFrequency)/10e6)*10e6
+                self.update_table(cbsd,lowFrequency,1)
+                self.unavailable_frequencies.pop(i)
+
+    def update_table(self, cbsd, lowFrequency, value):
+        sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET available = '+ str(value) + \
+                                        ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
+        cur = self.conn.cursor()
+        cur.execute(sql_query)
+        self.conn.commit()
+        print sql_query
