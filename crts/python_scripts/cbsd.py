@@ -4,6 +4,8 @@ import datetime
 import time
 import cbsd_thread
 import socket
+import gps_reader
+from gps_reader import *
 
 
 class Cbsd(object):
@@ -39,6 +41,7 @@ class Cbsd(object):
     _json_decoder = None
     grantTimeLeft = None
     my_heartbeat_Thread = None
+    installationParameters = None
     def __init__(self, fccId, cbsdCategory,userId,cbsdSerialNumber,cbsdInfo):
         self._fccId = fccId
         self._cbsdCategory = cbsdCategory
@@ -46,8 +49,12 @@ class Cbsd(object):
         self._cbsdSerialNumber = cbsdSerialNumber
         self._cbsdInfo = cbsdInfo
         self._registrationRequestObj = self._create_registration_request_obj()
+        self.create_installationParameterObj()
         self._json_encoder = json.JSONEncoder()
         self._json_decoder = json.JSONDecoder()
+        self.gpsReader = GPSReader(self)
+        self.start_gps()
+        self.grouped = None
 
     def _create_registration_request_obj(self):
         temp_registrationObj = {'registrationRequest': {
@@ -280,6 +287,7 @@ class Cbsd(object):
     def sendRegistrationRequest(self,my_server_connection):
         if(my_server_connection.is_connected()):
             json_request =  self._json_encoder.encode(self.get_registrationRequestObj())
+            print json_request
             response = my_server_connection.send_request(json_request)
 
             # create json decoder object
@@ -405,12 +413,43 @@ class Cbsd(object):
         print json_command
         channel_list = json_command['channels']
         self.cornet_config = json_command['cornet_config']
-        self.grouped = None
         if self.cornet_config != None:
             self.grouped = self.cornet_config['grouped']
+            if self.grouped != None:
+                self.sas_ip = self.cornet_config['sas']
+        else:
+            print "No SAS Provided, assuming localhost"
+            self.sas_ip = "127.0.0.1"
 
         # NOTE: Need to make variable bandwidth - 10 MHz is current quasi standard
         i = 0
         while i < len(channel_list):
             self.add_inquired_channels(channel_list[i],channel_list[i]+10e6)
             i = i+1
+
+    def create_installationParameterObj(self):
+        #NOTE: Will need to change this to read from a configuration file
+        self.installationParameters = {
+            'latitude':0,
+            'longitude':0,
+            'indoorDeployment':'false',
+            'heightType':'AGL',
+            'antennaAzimuth':271,
+            'antennaDowntilt':3,
+            'antennaGain':16,
+            'antennaBeamwidth':30
+        }
+        self.add_registration_parameters('installationParam',self.installationParameters)
+
+    def add_installation_parameters(self,key,value):
+        self.installationParameters[key] = value
+        self.add_registration_parameters('installationParam',self.installationParameters)
+
+    def start_gps(self):
+        self.gpsReader.start()
+
+    def stop_gps(self):
+        self.gpsReader.stop_gps()
+
+    def stop_cbsd(self):
+        self.stop_gps()

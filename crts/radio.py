@@ -4,6 +4,7 @@ import time
 import datetime
 import socket
 import signal
+import commands
 
 scripts = os.path.dirname(os.path.abspath(__file__))
 scripts = scripts + '/python_scripts'
@@ -22,25 +23,45 @@ import config_editor
 #def stop():
 newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba","yap")
 stop_radio = False
+stop_crts = False
 
 def handler(signum, frame):
     print 'Signal handler called with signal', signum
-    global stop_radio
-    stop_radio = True
-    print "Stop_sig: ", stop_radio
-    if newCbsd.get_grant_state != "IDLE":
-        newCbsd.start_radio_thread.stopRadio()
-        newCbsd.my_heartbeat_Thread.stopThread()
-        #newCbsd.my_heartbeat_Thread.stop_thread
+    global stop_crts
+    if signum == 14:
+        os.kill(os.getpid(), signal.SIGINT)
+        time.sleep(10)
+        #stop_crts == True
+    else:
+        #if stop_crts == False:
+        global stop_radio
+        stop_radio = True
+        print "Stop_sig: ", stop_radio
+        newCbsd.stop_cbsd()
+        if newCbsd.get_grant_state != "IDLE":
+            newCbsd.start_radio_thread.stopRadio()
+            newCbsd.my_heartbeat_Thread.stopThread()
+        #else:
+        #    stop_crts = False
+            #newCbsd.my_heartbeat_Thread.stop_thread
 
 def run_radio():
+        global stop_radio
         json_encoder = json.JSONEncoder()
         json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())
+        newCbsd.clear_channels()
 
+        try:
+            newCbsd.get_command()
+        except Exception as e:
+            print "Issue communicating with controller"
 
+        sas_ip = newCbsd.sas_ip
 
+        link = "http://"+sas_ip+"/spectrumAccessSystem/start.php"
+        print link
         print "--------------------------Starting-----------------------------"
-        my_server_connection = server_connection.Server_connection("http://127.0.0.1/spectrumAccessSystem/start.php")
+        my_server_connection = server_connection.Server_connection(link)
         newCbsd.add_registration_parameters("callSign","CB987")
         newCbsd.add_registration_parameters("airInterface","Antenna")
 
@@ -57,10 +78,6 @@ def run_radio():
         # TODO: Add connection to internal database
         # send channel inquiry in order of importance
         if(newCbsd.get_cbsd_state() == "REGISTERED"):
-            try:
-                newCbsd.get_command()
-            except Exception as e:
-                pass
             '''
             newCbsd.add_inquired_channels(890e6,900e6)
             newCbsd.add_inquired_channels(880e6,890e6)
@@ -108,16 +125,36 @@ def run_radio():
             sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
             my_port = 7816
             sock.bind(("0.0.0.0",my_port))
-            sock.settimeout(2.0)
+            sock.settimeout(1.0)
             data = None
-            while data == None:
+            while data == None and stop_radio == False:
                 try:
                     data = sock.recvfrom(1024)
                 except Exception as e:
+                    if not newCbsd.my_heartbeat_Thread.isAlive():
+                        break
                     pass
             print "Received something: ",data
-            newCbsd.my_heartbeat_Thread.join()
+            sock.close()
+            #newCbsd.my_heartbeat_Thread.join()
         #server_connection.close()
+        stop_crts()
+        time.sleep(30)
+
+def stop_crts():
+    pids = commands.getoutput("ps -ef | grep crts_controller | grep -v grep | awk '{print $2}'").split()
+    for pid in pids:
+        print pid
+        cmd = 'kill -2 '
+        cmd += pid
+        #print cmd
+        #kill the process
+        commands.getoutput(cmd)
+        time.sleep(1)
+        cmd = 'kill -2 '
+        cmd += pid
+        commands.getoutput(cmd)
+
 
 def main():
 

@@ -1,5 +1,6 @@
 import threading
 import server_connection
+import gps_reader
 import time
 import sys
 import os
@@ -69,7 +70,6 @@ class cbsd_thread(threading.Thread):
         elif self.interval_type == "start_radio":
         #    print("Nothing!")
             print("Thread Id:", os.getpid())
-            print
             if self.my_cbsd.grouped != None:
                 self.create_config_file()
                 x_path = os.path.dirname(os.path.abspath(__file__))
