@@ -259,6 +259,7 @@ sudo systemctl restart cbsd_control.service
 
 sudo mkdir /opt/sas/aggregator/
 
+sudo rm -r aggregator
 
 git clone -b rem_connector https://github.com/ShemK/Open-Source-Spectrum-Access-System aggregator
 
