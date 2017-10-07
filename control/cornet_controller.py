@@ -45,8 +45,9 @@ class CornetController(object):
         data = self.json_encoder.encode(su)
         self.messageHandler.send(data)
         #FIXME : Need to make it more universal. Go to the folder with the script
-        command = "ssh " + su.ip + " python crts_sas/crts/radio.py >/dev/null 2>&1 &"
-        os.system(command)
+        #command = "ssh " + su.ip + " python crts_sas/crts/radio.py >/dev/null 2>&1 &"
+        #command = "ssh " + su.ip + " python crts_sas/crts/radio.py"
+        #os.system(command)
         pass
 
     def stop_su(self,su):
@@ -133,8 +134,8 @@ class TransportHandler(object):
 def main():
     cornetController = CornetController()
     p = cornetController.read_config_file('cornet.cfg')
-    #cornetController.start_secondary_users()
-    cornetController.start_sensors()
+    cornetController.start_secondary_users()
+    #cornetController.start_sensors()
     #cornetController.start_sas_nodes()
     #cornetController.stop_sensors()
     #command = "ssh 192.168.1.19 sudo systemctl restart sdr_phy.service"
