@@ -1,7 +1,7 @@
 #include "CE_Network_Loading.hpp"
 
 #define DEBUG 0
-#if DEBUG == 1 || DEBUG > 2
+#if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/

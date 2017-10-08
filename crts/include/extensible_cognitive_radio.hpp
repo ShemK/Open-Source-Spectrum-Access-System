@@ -12,21 +12,13 @@
 #include "crts.hpp"
 #include "cognitive_engine.hpp"
 #include "timer.h"
-#include <mqueue.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <stdlib.h>
-#include <pmt/pmt.h>
 
 #define ECR_CONTROL_INFO_BYTES 6
-#define MAX_ESC_BUFFER 4000
+
 // thread functions
 void *ECR_tx_worker(void *_arg);
 void *ECR_rx_worker(void *_arg);
 void *ECR_ce_worker(void *_arg);
-void *ECR_esc_worker(void *_arg);
 
 // function that receives frame from PHY layer
 int rxCallback(unsigned char *_header, int _header_valid,
@@ -43,7 +35,7 @@ enum tx_states {
 };
 
 /// \brief Defines the possible states of the receiver, which
-/// can be either off, or continuously receiving.
+/// can be either off, or continuously receiving. 
 enum rx_states {
   RX_STOPPED = 0,
   RX_CONTINUOUS
@@ -59,9 +51,9 @@ enum worker_states {
 
 class ExtensibleCognitiveRadio {
 public:
-  ExtensibleCognitiveRadio(char *virtual_interface);
-  ExtensibleCognitiveRadio():ExtensibleCognitiveRadio((char *) "tunCRTS") {};
+  ExtensibleCognitiveRadio();
   ~ExtensibleCognitiveRadio();
+
   //=================================================================================
   // Enums and Structs
   //=================================================================================
@@ -77,13 +69,13 @@ public:
     TIMEOUT = 0,
 
     /// \brief A PHY layer frame has been received, causing the execution
-    /// of the CE.
+    /// of the CE. 
     PHY_FRAME_RECEIVED,
 
     /// \brief Indicates that the transmit worker has completed
     /// transmission of its final frame
     TX_COMPLETE,
-
+    
     /// \brief The receiver processing is not able to keep up with the
     /// current settings.
     UHD_OVERFLOW,
@@ -656,7 +648,7 @@ public:
   /// \brief Return the value of
   /// ExtensibleCognitiveRadio::tx_state.
   int get_tx_state();
-
+  
   /// \brief Return the value of
   /// ExtensibleCognitiveRadio::tx_parameter_s::tx_freq.
   double get_tx_dsp_freq();
@@ -714,7 +706,7 @@ public:
   void get_tx_control_info(unsigned char *_control_info);
 
   double get_tx_data_rate();
-
+  
   void start_tx();
   void start_tx_burst(unsigned int _num_tx_frames,
                       float _max_tx_time_ms);
@@ -724,7 +716,7 @@ public:
   /// \brief Transmit a control frame.
   ///
   /// The cognitive engine (CE) can initiate transmission
-  /// of a frame dedicated to control information by
+  /// of a frame dedicated to control information by 
   /// calling this function.
   /// \p _payload is an array of \c unsigned \c char
   /// and can be any length. It can contain any data
@@ -742,8 +734,6 @@ public:
   void set_rx_freq(double _rx_freq);
 
   void set_rx_freq(double _rx_freq, double _dsp_freq);
-
-  void set_rx_freq(double _rx_freq,int channel, bool next_ch);
 
   /// \brief Set the value of ExtensibleCognitiveRadio::rx_parameter_s::rx_rate.
   void set_rx_rate(double _rx_rate);
@@ -831,13 +821,7 @@ public:
   float get_rx_stat_tracking_period();
   struct rx_statistics get_rx_stats();
   void reset_rx_stats();
-
-
-  void set_esc_channel(int channel);
-  int get_esc_channel();
-  void send_esc_data(std::complex<float> * buffer, int buffer_len);
-  void change_num_channels(int num_channels);
-
+  
   //=================================================================================
   // Print/Log Methods and Variables
   //=================================================================================
@@ -864,9 +848,6 @@ public:
 
   uhd::usrp::multi_usrp::sptr usrp_rx;
   uhd::rx_metadata_t metadata_rx;
-
-  uhd::rx_streamer::sptr usrp_rx_streamer;
-  uhd::tx_streamer::sptr usrp_tx_streamer;
 
 private:
   //=================================================================================
@@ -945,8 +926,8 @@ private:
   unsigned int frame_num;
   unsigned int frame_uhd_overflows; // overflows that have occurred
   std::complex<float> *rx_buffer;
-  size_t rx_buffer_len;
-
+  size_t rx_buffer_len; 
+  
   // receiver threading objects
   pthread_t rx_process;     // receive thread
   pthread_mutex_t rx_mutex; // receive mutex
@@ -977,7 +958,7 @@ private:
   bool reset_fg;
   void update_tx_params();
   void transmit_frame(unsigned int frame_type,
-                      unsigned char *_payload,
+                      unsigned char *_payload, 
                       unsigned int _payload_len);
   ofdmflexframegen fg;           // frame generator object
   unsigned int fgbuffer_len;     // length of frame generator buffer
@@ -985,7 +966,7 @@ private:
                                  // numSubcarriers + cp_len x 1]
   unsigned char tx_header[8];    // header container (must have length 8)
   unsigned int frame_counter;
-  unsigned int numDataSubcarriers;
+  unsigned int numDataSubcarriers;	
   double tx_data_rate;
   int update_tx_data_rate;
   unsigned int num_tx_frames;
@@ -1001,55 +982,6 @@ private:
   int tx_worker_state;
   int tx_state;
   friend void *ECR_tx_worker(void *);
-
-
-  // esc threading objects
-  pthread_t esc_process;
-  pthread_mutex_t esc_mutex;
-  pthread_mutex_t esc_state_mutex;
-  pthread_mutex_t esc_params_mutex;
-  pthread_cond_t esc_cond;
-  bool esc_complete;
-  bool esc_thread_running;
-  int esc_worker_state;
-  int esc_state;
-  friend void *ECR_esc_worker(void *);
-
-  //
-  int num_boards = 0;
-  int pipe_fd = 0;
-  const char * pipe_fifo = "/tmp/ecr_esc";
-  bool send_to_esc;
-  int esc_channel;
-  std::complex<float> * esc_data;
-  int sample_time = 0;
-
-  struct ESC_Struct{
-    int sample = 0;
-    double frequency = 0;
-    double sample_rate = 0;
-    int num_samples = 0;
-    std::complex<float> data[MAX_ESC_BUFFER];
-  };
-
-  ESC_Struct *shared_struct;
-
-  void set_rx_streamer(int num_channels);
-  void set_tx_streamer(int num_channels);
-
-  struct ChannelState{
-    double freq;
-    double dsp_freq;
-    double rate;
-  };
-  int num_channels = 1;
-  int channel_to_change = 0;
-  int ecr_channel = 0;
-  ChannelState rx_channels[2];
-  ChannelState tx_channels[2];
-
-  double pending_esc_frequency = 0;
-  bool change_esc_frequency = false;
 };
 
 #endif

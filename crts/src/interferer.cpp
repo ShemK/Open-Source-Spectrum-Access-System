@@ -14,7 +14,7 @@
 #include <random>
 
 #define DEBUG 0
-#if DEBUG == 1 || DEBUG > 2
+#if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
 #define dprintf(...) /*__VA_ARGS__*/
@@ -41,12 +41,6 @@ Interferer::Interferer()
   uhd::device_addr_t dev_addr;
   usrp_tx = uhd::usrp::multi_usrp::make(dev_addr);
   usrp_tx->set_tx_antenna("TX/RX", 0);
-  uhd::stream_args_t tx_stream_args("fc32");
-  std::vector<size_t> tx_channel_nums;
-  tx_channel_nums.push_back(0);
-
-  tx_stream_args.channels = tx_channel_nums;
-  usrp_tx_streamer = usrp_tx->get_tx_stream(tx_stream_args);
 
   // create and start tx thread
   tx_state = INT_TX_STOPPED;
@@ -146,7 +140,7 @@ void Interferer::BuildNOISETransmission() {
   }
   buffered_samps = tx_buffer.size();
   }
-
+  
   void Interferer::BuildAWGNTransmission() {
   for (unsigned int i = 0; i < tx_buffer.size(); i++) {
        tx_buffer[i].real (dist(generator));
@@ -280,8 +274,6 @@ void Interferer::BuildOFDMTransmission() {
              TX_BUFFER_LENGTH - num_subcarriers - OFDM_CP_LENGTH) {
     frame_complete = ofdmflexframegen_writesymbol(
         ofdm_fg, &tx_buffer[j * (num_subcarriers + cp_len)]);
-  //  frame_complete = ofdmflexframegen_write(
-  //      ofdm_fg, &tx_buffer[j * (num_subcarriers + cp_len)],num_subcarriers + cp_len);
     buffered_samps += num_subcarriers + cp_len;
     j++;
   }
@@ -320,19 +312,6 @@ void Interferer::TransmitInterference() {
   unsigned int tx_samp_count = 0;
   unsigned int usrp_samps = USRP_BUFFER_LENGTH;
 
-  std::vector<std::vector<std::complex<float>>> buffs(
-      usrp_tx->get_tx_num_channels(),
-      std::vector<std::complex<float>>(usrp_samps));
-  //create a vector of pointers to point to each of the channel buffers
-  std::vector<std::complex<float> *> buff_ptrs;
-
-  for (size_t i = 0; i < buffs.size(); i++)
-  {
-    buff_ptrs.push_back(&buffs[i].front());
-  }
-
-
-  memcpy(buff_ptrs[0], &tx_buffer[0], USRP_BUFFER_LENGTH * sizeof(std::complex<float>));
   if (log_tx_flag)
     log_tx_parameters();
 
@@ -340,11 +319,10 @@ void Interferer::TransmitInterference() {
     if (buffered_samps - tx_samp_count <= USRP_BUFFER_LENGTH)
       usrp_samps = buffered_samps - tx_samp_count;
 
-    //usrp_tx->get_device()->send(&tx_buffer[tx_samp_count], usrp_samps,
-      //                          metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
-      //                          uhd::device::SEND_MODE_FULL_BUFF);
+    usrp_tx->get_device()->send(&tx_buffer[tx_samp_count], usrp_samps,
+                                metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
+                                uhd::device::SEND_MODE_FULL_BUFF);
 
-    usrp_tx_streamer->send(buff_ptrs, usrp_samps, metadata_tx);
     // update number of tx samples remaining
     tx_samp_count += USRP_BUFFER_LENGTH;
   }
@@ -399,22 +377,9 @@ void *Interferer_tx_worker(void *_arg) {
     Int->metadata_tx.start_of_burst = true;
     Int->metadata_tx.end_of_burst = false;
     Int->metadata_tx.has_time_spec = false;
-
-    std::vector<std::vector<std::complex<float>>> buffs(
-        Int->usrp_tx->get_tx_num_channels(),
-        std::vector<std::complex<float>>(USRP_BUFFER_LENGTH));
-    //create a vector of pointers to point to each of the channel buffers
-    std::vector<std::complex<float> *> buff_ptrs;
-
-    for (size_t i = 0; i < buffs.size(); i++)
-    {
-      buff_ptrs.push_back(&buffs[i].front());
-    }
-    memcpy(buff_ptrs[0], &Int->tx_buffer[0], USRP_BUFFER_LENGTH * sizeof(std::complex<float>));
-    Int->usrp_tx_streamer->send(buff_ptrs, 0, Int->metadata_tx);
-    //Int->usrp_tx->get_device()->send(&Int->tx_buffer[0], 0, Int->metadata_tx,
-    //                                 uhd::io_type_t::COMPLEX_FLOAT32,
-    //                                 uhd::device::SEND_MODE_FULL_BUFF);
+    Int->usrp_tx->get_device()->send(&Int->tx_buffer[0], 0, Int->metadata_tx,
+                                     uhd::io_type_t::COMPLEX_FLOAT32,
+                                     uhd::device::SEND_MODE_FULL_BUFF);
     Int->metadata_tx.start_of_burst = false;
 
     // run transmitter
@@ -434,10 +399,9 @@ void *Interferer_tx_worker(void *_arg) {
 
         // send end of burst packet
         Int->metadata_tx.end_of_burst = true;
-      //  Int->usrp_tx->get_device()->send("", 0, Int->metadata_tx,
-      //                                   uhd::io_type_t::COMPLEX_FLOAT32,
-      //                                   uhd::device::SEND_MODE_FULL_BUFF);
-        Int->usrp_tx_streamer->send("", 0, Int->metadata_tx);
+        Int->usrp_tx->get_device()->send("", 0, Int->metadata_tx,
+                                         uhd::io_type_t::COMPLEX_FLOAT32,
+                                         uhd::device::SEND_MODE_FULL_BUFF);
       }
       if (Int->tx_state == INT_TX_DUTY_CYCLE_OFF &&
           timer_toc(Int->duty_cycle_timer) >=
@@ -449,12 +413,12 @@ void *Interferer_tx_worker(void *_arg) {
         // send start of burst packet
         Int->metadata_tx.start_of_burst = true;
         Int->metadata_tx.end_of_burst = false;
-      //  Int->usrp_tx->get_device()->send(
-      //      &Int->tx_buffer[0], 0, Int->metadata_tx,
-      //      uhd::io_type_t::COMPLEX_FLOAT32, uhd::device::SEND_MODE_FULL_BUFF);
-        Int->usrp_tx_streamer->send(buff_ptrs, 0, Int->metadata_tx);
-      //  Int->metadata_tx.start_of_burst = false;
+        Int->usrp_tx->get_device()->send(
+            &Int->tx_buffer[0], 0, Int->metadata_tx,
+            uhd::io_type_t::COMPLEX_FLOAT32, uhd::device::SEND_MODE_FULL_BUFF);
+        Int->metadata_tx.start_of_burst = false;
       }
+
       // generate frame and transmit if in the on state
       if (Int->tx_state == INT_TX_DUTY_CYCLE_ON) {
         switch (Int->interference_type) {

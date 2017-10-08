@@ -37,7 +37,7 @@ void *Interferer_tx_worker(void *_arg);
 
 class Interferer {
 public:
-  Interferer(/*string with name of CE_uhd::tx_streamer::sptr usrp_tx_streamer;execute function*/);
+  Interferer(/*string with name of CE_execute function*/);
   ~Interferer();
 
   // Interference parameters
@@ -61,15 +61,15 @@ public:
   // timers
   timer duty_cycle_timer;
   timer freq_dwell_timer;
-
+  
   // log parameters
   bool log_tx_flag;
   std::ofstream tx_log_file;
   char tx_log_file_name[100];
-
+  
   //log file for samples
   std::ofstream sample_file;
-
+  
   std::default_random_engine generator;
   std::normal_distribution<double> dist;
 
@@ -82,7 +82,6 @@ public:
 
   // RF objects and properties
   uhd::usrp::multi_usrp::sptr usrp_tx;
-  uhd::tx_streamer::sptr usrp_tx_streamer;
   uhd::tx_metadata_t metadata_tx;
 
   unsigned int buffered_samps;
@@ -113,7 +112,7 @@ public:
   void BuildRRCTransmission();
   void BuildOFDMTransmission();
   void BuildAWGNTransmission();
-
+  
 private:
 };
 
