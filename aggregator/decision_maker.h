@@ -19,5 +19,6 @@ public:
   long int currentTime;
   bool frequency_change = false;
   int times_up;
+  int values_thrown;
   int nodeID;
 };

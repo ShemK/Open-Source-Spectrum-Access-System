@@ -5,6 +5,7 @@
 DecisionMaker::DecisionMaker(){
   center_frequency = 0;
   nodeID = 0;
+  values_thrown = 0;
 }
 
 DecisionMaker::~DecisionMaker(){
@@ -26,6 +27,7 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
   if(center_frequency != this->center_frequency) {
     frequency_change = true;
     printf("Frequency Changed\n");
+    values_thrown = 0;
   }
   if(!frequency_change){
     struct timeval tp;
@@ -33,9 +35,11 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
     long int currentTime  = tp.tv_sec;
     double secondsPassed = currentTime - startTime;
     //printf("secondsPassed: %f\n", secondsPassed);
-
+    values_thrown++;
     if(secondsPassed < 0.2){
-      occ_values.push_back(occ_vector);
+      if(values_thrown > 3){
+        occ_values.push_back(occ_vector);
+      }
       //printf("OCC SIZE:%lu\n",occ_values.size());
       std::vector<float> temp;
       return temp;
