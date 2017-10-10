@@ -45,6 +45,7 @@ CREATE TABLE registered_cbsds (
   "groupingParam" text,
   "measCapability" text,
   "cbsdId" varchar(45) NOT NULL,
+  "last_active" timestamp DEFAULT NULL,
   PRIMARY KEY ("userId","fccId","cbsdId"),
   UNIQUE("cbsdId")
 );
@@ -105,7 +106,7 @@ CREATE TRIGGER cbsd_id_update_trigger
   EXECUTE PROCEDURE CREATE_CBSD_CHANNEL_TABLE();
 
 
-INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
+INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa',NULL);
 
 DROP TABLE IF EXISTS cbsd_channels;
 
@@ -190,7 +191,7 @@ DECLARE
   sql text;
 BEGIN
     LF:= LowerFreq;
-    FOR i in 1..75
+    FOR i in 1..100
     LOOP
 
     EXECUTE format('
@@ -296,7 +297,7 @@ DECLARE
   sql text;
 BEGIN
     LF:= LowerFreq;
-    FOR i in 1..75
+    FOR i in 1..100
     LOOP
     INSERT INTO ChannelInfo(startfreq, endfreq) VALUES (LF, LF + 2000000);
     i := i+1;
