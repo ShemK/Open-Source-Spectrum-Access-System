@@ -45,7 +45,7 @@ CREATE TABLE registered_cbsds (
   "groupingParam" text,
   "measCapability" text,
   "cbsdId" varchar(45) NOT NULL,
-  "last_active" timestamp DEFAULT NULL,
+  "last_active" INT DEFAULT 0,
   PRIMARY KEY ("userId","fccId","cbsdId"),
   UNIQUE("cbsdId")
 );
