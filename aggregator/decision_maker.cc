@@ -37,7 +37,7 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
     //printf("secondsPassed: %f\n", secondsPassed);
     values_thrown++;
     if(secondsPassed < 0.2){
-      if(values_thrown > 3){
+      if(values_thrown > 10){
         occ_values.push_back(occ_vector);
       }
       //printf("OCC SIZE:%lu\n",occ_values.size());
