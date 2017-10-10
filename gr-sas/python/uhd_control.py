@@ -64,7 +64,7 @@ class uhd_control(gr.sync_block):
             self.message_port_pub(pmt.intern("center_freq"), pmt.from_double(self.freq))
             self.message_port_pub(pmt.intern("bandwidth"), pmt.from_double(self.bw))
             self.message_port_pub(pmt.intern("gain"), pmt.from_double(self.gain))
-            self.max_count = (50e6)/self.bw
+            self.max_count = (150e6)/self.bw
             if self.count > self.max_count:
                 self.freq = self.base_freq
                 self.count = 0
