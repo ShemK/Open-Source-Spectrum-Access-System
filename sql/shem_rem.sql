@@ -146,7 +146,7 @@ DECLARE
   sql text;
 BEGIN
     LF:= LowerFreq;
-    FOR i in 1..15
+    FOR i in 1..20
     LOOP
     INSERT INTO cbsd_channels("lowFrequency", "highFrequency","available","channelType") VALUES (LF, LF + 10000000,1,'PAL');
     i := i+1;
