@@ -148,6 +148,7 @@ class JsonListener{
 														}
 													}
 												}
+												$this->updateLastActive($cbsdId);
 											}else{
 												$replyObj = (object)['response'=>(object)['responseCode'=>'103', 'responseMessage'=>'INVALID_VALUE: invalid CBSD callSign']];
 											}
@@ -203,9 +204,10 @@ class JsonListener{
 					//$query = "SELECT available,channelType FROM channels
 					//WHERE lowFrequency = ".$lowFrequency."
 					//AND highFrequency = ".$highFrequency.";";
+					$cbsd_table = "cbsdInfo_".$cbsdId;
 					$select_array = array('available','channelType');
 					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
-					$query = $this->create_select_query($select_array,'cbsd_channels',$where_array);
+					$query = $this->create_select_query($select_array,$cbsd_table ,$where_array);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
 						if($row['available'] == 1) {
@@ -220,7 +222,7 @@ class JsonListener{
 				$replyObj = (object) ['cbsdId'=>$cbsdId];
 				$replyObj->{'availableChannel'} = $availableChannel;
 				$replyObj->{'response'} = (object) ['responseCode' => '0'];
-
+				$this->updateLastActive($cbsdId);
 			} else{
 				$responseData = array('cbsdId');
 				$replyObj = (object) ['response'=>(object)['responseCode'=>'102','responseMessage'=>'Invalid CBSDID', 'responseData'=>$responseData]];
@@ -241,7 +243,7 @@ class JsonListener{
 		$replyObj = (object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
 		if(property_exists($grantInquiryObj, 'cbsdId')) {
 			$cbsdId = $grantInquiryObj->{'cbsdId'};
-
+			$this->updateLastActive($cbsdId);
 			$replyObj = (object) ['cbsdId'=>$cbsdId];
 			$operationParam = $grantInquiryObj->{'operationParam'};
 			$maxEirp = $operationParam->{'maxEirp'};
@@ -257,7 +259,7 @@ class JsonListener{
 					//echo time();
 					date_default_timezone_set ('UTC');
 					// add 10 seconds = 1 * 60 seconds
-					$grantExpireTime = time() + (1*10/60*60);
+					$grantExpireTime = time() + (1*60/60*60);
 					$grantExpireDate = $this->convertTimeToDate($grantExpireTime);
 					$replyObj->{'grantExpireTime'} = $grantExpireDate;
 					$replyObj->{'heartbeatInterval'} = 2;
@@ -285,6 +287,12 @@ class JsonListener{
 		return $replyObj;
 	}
 
+	private function queryPrimaryUserActivity($cbsdId,$lowFrequency,$highFrequency){
+		$cbsd_table = "cbsdInfo_".$cbsdId;
+		$query = "SELECT available, pu_absent FROM ".$cbsd_table." WHERE highFrequency BETWEEN ".
+		 					$lowFrequency." AND ".$highFrequency.";";
+		$result = $this->myDBHandler->query($query);
+	}
 
 	/*
 	Heartbeat Functions
@@ -298,7 +306,6 @@ class JsonListener{
 			if(property_exists($newHeartBeatInquiryObj, 'grantId')) {
 				$grantId = $newHeartBeatInquiryObj->{'grantId'};
 
-				//				$query = "SELECT * FROM grants WHERE grantId = '".$grantId."';";
 				$query = $this->create_select_query('*','grants',array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				if($row = $this->myDBHandler->fetchResults($result)) {
@@ -336,6 +343,7 @@ class JsonListener{
 				$grantId = $newRelinquishmentInquiryObj->{'grantId'};
 				$query = $this->create_update_query('cbsd_channels',array('available' => 1),array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
+				$this->updateLastActive($cbsdId);
 			}
 
 		}
@@ -482,6 +490,12 @@ class JsonListener{
 			}
 		}
 		return $query;
+	}
+
+	private function updateLastActive($cbsdId){
+		$clockInTime = time();
+		$query = $this->create_update_query('registered_cbsds',array('last_active' => $clockInTime),array('cbsdId'=>$cbsdId));
+		$result = $this->myDBHandler->query($query);
 	}
 }
 ?>
