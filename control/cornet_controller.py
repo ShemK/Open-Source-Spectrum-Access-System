@@ -98,7 +98,7 @@ class CornetController(object):
             except Exception as e:
                 print "Error With SAS Nodes: ",e
             i = i+1
-        passsock.bind((UDP_IP, UDP_PORT))
+
     def start_sas(self,ip):
         command = "ssh " + ip + " 'sudo systemctl restart aggregator.service'"
         os.system(command)
