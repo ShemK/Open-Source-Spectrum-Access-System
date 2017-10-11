@@ -15,6 +15,13 @@ DROP TYPE IF EXISTS cbsd_category;
 CREATE TYPE cbsd_category AS ENUM ('A','B');
 
 
+DROP TYPE IF EXISTS channel_type;
+CREATE TYPE channel_type AS ENUM ('PAL','GAA');
+
+
+DROP TYPE IF EXISTS grant_category;
+CREATE TYPE grant_category AS ENUM ('GRANTED','AUTHORIZED','NULL');
+
 CREATE TABLE IF NOT EXISTS blacklisted_cbsds (
   "userId" varchar(19) NOT NULL,
   "fccId" varchar(19) NOT NULL,
@@ -59,7 +66,7 @@ DECLARE
   sql text;
 BEGIN
     LF:= LowerFreq;
-    FOR i in 1..15
+    FOR i in 1..20
     LOOP
 
     EXECUTE format('
@@ -83,6 +90,10 @@ EXECUTE format('
     "highFrequency" float NOT NULL,
     available smallint DEFAULT 1,
     "grantId" varchar(45),
+    "grantExpireTime" int NOT NULL,
+    "heartBeatInterval" int NOT NULL,
+    "maxEirp" int NOT NULL,
+    "grantState" grant_category DEFAULT 'GRANTED',
     "channelType" channel_type DEFAULT NULL,
     "pu_absent" smallint DEFAULT 1, 
     PRIMARY KEY ("lowFrequency","highFrequency")
@@ -110,9 +121,6 @@ INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','ya
 
 DROP TABLE IF EXISTS cbsd_channels;
 
-DROP TYPE IF EXISTS channel_type;
-CREATE TYPE channel_type AS ENUM ('PAL','GAA');
-
 CREATE TABLE cbsd_channels (
   "lowFrequency" float NOT NULL,
   "highFrequency" float NOT NULL,
@@ -124,9 +132,6 @@ CREATE TABLE cbsd_channels (
 
 
 DROP TABLE IF EXISTS grants;
-
-DROP TYPE IF EXISTS grant_category;
-CREATE TYPE grant_category AS ENUM ('GRANTED','AUTHORIZED');
 
 CREATE TABLE IF NOT EXISTS grants (
   "grantId" varchar(45) NOT NULL,
