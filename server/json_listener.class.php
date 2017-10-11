@@ -272,12 +272,14 @@ class JsonListener{
 					$query = $this->create_insert_query('grants',$attributes);
 					$result = $this->myDBHandler->query($query);
 
-					$query = 'UPDATE cbsd_channels SET "grantId" = '."'".$replyObj->{'grantId'}."'"
-					.',available = 0 WHERE "lowFrequency" = '."'".$lowFrequency."';";
-					$result = $this->myDBHandler->query($query);
-
+					#$query = 'UPDATE cbsd_channels SET "grantId" = '."'".$replyObj->{'grantId'}."'"
+					#.',available = 0 WHERE "lowFrequency" = '."'".$lowFrequency."';";
+					#$result = $this->myDBHandler->query($query);
+					$grantState = "GRANTED";
 					$query = 'UPDATE '.$cbsd_table.' SET "grantId" = '."'".$replyObj->{'grantId'}."'"
-					.',available = 0 WHERE "lowFrequency" = '."'".$lowFrequency."';";
+					.',available = 0 ,"grantState" = '."'".$grantState."'".' WHERE "lowFrequency" = '."'".$lowFrequency."';";
+
+					#echo $query;
 					$result = $this->myDBHandler->query($query);
 				}
 			}
@@ -303,22 +305,32 @@ class JsonListener{
 			if(property_exists($newHeartBeatInquiryObj, 'grantId')) {
 				$grantId = $newHeartBeatInquiryObj->{'grantId'};
 				$cbsd_table = "cbsdInfo_".$cbsdId;
-				$query = $this->create_select_query('*','grants',array('grantId'=>$grantId));
+				$query = $this->create_select_query('*',$cbsd_table,array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				if($row = $this->myDBHandler->fetchResults($result)) {
-					if($this->queryPrimaryUserActivity($cbsdId) == False){
+					if($this->queryPrimaryUserActivity($cbsdId,$grantId) == True){
 						if($row['grantState'] == 'GRANTED') {
+							$query = $this->create_update_query($cbsd_table,array('grantState' => 'AUTHORIZED'),array('grantId'=>$grantId));
+							$result = $this->myDBHandler->query($query);
+
 							$query = $this->create_update_query('grants',array('grantState' => 'AUTHORIZED'),array('grantId'=>$grantId));
 							$result = $this->myDBHandler->query($query);
-							$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
-							'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
-							'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
 						}
-						else if($row['grantState'] == 'AUTHORIZED'){
-							$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
+						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
 							'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
-							'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime'])];
-						}
+							'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
+							'grantState'=>$row['grantState']];
+						$replyObj->{'response'}->{'responseCode'} = '0';
+					} else{
+						$replyObj = (object) ['cbsdId'=>$cbsdId,'grantId'=>$grantId,
+							'transmitExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
+							'grantExpireTime'=>$this->convertTimeToDate($row['grantExpireTime']),
+							'grantState'=>$row['grantState']];
+						$operationParam = (object)[];
+						$operationParam->{'maxEirp'} = 100;
+						$operationParam->{'operationalFrequencyRange'}->{'lowFrequency'} = 6213;
+						$operationParam->{'operationalFrequencyRange'}->{'highFrequency'} =10949210;
+						$replyObj->{'operationParam'} = $operationParam;
 						$replyObj->{'response'}->{'responseCode'} = '0';
 					}
 
@@ -499,9 +511,9 @@ class JsonListener{
 		$result = $this->myDBHandler->query($query);
 	}
 
-	private function queryPrimaryUserActivity($cbsdId){
+	private function queryPrimaryUserActivity($cbsdId,$grantId){
 		$cbsd_table = "cbsdInfo_".$cbsdId;
-		$query = "SELECT pu_absent FROM ".$cbsd_table." WHERE available = 0";
+		$query = $this->create_select_query('*',$cbsd_table,array('grantId'=>$grantId));
 		$result = $this->myDBHandler->query($query);
 		if($row = $this->myDBHandler->fetchResults($result)) {
 			if($row['pu_absent'] == 1) {
