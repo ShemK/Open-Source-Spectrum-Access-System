@@ -70,8 +70,8 @@ BEGIN
     LOOP
 
     EXECUTE format('
-      INSERT INTO %s("lowFrequency", "highFrequency") VALUES(%s,%s);',
-      'cbsdinfo_'||cbsdID,LF,LF + 10000000);
+      INSERT INTO %s("lowFrequency", "highFrequency","grantState","channelType") VALUES(%s,%s,%L,%L);',
+      'cbsdinfo_'||cbsdID,LF,LF + 10000000,'GRANTED','PAL');
 
     i := i+1;
     LF := LF + 10000000;
@@ -90,11 +90,11 @@ EXECUTE format('
     "highFrequency" float NOT NULL,
     available smallint DEFAULT 1,
     "grantId" varchar(45),
-    "grantExpireTime" int NOT NULL,
-    "heartBeatInterval" int NOT NULL,
-    "maxEirp" int NOT NULL,
-    "grantState" grant_category DEFAULT 'GRANTED',
-    "channelType" channel_type DEFAULT NULL,
+    "grantExpireTime" int DEFAULT 0,
+    "heartBeatInterval" int DEFAULT 0,
+    "maxEirp" int DEFAULT NULL,
+    "grantState" grant_category,
+    "channelType" channel_type,
     "pu_absent" smallint DEFAULT 1, 
     PRIMARY KEY ("lowFrequency","highFrequency")
   );', 'cbsdinfo_'||NEW."cbsdId");
