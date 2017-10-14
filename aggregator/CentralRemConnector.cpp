@@ -443,6 +443,9 @@ void CentralRemConnector::parseData(double occ, double lowerFreq, double bandwid
   key = pmt::string_to_symbol("bandwidth");
   value = pmt::from_double(bandwidth);
   info = pmt::dict_add(info,key,value);
+  key = pmt::string_to_symbol("type");
+  value = pmt::string_to_symbol("SENSOR");
+  info = pmt::dict_add(info,key,value);
   informationParser.sendData(info);
 }
 
