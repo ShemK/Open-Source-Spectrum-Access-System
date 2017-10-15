@@ -17,8 +17,10 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <list>
+#include <queue>
 #include "nodeview.h"
 #include "sensorview.h"
+#include "suview.h"
 
 
 namespace Ui {
@@ -41,6 +43,17 @@ public:
     std::list <double> occ_history;
   };
 
+  struct performanceStats{
+    int currentTime;
+    double per;
+    double bitrate;
+  };
+
+  struct transmissionInfo{
+    double tx_freq;
+    double rx_freq;
+    std::queue <performanceStats> stats;
+  };
 
   enum nodeState{
     ACTIVE = 0,
@@ -65,6 +78,7 @@ public:
     double current_occ;
     double previous_occ;
     nodeType type;
+    transmissionInfo tx_info;
   };
 
   struct sensor{

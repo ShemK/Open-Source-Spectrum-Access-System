@@ -30,11 +30,11 @@ void *sensor_listener(void *_arg){
 
   while(node->app_open){
     usleep(1000);
-    pthread_mutex_lock(&node->listener_mutex);
+
     QCoreApplication::postEvent(node, new QEvent(QEvent::UpdateRequest),
                                 Qt::LowEventPriority);
     QMetaObject::invokeMethod(node, "updateView");
-    pthread_mutex_unlock(&node->listener_mutex);
+
 
   }
   pthread_exit(0);
@@ -47,9 +47,11 @@ void SensorView::updateView(){
   ui->tableWidget->setHorizontalHeaderLabels(tableHeader);
   unsigned int current_channel = rem->known_nodes[pos].current_channel;
   std::vector<Rem::channelInfo> channels;
+   pthread_mutex_lock(&listener_mutex);
   for(unsigned int i = 0; i< rem->known_nodes[pos].channels.size();i++){
       channels.push_back(rem->known_nodes[pos].channels[i]);
   }
+  pthread_mutex_unlock(&listener_mutex);
   if((int)channels.size() > ui->tableWidget->rowCount()){
     for(int i = 0; i < (int)channels.size()-ui->tableWidget->rowCount();i++){
       ui->tableWidget->insertRow(ui->tableWidget->rowCount()+i);

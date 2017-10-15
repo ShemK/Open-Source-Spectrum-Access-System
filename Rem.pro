@@ -27,18 +27,23 @@ SOURCES += \
         main.cpp \
         rem.cpp \
     nodeview.cpp \
-    sensorview.cpp
+    sensorview.cpp \
+    suview.cpp
 
 HEADERS += \
         rem.h \
     nodeview.h \
-    sensorview.h
+    sensorview.h \
+    suview.h
 
 FORMS += \
         rem.ui \
     nodeview.ui \
-    sensorview.ui
+    sensorview.ui \
+    suview.ui
 
 LIBS += -lconfig -lgnuradio-pmt
 
 CONFIG += c++11
+
+QT += charts

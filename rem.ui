@@ -170,6 +170,16 @@
      <string>12</string>
     </property>
    </widget>
+   <widget class="QWidget" name="sideWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>50</y>
+      <width>120</width>
+      <height>80</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

@@ -1,6 +1,7 @@
 #include "nodeview.h"
 #include "ui_nodeview.h"
 #include <QTableWidgetItem>
+
 NodeView::NodeView(int pos,QWidget *parent) :
   QDialog(parent),
   ui(new Ui::NodeView)

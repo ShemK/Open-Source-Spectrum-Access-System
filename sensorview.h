@@ -4,8 +4,9 @@
 #include <QDialog>
 #include "rem.h"
 
-namespace Ui {
-  class SensorView;
+namespace Ui
+{
+class SensorView;
 }
 
 class Rem;
@@ -17,21 +18,22 @@ class SensorView : public QDialog
   Q_OBJECT
 
 public:
-  explicit SensorView(int pos,QWidget *parent = 0);
+  explicit SensorView(int pos, QWidget *parent = 0);
   ~SensorView();
 
   pthread_t listener_process;
-    pthread_mutex_t listener_mutex;
-    friend void *node_listener(void *);
-    bool app_open = true;
+  pthread_mutex_t listener_mutex;
+  friend void *sensor_listener(void *);
+  bool app_open = true;
 
-    public slots:
-    void updateView();
+
+public slots:
+  void updateView();
 
 private slots:
-    void on_SensorView_destroyed();
+  void on_SensorView_destroyed();
 
-    void on_buttonBox_rejected();
+  void on_buttonBox_rejected();
 
 private:
   Ui::SensorView *ui;

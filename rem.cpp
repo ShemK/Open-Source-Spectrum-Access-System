@@ -7,7 +7,6 @@ Rem::Rem(QWidget *parent) :
   ui(new Ui::Rem)
 {
   ui->setupUi(this);
-
   pthread_create(&listener_process, NULL, listener, (void *)this);
 }
 
@@ -57,13 +56,13 @@ void Rem::initializeNodeInfo(){
           n.visualID = visualID;
           known_nodes.push_back(n);
 
+        }
     }
-  }
   printf("Known Node Size: %lu\n",known_nodes.size());
 
   for(unsigned int i = 0; i < known_nodes.size(); i++){
-    std::cout << known_nodes[i].nodeID << std::endl;
-  }
+      std::cout << known_nodes[i].nodeID << std::endl;
+    }
 }
 
 void *listener(void *_arg){
@@ -97,7 +96,7 @@ void *listener(void *_arg){
               if(recv_len > 0){
                   //pthread_mutex_lock(&rem->listener_mutex);
                   rem->analyzeInfo(recv_buffer,recv_buffer_len);
-                 // pthread_mutex_lock(&rem->listener_mutex);
+                  // pthread_mutex_lock(&rem->listener_mutex);
                 }
             }
         }
@@ -118,25 +117,69 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
     }
   pmt::pmt_t received_dict = pmt::deserialize_str(received_string);
   pmt::pmt_t not_found = pmt::mp(0);
-  pmt::pmt_t nodeID = pmt::dict_ref(received_dict, pmt::string_to_symbol("nodeID"), not_found);
-  if(nodeID!=not_found){
-      int nodeTemp = pmt::to_long(nodeID);
-      int status = getNodePos(nodeTemp);
-      if(status==-1){
-          printf("new node: %d",nodeTemp);
-          nodeInfo n;
-          n.nodeID = nodeTemp;
-          known_nodes.push_back(n);
-        } else{
-          // create a function to get associated button
-          double occ = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("occ"), not_found));
-          double lowerFreq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("lowerFreq"), not_found));
-          double bandwidth = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("bandwidth"), not_found));
-          organizeData(status,occ,lowerFreq,bandwidth);
+  pmt::pmt_t type = pmt::dict_ref(received_dict, pmt::string_to_symbol("type"), not_found);
+  if(type!=not_found){
+      pmt::pmt_t nodeID = pmt::dict_ref(received_dict, pmt::string_to_symbol("nodeID"), not_found);
+      std::string type_str = pmt::symbol_to_string(type);
+      std::cout << "Type : " << type_str.c_str() << std::endl;
+
+      if(strcmp(type_str.c_str(),"SENSOR") == 0){
+          std::cout << "SENSOR INFO\n";
+          if(nodeID!=not_found){
+              int nodeTemp = pmt::to_long(nodeID);
+              int status = getNodePos(nodeTemp);
+              if(status==-1){
+                  printf("new node: %d",nodeTemp);
+                  nodeInfo n;
+                  n.nodeID = nodeTemp;
+                  n.type = SENSOR;
+                  known_nodes.push_back(n);
+                } else{
+                  known_nodes.at(status).type = SENSOR;
+                  // create a function to get associated button
+                  double occ = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("occ"), not_found));
+                  double lowerFreq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("lowerFreq"), not_found));
+                  double bandwidth = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("bandwidth"), not_found));
+                  organizeData(status,occ,lowerFreq,bandwidth);
+                }
+            } else{
+              std::cout << "Missing Node ID" << std::endl;
+            }
+        } else if(strcmp(type_str.c_str(),"SU") == 0){
+          if(nodeID!=not_found){
+              std::cout << "SU INFO\n";
+              int nodeTemp = pmt::to_long(nodeID);
+              int status = getNodePos(nodeTemp);
+              if(status==-1){
+                  printf("new node: %d",nodeTemp);
+                  nodeInfo n;
+                  n.nodeID = nodeTemp;
+                  n.type = SU;
+                  known_nodes.push_back(n);
+                } else{
+                  known_nodes.at(status).type = SU;
+                  known_nodes.at(status).tx_info.tx_freq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("tx_freq"), not_found));
+                  known_nodes.at(status).tx_info.rx_freq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("rx_freq"), not_found));
+                  performanceStats stats;
+                  stats.bitrate = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("throughput"), not_found));
+                  stats.per = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("per"), not_found));
+                  if (known_nodes.at(status).tx_info.stats.size() > 10){
+                      known_nodes.at(status).tx_info.stats.pop();
+                  }
+                  known_nodes.at(status).tx_info.stats.push(stats);
+                }
+            } else{
+              std::cout << "Missing Node ID" << std::endl;
+            }
+
+        } else if(strcmp(type_str.c_str(),"SAS") == 0){
+
+        } else if(strcmp(type_str.c_str(),"PU") == 0){
+
         }
-    } else{
-      std::cout << "Missing Node ID" << std::endl;
+
     }
+
   std::cout << received_dict << std::endl;
 }
 
@@ -164,8 +207,8 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
       known_nodes[nodePos].channels[pos].occ = occ;
       known_nodes[nodePos].channels[pos].occ_history.push_back(occ);
       if(known_nodes[nodePos].channels[pos].occ_history.size() > 20){
-        known_nodes[nodePos].channels[pos].occ_history.pop_front();
-      }
+          known_nodes[nodePos].channels[pos].occ_history.pop_front();
+        }
       QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                   Qt::LowEventPriority);
       QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
@@ -187,24 +230,24 @@ void Rem::updateVisualNode(int nodePos){
 
   bool detected = false;
   for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
-    if(known_nodes[nodePos].channels[i].occ > occ_threshold){
-        detected = true;
-        for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
-          std::cout << " | LF" << known_nodes[nodePos].channels[i].lowFrequency << " occ: " << known_nodes[nodePos].channels[i].occ;
+      if(known_nodes[nodePos].channels[i].occ > occ_threshold){
+          detected = true;
+          for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
+              std::cout << " | LF" << known_nodes[nodePos].channels[i].lowFrequency << " occ: " << known_nodes[nodePos].channels[i].occ;
+            }
+          std::cout << "\n";
+          break;
         }
-        std::cout << "\n";
-        break;
     }
-  }
 
   QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
                               Qt::LowEventPriority);
 
   if(detected){
       QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, above_threshold));
-  } else{
+    } else{
       QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, below_threshold));
-  }
+    }
 
 }
 // TODO: Efficient search needed
@@ -248,9 +291,16 @@ int Rem::getNodePos(std::string visualID)
 
 void Rem::showMoreInfo(std::string visualID){
   int pos = getNodePos(visualID);
-  SensorView s(pos, this);
-  s.setModal(true);
-  s.exec();
+  if(known_nodes.at(pos).type == SENSOR){
+      SensorView s(pos, this);
+      s.setModal(true);
+      s.exec();
+    } else if (known_nodes.at(pos).type == SU){
+      SuView s(pos, this);
+      s.setModal(true);
+      s.exec();
+    }
+
 }
 
 void Rem::on_Node6_clicked()
