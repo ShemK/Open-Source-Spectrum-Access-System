@@ -29,14 +29,14 @@ void *su_listener(void *_arg){
   SensorView *node = (SensorView *)_arg;
 
   while(node->app_open){
-    usleep(1000000);
+      usleep(20000);
 
-    QCoreApplication::postEvent(node, new QEvent(QEvent::UpdateRequest),
-                                Qt::LowEventPriority);
-    QMetaObject::invokeMethod(node, "updateView");
+      QCoreApplication::postEvent(node, new QEvent(QEvent::UpdateRequest),
+                                  Qt::LowEventPriority);
+      QMetaObject::invokeMethod(node, "updateView");
 
 
-  }
+    }
   pthread_exit(0);
 }
 
@@ -48,14 +48,14 @@ void SuView::updateView(){
   bool newValue = false;
   pthread_mutex_lock(&listener_mutex);
   if (rem->known_nodes[pos].tx_info.stats.size() > 0){
-    while(rem->known_nodes[pos].tx_info.stats.size() > 0){
-        currentStat = rem->known_nodes[pos].tx_info.stats.front();
-        rem->known_nodes[pos].tx_info.stats.pop();
-        bitrate.push_back(currentStat.bitrate);
-    }
+      while(rem->known_nodes[pos].tx_info.stats.size() > 0){
+          currentStat = rem->known_nodes[pos].tx_info.stats.front();
+          rem->known_nodes[pos].tx_info.stats.pop();
+          bitrate.push_back(currentStat.bitrate);
+        }
 
-    newValue = true;
-  }
+      newValue = true;
+    }
   pthread_mutex_unlock(&listener_mutex);
   if(newValue){
       QLineSeries *series = new QLineSeries();
@@ -97,8 +97,55 @@ void SuView::updateView(){
 
       ui->myGrid->addWidget(chartView,0,0);
 
+      createStatTable();
+
+    } else{
+      if(strcmp(last_state.c_str(),rem->known_nodes[pos].tx_info.state.c_str())!=0){
+          last_state = rem->known_nodes[pos].tx_info.state;
+           createStatTable();
+        }
     }
 
+}
+
+void SuView::createStatTable(){
+
+  QTableWidget *tableWidget = new QTableWidget(this);
+  tableWidget->setColumnCount(2);
+  tableWidget->setRowCount(5);
+  tableWidget->setColumnWidth(1,200);
+
+  std::string temp_str= std::to_string(rem->known_nodes[pos].tx_info.tx_freq);
+  QString temp(temp_str.c_str());
+
+  tableWidget->setItem(0,1,new QTableWidgetItem(temp));
+  temp_str = "TX freq: ";
+  QString tx_label(temp_str.c_str());
+
+  tableWidget->setItem(0,0,new QTableWidgetItem(tx_label));
+
+  temp_str= std::to_string(rem->known_nodes[pos].tx_info.rx_freq);
+  QString rx_freq(temp_str.c_str());
+
+  tableWidget->setItem(1,1,new QTableWidgetItem(rx_freq));
+  temp_str = "RX freq: ";
+  QString rx_label(temp_str.c_str());
+
+  tableWidget->setItem(1,0,new QTableWidgetItem(rx_label));
+
+  temp_str = "STATE: ";
+  QString state_label(temp_str.c_str());
+  tableWidget->setItem(2,0,new QTableWidgetItem(state_label));
+
+  temp_str = rem->known_nodes[pos].tx_info.state;
+
+  QString su_state(temp_str.c_str());
+
+  tableWidget->setItem(2,1,new QTableWidgetItem(su_state));
+
+  ui->myGrid->addWidget(tableWidget,1,0);
+
+  ui->myGrid->setRowMinimumHeight(1,100);
 }
 
 void SuView::on_SuView_destroyed()

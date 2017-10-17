@@ -18,6 +18,9 @@
 #include <algorithm>
 #include <list>
 #include <queue>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <semaphore.h>
 #include "nodeview.h"
 #include "sensorview.h"
 #include "suview.h"
@@ -28,6 +31,8 @@ namespace Ui {
 }
 
 void *listener(void *_arg);
+
+
 
 class Rem : public QMainWindow
 {
@@ -50,9 +55,11 @@ public:
   };
 
   struct transmissionInfo{
-    double tx_freq;
-    double rx_freq;
+    std::string state = "";
+    double tx_freq = 0;
+    double rx_freq = 0;
     std::queue <performanceStats> stats;
+    std::vector<short unsigned int> group;
   };
 
   enum nodeState{
@@ -79,6 +86,7 @@ public:
     double previous_occ;
     nodeType type;
     transmissionInfo tx_info;
+    std::string node_color = "";
   };
 
   struct sensor{
@@ -112,6 +120,11 @@ public:
 
   bool channelSort(Rem::channelInfo x, Rem::channelInfo y);
 
+
+  sem_t *node_phores;
+
+  void updateGroupee(short unsigned int nodeTemp, int status);
+
   public slots:
   void updateVisualNode(int nodePos);
 
@@ -139,6 +152,7 @@ public:
   void on_Node7_clicked();
 
   void on_Node9_clicked();
+
 
 private:
   Ui::Rem *ui;

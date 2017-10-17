@@ -6,6 +6,11 @@ Rem::Rem(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::Rem)
 {
+  node_phores = new sem_t[node_num+1];
+  for(int i = 0; i < node_num+1; i++){
+      sem_init(&node_phores[i],0,0);
+    }
+
   ui->setupUi(this);
   pthread_create(&listener_process, NULL, listener, (void *)this);
 }
@@ -116,7 +121,7 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
         }
     }
   pmt::pmt_t received_dict = pmt::deserialize_str(received_string);
-  pmt::pmt_t not_found = pmt::mp(0);
+  pmt::pmt_t not_found = pmt::mp(-1);
   pmt::pmt_t type = pmt::dict_ref(received_dict, pmt::string_to_symbol("type"), not_found);
   if(type!=not_found){
       pmt::pmt_t nodeID = pmt::dict_ref(received_dict, pmt::string_to_symbol("nodeID"), not_found);
@@ -148,7 +153,7 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
         } else if(strcmp(type_str.c_str(),"SU") == 0){
           if(nodeID!=not_found){
               std::cout << "SU INFO\n";
-              int nodeTemp = pmt::to_long(nodeID);
+              short unsigned int nodeTemp = pmt::to_long(nodeID);
               int status = getNodePos(nodeTemp);
               if(status==-1){
                   printf("new node: %d",nodeTemp);
@@ -156,17 +161,50 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
                   n.nodeID = nodeTemp;
                   n.type = SU;
                   known_nodes.push_back(n);
+
                 } else{
-                  known_nodes.at(status).type = SU;
-                  known_nodes.at(status).tx_info.tx_freq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("tx_freq"), not_found));
-                  known_nodes.at(status).tx_info.rx_freq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("rx_freq"), not_found));
-                  performanceStats stats;
-                  stats.bitrate = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("throughput"), not_found));
-                  stats.per = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("per"), not_found));
-                  if (known_nodes.at(status).tx_info.stats.size() > 10){
-                      known_nodes.at(status).tx_info.stats.pop();
-                  }
-                  known_nodes.at(status).tx_info.stats.push(stats);
+                  if(known_nodes.at(status).type!=SU){
+                      known_nodes.at(status).type = SU;
+                      QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                                  Qt::LowEventPriority);
+                      QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
+
+                    }
+
+                  pmt::pmt_t thru = pmt::dict_ref(received_dict, pmt::string_to_symbol("throughput"), not_found);
+                  if(thru!=not_found){
+                      known_nodes.at(status).tx_info.tx_freq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("tx_freq"), not_found));
+                      known_nodes.at(status).tx_info.rx_freq = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("rx_freq"), not_found));
+                      performanceStats stats;
+                      stats.bitrate = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("throughput"), not_found));
+                      stats.per = pmt::to_double(pmt::dict_ref(received_dict, pmt::string_to_symbol("per"), not_found));
+                      if (known_nodes.at(status).tx_info.stats.size() > 10){
+                          known_nodes.at(status).tx_info.stats.pop();
+                        }
+                      known_nodes.at(status).tx_info.stats.push(stats);
+                      known_nodes.at(status).tx_info.state = "GRANT ACCEPTED";
+                    }
+                  pmt::pmt_t su_state =   pmt::dict_ref(received_dict, pmt::string_to_symbol("state"), not_found);
+
+                  if(su_state!=not_found){
+
+                      pmt::pmt_t state_pmt = pmt::dict_ref(received_dict, pmt::string_to_symbol("state"), not_found);
+                      if(state_pmt!=not_found){
+                          known_nodes.at(status).tx_info.state = pmt::symbol_to_string(state_pmt);
+                        }
+
+                    }
+                  pmt::pmt_t group = pmt::dict_ref(received_dict, pmt::string_to_symbol("group"), not_found);
+
+                  if (group!=not_found){
+                      std::vector<short unsigned int> value_vector =  pmt::u16vector_elements (group);
+                      known_nodes.at(status).tx_info.group = value_vector;
+                      //std::cout << value_vector
+                      //pmt::pmt_t values = pmt::dict_values (group);
+
+                    }
+                  updateGroupee(nodeTemp,status);
+
                 }
             } else{
               std::cout << "Missing Node ID" << std::endl;
@@ -183,6 +221,27 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
   std::cout << received_dict << std::endl;
 }
 
+void Rem::updateGroupee(short unsigned int nodeTemp, int status){
+  std::vector<short unsigned int> value_vector = known_nodes.at(status).tx_info.group;
+  for(unsigned int i  = 0; i < value_vector.size(); i++){
+      if (nodeTemp!=value_vector[i]){
+          int pos = getNodePos(value_vector[i]);
+
+          if(pos > 0){
+              if(known_nodes.at(pos).type!=SU){
+                  known_nodes.at(pos).type = SU;
+                  QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                              Qt::LowEventPriority);
+                  QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,pos));
+
+                }
+
+              known_nodes.at(pos).tx_info = known_nodes.at(status).tx_info;
+            }
+        }
+    }
+}
+
 bool Rem::channelSort(Rem::channelInfo x, Rem::channelInfo y){
   return (x.lowFrequency < y.lowFrequency);
 }
@@ -190,6 +249,15 @@ bool Rem::channelSort(Rem::channelInfo x, Rem::channelInfo y){
 void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth) {
   lowFreq = round(lowFreq/1e6)*1e6;
   int pos = getChannelPos(known_nodes[nodePos],lowFreq);
+
+  int sval;
+  sem_getvalue(&node_phores[nodePos], &sval);
+  std::cout << "Semaphore Value for " << nodePos << " " << sval << "\n";
+  if(sval > 0){
+      sem_wait(&node_phores[nodePos]);
+    }
+
+
   if(pos == -1){
 
       channelInfo c;
@@ -200,6 +268,7 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
       std::sort(known_nodes[nodePos].channels.begin(),known_nodes[nodePos].channels.end(),std::bind(&Rem::channelSort,this,_1,_2));
       std::cout << "New Channel: " << lowFreq << std::endl;
     } else{
+
       known_nodes[nodePos].current_channel = pos;
       known_nodes[nodePos].channels[pos].lowFrequency = lowFreq;
       known_nodes[nodePos].channels[pos].bandwidth = bandwidth;
@@ -209,45 +278,72 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
       if(known_nodes[nodePos].channels[pos].occ_history.size() > 20){
           known_nodes[nodePos].channels[pos].occ_history.pop_front();
         }
+
       QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                   Qt::LowEventPriority);
       QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
+
       std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].lowFrequency << std::endl;
       std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].occ << std::endl;
+
     }
+  sem_post(&node_phores[nodePos]);
+
 }
 
 
 void Rem::updateVisualNode(int nodePos){
 
+  if (known_nodes[nodePos].type == SENSOR){
+      QString below_threshold("background-color: green");
+      QString above_threshold("background-color: red");
 
-  QString below_threshold("background-color: green");
-  QString above_threshold("background-color: red");
+      QString visualID(known_nodes[nodePos].visualID.c_str());
 
-  QString visualID(known_nodes[nodePos].visualID.c_str());
+      QToolButton *button = ui->centralWidget->findChild<QToolButton *>(visualID);
 
-  QToolButton *button = ui->centralWidget->findChild<QToolButton *>(visualID);
-
-  bool detected = false;
-  for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
-      if(known_nodes[nodePos].channels[i].occ > occ_threshold){
-          detected = true;
-          for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
-              std::cout << " | LF" << known_nodes[nodePos].channels[i].lowFrequency << " occ: " << known_nodes[nodePos].channels[i].occ;
+      bool detected = false;
+      for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
+          if(known_nodes[nodePos].channels[i].occ > occ_threshold){
+              detected = true;
+             /* for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
+                  std::cout << " | LF" << known_nodes[nodePos].channels[i].lowFrequency << " occ: " << known_nodes[nodePos].channels[i].occ;
+                }
+              std::cout << "\n"; */
+              break;
             }
-          std::cout << "\n";
-          break;
         }
+
+
+
+      if(detected){
+          if(strcmp(known_nodes[nodePos].node_color.c_str(),"red") != 0){
+              QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
+                                          Qt::LowEventPriority);
+              QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, above_threshold));
+              known_nodes[nodePos].node_color = "red";
+            }
+
+        } else{
+          if(strcmp(known_nodes[nodePos].node_color.c_str(),"green") != 0){
+              QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
+                                          Qt::LowEventPriority);
+              QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, below_threshold));
+              known_nodes[nodePos].node_color = "green";
+            }
+        }
+    } else if (known_nodes[nodePos].type == SU){
+
+      QString su_color("background-color: blue");
+      QString visualID(known_nodes[nodePos].visualID.c_str());
+
+      QToolButton *button = ui->centralWidget->findChild<QToolButton *>(visualID);
+
+      QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
+                                  Qt::LowEventPriority);
+      QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, su_color));
     }
 
-  QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
-                              Qt::LowEventPriority);
-
-  if(detected){
-      QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, above_threshold));
-    } else{
-      QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, below_threshold));
-    }
 
 }
 // TODO: Efficient search needed

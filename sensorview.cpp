@@ -1,10 +1,14 @@
 #include "sensorview.h"
 #include "ui_sensorview.h"
+#include <QtCharts>
+
+using namespace QtCharts;
 
 SensorView::SensorView(int pos,QWidget *parent) :
   QDialog(parent),
   ui(new Ui::SensorView)
 {
+  sem_init(&graphic_mutex,0,1);
   ui->setupUi(this);
   std::string title_str = "Node" + std::to_string(pos+1);
   QString title(title_str.c_str());
@@ -12,6 +16,8 @@ SensorView::SensorView(int pos,QWidget *parent) :
   rem = (Rem *) parent;
   this->pos = pos;
   ui->tableWidget->setColumnCount(3);
+
+
   pthread_create(&listener_process, NULL, sensor_listener, (void *)this);
 }
 
@@ -22,6 +28,8 @@ SensorView::~SensorView()
   pthread_mutex_unlock(&listener_mutex);
   std::cout << "Deleted\n";
   pthread_join(listener_process,NULL);
+  sem_close(&graphic_mutex);
+  delete ui->myGrid;
   delete ui;
 }
 
@@ -29,10 +37,11 @@ void *sensor_listener(void *_arg){
   SensorView *node = (SensorView *)_arg;
 
   while(node->app_open){
-    usleep(1000);
-
+    //usleep(100000);
+    sem_wait(&node->graphic_mutex);
+    sem_wait(&node->rem->node_phores[node->pos]);
     QCoreApplication::postEvent(node, new QEvent(QEvent::UpdateRequest),
-                                Qt::LowEventPriority);
+                                Qt::HighEventPriority);
     QMetaObject::invokeMethod(node, "updateView");
 
 
@@ -47,11 +56,45 @@ void SensorView::updateView(){
   ui->tableWidget->setHorizontalHeaderLabels(tableHeader);
   unsigned int current_channel = rem->known_nodes[pos].current_channel;
   std::vector<Rem::channelInfo> channels;
-   pthread_mutex_lock(&listener_mutex);
   for(unsigned int i = 0; i< rem->known_nodes[pos].channels.size();i++){
       channels.push_back(rem->known_nodes[pos].channels[i]);
   }
-  pthread_mutex_unlock(&listener_mutex);
+
+
+
+
+  QLineSeries *series = new QLineSeries();
+  for(unsigned int i = 0; i < channels.size(); i++){
+      //series->append(i, bitrate[i]);
+      *series << QPointF(channels[i].lowFrequency,channels[i].occ);
+    }
+
+  QtCharts::QChart *chart = new QtCharts::QChart();
+  //chart->createDefaultAxes();
+   chart->legend()->hide();
+   chart->setTitle("Spectrum Chart");
+
+   QValueAxis *axisX = new QValueAxis;
+   axisX->setTickCount(7);
+   //axisX->setLinePenColor(series->pen().color());
+   chart->addAxis(axisX, Qt::AlignBottom);
+
+   chart->addSeries(series);
+
+   QValueAxis *axisY = new QValueAxis;
+   axisY->setLinePenColor(series->pen().color());
+   axisY->setMin(0);
+
+
+
+   QChartView *chartView = new QChartView(chart);
+   chartView->setRenderHint(QPainter::Antialiasing);
+
+   chart->addAxis(axisY, Qt::AlignLeft);
+
+   series->attachAxis(axisX);
+   series->attachAxis(axisY);
+
   if((int)channels.size() > ui->tableWidget->rowCount()){
     for(int i = 0; i < (int)channels.size()-ui->tableWidget->rowCount();i++){
       ui->tableWidget->insertRow(ui->tableWidget->rowCount()+i);
@@ -81,6 +124,20 @@ void SensorView::updateView(){
     }
   }
 
+  // Need to release memory
+  // current method not working
+  QLayoutItem *temp_item =  ui->myGrid->itemAtPosition(0,0);
+  ui->myGrid->removeItem(temp_item);
+  delete temp_item;
+
+  ui->myGrid->addWidget(chartView,0,0);
+  sem_post(&graphic_mutex);
+  //delete series;
+
+}
+
+void SensorView::updateChat(){
+
 }
 
 
@@ -93,3 +150,4 @@ void SensorView::on_buttonBox_rejected()
 {
      app_open = false;
 }
+

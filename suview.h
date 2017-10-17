@@ -31,6 +31,9 @@ public:
   bool app_open = true;
   std::vector <double> bitrate;
 
+  void createStatTable();
+  std::string last_state = "";
+
 public slots:
   void updateView();
 

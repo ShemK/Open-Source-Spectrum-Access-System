@@ -26,7 +26,9 @@ public:
   friend void *sensor_listener(void *);
   bool app_open = true;
 
+  void updateChat();
 
+  sem_t graphic_mutex;
 public slots:
   void updateView();
 
