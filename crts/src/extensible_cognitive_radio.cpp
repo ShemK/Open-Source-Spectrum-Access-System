@@ -22,6 +22,8 @@
 #include "tun.hpp"
 #include "timer.h"
 
+
+
 // EDIT INCLUDE START FLAG
 #include "../cognitive_engines/CE_Template/CE_Template.hpp"
 #include "../cognitive_engines/test_engines/CE_Subcarrier_Alloc/CE_Subcarrier_Alloc.hpp"
@@ -258,7 +260,7 @@ CPU_ZERO(&set);
   set_rx_freq(rx_params.rx_freq);
   set_rx_rate(rx_params.rx_rate);
   set_rx_gain_uhd(rx_params.rx_gain_uhd);
-  
+
 
   dprintf("Finished creating ECR\n");
 }
@@ -411,7 +413,7 @@ void uhd_msg_handler(uhd::msg::type_t type, const std::string &msg) {
   if ((!strcmp(msg.c_str(), "O")) || (!strcmp(msg.c_str(), "D")))
     ExtensibleCognitiveRadio::uhd_msg = 1;
   else if (!strcmp(msg.c_str(), "U"))
-    ExtensibleCognitiveRadio::uhd_msg = 2; 
+    ExtensibleCognitiveRadio::uhd_msg = 2;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -426,9 +428,9 @@ void ExtensibleCognitiveRadio::set_ip(char *ip) {
 
 // set the length of the tun interface queue tx length
 void ExtensibleCognitiveRadio::set_tx_queue_len(int queue_len) {
-    
+
   pthread_mutex_lock(&tx_params_mutex);
-  // for the contest we limit the queue length at 1500 
+  // for the contest we limit the queue length at 1500
   tx_queue_len = (queue_len <= 1500) ? queue_len : 1500;
   pthread_mutex_unlock(&tx_params_mutex);
   sprintf(systemCMD, "sudo ifconfig %s txqueuelen %i", tun_name, queue_len);
@@ -469,7 +471,7 @@ void ExtensibleCognitiveRadio::start_tx() {
   // Ensure that the tx_worker ends up in the correct state.
   // There are three possible states it may be in initially.
   pthread_mutex_lock(&tx_params_mutex);
-  tx_state = TX_CONTINUOUS; 
+  tx_state = TX_CONTINUOUS;
   bool wait = false;
   switch (tx_worker_state){
     case (WORKER_HALTED):
@@ -494,13 +496,13 @@ void ExtensibleCognitiveRadio::start_tx() {
 }
 
 // start transmitter
-void ExtensibleCognitiveRadio::start_tx_burst(unsigned int _num_tx_frames, 
+void ExtensibleCognitiveRadio::start_tx_burst(unsigned int _num_tx_frames,
                                               float _max_tx_time_ms) {
-  
+
   // Ensure that the tx_worker ends up in the correct state.
   // There are three possible states it may be in initially.
   pthread_mutex_lock(&tx_params_mutex);
-  tx_state = TX_BURST; 
+  tx_state = TX_BURST;
   num_tx_frames = _num_tx_frames;
   max_tx_time_ms = _max_tx_time_ms;
   bool wait = false;
@@ -534,9 +536,9 @@ void ExtensibleCognitiveRadio::stop_tx() {
 }
 
 // reset transmitter objects and buffers
-void ExtensibleCognitiveRadio::reset_tx() { 
+void ExtensibleCognitiveRadio::reset_tx() {
   pthread_mutex_lock(&tx_params_mutex);
-  reset_fg = true; 
+  reset_fg = true;
   pthread_mutex_unlock(&tx_params_mutex);
 }
 
@@ -551,7 +553,7 @@ void ExtensibleCognitiveRadio::set_tx_freq(double _tx_freq) {
 }
 
 // set transmitter frequency
-void ExtensibleCognitiveRadio::set_tx_freq(double _tx_freq, double _dsp_freq) { 
+void ExtensibleCognitiveRadio::set_tx_freq(double _tx_freq, double _dsp_freq) {
   pthread_mutex_lock(&tx_params_mutex);
   tx_params_updated.tx_freq = _tx_freq;
   tx_params_updated.tx_dsp_freq = _dsp_freq;
@@ -602,11 +604,11 @@ void ExtensibleCognitiveRadio::set_tx_rate(double _tx_rate) {
 }
 
 // get transmitter sample rate
-double ExtensibleCognitiveRadio::get_tx_rate() { 
+double ExtensibleCognitiveRadio::get_tx_rate() {
   pthread_mutex_lock(&tx_params_mutex);
   double r = tx_params.tx_rate;
   pthread_mutex_unlock(&tx_params_mutex);
-  return r; 
+  return r;
 }
 
 // set transmitter software gain
@@ -667,11 +669,11 @@ void ExtensibleCognitiveRadio::set_tx_crc(int crc_scheme) {
 }
 
 // get CRC scheme
-int ExtensibleCognitiveRadio::get_tx_crc() { 
+int ExtensibleCognitiveRadio::get_tx_crc() {
   pthread_mutex_lock(&tx_params_mutex);
   int c = tx_params.fgprops.check;
   pthread_mutex_unlock(&tx_params_mutex);
-  return c; 
+  return c;
 }
 
 // set FEC0
@@ -846,7 +848,7 @@ void ExtensibleCognitiveRadio::update_tx_params() {
 
   // copy all the new parameters
   tx_params = tx_params_updated;
-  
+
   // update the USRP
   if (update_usrp_tx) {
     pthread_mutex_lock(&tx_mutex);
@@ -899,10 +901,10 @@ void ExtensibleCognitiveRadio::update_tx_params() {
 void ExtensibleCognitiveRadio::transmit_frame(unsigned int frame_type,
                                               unsigned char *_payload,
                                               unsigned int _payload_len) {
-  
+
   // vector buffer to send data to device
   std::vector<std::complex<float>> usrp_buffer(fgbuffer_len);
-  
+
 
   pthread_mutex_lock(&tx_params_mutex);
   float tx_gain_soft_lin = powf(10.0f, tx_params.tx_gain_soft / 20.0f);
@@ -1043,11 +1045,11 @@ void ExtensibleCognitiveRadio::set_rx_rate(double _rx_rate) {
 }
 
 // get receiver sample rate
-double ExtensibleCognitiveRadio::get_rx_rate() { 
+double ExtensibleCognitiveRadio::get_rx_rate() {
   pthread_mutex_lock(&rx_params_mutex);
   double r = rx_params.rx_rate;
   pthread_mutex_unlock(&rx_params_mutex);
-  return r; 
+  return r;
 }
 
 // set receiver hardware (UHD) gain
@@ -1073,9 +1075,9 @@ void ExtensibleCognitiveRadio::set_rx_antenna(char *_rx_antenna) {
 }
 
 // flushes the USRP rx buffer and resets the rx statistics and frame synchronizer
-void ExtensibleCognitiveRadio::reset_rx() { 
+void ExtensibleCognitiveRadio::reset_rx() {
   int initial_rx_state = get_rx_state();
-  if (initial_rx_state != RX_STOPPED) 
+  if (initial_rx_state != RX_STOPPED)
     stop_rx();
   int state = 0;
   while(state != WORKER_READY){
@@ -1085,7 +1087,7 @@ void ExtensibleCognitiveRadio::reset_rx() {
   int num_rx_samps = 1;
   while (num_rx_samps > 0)
     num_rx_samps = usrp_rx->get_device()->recv(
-          rx_buffer, rx_buffer_len, metadata_rx, uhd::io_type_t::COMPLEX_FLOAT32, 
+          rx_buffer, rx_buffer_len, metadata_rx, uhd::io_type_t::COMPLEX_FLOAT32,
           uhd::device::RECV_MODE_ONE_PACKET, 0.01);
   reset_rx_stats();
   pthread_mutex_lock(&rx_params_mutex);
@@ -1127,7 +1129,7 @@ void ExtensibleCognitiveRadio::set_rx_subcarrier_alloc(char *_subcarrierAlloc) {
     ofdmframe_init_default_sctype(rx_params.numSubcarriers,
                                   rx_params.subcarrierAlloc);
   }
- 
+
   update_rx_flag = true;
   recreate_fs = true;
   pthread_mutex_unlock(&rx_params_mutex);
@@ -1195,11 +1197,11 @@ struct ExtensibleCognitiveRadio::rx_statistics ExtensibleCognitiveRadio::get_rx_
 
 // start receiver
 void ExtensibleCognitiveRadio::start_rx() {
- 
+
   // Ensure that the rx_worker ends up in the correct state.
   // There are three possible states it may be in initially.
   pthread_mutex_lock(&rx_params_mutex);
-  rx_state = RX_CONTINUOUS; 
+  rx_state = RX_CONTINUOUS;
   bool wait = false;
   switch (rx_worker_state){
     case (WORKER_HALTED):
@@ -1293,9 +1295,9 @@ void *ECR_rx_worker(void *_arg) {
     ECR->rx_worker_state = WORKER_READY;
     pthread_cond_wait(&(ECR->rx_cond), &(ECR->rx_params_mutex));
     dprintf("rx worker received start condition\n");
-    ECR->rx_worker_state = WORKER_RUNNING;  
+    ECR->rx_worker_state = WORKER_RUNNING;
     pthread_mutex_unlock(&(ECR->rx_params_mutex));
-    
+
     // condition given; check state: run or exit
     if (!ECR->rx_thread_running) {
       dprintf("rx_worker finished\n");
@@ -1306,10 +1308,10 @@ void *ECR_rx_worker(void *_arg) {
     pthread_mutex_lock(&ECR->rx_mutex);
     dprintf("rx worker beginning usrp streaming\n");
     ECR->usrp_rx->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
-    pthread_mutex_unlock(&ECR->rx_mutex);  
+    pthread_mutex_unlock(&ECR->rx_mutex);
 
     timer_tic(rx_stat_update_timer);
-    
+
     bool rx_continue = true;
     // run receiver
     while (rx_continue) {
@@ -1369,7 +1371,7 @@ void *ECR_rx_worker(void *_arg) {
         ECR->update_rx_params();
       pthread_mutex_unlock(&ECR->rx_mutex);
       pthread_mutex_unlock(&ECR->rx_params_mutex);
-      
+
       // we need to tightly control the state of the worker thread
       // to protect against issues with abrupt starts and stops
       if (ECR->rx_state == RX_STOPPED){
@@ -1378,14 +1380,14 @@ void *ECR_rx_worker(void *_arg) {
         ECR->rx_worker_state = WORKER_HALTED;
       }
       if (timer_toc(rx_stat_update_timer) > 0.001)
-        ECR->update_rx_stats(false); 
+        ECR->update_rx_stats(false);
     } // while rx running
     dprintf("rx_worker finished running\n");
 
     pthread_mutex_lock(&ECR->rx_mutex);
     ECR->usrp_rx->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     pthread_mutex_unlock(&ECR->rx_mutex);
-    
+
   } // while rx thread is running
 
   free(ECR->rx_buffer);
@@ -1423,10 +1425,10 @@ int rxCallback(unsigned char *_header, int _header_valid,
     memcpy(ECR->CE_metrics.payload, _payload,
            _payload_len * sizeof(unsigned char));
     ECR->CE_metrics.payload_len = _payload_len;
-    
+
     // Signal CE thread
     pthread_mutex_lock(&ECR->CE_mutex);
-    ECR->CE_metrics.CE_event = ExtensibleCognitiveRadio::PHY_FRAME_RECEIVED; 
+    ECR->CE_metrics.CE_event = ExtensibleCognitiveRadio::PHY_FRAME_RECEIVED;
     if (_header_valid) {
       if (ExtensibleCognitiveRadio::DATA == ((_header[0] >> 6) & 0x3))
         ECR->CE_metrics.CE_frame = ExtensibleCognitiveRadio::DATA;
@@ -1441,7 +1443,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
     // Print metrics if required
     if (ECR->print_metrics_flag)
       ECR->print_metrics(ECR);
-    
+
     // Log metrics locally if required
     if (ECR->log_phy_rx_flag)
       ECR->log_rx_metrics();
@@ -1484,7 +1486,7 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
   static std::vector<int> payload_len;
   static std::vector<int> bit_errors;
   static std::vector<int> uhd_overflows;
-  
+
   static float sum_evm = 0.0;
   static float sum_rssi = 0.0;
   static int sum_payload_valid = 0;
@@ -1492,9 +1494,9 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
   static int sum_bit_errors = 0;
   static int sum_valid_bytes = 0;
   static int sum_uhd_overflows = 0;
-  
+
   static int N = 0; // number of valid data points (frames received)
-  static int K = 0; // 
+  static int K = 0; //
   static int ind_first = 0;
   static int ind_last;
 
@@ -1529,7 +1531,7 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
     ind_first = 0;
     reset_rx_stats_flag = false;
   }
-  
+
   // update tracking period since it can be modified
   struct timeval stat_tracking_period;
   stat_tracking_period.tv_sec = (time_t)rx_stat_tracking_period;
@@ -1546,8 +1548,8 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
     sum_evm -= evm[ind_first];
     sum_rssi -= rssi[ind_first];
     sum_payload_valid -= payload_valid[ind_first];
-    sum_payload_len -= payload_len[ind_first]; 
-    sum_valid_bytes -= payload_valid[ind_first]*payload_len[ind_first]; 
+    sum_payload_len -= payload_len[ind_first];
+    sum_valid_bytes -= payload_valid[ind_first]*payload_len[ind_first];
     sum_bit_errors -= bit_errors[ind_first];
     sum_uhd_overflows -= uhd_overflows[ind_first];
     N--;
@@ -1560,7 +1562,7 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
 
   if (frame_received) {
     // resize memory if needed
-    N++; 
+    N++;
     if (N>K) {
       int K2 = 2*K;
       time_stamp.resize(K2);
@@ -1570,7 +1572,7 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
       payload_len.resize(K2,0);
       bit_errors.resize(K2,0);
       uhd_overflows.resize(K2,0);
-      
+
       // copy data that has been wrapped around
       if(ind_first>0){
         std::copy(time_stamp.begin(), time_stamp.begin()+ind_first, time_stamp.begin()+K);
@@ -1578,9 +1580,9 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
         std::copy(rssi.begin(), rssi.begin()+ind_first, rssi.begin()+K);
         std::copy(payload_valid.begin(), payload_valid.begin()+ind_first, payload_valid.begin()+K);
         std::copy(payload_len.begin(), payload_len.begin()+ind_first, payload_len.begin()+K);
-        std::copy(bit_errors.begin(), bit_errors.begin()+ind_first, bit_errors.begin()+K); 
-        std::copy(uhd_overflows.begin(), uhd_overflows.begin()+ind_first, uhd_overflows.begin()+K); 
-      
+        std::copy(bit_errors.begin(), bit_errors.begin()+ind_first, bit_errors.begin()+K);
+        std::copy(uhd_overflows.begin(), uhd_overflows.begin()+ind_first, uhd_overflows.begin()+K);
+
         memset(&time_stamp[0], 0, ind_first*sizeof(struct timeval));
         memset(&evm[0], 0, ind_first*sizeof(float));
         memset(&rssi[0], 0, ind_first*sizeof(float));
@@ -1620,7 +1622,7 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
     payload_len[ind_last] = CE_metrics.payload_len;
     bit_errors[ind_last] = errors;
     uhd_overflows[ind_last] = frame_uhd_overflows;
-    
+
     // update sums
     sum_evm += evm[ind_last];
     sum_rssi += rssi[ind_last];
@@ -1630,9 +1632,9 @@ void ExtensibleCognitiveRadio::update_rx_stats(bool frame_received){
     sum_bit_errors += bit_errors[ind_last];
     sum_uhd_overflows += uhd_overflows[ind_last];
   }
-  
+
   // update statistics
-  pthread_mutex_lock(&rx_params_mutex);    
+  pthread_mutex_lock(&rx_params_mutex);
   rx_stats.frames_received = N;
   rx_stats.valid_frames = sum_payload_valid;
   if (N > 0) {
@@ -1666,7 +1668,7 @@ void *ECR_tx_worker(void *_arg) {
   unsigned char *payload;
   unsigned int payload_len;
   int nread;
-  
+
   while (ECR->tx_thread_running) {
     // wait for signal to start
     dprintf("tx worker waiting for start condition\n");
@@ -1674,7 +1676,7 @@ void *ECR_tx_worker(void *_arg) {
     ECR->tx_worker_state = WORKER_READY;
     dprintf("Waiting\n");
     pthread_cond_wait(&(ECR->tx_cond), &(ECR->tx_params_mutex));
-    ECR->tx_worker_state = WORKER_RUNNING; 
+    ECR->tx_worker_state = WORKER_RUNNING;
     pthread_mutex_unlock(&(ECR->tx_params_mutex));
     dprintf("tx worker waiting for start condition\n");
 
@@ -1693,12 +1695,12 @@ void *ECR_tx_worker(void *_arg) {
     bool tx_continue = true;
     while (tx_continue) {
 
-      pthread_mutex_lock(&ECR->tx_params_mutex); 
+      pthread_mutex_lock(&ECR->tx_params_mutex);
       if (ECR->update_tx_flag) {
         ECR->update_tx_params();
       }
-      pthread_mutex_unlock(&ECR->tx_params_mutex); 
-      
+      pthread_mutex_unlock(&ECR->tx_params_mutex);
+
       nread = 0;
       int bps = modulation_types[ECR->tx_params.fgprops.mod_scheme].bps;
       int payload_sym_length = ECR->tx_params.payload_sym_length;
@@ -1706,7 +1708,7 @@ void *ECR_tx_worker(void *_arg) {
           (int)ceilf((float)(payload_sym_length * bps) / 8.0);
 
       while (nread < payload_byte_length && (ECR->tx_state != TX_STOPPED)) {
-        
+
         FD_ZERO(&fds);
         FD_SET(ECR->tunfd, &fds);
 
@@ -1722,11 +1724,11 @@ void *ECR_tx_worker(void *_arg) {
           }
         }
 
-        pthread_mutex_lock(&ECR->tx_params_mutex); 
+        pthread_mutex_lock(&ECR->tx_params_mutex);
         if (ECR->update_tx_flag) {
           ECR->update_tx_params();
         }
-        pthread_mutex_unlock(&ECR->tx_params_mutex); 
+        pthread_mutex_unlock(&ECR->tx_params_mutex);
       }
 
       ECR->dec_tx_queued_bytes(nread);
@@ -1755,7 +1757,7 @@ void *ECR_tx_worker(void *_arg) {
         ECR->tx_worker_state = WORKER_HALTED;
       }
       pthread_mutex_unlock(&ECR->tx_params_mutex);
-    
+
     } // while tx_running
 
     // signal CE that transmission has finished

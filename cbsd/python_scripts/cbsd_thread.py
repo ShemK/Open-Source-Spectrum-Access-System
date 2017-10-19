@@ -6,6 +6,7 @@ import sys
 import os
 import json
 import commands
+import datetime
 
 class cbsd_thread(threading.Thread):
     my_Interval = None
@@ -31,38 +32,44 @@ class cbsd_thread(threading.Thread):
         self.start_radio = args.get('start_radio',None)
         self.configEditor = args.get('config_editor',None)
 
-
     def run(self):
         if self.interval_type == "heartbeat":
+            json_decoder = json.JSONDecoder()
+            json_encoder = json.JSONEncoder()
             while(self.stop_thread == False):
+                current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+                if (self.my_cbsd.get_grantExpireTime_seconds() - current_time) < 0:
+                    self.stop_thread = True
+
                 time.sleep(self.my_Interval)
                 print("Sending Heartbeat")
                 try:
                     self.response = self.my_server_connection.send_request(self.json_request)
+                    self.my_cbsd.analyze_heartbeatResponseObj(json_decoder.decode(self.response))
                     # TODO: we need to check type of response and make good decision
-                    # TODO: The cbsd instance needs to be added to the thread
-                except ValueError:
-                    print "Wrong response Received"
-                    self.stop_thread = False
+                    # TODO: The cbsd instance needs to be added to the thread -- done
+                except ValueError as e:
+                    print "Wrong response Received",e
+                    self.stop_thread = True
 
-            self.stop_thread = False
             print "\n---------------------------------------------------------\n"
             print "Transmission Done, Grant Relinquished"
 
             print "Sending relinquishmentRequest"
-            json_encoder = json.JSONEncoder()
+            #self.start_radio.stopThread()
             self.json_request = json_encoder.encode(self.my_cbsd.get_relinquishmentRequestObj())
             self.response = self.my_server_connection.send_request(self.json_request)
             #print self.response
             #closing connection
-            self.my_server_connection.close_connection()
-            self.stopThread()
+            #self.my_server_connection.close_connection()
+            self.stopRadio()
 
         elif self.interval_type == "grant":
-            if(self.my_Interval > 0):
-                time.sleep(self.my_Interval)
-            self.heartbeat_thread.stopThread()
-            self.start_radio.stopThread()
+            #if(self.my_Interval > 0):
+            #    time.sleep(self.my_Interval)
+            #self.heartbeat_thread.stopThread()
+            #self.start_radio.stopThread()
+            pass
 
             #quit()
            # sys.exit()
@@ -132,12 +139,16 @@ class cbsd_thread(threading.Thread):
             nodes[i] = self.configEditor.set_node_attribute(nodes[i],'tx_freq',target_freq)
             nodes[i]  = self.configEditor.set_node_attribute(nodes[i],'target_ip',target_ip)
             nodes[i]  = self.configEditor.set_node_attribute(nodes[i],'crts_ip',crts_ip)
-            nodes[i]  = self.configEditor.set_node_attribute(nodes[i],'tx_rate',2e6)
-            nodes[i]  = self.configEditor.set_node_attribute(nodes[i],'rx_rate',2e6)
+            nodes[i]  = self.configEditor.set_node_attribute(nodes[i],'tx_rate',1e6)
+            nodes[i]  = self.configEditor.set_node_attribute(nodes[i],'rx_rate',1e6)
             node_string = 'node' + str(i+1)
             self.configEditor.add_to_output(node_string,nodes[i])
         self.configEditor.add_to_output('num_nodes',len(self.my_cbsd.grouped))
-        self.configEditor.add_to_output('run_time',self.my_cbsd.grantTimeLeft)
+        self.configEditor.add_to_output('run_time',self.my_cbsd.grantTimeLeft-5)
+
+        if not self.my_cbsd.init_sc  == None:
+            self.configEditor.add_to_output('scenario_controller',self.my_cbsd.init_sc)
+
         config_path = os.path.dirname(os.path.abspath(__file__))
         config_path = config_path + "/../../crts/scenarios/sas_scenarios/test.cfg"
         print "Written to : ", config_path
@@ -153,10 +164,13 @@ class cbsd_thread(threading.Thread):
             guard_band = self.my_cbsd.cornet_config['guard_band']*1e6
         else:
             guard_band = 2e6
-        # FIXME : Fix issues with more than 2 nodes
-        lowest_guard_band = bandwidth/num_nodes
-        lowest_channel = lowest_guard_band - guard_band/2
+
         node_channel_list = [];
+        '''
+        # FIXME : Fix issues with more than 2 node
+        lowest_guard_band = bandwidth/num_nodes
+        lowest_channel = 4e6#lowest_guard_band - guard_band/2
+
         current_channel = lowest_channel
         lowest_channel = 0
         chan_bw = current_channel - lowest_channel
@@ -167,5 +181,16 @@ class cbsd_thread(threading.Thread):
             node_channel_list.append(node.copy())
             current_channel = current_channel + guard_band + chan_bw
             lowest_channel = current_channel - chan_bw
+        '''
+        node = dict()
+        node['highFrequency'] = 5e6 + lowFrequency
+        node['lowFrequency'] =  3e6  + lowFrequency
+
+        node_channel_list.append(node.copy())
+
+        node['highFrequency'] = 8e6 + lowFrequency
+        node['lowFrequency'] =  6e6  + lowFrequency
+
+        node_channel_list.append(node.copy())
 
         return node_channel_list

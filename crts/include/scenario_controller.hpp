@@ -9,6 +9,8 @@
 #include "crts.hpp"
 #include "extensible_cognitive_radio.hpp"
 #include "interferer.hpp"
+#include <pmt/pmt.h>
+
 
 void *sc_worker(void *_arg);
 
@@ -39,12 +41,11 @@ public:
   struct node_parameters np[48];
   struct sc_feedback fb;
   int sc_event;
-
   //
   void start_sc();
   void stop_sc();
 
-private: 
+private:
   // scenario controller threading objects
   pthread_t sc_process;
   pthread_mutex_t sc_mutex;

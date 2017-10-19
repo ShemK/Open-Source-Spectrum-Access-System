@@ -41,12 +41,12 @@ timer rx_stat_fb_timer;
 long int bytes_sent;
 long int bytes_received;
 
-void apply_control_msg(char cont_type, 
-                       void* _arg, 
+void apply_control_msg(char cont_type,
+                       void* _arg,
                        struct node_parameters *np,
                        ExtensibleCognitiveRadio * ECR,
                        int *fb_enables,
-                       float *t_step); 
+                       float *t_step);
 
 void receive_command_from_controller(int *tcp_controller,
                                      struct scenario_parameters *sp,
@@ -118,14 +118,14 @@ void receive_command_from_controller(int *tcp_controller,
         if(arg_len > 0)
           rflag = recv(*tcp_controller, &command_buffer[2], arg_len, 0);
         dprintf("Received a %i byte control message\n", rflag);
-        apply_control_msg(command_buffer[1], (void*) &command_buffer[2], np, ECR, fb_enables, t_step); 
+        apply_control_msg(command_buffer[1], (void*) &command_buffer[2], np, ECR, fb_enables, t_step);
         break;
     }
   }
 }
 
-void apply_control_msg(char cont_type, 
-                       void* _arg, 
+void apply_control_msg(char cont_type,
+                       void* _arg,
                        struct node_parameters *np,
                        ExtensibleCognitiveRadio * ECR,
                        int *fb_enables,
@@ -210,7 +210,7 @@ void send_feedback_to_controller(int *tcp_controller,
                                  ExtensibleCognitiveRadio *ECR) {
   // variables used to keep track of the state and send feedback to the controller when needed
   static int last_tx_state = TX_STOPPED;
-  static double last_tx_freq = ECR->get_tx_freq();
+  static double last_tx_freq = 0;//ECR->get_tx_freq();
   static double last_tx_rate = ECR->get_tx_rate();
   static double last_tx_gain = ECR->get_tx_gain_uhd();
   static int last_tx_mod = ECR->get_tx_modulation();
@@ -219,17 +219,17 @@ void send_feedback_to_controller(int *tcp_controller,
   static int last_tx_fec1 = ECR->get_tx_fec1();
 
   static int last_rx_state = RX_STOPPED;
-  static double last_rx_freq = ECR->get_rx_freq();
+  static double last_rx_freq = 0;//ECR->get_rx_freq();
   static double last_rx_rate = ECR->get_rx_rate();
   static double last_rx_gain = ECR->get_rx_gain_uhd();
-  
+
   static bool timer_init = 0;
 
   if(!timer_init){
     timer_init = 1;
     timer_tic(rx_stat_fb_timer);
   }
-  
+
   // variables used to define the feedback message to the controller
   char fb_msg[1024];
   fb_msg[0] = CRTS_MSG_FEEDBACK;
@@ -328,7 +328,7 @@ void send_feedback_to_controller(int *tcp_controller,
     }
   }
   if (fb_enables & CRTS_RX_FREQ_FB_EN){
-    int rx_freq = ECR->get_rx_freq();
+    double rx_freq = ECR->get_rx_freq();
     if(rx_freq != last_rx_freq){
       fb_msg[fb_msg_ind] = CRTS_RX_FREQ;
       memcpy(&fb_msg[fb_msg_ind+1], (void*)&rx_freq, sizeof(rx_freq));
@@ -375,11 +375,11 @@ void send_feedback_to_controller(int *tcp_controller,
   }
 
   fb_msg[1] = fb_args;
-  
+
   // send feedback to controller
   if(fb_args > 0){
     send(*tcp_controller, fb_msg, fb_msg_ind, 0);
-  }      
+  }
 }
 
 void Initialize_CR(struct node_parameters *np, void *ECR_p,
@@ -525,7 +525,7 @@ int main(int argc, char **argv) {
       break;
     }
   }
-  
+
   // Must reset getopt in case it is used later by the CE constructor
   optind = 0;
 
@@ -568,7 +568,7 @@ int main(int argc, char **argv) {
   float t_step;
   int fb_enables = 0;;
   receive_command_from_controller(&tcp_controller, &sp, &np, ECR, &fb_enables, &t_step);
-  
+
   // copy log file name for post processing later
   char net_rx_log_file_cpy[100];
   strcpy(net_rx_log_file_cpy, np.net_rx_log_file);
@@ -634,7 +634,7 @@ int main(int argc, char **argv) {
 
     // this is used to create a child process for python radios which can be killed later
     pid_t python_pid;
-    
+
     // Create and start the ECR or python CR so that they are in a ready
     // state when the experiment begins
     if(np.cognitive_radio_type == EXTENSIBLE_COGNITIVE_RADIO)
@@ -656,7 +656,7 @@ int main(int argc, char **argv) {
         dprintf("Initializing CR\n");
         Initialize_CR(&np, (void *)ECR, argc, argv);
         freeargcargv(argc, argv);
-    } 
+    }
     else if(np.cognitive_radio_type == PYTHON)
     {
         //Create tun interface
@@ -669,7 +669,7 @@ int main(int argc, char **argv) {
         //Then when we replace the child process below with execvp, the new process inherits the old pid,
         //allowing us to kill it later. See the very end of main()
         python_pid = fork();
-        
+
         // define child's process
         if(python_pid == 0){
             //The execvp fuction used below takes two arguments
@@ -708,7 +708,7 @@ int main(int argc, char **argv) {
             //Call execvp to start python radio. execvp replaces the current process (in this case the child of CRTS_CR
             //forked above), so the original CRTS_CR keeps running.
             execvp("python", c_arguments);
-        
+
         }
         else
         {
@@ -716,9 +716,9 @@ int main(int argc, char **argv) {
             printf("CRTS Child: Initializing python CR\n");
             Initialize_CR(&np, NULL, 0, NULL);
         }
-        
-    } 
-  
+
+    }
+
   // Define address structure for CRTS socket server used to receive network
   // traffic
   struct sockaddr_in crts_server_addr;
@@ -753,7 +753,7 @@ int main(int argc, char **argv) {
   unsigned char message[CRTS_CR_PACKET_LEN];
   srand(12);
   msequence ms = msequence_create_default(CRTS_CR_PACKET_SR_LEN);
-  
+
   // define bit mask applied to packet number
   for (int i = 0; i < CRTS_CR_PACKET_NUM_LEN; i++)
     packet_num_prs[i] = msequence_generate_symbol(ms,8); //rand() & 0xff;
@@ -762,7 +762,7 @@ int main(int argc, char **argv) {
   for (int i = CRTS_CR_PACKET_NUM_LEN; i < CRTS_CR_PACKET_LEN; i++){
     message[i] = msequence_generate_symbol(ms,8);//(rand() & 0xff);
   }
-  
+
   // initialize sig_terminate flag and check return from socket call
   sig_terminate = 0;
   if (crts_client_sock < 0) {
@@ -813,7 +813,7 @@ int main(int argc, char **argv) {
   }
 
   bool send_flag = true;
-  
+
   // main loop: receives control, sends feedback, and generates/receives network traffic
   while ((time_s < stop_time_s) && (!sig_terminate)) {
     // Listen for any updates from the controller
@@ -871,7 +871,7 @@ int main(int argc, char **argv) {
           bytes_sent += send_return;
 
         ECR->inc_tx_queued_bytes(send_return+32);
-        
+
         if (np.log_net_tx) {
           log_tx_data(&sp, &np, send_return, packet_counter);
         }
@@ -947,7 +947,7 @@ int main(int argc, char **argv) {
       system(command);
     }
   }
-  
+
   // clean up ECR/python process
   if (np.cognitive_radio_type == EXTENSIBLE_COGNITIVE_RADIO) {
     delete ECR;

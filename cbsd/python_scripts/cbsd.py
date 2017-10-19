@@ -7,6 +7,15 @@ import socket
 import gps_reader
 from gps_reader import *
 
+scripts = os.path.dirname(os.path.abspath(__file__))
+scripts = scripts + '../python_scripts'
+sys.path.insert(0, scripts)
+
+scripts = os.path.dirname(os.path.abspath(__file__))
+scripts = scripts + '../config_scripts'
+sys.path.insert(0, scripts)
+
+import scenario_controller
 
 class Cbsd(object):
     _fccId = "cbd561"
@@ -55,6 +64,8 @@ class Cbsd(object):
         self.gpsReader = GPSReader(self)
         self.start_gps()
         self.grouped = None
+        self.init_sc = None
+        self.sc = scenario_controller.ScenarioController()
 
     def _create_registration_request_obj(self):
         temp_registrationObj = {'registrationRequest': {
@@ -227,6 +238,14 @@ class Cbsd(object):
                     self._heartbeatInterval = heartbeatResponse['heartbeatResponse']['heartbeatInterval']
                 if 'operationParam' in heartbeatResponse['heartbeatResponse']:
                     print "Change Operational parameters"
+                    operationFrequency = heartbeatResponse['heartbeatResponse']['operationParam']['operationalFrequencyRange']
+                    self._operationFrequencyRange = operationFrequency
+                    lowFrequency = float(self._operationFrequencyRange['lowFrequency']) + 4e6
+                    highFrequency = float(self._operationFrequencyRange['highFrequency']) - 3e6## This is a hack . Need to think this through
+                    print "New Low Frequency: ", lowFrequency
+                    print "New High Frequency: ", highFrequency
+                    self.sc.set_parameter(1,'freq',lowFrequency)
+                    self.sc.set_parameter(2,'freq',highFrequency)
             else:
                 self._grant_state = "IDLE"
 
@@ -419,6 +438,20 @@ class Cbsd(object):
             self.grouped = self.cornet_config['grouped']
             if self.grouped != None:
                 self.sas_ip = self.cornet_config['sas']
+
+            #print json_command['init_sc']
+
+            self.init_sc = self.cornet_config['scenario_controller']
+
+            cbsd_parameters = self.cornet_config['cbsd']
+            try:
+                if cbsd_parameters != None:
+                    for key,value in cbsd_parameters.iteritems():
+                        self.add_registration_parameters(key,value)
+            except Exception as e:
+                print "Error reading cbsd values: ",e
+
+
         else:
             print "No SAS Provided, assuming localhost"
             self.sas_ip = "127.0.0.1"

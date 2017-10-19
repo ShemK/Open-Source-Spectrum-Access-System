@@ -28,7 +28,7 @@ class Controller(object):
         random.seed()
         self.channels = []
         while len(self.channels) < self.channel_num:
-            newChannel = random.randint(355,370) * 10e6
+            newChannel = random.randint(355,365) * 10e6
             if newChannel not in self.channels:
                 self.channels.append(newChannel)
 

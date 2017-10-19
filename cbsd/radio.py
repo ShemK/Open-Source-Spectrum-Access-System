@@ -19,12 +19,14 @@ scripts = os.path.dirname(os.path.abspath(__file__))
 scripts = scripts + '/config_scripts'
 sys.path.insert(0, scripts)
 import config_editor
+import information_parser
 
 #def stop():
 newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba","yap")
 stop_radio = False
 stop_crts = False
 
+my_server_connection = None
 def handler(signum, frame):
     print 'Signal handler called with signal', signum
     global stop_crts
@@ -44,21 +46,17 @@ def handler(signum, frame):
         #else:
         #    stop_crts = False
             #newCbsd.my_heartbeat_Thread.stop_thread
+def getCommand():
+    try:
+        newCbsd.get_command()
+    except Exception as e:
+        print "Issue communicating with controller",e
 
-def run_radio():
-        global stop_radio
-        json_encoder = json.JSONEncoder()
-        json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())
-        newCbsd.clear_channels()
-
-        try:
-            newCbsd.get_command()
-        except Exception as e:
-            print "Issue communicating with controller"
-
-        sas_ip = newCbsd.sas_ip
-
-        link = "http://"+sas_ip+"/spectrumAccessSystem/start.php"
+def register():
+        global newCbsd
+        global my_server_connection
+        getCommand()
+        link = "http://"+newCbsd.sas_ip+"/spectrumAccessSystem/start.php"
         print link
         print "--------------------------Starting-----------------------------"
         my_server_connection = server_connection.Server_connection(link)
@@ -71,75 +69,129 @@ def run_radio():
 
         newCbsd.sendRegistrationRequest(my_server_connection)
 
+def run_radio():
+        global stop_radio
+        global newCbsd
+        global my_server_connection
+
+        json_encoder = json.JSONEncoder()
+        json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())
+        newCbsd.clear_channels()
+
         #change state of cbsd
+        getCommand()
+        link = "http://"+newCbsd.sas_ip+"/spectrumAccessSystem/start.php"
+        my_server_connection = server_connection.Server_connection(link)
 
         print "CBSD STATE: ",newCbsd.get_cbsd_state()
+        informationParser = information_parser.InformationParser(newCbsd.sas_ip,9749) # will need to move this to be part of cbsd
 
+        groupedIDs = []
+        if newCbsd.grouped != None:
+            for i in range(0,len(newCbsd.grouped)):
+                groupedIDs.append(informationParser.get_nodeID(newCbsd.grouped[i]))
+                print "grouped: ", groupedIDs[i]
         # TODO: Add connection to internal database
         # send channel inquiry in order of importance
         if(newCbsd.get_cbsd_state() == "REGISTERED"):
+            configEditor = config_editor.ConfigEditor()
+
             '''
-            newCbsd.add_inquired_channels(890e6,900e6)
-            newCbsd.add_inquired_channels(880e6,890e6)
-            newCbsd.add_inquired_channels(860e6,870e6)
-            newCbsd.add_inquired_channels(870e6,880e6)
-            newCbsd.add_inquired_channels(870e6,880e6)
+            Inquire about the spectrum
             '''
-        configEditor = config_editor.ConfigEditor()
-        '''
-        Inquire about the spectrum
-        '''
+            informationParser.addStatus("type","SU")
+            informationParser.addStatus("state","REGISTERED")
 
-        newCbsd.sendSpectrumInquiry(my_server_connection)
+            informationParser.sendStatus()
+            newCbsd.sendSpectrumInquiry(my_server_connection)
+            informationParser.addStatus("type","SU")
+            informationParser.addStatus("state","SPECTRUM INQUIRY")
 
-        '''
-            Get Grant Request
-        '''
+            #informationParser.addStatus("channels",newCbsd.get_inquired_channels())
 
-        newCbsd.sendGrantRequest(my_server_connection)
-        '''
-            start sending heartbeats
-        '''
+            if len(groupedIDs) > 0:
+                informationParser.addStatus("group",groupedIDs)
 
-        newCbsd.startSendingHeartBeats(my_server_connection)
+            informationParser.sendStatus()
 
 
-        '''
-            start radio interface
-        '''
+            '''
+                Get Grant Request
+            '''
 
-        start_radio_Thread = cbsd_thread.cbsd_thread(newCbsd,my_server_connection,\
-                                                    "start_radio",0,config_editor = configEditor);
-        '''
-         start grant timer
-        '''
-        newCbsd.startGrant(my_server_connection,start_radio_Thread)
-        if newCbsd.get_grant_state != "IDLE":
-            print "Starting Radio"
-            start_radio_Thread.start()
+            newCbsd.sendGrantRequest(my_server_connection)
+            '''
+                start sending heartbeats
+            '''
+            print "GRANT STATE: ", newCbsd.get_grant_state()
+            if newCbsd.get_grant_state() == "GRANTED" or newCbsd.get_grant_state() == "AUTHORIZED":
+                # NOTE: this information is already being sent by crts
+                informationParser.addStatus("type","SU")
+                informationParser.addStatus("state","GRANT AUTHORIZED")
+                freq_range = newCbsd.get_operationFrequencyRange()
+                lowFrequency = float(freq_range['lowFrequency'])
+                highFrequency = float(freq_range['highFrequency'])
 
-        #start_radio_Thread.join()
-        #if(newCbsd.grantTimeLeft!=None):
-        #    time.sleep(newCbsd.grantTimeLeft)
-        if newCbsd.my_heartbeat_Thread!=None:
-            sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-            my_port = 7816
-            sock.bind(("0.0.0.0",my_port))
-            sock.settimeout(1.0)
-            data = None
-            while data == None and stop_radio == False:
-                try:
-                    data = sock.recvfrom(1024)
-                except Exception as e:
-                    if not newCbsd.my_heartbeat_Thread.isAlive():
-                        break
-                    pass
-            print "Received something: ",data
-            sock.close()
+                print "lowFrequency", lowFrequency
+
+                informationParser.addStatus("lowFrequency",lowFrequency)
+                informationParser.addStatus("highFrequency",highFrequency)
+                if len(groupedIDs) > 0:
+                    informationParser.addStatus("group",groupedIDs)
+                informationParser.sendStatus()
+
+            newCbsd.startSendingHeartBeats(my_server_connection)
+
+
+            '''
+                start radio interface
+            '''
+
+            start_radio_Thread = cbsd_thread.cbsd_thread(newCbsd,my_server_connection,\
+                                                        "start_radio",0,config_editor = configEditor);
+            '''
+             start grant timer
+            '''
+            newCbsd.startGrant(my_server_connection,start_radio_Thread)
+            if newCbsd.get_grant_state != "IDLE":
+                print "Starting Radio"
+                start_radio_Thread.start()
+
+            #start_radio_Thread.join()
+            #if(newCbsd.grantTimeLeft!=None):
+            #    time.sleep(newCbsd.grantTimeLeft)
+            if newCbsd.my_heartbeat_Thread!=None:
+                sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+                my_port = 7816
+                sock.bind(("0.0.0.0",my_port))
+                sock.settimeout(1.0)
+                data = None
+                while data == None and stop_radio == False:
+                    try:
+                        data = sock.recvfrom(1024)
+                    except Exception as e:
+                        if not newCbsd.my_heartbeat_Thread.isAlive():
+                            break
+                        pass
+                print "Received something: ",data
+                sock.close()
+            informationParser.addStatus("state","GRANT RELINQUISHED")
+            informationParser.addStatus("type","SU")
+            informationParser.sendStatus()
             #newCbsd.my_heartbeat_Thread.join()
         #server_connection.close()
+        else:
+            informationParser.addStatus("state","UNREGISTERED")
+            informationParser.addStatus("type","SU")
+
+            if len(groupedIDs) > 0:
+                informationParser.addStatus("group",groupedIDs)
+
+            informationParser.sendStatus()
+
+        print "Stopping All Radio Functionalities"
         stop_crts()
-        time.sleep(30)
+        time.sleep(5)
 
 def stop_crts():
     pids = commands.getoutput("ps -ef | grep crts_controller | grep -v grep | awk '{print $2}'").split()
@@ -161,6 +213,7 @@ def main():
     signal.signal(signal.SIGINT, handler)
     signal.signal(signal.SIGQUIT, handler)
     global stop_radio
+    register()
     while stop_radio == False:
         print "Stop: ", stop_radio
         run_radio()
