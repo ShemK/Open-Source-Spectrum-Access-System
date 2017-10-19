@@ -11,6 +11,11 @@ import datetime
 import math
 import logging
 
+def print_full(x):
+    pd.set_option('display.max_columns', len(x))
+    print(x)
+    pd.reset_option('display.max_columns')
+
 class Cbsd():
 
     def __init__(self, df,i):
@@ -39,7 +44,7 @@ class REMAnalysis(threading.Thread):
         threading.Thread.__init__(self)
         self.cbsd = cbsd
         self.conn = conn
-        self.min_distance = 1000000
+        self.min_distance = 100
         self.stop_thread = False
         self.unavailable_frequencies = []
 
@@ -130,14 +135,18 @@ class REMAnalysis(threading.Thread):
                     try:
                         #spectrum_info = spectrum_info.drop_duplicates(keep='first')
                         min_info = spectrum_info.min(axis=0)
-                        calculated_info = spectrum_info.quantile(q=0.5,axis=0)
+                        calculated_info = spectrum_info.quantile(q=0.75,axis=0)
                         #calculated_info = spectrum_info.max(axis=0)
                         calculated_info = calculated_info.sort_index()
                         min_info = min_info.sort_index()
-                        calculated_info = calculated_info.dropna(axis = 0)
+                        #calculated_info = calculated_info.dropna(axis = 0)
+                        #min_info = min_info.dropna(axis=0)
                         sensor.calculated_info = calculated_info
-                        logging.debug("Current Sensor Info from %s : %s",sensor_id, calculated_info)
-                        print calculated_info
+                        #logging.debug("Current Sensor Info from %s : %s",sensor_id, calculated_info)
+                        #print calculated_info
+                        print "Min: ", len(sensor.normal_info)
+                        print "quantile: ", len(calculated_info)
+                        #print spectrum_info
                         if(len(sensor.normal_info) == 0):
                             sensor.normal_info = calculated_info
 
@@ -147,14 +156,21 @@ class REMAnalysis(threading.Thread):
                             sensor.check_availability(self.cbsd,diff)
 
                             print "Diff: ", diff.max()
-                            if diff.max() > 0.005:
-                                above_thresh = diff[(diff > 0.005)]
+
+
+                            if diff.max() > 0.1:
+                                above_thresh = diff[(diff > 0.1)]
                                 logging.info("Found channels with interference")
-                                print diff
+                                #print_full(spectrum_info)
+
                                 #logging.info("Found channels oci")
                                 #print calculated_info
 
                                 unavailable_temp = above_thresh.index.tolist()
+                                for m in range(0,len(unavailable_temp)):
+                                    print "--------------",unavailable_temp[m],"------------"
+                                    print spectrum_info[unavailable_temp[m]]
+
                                 # TODO: Need to append to list
                                 for p in range(0,len(unavailable_temp)):
                                     if len(sensor.unavailable_frequencies) == 0:
@@ -171,9 +187,21 @@ class REMAnalysis(threading.Thread):
                                     sensor.update_table(self.cbsd,lowFrequency,0)
                             else:
                                 sensor.normal_info = calculated_info
-
+                            print "unavailable channels: ",sensor.unavailable_frequencies
+                        elif len(sensor.normal_info) < len(calculated_info):
+                            for ii in range(0, len(calculated_info) - len(sensor.normal_info)):
+                                ## Try to add any extra minimum values
+                                ## This is due to the varying nature of data read from DB
+                                ind = calculated_info.index.tolist()[-1*(ii+1)]
+                                s1 = pd.Series([calculated_info.get(ind)],index=[ind])
+                                sensor.normal_info = sensor.normal_info.append(s1)
+                        elif len(sensor.normal_info) > len(calculated_info):
+                            ## Try to pop any extra minimum values
+                            for ii in range(0,  len(sensor.normal_info) - len(calculated_info)):
+                                ind = sensor.normal_info.index.tolist()[-1*(ii+1)]
+                                sensor.normal_info.pop(ind)
                     except Exception as e:
-                        print "Error with sensor data",e
+                        print "Error with sensor data for sensor ",sensor_id,e
         else:
             pass
 
@@ -221,7 +249,7 @@ class sensor():
         table_name = "channelinfo_" + str(self.sensor_id)
         #print "Table Name: ",table_name
         self.channelInfo = psql.read_sql("select startfreq, occ from " + table_name
-                        +" where startfreq > 3570e6 and startfreq < 3600e6", self.conn)
+                        +" where startfreq > 3550e6 and startfreq < 3700e6", self.conn)
         transposed_info = self.channelInfo.transpose()
         cols = None
         info = None
@@ -251,9 +279,10 @@ class sensor():
 
         #print row_num
         #print self.spectrum_info
-        if(row_num > 20):
+        if(row_num > 10):
             #print self.spectrum_info
             self.spectrum_info = DataFrame()
+            self.spectrum_info = temp
 
     def check_availability(self,cbsd, diff):
         for i in range(0,len(self.unavailable_frequencies)):
@@ -265,7 +294,7 @@ class sensor():
                 self.unavailable_frequencies.pop(i)
 
     def update_table(self, cbsd, lowFrequency, value):
-        sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET available = '+ str(value) + \
+        sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET pu_absent = '+ str(value) + \
                                         ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
         cur = self.conn.cursor()
         cur.execute(sql_query)
