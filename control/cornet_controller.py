@@ -135,7 +135,7 @@ def main():
     cornetController = CornetController()
     p = cornetController.read_config_file('cornet.cfg')
     cornetController.start_secondary_users()
-    #cornetController.start_sensors()
+    cornetController.start_sensors()
     #cornetController.start_sas_nodes()
     #cornetController.stop_sensors()
     #command = "ssh 192.168.1.19 sudo systemctl restart sdr_phy.service"
