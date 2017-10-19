@@ -259,7 +259,7 @@ class JsonListener{
 					//echo time();
 					date_default_timezone_set ('UTC');
 					// add 10 seconds = 1 * 60 seconds
-					$grantExpireTime = time() + (1*60/60*60);
+					$grantExpireTime = time() + (3*60/60*60);
 					$grantExpireDate = $this->convertTimeToDate($grantExpireTime);
 					$replyObj->{'grantExpireTime'} = $grantExpireDate;
 					$replyObj->{'heartbeatInterval'} = 2;
@@ -328,10 +328,23 @@ class JsonListener{
 							'grantState'=>$row['grantState']];
 						$operationParam = (object)[];
 						$operationParam->{'maxEirp'} = 100;
-						$operationParam->{'operationalFrequencyRange'}->{'lowFrequency'} = 6213;
-						$operationParam->{'operationalFrequencyRange'}->{'highFrequency'} =10949210;
+						$newLowFreq = $this->chooseRandomChannel($cbsdId,$grantId);
+						$operationParam->{'operationalFrequencyRange'}->{'lowFrequency'} =$newLowFreq;
+						$operationParam->{'operationalFrequencyRange'}->{'highFrequency'} = $newLowFreq + 10e6;
 						$replyObj->{'operationParam'} = $operationParam;
 						$replyObj->{'response'}->{'responseCode'} = '0';
+						$nullGrantID = '';
+						$nullGrantState = 'GRANTED';
+
+						$query = 'UPDATE '.$cbsd_table.' SET "grantId" = '."'".$nullGrantID."'"
+						.',available = 1 ,"grantState" = '."'".$nullGrantState."'".' WHERE "grantId" = '."'".$grantId."';";
+
+						$result = $this->myDBHandler->query($query);
+						$query = 'UPDATE '.$cbsd_table.' SET "grantId" = '."'".$grantId."'"
+						.',available = 0 ,"grantState" = '."'".$row['grantState']."'".' WHERE "lowFrequency" = '."'".$newLowFreq."';";
+
+						$result = $this->myDBHandler->query($query);
+
 					}
 
 				}
@@ -522,6 +535,19 @@ class JsonListener{
 				return False;
 			}
 		}
+	}
+
+	private function chooseRandomChannel($cbsdId,$grantId){
+		$cbsd_table = "cbsdInfo_".$cbsdId;
+		$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3700e6 and pu_absent = 1;';
+		$channels = array();
+		$result = $this->myDBHandler->query($query);
+		while($row = $this->myDBHandler->fetchResults($result)){
+			$channels[] = $row['lowFrequency'];
+		}
+
+		$random_pos = rand(0,count($channels)-1);
+		return $channels[$random_pos];
 	}
 
 }
