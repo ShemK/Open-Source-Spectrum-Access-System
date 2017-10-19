@@ -539,7 +539,7 @@ class JsonListener{
 
 	private function chooseRandomChannel($cbsdId,$grantId){
 		$cbsd_table = "cbsdInfo_".$cbsdId;
-		$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3700e6 and pu_absent = 1;';
+		$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3650e6 and pu_absent = 1;';
 		$channels = array();
 		$result = $this->myDBHandler->query($query);
 		while($row = $this->myDBHandler->fetchResults($result)){
