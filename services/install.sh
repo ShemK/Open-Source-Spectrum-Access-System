@@ -32,6 +32,8 @@ sudo -i -u postgres psql -c"CREATE USER wireless WITH PASSWORD 'wireless';"
 
 sudo -i -u postgres psql -c"ALTER USER wireless WITH SUPERUSER;"
 
+sudo service postgresql restart
+
 sudo -i -u postgres psql -c"DROP DATABASE IF EXISTS rem;"
 
 sudo -i -u postgres psql -c"CREATE DATABASE rem;"
@@ -239,7 +241,7 @@ sudo mkdir /opt/sas/central/
 
 #sudo cp central_controller/controller.py /opt/sas/central/
 
-sudo cp crts_sas/crts/config_scripts/controller.py /opt/sas/central/
+sudo cp crts_sas/cbsd/config_scripts/controller.py /opt/sas/central/
 
 sudo chmod 665 /opt/sas/central
 
