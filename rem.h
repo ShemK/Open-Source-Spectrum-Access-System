@@ -125,6 +125,8 @@ public:
 
   void updateGroupee(short unsigned int nodeTemp, int status);
 
+  sem_t graphic_mutex;
+
   public slots:
   void updateVisualNode(int nodePos);
 

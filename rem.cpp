@@ -6,6 +6,7 @@ Rem::Rem(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::Rem)
 {
+  sem_init(&graphic_mutex,0,1);
   node_phores = new sem_t[node_num+1];
   for(int i = 0; i < node_num+1; i++){
       sem_init(&node_phores[i],0,0);
@@ -20,6 +21,7 @@ Rem::~Rem()
   app_open = false;
   pthread_join(listener_process,NULL);
   known_nodes.clear();
+  sem_close(&graphic_mutex);
   delete ui;
 }
 
@@ -193,6 +195,7 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
                           known_nodes.at(status).tx_info.state = pmt::symbol_to_string(state_pmt);
                         }
 
+
                     }
                   pmt::pmt_t group = pmt::dict_ref(received_dict, pmt::string_to_symbol("group"), not_found);
 
@@ -204,7 +207,9 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
 
                     }
                   updateGroupee(nodeTemp,status);
-
+                  QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                              Qt::LowEventPriority);
+                  QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
                 }
             } else{
               std::cout << "Missing Node ID" << std::endl;
@@ -278,10 +283,13 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
       if(known_nodes[nodePos].channels[pos].occ_history.size() > 20){
           known_nodes[nodePos].channels[pos].occ_history.pop_front();
         }
-
-      QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
-                                  Qt::LowEventPriority);
-      QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
+      sem_getvalue(&graphic_mutex, &sval);
+      std::cout << "Sensor Sem Value: " << sval << "\n";
+      if(sval > 0){
+          QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                      Qt::HighEventPriority);
+          QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
+        }
 
       std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].lowFrequency << std::endl;
       std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].occ << std::endl;
@@ -295,7 +303,7 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
 void Rem::updateVisualNode(int nodePos){
 
   if (known_nodes[nodePos].type == SENSOR){
-      QString below_threshold("background-color: green");
+      QString below_threshold("background-color: rgb(0,255,0)");
       QString above_threshold("background-color: red");
 
       QString visualID(known_nodes[nodePos].visualID.c_str());
@@ -306,7 +314,7 @@ void Rem::updateVisualNode(int nodePos){
       for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
           if(known_nodes[nodePos].channels[i].occ > occ_threshold){
               detected = true;
-             /* for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
+              /* for(unsigned int i = 0; i < known_nodes[nodePos].channels.size(); i++){
                   std::cout << " | LF" << known_nodes[nodePos].channels[i].lowFrequency << " occ: " << known_nodes[nodePos].channels[i].occ;
                 }
               std::cout << "\n"; */
@@ -315,7 +323,7 @@ void Rem::updateVisualNode(int nodePos){
         }
 
 
-
+      sem_wait(&graphic_mutex);
       if(detected){
           if(strcmp(known_nodes[nodePos].node_color.c_str(),"red") != 0){
               QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
@@ -332,16 +340,37 @@ void Rem::updateVisualNode(int nodePos){
               known_nodes[nodePos].node_color = "green";
             }
         }
+      sem_post(&graphic_mutex);
+
     } else if (known_nodes[nodePos].type == SU){
-
       QString su_color("background-color: blue");
-      QString visualID(known_nodes[nodePos].visualID.c_str());
+      std::string new_color  = "";
+      if (strcmp(known_nodes.at(nodePos).tx_info.state.c_str(),"GRANT ACCEPTED")==0){
+          QString temp_color("background-color: rgb(0,0,255)");
+          su_color = temp_color;
+          new_color = "blue";
+          known_nodes[nodePos].node_color = "red";
+        } else{
+          QString temp_color("background-color: rgb(255,255,0)");
+          su_color = temp_color;
+          new_color = "yellow";
+          known_nodes[nodePos].node_color = "yellow";
+        }
+      sem_wait(&graphic_mutex);
+      if(strcmp(new_color.c_str(), known_nodes[nodePos].node_color.c_str()) !=0){
+          QString visualID(known_nodes[nodePos].visualID.c_str());
 
-      QToolButton *button = ui->centralWidget->findChild<QToolButton *>(visualID);
+          QToolButton *button = ui->centralWidget->findChild<QToolButton *>(visualID);
 
-      QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
-                                  Qt::LowEventPriority);
-      QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, su_color));
+          QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
+                                      Qt::LowEventPriority);
+          QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, su_color));
+
+          known_nodes[nodePos].node_color = new_color;
+
+        }
+      sem_post(&graphic_mutex);
+
     }
 
 

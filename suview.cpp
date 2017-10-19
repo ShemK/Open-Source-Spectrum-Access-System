@@ -16,9 +16,9 @@ SuView::SuView(int pos, QWidget *parent) :
 
 SuView::~SuView()
 {
-  pthread_mutex_lock(&listener_mutex);
+  //pthread_mutex_lock(&listener_mutex);
   app_open = false;
-  pthread_mutex_unlock(&listener_mutex);
+  //pthread_mutex_unlock(&listener_mutex);
   std::cout << "Deleted\n";
   pthread_join(listener_process,NULL);
   delete ui;
@@ -46,7 +46,7 @@ void SuView::updateView(){
 
   Rem::performanceStats currentStat;
   bool newValue = false;
-  pthread_mutex_lock(&listener_mutex);
+  //pthread_mutex_lock(&listener_mutex);
   if (rem->known_nodes[pos].tx_info.stats.size() > 0){
       while(rem->known_nodes[pos].tx_info.stats.size() > 0){
           currentStat = rem->known_nodes[pos].tx_info.stats.front();
@@ -56,7 +56,7 @@ void SuView::updateView(){
 
       newValue = true;
     }
-  pthread_mutex_unlock(&listener_mutex);
+  //pthread_mutex_unlock(&listener_mutex);
   if(newValue){
       QLineSeries *series = new QLineSeries();
       for(unsigned int i = 0; i < bitrate.size(); i++){
@@ -84,8 +84,9 @@ void SuView::updateView(){
       axisY->setMin(0);
       //series->attachAxis(axisX);
 
-
-
+      QString yTitle("Throughput (bits/s)");
+      axisY->setTitleText(yTitle);
+     // axisY->setRange(0, 300e6);
 
       QChartView *chartView = new QChartView(chart);
       chartView->setRenderHint(QPainter::Antialiasing);
