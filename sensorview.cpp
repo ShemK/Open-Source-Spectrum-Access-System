@@ -56,13 +56,15 @@ void SensorView::updateView(){
   ui->tableWidget->setHorizontalHeaderLabels(tableHeader);
   unsigned int current_channel = rem->known_nodes[pos].current_channel;
   std::vector<Rem::channelInfo> channels;
+
+
+
   for(unsigned int i = 0; i< rem->known_nodes[pos].channels.size();i++){
-      if(rem->known_nodes[pos].channels[i].lowFrequency <= 3700e6){
+      if(rem->known_nodes[pos].channels[i].lowFrequency <= 3650e6){
           channels.push_back(rem->known_nodes[pos].channels[i]);
         }
 
     }
-
 
 
 
@@ -78,7 +80,7 @@ void SensorView::updateView(){
   chart->setTitle("Spectrum Chart");
 
   QValueAxis *axisX = new QValueAxis;
-  axisX->setTickCount(16);
+  axisX->setTickCount(11);
   //axisX->setLinePenColor(series->pen().color());
   QString xTitle("Frequency (GHz)");
   axisX->setTitleText(xTitle);

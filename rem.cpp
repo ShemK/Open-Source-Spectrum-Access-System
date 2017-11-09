@@ -170,7 +170,7 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
                       QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                                   Qt::LowEventPriority);
                       QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
-
+                      //updateVisualNode(status);
                     }
 
                   pmt::pmt_t thru = pmt::dict_ref(received_dict, pmt::string_to_symbol("throughput"), not_found);
@@ -202,7 +202,7 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
                   if (group!=not_found){
                       std::vector<short unsigned int> value_vector =  pmt::u16vector_elements (group);
                       known_nodes.at(status).tx_info.group = value_vector;
-                      //std::cout << value_vector
+                      std::cout << "Group Found\n";
                       //pmt::pmt_t values = pmt::dict_values (group);
 
                     }
@@ -210,6 +210,7 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
                   QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                               Qt::LowEventPriority);
                   QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
+                 //updateVisualNode(status);
                 }
             } else{
               std::cout << "Missing Node ID" << std::endl;
@@ -227,17 +228,19 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
 }
 
 void Rem::updateGroupee(short unsigned int nodeTemp, int status){
+  std::cout << "Updating Groupee\n";
   std::vector<short unsigned int> value_vector = known_nodes.at(status).tx_info.group;
   for(unsigned int i  = 0; i < value_vector.size(); i++){
       if (nodeTemp!=value_vector[i]){
           int pos = getNodePos(value_vector[i]);
-
+          std::cout << "Groupee Pos: "<< pos <<"\n";
           if(pos > 0){
               if(known_nodes.at(pos).type!=SU){
                   known_nodes.at(pos).type = SU;
                   QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                               Qt::LowEventPriority);
                   QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,pos));
+                  //updateVisualNode(pos);
 
                 }
 
@@ -289,6 +292,7 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
           QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                       Qt::HighEventPriority);
           QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
+         //updateVisualNode(nodePos);
         }
 
       std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].lowFrequency << std::endl;
@@ -345,16 +349,15 @@ void Rem::updateVisualNode(int nodePos){
     } else if (known_nodes[nodePos].type == SU){
       QString su_color("background-color: blue");
       std::string new_color  = "";
+      std::cout << "Current Status: " << known_nodes.at(nodePos).tx_info.state.c_str() <<"\n";
       if (strcmp(known_nodes.at(nodePos).tx_info.state.c_str(),"GRANT ACCEPTED")==0){
           QString temp_color("background-color: rgb(0,0,255)");
           su_color = temp_color;
           new_color = "blue";
-          known_nodes[nodePos].node_color = "red";
         } else{
           QString temp_color("background-color: rgb(255,255,0)");
           su_color = temp_color;
           new_color = "yellow";
-          known_nodes[nodePos].node_color = "yellow";
         }
       sem_wait(&graphic_mutex);
       if(strcmp(new_color.c_str(), known_nodes[nodePos].node_color.c_str()) !=0){
