@@ -5,7 +5,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python /users/shemk/sas_crts/radio.py
+ExecStart=/usr/bin/python /users/shemk/sas_crts/cbsd/radio.py
 
 [Install]
 WantedBy=multi-user.target
