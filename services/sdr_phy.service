@@ -1,0 +1,10 @@
+[Unit]
+Description=creating a service to work with the USRP
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /opt/sas/top_block.py
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=channel_analysis.service
