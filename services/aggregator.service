@@ -1,0 +1,11 @@
+[Unit]
+Description=creates a background service for getting aggregated data
+
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/opt/sas/aggregator/test
+
+[Install]
+WantedBy=multi-user.target
