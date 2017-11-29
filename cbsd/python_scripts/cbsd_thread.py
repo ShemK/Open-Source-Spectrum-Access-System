@@ -50,6 +50,7 @@ class cbsd_thread(threading.Thread):
                     # TODO: The cbsd instance needs to be added to the thread -- done
                 except ValueError as e:
                     print "Wrong response Received",e
+                    print self.response
                     self.stop_thread = True
 
             print "\n---------------------------------------------------------\n"
@@ -82,7 +83,10 @@ class cbsd_thread(threading.Thread):
                 x_path = os.path.dirname(os.path.abspath(__file__))
                 x_path = x_path + "/../../crts/crts_controller -s sas_scenarios/test"
                 os.system(x_path)
-                pass
+                if self.heartbeat_thread != None:
+                    self.heartbeat_thread.stop_thread = True
+                else:
+                    print "No heartbeat_thread"
 
     def stopRadio(self):
         pids = commands.getoutput("ps -ef | grep crts_controller | grep -v grep | awk '{print $2}'").split()

@@ -411,10 +411,13 @@ class Cbsd(object):
        #     print("client time: ", datetime.datetime.utcnow().timetuple())
                 self.grantTimeLeft = self.get_grantExpireTime_seconds() - current_time
                 print "Grant Ends in: ", self.grantTimeLeft,"s"
+                return self.my_heartbeat_Thread
             else:
                 print "No Grants Provided"
+                return None
         else:
             print "Grant State = IDLE, No Grant Provided"
+            return None
 
 
     def startGrant(self,my_server_connection,start_radio_Thread):

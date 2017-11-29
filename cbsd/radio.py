@@ -140,7 +140,7 @@ def run_radio():
                     informationParser.addStatus("group",groupedIDs)
                 informationParser.sendStatus()
 
-            newCbsd.startSendingHeartBeats(my_server_connection)
+            my_heartbeat_Thread = newCbsd.startSendingHeartBeats(my_server_connection)
 
 
             '''
@@ -148,7 +148,8 @@ def run_radio():
             '''
 
             start_radio_Thread = cbsd_thread.cbsd_thread(newCbsd,my_server_connection,\
-                                                        "start_radio",0,config_editor = configEditor);
+                                                        "start_radio",0,config_editor = configEditor,\
+                                                        heartbeat_thread = my_heartbeat_Thread);
             '''
              start grant timer
             '''
