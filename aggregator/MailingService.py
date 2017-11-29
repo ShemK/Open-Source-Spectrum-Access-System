@@ -1,8 +1,9 @@
 import socket
+import pmt
 
 # this python script is used to forward information from internal sockets to external sockets
 
-#MAILING SERVICE TO BE USED TO TRANSFER DATA FROM ONE PORT TO ANOTHER
+#MAILING SERVICE TO BE USED TO TRANSFER DATA FROM ONE PORT TO ANOTHERY
 # Ideally, it should connect to a source port and the receive data to be forwarded
 # Currently, it is just being used to transfer data from the aggregator to visualization tool
 
@@ -22,11 +23,11 @@ class MailingService(object):
 
     def forward(self):
         data, addr = self.input_sock.recvfrom(4096)
-        print "Received Something"
+        print "Received Something",pmt.deserialize_str(data)
         self.output_sock.sendto(data, (self.dest_addr, self.dest_port))
 
 def main():
-    mailingService = MailingService('128.173.39.15',4680)
+    mailingService = MailingService('128.173.38.28',4680)
     while 1:
         mailingService.forward()
 
