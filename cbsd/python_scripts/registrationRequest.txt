@@ -1,0 +1,20 @@
+	{'registrationRequest' :
+
+		{
+
+			"fccId": "cbd561",
+
+			"cbsdCategory": "A",
+
+			"callSign": "CB987",
+
+			"userId": "cbd1",
+
+			"cbsdSerialNumber": "hask124ba",
+
+			"cbsdInfo":"yap",
+
+			"airInterface":"Nay",
+
+			}
+}
