@@ -10,8 +10,8 @@ import REMAnalysis as rem
 import math
 import logging
 
-class ServerPsql(object):
-    """docstring fo ServerPsql."""
+class Analyzer(object):
+    """docstring fo Analyzer."""
     cbsd_dataframe = None
     conn = None
     cbsd = None
@@ -101,7 +101,7 @@ class ServerPsql(object):
         last_active_time = df['last_active']
         print "current time: ",current_time
         print "last_active: ", df['last_active']
-        if current_time - last_active_time > 1200000:
+        if current_time - last_active_time > 300:
             print "CBSD Currently Inactive: ",df['cbsdId']
             return False
         else:
@@ -111,7 +111,7 @@ class ServerPsql(object):
 
 def main():
 
-    sql = ServerPsql("rem","localhost","wireless","wireless")
+    sql = Analyzer("rem","localhost","wireless","wireless")
     sql.connect()
     sql.get_current_cbsd_info()
 

@@ -44,26 +44,33 @@ class REMAnalysis(threading.Thread):
         threading.Thread.__init__(self)
         self.cbsd = cbsd
         self.conn = conn
-        self.min_distance = 100
+        self.min_distance = 10
         self.stop_thread = False
         self.unavailable_frequencies = []
 
     def update_cbsd_info(self):
             logging.debug("Fetching Updating CBSD information for %s",self.cbsd.fccId)
-            df = psql.read_sql("select * from registered_cbsds", self.conn)
-            dim = df.shape
-            row_num = dim[0]
-            for i in range(0,row_num):
-                if df.loc[i]['fccId'] == self.cbsd.fccId:
-                    self.cbsd.cbsdId = df.loc[i]['cbsdId']
+            try:
+                df = psql.read_sql("select * from registered_cbsds", self.conn)
+                dim = df.shape
+                row_num = dim[0]
+                for i in range(0,row_num):
+                    if df.loc[i]['fccId'] == self.cbsd.fccId:
+                        self.cbsd.cbsdId = df.loc[i]['cbsdId']
+            except Exception as e:
+                print "Error reading registered_cbsds: ",e
 
     def update_table(self, lowFrequency, value):
-        sql_query = 'UPDATE cbsdinfo_'+self.cbsd.cbsdId + ' SET available = '+ str(value) + \
+        try:
+            sql_query = 'UPDATE cbsdinfo_'+self.cbsd.cbsdId + ' SET available = '+ str(value) + \
                                         ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
-        cur = self.conn.cursor()
-        cur.execute(sql_query)
-        self.conn.commit()
-        print sql_query
+            cur = self.conn.cursor()
+            cur.execute(sql_query)
+            self.conn.commit()
+            print sql_query
+        except Exception as e:
+            print "Error Updating DB: ",e
+
 
     def run(self):
         while not self.stop_thread:
@@ -158,8 +165,8 @@ class REMAnalysis(threading.Thread):
                             print "Diff: ", diff.max()
 
 
-                            if diff.max() > 0.1:
-                                above_thresh = diff[(diff > 0.1)]
+                            if diff.max() > 0.22:
+                                above_thresh = diff[(diff > 0.22)]
                                 logging.info("Found channels with interference")
                                 #print_full(spectrum_info)
 
@@ -186,7 +193,8 @@ class REMAnalysis(threading.Thread):
                                     lowFrequency = math.floor(float(lowFrequency)/10e6)*10e6
                                     sensor.update_table(self.cbsd,lowFrequency,0)
                             else:
-                                sensor.normal_info = calculated_info
+                                if diff.max() < 0.05: # for sus that might make it normal
+                                    sensor.normal_info = calculated_info
                             print "unavailable channels: ",sensor.unavailable_frequencies
                         elif len(sensor.normal_info) < len(calculated_info):
                             for ii in range(0, len(calculated_info) - len(sensor.normal_info)):
@@ -248,8 +256,12 @@ class sensor():
     def fetch_channel_info(self):
         table_name = "channelinfo_" + str(self.sensor_id)
         #print "Table Name: ",table_name
-        self.channelInfo = psql.read_sql("select startfreq, occ from " + table_name
-                        +" where startfreq > 3550e6 and startfreq < 3700e6", self.conn)
+        try:
+            self.channelInfo = psql.read_sql("select startfreq, occ from " + table_name
+                            +" where startfreq > 3550e6 and startfreq < 3660e6", self.conn)
+        except Exception as e:
+            print "Error reading from database: ",e
+
         transposed_info = self.channelInfo.transpose()
         cols = None
         info = None
@@ -294,9 +306,12 @@ class sensor():
                 self.unavailable_frequencies.pop(i)
 
     def update_table(self, cbsd, lowFrequency, value):
-        sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET pu_absent = '+ str(value) + \
+        try:
+            sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET pu_absent = '+ str(value) + \
                                         ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
-        cur = self.conn.cursor()
-        cur.execute(sql_query)
-        self.conn.commit()
-        print sql_query
+            cur = self.conn.cursor()
+            cur.execute(sql_query)
+            self.conn.commit()
+            print sql_query
+        except Exception as e:
+            raise
