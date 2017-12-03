@@ -66,6 +66,7 @@ class Cbsd(object):
         self.grouped = None
         self.init_sc = None
         self.sc = scenario_controller.ScenarioController()
+        self.manual = False
 
     def _create_registration_request_obj(self):
         temp_registrationObj = {'registrationRequest': {
@@ -296,10 +297,9 @@ class Cbsd(object):
     # Clear available channel list
     def clear_channels(self):
         self._available_channels = []
-#        for i in range(0,len(self._available_channels)):
-#            self._available_channels.pop(len(self._available_channels)-1)
 
-
+    def clear_inquired_channels(self):
+        self._inquired_channels = []
 
     '''
     Functions that connect with SAS
@@ -313,7 +313,6 @@ class Cbsd(object):
 
             # create json decoder object
             # get dictionary
-
             try:
                 json_response = self._json_decoder.decode(response)
                 self.set_registrationResponseObj(json_response)

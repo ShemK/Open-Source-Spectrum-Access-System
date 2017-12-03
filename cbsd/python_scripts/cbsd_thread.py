@@ -66,14 +66,7 @@ class cbsd_thread(threading.Thread):
             self.stopRadio()
 
         elif self.interval_type == "grant":
-            #if(self.my_Interval > 0):
-            #    time.sleep(self.my_Interval)
-            #self.heartbeat_thread.stopThread()
-            #self.start_radio.stopThread()
             pass
-
-            #quit()
-           # sys.exit()
 
         elif self.interval_type == "start_radio":
         #    print("Nothing!")
@@ -87,6 +80,8 @@ class cbsd_thread(threading.Thread):
                     self.heartbeat_thread.stop_thread = True
                 else:
                     print "No heartbeat_thread"
+            else:
+                print "Radio not in group"
 
     def stopRadio(self):
         pids = commands.getoutput("ps -ef | grep crts_controller | grep -v grep | awk '{print $2}'").split()
