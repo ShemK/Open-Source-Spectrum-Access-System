@@ -83,7 +83,6 @@ CREATE OR REPLACE FUNCTION CREATE_CBSD_CHANNEL_TABLE()
 RETURNS trigger AS $$
 
 BEGIN
-EXECUTE format('DROP TABLE IF EXISTS %s ;', 'cbsdinfo_'||OLD."fccId");
 EXECUTE format('
   CREATE TABLE IF NOT EXISTS %s(
     "lowFrequency" float NOT NULL,
