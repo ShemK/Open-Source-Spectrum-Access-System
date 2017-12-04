@@ -57,7 +57,7 @@ CREATE TABLE registered_cbsds (
   UNIQUE("cbsdId")
 );
 
-CREATE OR REPLACE function populate_cbsd_table(LowerFreq FLOAT, cbsdID varchar(45))
+CREATE OR REPLACE function populate_cbsd_table(LowerFreq FLOAT, fccID varchar(45))
 RETURNS void as $$
 DECLARE
   i INTEGER DEFAULT 1;
@@ -71,7 +71,7 @@ BEGIN
 
     EXECUTE format('
       INSERT INTO %s("lowFrequency", "highFrequency","grantState","channelType") VALUES(%s,%s,%L,%L);',
-      'cbsdinfo_'||cbsdID,LF,LF + 10000000,'GRANTED','PAL');
+      'cbsdinfo_'||fccID,LF,LF + 10000000,'GRANTED','PAL');
 
     i := i+1;
     LF := LF + 10000000;
@@ -83,7 +83,7 @@ CREATE OR REPLACE FUNCTION CREATE_CBSD_CHANNEL_TABLE()
 RETURNS trigger AS $$
 
 BEGIN
-EXECUTE format('DROP TABLE IF EXISTS %s ;', 'cbsdinfo_'||OLD."cbsdId");
+EXECUTE format('DROP TABLE IF EXISTS %s ;', 'cbsdinfo_'||OLD."fccId");
 EXECUTE format('
   CREATE TABLE IF NOT EXISTS %s(
     "lowFrequency" float NOT NULL,
@@ -97,12 +97,12 @@ EXECUTE format('
     "channelType" channel_type,
     "pu_absent" smallint DEFAULT 1, 
     PRIMARY KEY ("lowFrequency","highFrequency")
-  );', 'cbsdinfo_'||NEW."cbsdId");
+  );', 'cbsdinfo_'||NEW."fccId");
 
-  perform populate_cbsd_table(400000000.0,NEW."cbsdId");
-  perform populate_cbsd_table(800000000.0,NEW."cbsdId");
-  perform populate_cbsd_table(1000000000.0,NEW."cbsdId");
-  perform populate_cbsd_table(3500000000.0,NEW."cbsdId");
+  perform populate_cbsd_table(400000000.0,NEW."fccId");
+  perform populate_cbsd_table(800000000.0,NEW."fccId");
+  perform populate_cbsd_table(1000000000.0,NEW."fccId");
+  perform populate_cbsd_table(3500000000.0,NEW."fccId");
 
   RETURN NEW;
 END
@@ -112,7 +112,7 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER cbsd_id_update_trigger ON registered_cbsds;
 
 CREATE TRIGGER cbsd_id_update_trigger
-  AFTER UPDATE OF "cbsdId" ON registered_cbsds
+  AFTER INSERT OF "fccId" ON registered_cbsds
   FOR EACH ROW
   EXECUTE PROCEDURE CREATE_CBSD_CHANNEL_TABLE();
 
