@@ -112,7 +112,7 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER cbsd_id_update_trigger ON registered_cbsds;
 
 CREATE TRIGGER cbsd_id_update_trigger
-  AFTER INSERT OF "fccId" ON registered_cbsds
+  AFTER INSERT ON registered_cbsds
   FOR EACH ROW
   EXECUTE PROCEDURE CREATE_CBSD_CHANNEL_TABLE();
 
