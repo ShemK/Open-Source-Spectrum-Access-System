@@ -80,6 +80,7 @@ class Analyzer(object):
         cbsd_thread = rem.REMAnalysis(self.cbsd,self.conn)
         self.analysis_threads[self.cbsd.fccId] = cbsd_thread
         self.analysis_threads[self.cbsd.fccId].start()
+        self.setNeighbors(self.cbsd.fccId)
 
     def stop_program(self,signum,frame):
         self.stop_threads()
@@ -102,12 +103,21 @@ class Analyzer(object):
         print "current time: ",current_time
         print "last_active: ", df['last_active']
         if current_time - last_active_time > 300:
-            print "CBSD Currently Inactive: ",df['cbsdId']
+            print "CBSD Currently Inactive: ",df['fccId']
             return False
         else:
-            print "CBSD Currently Active: ",df['cbsdId']
+            print "CBSD Currently Active: ",df['fccId']
             return True
 
+    def setNeighbors(self,cbsd_key):
+        my_thread = self.analysis_threads[cbsd_key]
+        for key,cbsd_thread in self.analysis_threads.items():
+            if(cbsd_key!=key):
+                dist = my_thread.calculate_neigbor_distance(cbsd_thread.cbsd)
+                if dist < 10:
+                    print "Neighbor found"
+                    my_thread.neighbors.append(cbsd_thread)
+                    cbsd_thread.neighbors.append(my_thread)
 
 def main():
 

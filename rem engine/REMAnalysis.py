@@ -33,6 +33,7 @@ class Cbsd():
         self.installationJson = self.json_decoder.decode(self.installationParam)
         self.latitude = self.installationJson['latitude']
         self.longitude = self.installationJson['longitude']
+
         #print l
     def get_location(self):
         pass
@@ -47,9 +48,11 @@ class REMAnalysis(threading.Thread):
         self.min_distance = 10
         self.stop_thread = False
         self.unavailable_frequencies = []
+        self.neighbors = []
+        self.occupied_frequencies = 0
 
     def update_cbsd_info(self):
-            logging.debug("Fetching Updating CBSD information for %s",self.cbsd.fccId)
+            logging.debug("Fetching Updated CBSD information for %s",self.cbsd.fccId)
             try:
                 df = psql.read_sql("select * from registered_cbsds", self.conn)
                 dim = df.shape
@@ -57,6 +60,27 @@ class REMAnalysis(threading.Thread):
                 for i in range(0,row_num):
                     if df.loc[i]['fccId'] == self.cbsd.fccId:
                         self.cbsd.cbsdId = df.loc[i]['cbsdId']
+
+                sql_query = 'select * from cbsdinfo_'+ self.cbsd.fccId+' WHERE "available" = 0;'
+                df = psql.read_sql(sql_query, self.conn)
+
+                dim = df.shape
+                row_num = dim[0]
+                print "Row NUm ",row_num
+                for i in range(0,row_num):
+                    lowFrequency = df.loc[i]['lowFrequency']
+                    if self.occupied_frequencies==0:
+                        self.update_neighbors(self.occupied_frequencies,1)
+                    if self.occupied_frequencies != lowFrequency:
+                        self.update_neighbors(self.occupied_frequencies,1)
+                        
+                    self.occupied_frequencies = lowFrequency
+                    self.update_neighbors(lowFrequency,2)
+                    print "occupied for ",self.cbsd.fccId,": ",self.occupied_frequencies
+                if row_num == 0 and self.occupied_frequencies != 0:
+                    self.update_neighbors(self.occupied_frequencies,1)
+                    self.occupied_frequencies = 0
+
             except Exception as e:
                 print "Error reading registered_cbsds: ",e
 
@@ -237,6 +261,25 @@ class REMAnalysis(threading.Thread):
             dist = math.sqrt(dist)
         return dist
 
+    def calculate_neigbor_distance(self,new_cbsd):
+        if (new_cbsd.latitude!=None) and (new_cbsd.longitude!=None):
+            dist = (self.cbsd.latitude - new_cbsd.latitude)**2 + (self.cbsd.longitude - new_cbsd.latitude)**2
+            dist = math.sqrt(dist)
+        return dist
+    def update_neighbors(self,lowFrequency,occupied):
+        for neighbor in self.neighbors:
+            neighbor.update_from_neighbors(lowFrequency,occupied)
+
+    def update_from_neighbors(self,lowFrequency,occupied):
+        try:
+            sql_query = 'UPDATE cbsdinfo_'+self.cbsd.fccId + ' SET available = '+ str(occupied) + \
+                                        ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
+            cur = self.conn.cursor()
+            cur.execute(sql_query)
+            self.conn.commit()
+            print sql_query
+        except Exception as e:
+            print "Error Updating neighbors"
 
 class sensor():
 
@@ -253,6 +296,7 @@ class sensor():
         self.last_active = 0
         self.clock_diff = 0
         self.unavailable_frequencies = []
+        self.occupied_frequencies = []
     def fetch_channel_info(self):
         table_name = "channelinfo_" + str(self.sensor_id)
         #print "Table Name: ",table_name
@@ -307,7 +351,7 @@ class sensor():
 
     def update_table(self, cbsd, lowFrequency, value):
         try:
-            sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET pu_absent = '+ str(value) + \
+            sql_query = 'UPDATE cbsdinfo_'+cbsd.fccId + ' SET pu_absent = '+ str(value) + \
                                         ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
             cur = self.conn.cursor()
             cur.execute(sql_query)
