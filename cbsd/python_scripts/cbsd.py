@@ -154,6 +154,7 @@ class Cbsd(object):
                 print("Hurray, There is a space for you, scoot over")
             else:
                 print("Sorry, No space of you bro!")
+                self._grant_state = "IDLE"
 
     def _create_grant_request_obj(self):
         if(self._cbsd_registered == True):
@@ -262,7 +263,7 @@ class Cbsd(object):
                                                     'grantId': self._grantId
                                                     }
                                                 }
-
+            self._grant_state = "IDLE"
 
     def get_relinquishmentRequestObj(self):
         self._create_relinquishment_request_obj()
@@ -362,6 +363,7 @@ class Cbsd(object):
 
     def sendGrantRequest(self,my_server_connection):
         if(my_server_connection.is_connected()):
+            print "Available Channels: ",len(self._available_channels)
             if(len(self._available_channels) > 0):
                 try:
                     json_request = self._json_encoder.encode(self.get_grantRequestObj())

@@ -109,10 +109,10 @@ def run_radio():
 
             if newCbsd.manual:
                 try:
-                    print "Please Use Low Frequency Above 3550MHz and below 3700MHz"
+                    print "Please Use Low Frequency Above 3550MHz and below 3650MHz"
                     lowFrequency = math.floor(float(input("Low Frequency: "))/10)*10e6;
                     print "User Input in Hz: ",lowFrequency
-                    if lowFrequency < 3550e6 or lowFrequency > 3700e6:
+                    if lowFrequency < 3550e6 or lowFrequency > 3650e6:
                         print "------------------Wrong User Low Frequency-----------------"
                         stop_radio = True
                         newCbsd.stop_cbsd()
@@ -178,7 +178,7 @@ def run_radio():
              start grant timer
             '''
             newCbsd.startGrant(my_server_connection,start_radio_Thread)
-            if newCbsd.get_grant_state != "IDLE":
+            if newCbsd.get_grant_state() != "IDLE":
                 print "Starting Radio"
                 start_radio_Thread.start()
 
