@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include "timer.h"
 #include "MAC.hpp"
+#include "loop.hpp"
 #include <sys/time.h>
 
 #define PHY_CONTROL_INFO_BYTES 6
@@ -664,6 +665,8 @@ public:
 
   friend void uhd_msg_handler(uhd::msg::type_t type, const std::string &msg);
   static int uhd_msg;
+  bool transmitting = false;
+
 
 private:
   //=================================================================================
@@ -737,4 +740,30 @@ private:
   int tx_worker_state;
   int tx_state;
   friend void *PHY_tx_worker(void *); // process called by thread
+
+  pthread_mutex_t tx_rx_mutex;  
+
+  Loop *test_loop;
+  sem_t *test_phore;
+ 
+  firinterp_crcf interp;
+  firdecim_crcf  decim;
+
+
+  unsigned int resampler_factor;                   // samples/symbol
+    
+  unsigned int filter_delay;                   // filter delay
+  float beta;                 // filter excess bandwidth
+
+
+  unsigned int h_len;
+  unsigned int num_symbols;
+
+
+  unsigned int num_samples;
+
+  float *h;
+  float *g; 
+  float nco_offset = 0.5e6;
+  bool loop = false;
 };

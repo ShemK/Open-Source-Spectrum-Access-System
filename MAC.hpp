@@ -200,6 +200,8 @@ public:
   void set_frames_sent(char * frame,int tx_continuation);
   void convert_bits_int(char * frame);
   char *extractSourceIP(char *payload, int pos);
+
+  struct timespec last_tx;
 };
 
 void *MAC_tx_worker(void *_arg);

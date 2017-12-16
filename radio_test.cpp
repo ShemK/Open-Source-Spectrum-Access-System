@@ -95,30 +95,30 @@ void initialize_node_parameters(struct node_parameters *np)
  // strncpy(np->my_ip, "10.0.0.2", sizeof(np->my_ip));
  // strncpy(np->target_ip, "10.0.0.3", sizeof(np->target_ip));
   // initial USRP settings
-  np->rx_freq = 1000e6;
+  np->rx_freq = 450e6;
   np->rx_rate = 2e6;
   np->rx_gain = 0.0;
 
-  np->tx_freq = 1000e6;
+  np->tx_freq = 450e6;
   np->tx_rate = 2e6;
-  np->tx_gain = 20.0;
+  np->tx_gain = 80.0;
 
   // initial liquid OFDM settings
   np->tx_gain_soft = 0;
-  np->tx_modulation = LIQUID_MODEM_QAM4;
+  np->tx_modulation = LIQUID_MODEM_PSK4;
   np->tx_crc = LIQUID_CRC_32;
-  np->tx_fec0 = LIQUID_FEC_HAMMING128;
-  np->tx_fec1 = LIQUID_FEC_HAMMING128;
-  np->tx_cp_len = 16;
-  np->rx_cp_len = 16;
+  np->tx_fec0 = LIQUID_FEC_CONV_V27;
+  np->tx_fec1 = LIQUID_FEC_NONE;
+  np->tx_cp_len = 64;
+  np->rx_cp_len = 64;
   np->tx_taper_len = 4;
 
-  np->tx_subcarriers = 32;
+  np->tx_subcarriers = 256;
   np->tx_guard_subcarriers = 4;
   np->tx_central_nulls = 6;
   np->tx_pilot_freq = 4;
 
-  np->rx_subcarriers = 32;
+  np->rx_subcarriers = 256;
   np->rx_guard_subcarriers = 4;
   np->rx_central_nulls = 6;
   np->rx_pilot_freq = 4;
@@ -134,6 +134,7 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->set_rx_rate(np->rx_rate);
   PHY->set_rx_gain_uhd(np->rx_gain);
   PHY->set_rx_subcarriers(np->rx_subcarriers);
+  PHY->set_rx_subcarrier_alloc(NULL);
   PHY->set_rx_cp_len(np->rx_cp_len);
   PHY->set_rx_taper_len(np->rx_taper_len);
   PHY->set_tx_freq(np->tx_freq);
@@ -141,6 +142,7 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->set_tx_gain_soft(np->tx_gain_soft);
   PHY->set_tx_gain_uhd(np->tx_gain);
   PHY->set_tx_subcarriers(np->tx_subcarriers);
+  PHY->set_tx_subcarrier_alloc(NULL);
   PHY->set_tx_cp_len(np->tx_cp_len);
   PHY->set_tx_taper_len(np->tx_taper_len);
   PHY->set_tx_modulation(np->tx_modulation);

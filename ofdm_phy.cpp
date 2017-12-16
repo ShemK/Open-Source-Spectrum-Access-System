@@ -29,7 +29,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <ctime>
-
+#include <fftw3.h>
 
 #define DEBUG 0
 #if DEBUG == 1
@@ -44,6 +44,7 @@ int PhyLayer::uhd_msg;
 // Constructor
 PhyLayer::PhyLayer()
 {
+  test_loop = new Loop();
   // set internal properties
   tx_params.numSubcarriers = 32;
   tx_params.cp_len = 16;
@@ -136,6 +137,8 @@ PhyLayer::PhyLayer()
 PhyLayer::~PhyLayer()
 {
 
+  delete h;
+  delete g;
   dprintf("Stopping transceiver\n");
   stop_rx();
   stop_tx();
@@ -256,6 +259,28 @@ void PhyLayer::set_attributes()
   set_rx_rate(rx_params.rx_rate);
   set_rx_gain_uhd(rx_params.rx_gain_uhd);
 
+  resampler_factor = 4; // samples/symbol
+
+  filter_delay = 14;      // filter delay
+  beta = 0.25f; // filter excess bandwidth
+
+  h_len = 2 * resampler_factor * filter_delay + 1;
+  num_symbols = fgbuffer_len + 2 * filter_delay;
+
+  num_samples = resampler_factor * num_symbols;
+
+  h = new float[h_len];
+  g = new float[h_len];
+
+  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
+
+  for (int i = 0; i < h_len; i++)
+    g[i] = h[h_len - i - 1];
+
+  interp = firinterp_crcf_create(resampler_factor, h, h_len);
+  decim = firdecim_crcf_create(resampler_factor, g, h_len);
+
+  pthread_mutex_init(&tx_rx_mutex, NULL);
   dprintf("Finished creating PHY\n");
 }
 
@@ -284,7 +309,7 @@ void PhyLayer::start_tx()
       pthread_mutex_lock(&tx_params_mutex);
       wait = (tx_worker_state == WORKER_HALTED);
     }
-  // fall through to signal
+  // fall through to signal 0.0430923 0.0185445
   case (WORKER_READY):
     dprintf("Signaling tx worker thread\n");
     pthread_cond_signal(&tx_cond);
@@ -302,9 +327,9 @@ void *PHY_tx_worker(void *_arg)
   PhyLayer *PHY = (PhyLayer *)_arg;
 
   // set up transmit buffer
-   int buffer_len = MAX_BUF;
-   char buffer[MAX_BUF];
- unsigned char *payload = new unsigned char[MAX_BUF];
+  int buffer_len = MAX_BUF;
+  char buffer[MAX_BUF];
+  unsigned char *payload = new unsigned char[MAX_BUF];
   unsigned int payload_len;
   int nread;
   std::ofstream log("yo.txt");
@@ -416,6 +441,9 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
                               unsigned int _payload_len)
 {
 
+  pthread_mutex_lock(&tx_rx_mutex);
+  transmitting = true;
+  pthread_mutex_unlock(&tx_rx_mutex);
   // vector buffer to send data to device
   std::vector<std::complex<float>> usrp_buffer(fgbuffer_len);
 
@@ -445,25 +473,64 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
+
+  num_symbols = fgbuffer_len;
+  num_samples = resampler_factor * num_symbols;
+  
+  nco_crcf q = nco_crcf_create(LIQUID_NCO);
+  nco_crcf_set_frequency(q, 2*M_PI*nco_offset/tx_params.tx_rate);
+  bool header = true;
   while (!last_symbol)
   {
 
     // generate symbol
-     last_symbol = ofdmflexframegen_writesymbol(fg, fgbuffer);
+    last_symbol = ofdmflexframegen_write(fg, fgbuffer, fgbuffer_len);
 
     // copy symbol and apply gain
     for (i = 0; i < fgbuffer_len; i++)
+    {
       usrp_buffer[i] = fgbuffer[i] * tx_gain_soft_lin;
+    }
+
+    //ofdmflexframesync_execute(fs, &usrp_buffer[0], usrp_buffer.size());
+
+    if (last_symbol)
+    {
+      for (; i < num_symbols; i++)
+      {
+        usrp_buffer.push_back(0);
+      }
+      num_symbols = fgbuffer_len + 2 * filter_delay;
+      num_samples = filter_delay * num_symbols;
+    }
+
+    std::complex<float> z[num_samples];
+    std::complex<float> x[num_samples];
+    std::complex<float> y[num_samples];
+
+    firinterp_crcf_execute_block(interp, &usrp_buffer[0], usrp_buffer.size(), z);
+
+    usrp_buffer.resize(num_samples);
+    memcpy(&usrp_buffer[0], z, usrp_buffer.size() * sizeof(std::complex<float>));
+
+    memcpy(x, &usrp_buffer[0], usrp_buffer.size() * sizeof(std::complex<float>));
+
+    nco_crcf_mix_block_up(q, x, y, usrp_buffer.size());
+    //memcpy(y, x, usrp_buffer.size() * sizeof(std::complex<float>));
+    memcpy(&usrp_buffer[0], y, usrp_buffer.size() * sizeof(std::complex<float>));
 
     // send samples to the device
     usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
-
+    if (loop)
+    {
+      test_loop->transmit(usrp_buffer, usrp_buffer.size());
+    }
+    
     metadata_tx.start_of_burst = false; // never SOB when continuou
-
+    usrp_buffer.resize(fgbuffer_len);
   } // while loop
-
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
@@ -471,6 +538,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
                               metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
 
+  nco_crcf_destroy(q);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
 
@@ -478,6 +546,10 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
                               uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
   pthread_mutex_unlock(&tx_mutex);
+
+  pthread_mutex_lock(&tx_rx_mutex);
+  transmitting = false;
+  pthread_mutex_unlock(&tx_rx_mutex);
 }
 // start transmitter
 void PhyLayer::start_tx_burst(unsigned int _num_tx_frames,
@@ -950,6 +1022,13 @@ void *PHY_rx_worker(void *_arg)
       PHY->usrp_rx->get_device()->get_max_recv_samps_per_packet();
   PHY->rx_buffer = (std::complex<float> *)malloc(PHY->rx_buffer_len *
                                                  sizeof(std::complex<float>));
+
+  std::complex<float> *buffer_F = (std::complex<float> *)malloc(PHY->rx_buffer_len *
+                                                                sizeof(std::complex<float>));
+
+  fftplan fft = fft_create_plan(PHY->rx_buffer_len, reinterpret_cast<liquid_float_complex *>(PHY->rx_buffer),
+                                reinterpret_cast<liquid_float_complex *>(buffer_F),
+                                LIQUID_FFT_FORWARD, 0);
   //PHY->usrp_rx->set_master_clock_rate(PHY->rx_params.rx_rate*4);
   while (PHY->rx_thread_running)
   {
@@ -990,23 +1069,109 @@ void *PHY_rx_worker(void *_arg)
     std::vector<std::complex<float> *> buff_ptrs;
     for (size_t i = 0; i < buffs.size(); i++)
       buff_ptrs.push_back(&buffs[i].front());
+
+    std::vector<std::complex<float>> recv(10000);
+    std::complex<float> recv_array[10000];
     // run receiver
+    nco_crcf q = nco_crcf_create(LIQUID_NCO);
+    nco_crcf_set_frequency(q, 2*M_PI*PHY->nco_offset/PHY->rx_params.rx_rate);
+    ofdmflexframesync_debug_enable(PHY->fs);
     while (rx_continue)
     {
       //    dprintf("Reading \n");
       // grab data from USRP and push through the frame synchronizer
-      size_t num_rx_samps = 0;
+      int num_rx_samps = 0;
       pthread_mutex_lock(&(PHY->rx_mutex));
+      if (PHY->loop)
+      {
+        num_rx_samps = PHY->test_loop->receive(recv);
+        if (num_rx_samps > 0)
+        {
+          memcpy(recv_array, &recv[0], num_rx_samps * sizeof(std::complex<float>));
 
-      num_rx_samps = rx_stream->recv(
-          buff_ptrs, PHY->rx_buffer_len, PHY->metadata_rx);
-      memcpy(PHY->rx_buffer, buff_ptrs[0], PHY->rx_buffer_len * sizeof(std::complex<float>));
-      ofdmflexframesync_execute(PHY->fs, buff_ptrs[0], num_rx_samps);
-      // printf("Recv Freq 0: %f\n", PHY->usrp_rx->get_rx_freq(0));
-      // printf("Recv Freq 1: %f\n", PHY->usrp_rx->get_rx_freq(1));
-      // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
+          std::complex<float> x[num_rx_samps];
+          std::complex<float> y[num_rx_samps];
+
+
+
+          memcpy(x, &recv_array[0], num_rx_samps * sizeof(std::complex<float>));
+
+          nco_crcf_mix_block_down(q, x, y, num_rx_samps);
+          //memcpy(y, x, num_rx_samps * sizeof(std::complex<float>));
+
+          memcpy(&recv_array[0], y, num_rx_samps * sizeof(std::complex<float>));
+          
+          int recv_symbols = num_rx_samps / PHY->resampler_factor;
+          std::complex<float> p[recv_symbols];
+          firdecim_crcf_execute_block(PHY->decim, &recv_array[0], recv_symbols, p);
+          memcpy(&recv_array[0], p, recv_symbols * sizeof(std::complex<float>));
+          num_rx_samps = recv_symbols;
+        }
+      }
+      else
+      {
+        num_rx_samps = rx_stream->recv(
+            buff_ptrs, PHY->rx_buffer_len, PHY->metadata_rx);
+        memcpy(PHY->rx_buffer, buff_ptrs[0], PHY->rx_buffer_len * sizeof(std::complex<float>));
+        memcpy(recv_array, buff_ptrs[0], PHY->rx_buffer_len * sizeof(std::complex<float>));
+
+        std::complex<float> x[num_rx_samps];
+        std::complex<float> y[num_rx_samps];
+
+        //nco_crcf q = nco_crcf_create(LIQUID_NCO);
+        //nco_crcf_set_frequency(q, 2*M_PI*PHY->nco_offset/PHY->rx_params.rx_rate);
+
+        memcpy(x, &recv_array[0], num_rx_samps * sizeof(std::complex<float>));
+
+        nco_crcf_mix_block_down(q, x, y, num_rx_samps);
+        //memcpy(y, x, num_rx_samps * sizeof(std::complex<float>));
+        memcpy(&recv_array[0], y, num_rx_samps * sizeof(std::complex<float>));
+        //nco_crcf_destroy(q);
+
+        int recv_symbols = num_rx_samps / PHY->resampler_factor;
+        std::complex<float> p[recv_symbols];
+        firdecim_crcf_execute_block(PHY->decim, &recv_array[0], recv_symbols, p);
+        memcpy(&recv_array[0], p, recv_symbols * sizeof(std::complex<float>));
+        num_rx_samps = recv_symbols;
+      }
+      if (num_rx_samps > 0)
+      {
+        ofdmflexframesync_execute(PHY->fs, recv_array, num_rx_samps);
+        // printf("Recv Freq 0: %f\n", PHY->usrp_rx->get_rx_freq(0));
+        // printf("Recv Freq 1: %f\n", PHY->usrp_rx->get_rx_freq(1));
+        // ofdmflexframesync_execute(PHY->fs, buff_ptrs[1], num_rx_samps);
+        fft_execute(fft);
+        double sum_power = 0;
+        for (unsigned int i = 0; i < num_rx_samps; i++)
+        {
+          sum_power = sum_power + pow(std::abs(buffer_F[i]), 2);
+        }
+
+        sum_power = sqrt(sum_power);
+        if (sum_power > 10)
+        {
+         // std::cout << "Sum: " << sum_power << std::endl;
+          //pthread_mutex_lock(&PHY->tx_rx_mutex);
+          //if(!PHY->transmitting){
+
+          char payload = 0x01;
+          timespec timeout;
+          timeout.tv_sec = time(NULL);
+          timeout.tv_nsec = 100;
+
+          int status = mq_timedsend(PHY->phy_rx_queue, &payload, 1, 0, &timeout);
+          if (status == -1)
+          {
+            //perror("Queue is full\n");
+            //printf("mq_send failure\n");
+          }
+          else
+          {
+           // printf("Informing MAC that something is transmitting\n");
+          }
+        }
+      }
       pthread_mutex_unlock(&(PHY->rx_mutex));
-
       // update parameters if necessary
       pthread_mutex_lock(&PHY->rx_mutex);
       pthread_mutex_lock(&PHY->rx_params_mutex);
@@ -1025,16 +1190,16 @@ void *PHY_rx_worker(void *_arg)
       }
     } // while rx running
     dprintf("rx_worker finished running\n");
-
+    nco_crcf_destroy(q);
     pthread_mutex_lock(&PHY->rx_mutex);
     rx_stream->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     pthread_mutex_unlock(&PHY->rx_mutex);
 
   } // while rx thread is running
-
+  
   free(PHY->rx_buffer);
-
-  dprintf("rx_worker exiting thread\n");
+  free(buffer_F)
+      dprintf("rx_worker exiting thread\n");
   pthread_exit(NULL);
 }
 
@@ -1050,7 +1215,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
   printf("Frame_num received: %d\n", frame_num);
   struct timeval ts;
   gettimeofday(&ts, NULL);
-  printf("Received %d bytes at %lus and %luus\n", _payload_len,ts.tv_sec,ts.tv_usec);
+  printf("Received %d bytes at %lus and %luus\n", _payload_len, ts.tv_sec, ts.tv_usec);
   if (_header_valid == 1)
   {
     if (_payload_valid == 1)
@@ -1072,12 +1237,12 @@ int rxCallback(unsigned char *_header, int _header_valid,
     }
     else
     {
-      dprintf("Invalid Payload\n");
+      printf("Invalid Payload\n");
     }
   }
   else
   {
-    dprintf("Invalid Header\n");
+    printf("Invalid Header\n");
   }
 
   return 0;

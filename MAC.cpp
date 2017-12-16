@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 4
+#define DEBUG 2
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -149,15 +149,16 @@ void *MAC_tx_worker(void *_arg)
         }
         else
         {
-          /*
+          /* 
           dprintf("%d bytes ready for transmission\n", nread);
           for (int i = 0; i < nread; i++)
           {
-            //dprintf("%x ", frame[i]);
+            dprintf("%x ", frame[i]);
           }
           dprintf("\n");
+          
+          dprintf(YEL "Packet Received from tun interface\n" RESET);
           */
-          // dprintf(YEL "Packet Received from tun interface\n" RESET);
           uint16 ether_type = -1;
           memcpy(&ether_type, frame + 2, sizeof(ether_type));
           ether_type = htons(ether_type);
@@ -199,6 +200,29 @@ void *MAC_tx_worker(void *_arg)
               mac->ip_tx_queue.push(new_segment);
             }
             break;
+          case ETH_P_BATMAN:
+            if (nread > 70)
+            {
+              new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
+              printf(YEL "BATMAN IP Packet with Frame Number: %d for Peer: ", new_segment.frame_num);
+              for (int i = 0; i < 6; i++)
+              {
+                printf("%02x:", (unsigned char)peer_address[i]);
+              }
+            }
+            else
+            {
+              dprintf(YEL "BATMAN Packet\n" RESET);
+            }
+
+            //new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
+            memset(new_segment.segment, 0, nread);
+            new_segment.size = nread;
+            memcpy(new_segment.segment, frame, nread);
+            new_segment.arp_packet = false;
+            mac->ip_tx_queue.push(new_segment);
+            memset(frame, 0, nread);
+            break;
           default:
             if (DEBUG == 1 || DEBUG > 2)
               dprintf(YEL "Unknown Packet\n" RESET);
@@ -231,17 +255,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
 {
   char *frame = new char[MAX_BUF];
   memcpy(frame, segment, segment_len);
-  // Check for invalid payload with unknown protocol
-  if (ip_protocol != UDP_PACKET && ip_protocol != TCP_PACKET)
-  {
-    if (DEBUG == 1 || DEBUG > 2)
-    {
-      dprintf(RED "Unknown Protocol: %02x\n" RESET, ip_protocol);
-    }
 
-    ip_tx_queue.pop();
-    return;
-  }
   if (tx_channel_state == FREE && segment_len > 0)
   {
     if (DEBUG == 1 || DEBUG > 2)
@@ -277,13 +291,14 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
       {
         if (burst_packets < 1)
         {
-          if(ip_tx_queue.size() > 10){
+          if (ip_tx_queue.size() > 10)
+          {
             burst_packets = 10;
           }
-          else{
+          else
+          {
             burst_packets = ip_tx_queue.size();
           }
-
         }
       }
     }
@@ -300,7 +315,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
 
     if (DEBUG == 1 || DEBUG > 2)
     {
-      dprintf("Burst packets: %d\n",burst_packets);
+      dprintf("Burst packets: %d\n", burst_packets);
     }
     int frame_len = segment_len + CONTROL_FRAME_LEN;
 
@@ -381,7 +396,8 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
     }
 
     struct timespec timeout;
-    clock_gettime(CLOCK_REALTIME,&timeout);
+    clock_gettime(CLOCK_REALTIME, &timeout);
+    last_tx = timeout;
     timeout.tv_sec = timeout.tv_sec + 1;
     timeout.tv_nsec = timeout.tv_nsec;
     int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
@@ -454,7 +470,6 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
               retransmissions++;
             }
 
-
             if (ack_reception_failed)
             {
               retransmissions = 0;
@@ -472,7 +487,9 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
 
           ip_tx_queue.pop();
         }
-      } else{
+      }
+      else
+      {
         dprintf(YEL "SENDING ARP PACKET\n" RESET);
         ip_tx_queue.pop();
       }
@@ -507,15 +524,15 @@ void MAC::create_frame(char *&data, int data_len, ProtocolType newType,
   memcpy(temp_frame, temp_control_frame, CONTROL_FRAME_LEN);
   memcpy(temp_frame + CONTROL_FRAME_LEN, data, data_len);
 
-  if(newSubType == ACK){
-
+  if (newSubType == ACK)
+  {
   }
   memcpy(data, temp_frame, data_len + CONTROL_FRAME_LEN);
   //extractFrameControl(data);
   delete[] temp_frame;
   delete[] temp_control_frame;
 }
-  /*  Creates a control frame header for any payload to be transmitted
+/*  Creates a control frame header for any payload to be transmitted
   **  TODO:: Need to improve on which type of information is needed in
   **         the control frame
   */
@@ -601,9 +618,14 @@ void *MAC_rx_worker(void *_arg)
   {
     //mac->tx_channel_state = mac->FREE;
     struct timespec timeout;
-    clock_gettime(CLOCK_REALTIME,&timeout);
-    timeout.tv_sec = timeout.tv_sec + 1;
-    timeout.tv_nsec = timeout.tv_nsec;
+    clock_gettime(CLOCK_REALTIME, &timeout);
+
+    timeout.tv_nsec = timeout.tv_nsec + 50 * 1e6;
+    if (timeout.tv_nsec > 1e9)
+    {
+      timeout.tv_sec = timeout.tv_sec + 1;
+      timeout.tv_nsec = timeout.tv_nsec - 1e9;
+    }
 
     int status = mq_timedreceive(mac->phy_rx_queue, buf, MAX_BUF, 0, &timeout);
 
@@ -614,7 +636,7 @@ void *MAC_rx_worker(void *_arg)
         if (mac->tx_channel_state != mac->UNAVAILABLE)
         {
           mac->tx_channel_state = mac->FREE;
-          dprintf(GRN "Nothing Detected - Channel is free\n" RESET);
+          //dprintf(GRN "Nothing Detected - Channel is free\n" RESET);
         }
       }
       else
@@ -628,33 +650,59 @@ void *MAC_rx_worker(void *_arg)
     }
     else
     {
-      if (DEBUG == 2 || DEBUG > 2)
-      {
-        dprintf("\n----------------Receiving-------------------\n");
-      }
-
-      if (mac->isCorrectCRC(buf, status))
+      if (status > 4)
       {
         if (DEBUG == 2 || DEBUG > 2)
         {
-          dprintf("Correct CRC Received for %d bytes\n", status);
+          dprintf("\n----------------Receiving-------------------\n");
         }
 
-        std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
-                                           mac, buf, status);
-
-        //mac->analyzeReceivedFrame(buf, status);
-        //pthread_mutex_unlock(&mac->rx_mutex);
-        if (DEBUG == 2 || DEBUG > 2)
+        if (mac->isCorrectCRC(buf, status))
         {
-          dprintf("Asynchronous Analyze Thread Launched\n");
+          if (DEBUG == 2 || DEBUG > 2)
+          {
+            dprintf("Correct CRC Received for %d bytes\n", status);
+          }
+
+          std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
+                                             mac, buf, status);
+
+          //mac->analyzeReceivedFrame(buf, status);
+          //pthread_mutex_unlock(&mac->rx_mutex);
+          if (DEBUG == 2 || DEBUG > 2)
+          {
+            dprintf("Asynchronous Analyze Thread Launched\n");
+          }
         }
+        else
+        {
+          dprintf("Wrong Packet due to wrong CRC\n");
+        }
+        memset(buf, 0, MAX_BUF);
       }
       else
       {
-        dprintf("Wrong Packet due to wrong CRC\n");
+        clock_gettime(CLOCK_REALTIME, &timeout);
+        //dprintf("Last TX:  %lus and  %luns\n",mac->last_tx.tv_sec, mac->last_tx.tv_nsec);
+        //dprintf("CurrentStatus: %lus and  %luns\n",timeout.tv_sec, timeout.tv_sec);
+        if (mac->last_tx.tv_sec == timeout.tv_sec)
+        {
+          double m = (timeout.tv_nsec - mac->last_tx.tv_nsec) / 1e6;
+          if (m > mac->cw_min)
+          {
+            mac->tx_channel_state = MAC::BUSY;
+          }
+          else
+          {
+            mac->tx_channel_state = MAC::FREE;
+          }
+          //dprintf("Status Report Received: %f\n",m);
+        }
+        else
+        {
+          mac->tx_channel_state = MAC::BUSY;
+        }
       }
-      memset(buf, 0, MAX_BUF);
     }
   }
   pthread_exit(NULL);
@@ -691,7 +739,11 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
   // is the source address equal to my address`
   if (strncmp(mac_address, sourceMAC, 6) != 0)
   {
-    char *sourceIP = extractSourceIP(recv_payload,14);
+    char *sourceIP = extractSourceIP(recv_payload, 14);
+    sourceIP = extractSourceIP(recv_payload, 14);
+    uint16 ether_type = -1;
+    memcpy(&ether_type, recv_payload + 2, sizeof(ether_type));
+    ether_type = htons(ether_type);
     pthread_mutex_lock(&rx_mutex);
 
     if (!isLastAlienFrame(recv_header))
@@ -709,12 +761,11 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
         dprintf(GRN "Channel free - Last Frame Received\n" RESET);
     }
 
-
     if (incomingFrameControl.frame_protocol_subtype == ACK)
     {
       tx_channel_state = FREE;
       if (DEBUG == 2 || DEBUG > 2)
-            dprintf(GRN " This is an ACK from another transmitter\n" RESET);
+        dprintf(GRN " This is an ACK from another transmitter\n" RESET);
     }
     pthread_mutex_unlock(&rx_mutex);
 
@@ -737,11 +788,6 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
         dprintf("\n");
       }
 
-      sourceIP = extractSourceIP(recv_payload,14);
-      uint16 ether_type = -1;
-      memcpy(&ether_type, recv_payload + 2, sizeof(ether_type));
-      ether_type = htons(ether_type);
-
       if (incomingFrameControl.frame_protocol_subtype == ACK)
       {
         printf(MAG "Received ACK For Last Frame Transmitted\n" RESET);
@@ -752,20 +798,20 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
         dprintf(GRN "Received Payload Sent to Me\n" RESET);
         if (memcmp(prev_packet, recv_payload, recv_payload_len) == 0)
         {
-          printf(RED "Duplicate Packet Received and Discarded with PREV FRAME_NUM: %d\n" RESET,prev_frame_num);
-          printf(RED "Duplicate Packet Received and Discarded with FRAME_NUM: %d\n" RESET,frame_num);
+          printf(RED "Duplicate Packet Received and Discarded with PREV FRAME_NUM: %d\n" RESET, prev_frame_num);
+          printf(RED "Duplicate Packet Received and Discarded with FRAME_NUM: %d\n" RESET, frame_num);
           if (isLastAlienFrame(recv_header))
           {
-            printf(RED "Resending ACK of Frame: %d\n" RESET,frame_num);
+            printf(RED "Resending ACK of Frame: %d\n" RESET, frame_num);
             sendACK(recv_payload, frame_num);
           }
 
           if (ether_type == ETH_P_ARP)
           {
             printf("ARP Packet Received : %d\n", ether_type);
-            char *sourceIP_str = ipAddr_toString((unsigned char*)sourceIP);
-            char *sourceMAC_str = macAddr_toString((unsigned char*)sourceMAC);
-            sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str,sourceMAC_str);
+            char *sourceIP_str = ipAddr_toString((unsigned char *)sourceIP);
+            char *sourceMAC_str = macAddr_toString((unsigned char *)sourceMAC);
+            sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str, sourceMAC_str);
             system(systemCMD);
           }
         }
@@ -786,13 +832,29 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
             }
             updatePeerRxStatistics(sourceMAC, frame_num, buf_len);
           }
-          else if (ether_type == ETH_P_ARP)
+          if (ether_type == ETH_P_ARP)
           {
             printf("ARP Packet Received : %d\n", ether_type);
-            //char *sourceIP_str = ipAddr_toString((unsigned char*)sourceIP);
-            //char *sourceMAC_str = macAddr_toString((unsigned char*)sourceMAC);
-            //sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str,sourceMAC_str);
-            //system(systemCMD);
+            char *sourceIP_str = ipAddr_toString((unsigned char *)sourceIP);
+            char *sourceMAC_str = macAddr_toString((unsigned char *)sourceMAC);
+            sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str, sourceMAC_str);
+            system(systemCMD);
+          }
+          else if (ether_type == ETH_P_BATMAN)
+          {
+            if (buf_len > 81)
+            {
+              printf("BATMAN IP Packet Received : %d\n", ether_type);
+              if (isLastAlienFrame(recv_header))
+              {
+                sendACK(recv_payload, frame_num);
+              }
+              else
+              {
+                frames_before_last_frame++;
+              }
+              updatePeerRxStatistics(sourceMAC, frame_num, buf_len);
+            } 
           }
           sendToIPLayer(recv_payload, recv_payload_len);
         }
@@ -804,11 +866,15 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
     {
       tx_channel_state = FREE;
       sendToIPLayer(recv_payload, recv_payload_len);
-      char *sourceIP_str = ipAddr_toString((unsigned char*)sourceIP);
-      char *sourceMAC_str = macAddr_toString((unsigned char*)sourceMAC);
+      char *sourceIP_str = ipAddr_toString((unsigned char *)sourceIP);
+      char *sourceMAC_str = macAddr_toString((unsigned char *)sourceMAC);
       //TODO:: need to delete pointer
-      sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str,sourceMAC_str);
-      system(systemCMD);
+      if (ether_type == ETH_P_ARP)
+      {
+        sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str, sourceMAC_str);
+        system(systemCMD);
+      }
+
       if (DEBUG == 2 || DEBUG > 2)
         dprintf(GRN "This is a broadcast message\n" RESET);
     }
@@ -1073,19 +1139,21 @@ void MAC::sendACK(char *recv_payload, int frame_num)
 }
 
 // add the frames transmitted before the last frame
-void MAC::set_frames_sent(char * frame, int tx_continuation){
+void MAC::set_frames_sent(char *frame, int tx_continuation)
+{
   std::bitset<8> bin_x(tx_continuation);
   //frame[ARQ_POS] = bin_x;
-  memcpy(frame+ARQ_POS,&bin_x,1);
+  memcpy(frame + ARQ_POS, &bin_x, 1);
   //printf("ARQ_FRAME_NUM: %x\n",frame[ARQ_POS]);
 }
 
 // add the frames transmitted before the last frame
-void MAC::convert_bits_int(char * frame){
+void MAC::convert_bits_int(char *frame)
+{
   std::bitset<8> bin_x;
-  memcpy(&bin_x,frame+ARQ_POS,1);
+  memcpy(&bin_x, frame + ARQ_POS, 1);
   //printf("ARQ_FRAME_NUM_CONV: %lu\n",bin_x.to_ulong());
-//  printf("ARQ_FRAME_NUM: %d\n",frame[ARQ_POS]);
+  //  printf("ARQ_FRAME_NUM: %d\n",frame[ARQ_POS]);
 }
 
 //
@@ -1163,30 +1231,31 @@ unsigned char hex_digit(char ch)
   return ch;
 }
 
-
-char* macAddr_toString(unsigned char* addr)
+char *macAddr_toString(unsigned char *addr)
 {
-    static char str[18];
+  static char str[18];
 
-    if(addr == NULL){
-      return (char *)"";
-    }
-    snprintf(str, sizeof(str), "%02x:%02x:%02x:%02x:%02x:%02x",
-             addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
-    //printf("MAC Address: %s\n",str);
-    return str;
+  if (addr == NULL)
+  {
+    return (char *)"";
+  }
+  snprintf(str, sizeof(str), "%02x:%02x:%02x:%02x:%02x:%02x",
+           addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+  //printf("MAC Address: %s\n",str);
+  return str;
 }
 
-char* ipAddr_toString(unsigned char* addr)
+char *ipAddr_toString(unsigned char *addr)
 {
-    static char str[18];
+  static char str[18];
 
-    if(addr == NULL){
-      return (char *)"";
-    }
+  if (addr == NULL)
+  {
+    return (char *)"";
+  }
 
-    snprintf(str, sizeof(str), "%d.%d.%d.%d",
-             addr[0], addr[1], addr[2], addr[3]);
-    printf("IP Address: %s\n",str);
-    return str;
+  snprintf(str, sizeof(str), "%d.%d.%d.%d",
+           addr[0], addr[1], addr[2], addr[3]);
+  printf("IP Address: %s\n", str);
+  return str;
 }
