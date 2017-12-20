@@ -131,6 +131,50 @@ PhyLayer::PhyLayer()
 
   phy_tx_queue = mq_open("/mac2phy", O_RDONLY | O_CREAT, PMODE, &attr_tx);
   phy_rx_queue = mq_open("/phy2mac", O_WRONLY | O_CREAT, PMODE, &attr_rx);
+
+  consumers = 4;
+  int q_len = 5000;
+  recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
+  analysisThreads = new pthread_t[consumers];
+  threadInfo = new ThreadInfo[consumers];
+  fsyncs = new ofdmflexframesync[consumers];
+  for(int i = 0; i < consumers;i++){
+    fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
+                                rx_params.taper_len, rx_params.subcarrierAlloc,
+                                rxCallback, (void *)this);
+
+    threadInfo[i].PHY = this;
+    threadInfo[i].consumer = i;
+    int status = pthread_create(&analysisThreads[i],NULL,analysis,(void *) &threadInfo[i]);
+    if(status < 0){
+      perror("Failed to create threads");
+    }
+  }
+
+  resampler_factor = 2; // samples/symbol
+
+  filter_delay = 14;      // filter delay
+  beta = 0.25f; // filter excess bandwidth
+
+  h_len = 2 * resampler_factor * filter_delay + 1;
+  num_symbols = fgbuffer_len + 2 * filter_delay;
+
+  num_samples = resampler_factor * num_symbols;
+
+  h = new float[h_len];
+  g = new float[h_len];
+
+  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
+
+  for (int i = 0; i < h_len; i++)
+    g[i] = h[h_len - i - 1];
+
+  interp = firinterp_crcf_create(resampler_factor, h, h_len);
+
+  decim = new firdecim_crcf[consumers];
+  for(int i = 0; i < consumers;i++){
+    decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
+  }
 }
 
 // Destructor
@@ -187,6 +231,10 @@ PhyLayer::~PhyLayer()
   ofdmflexframegen_destroy(fg);
   ofdmflexframesync_destroy(fs);
 
+  for(int i = 0; i < consumers;i++){
+    ofdmflexframesync_destroy(fsyncs[i]);
+  }
+
   timer_destroy(tx_timer);
 
   // free memory for subcarrier allocation if necessary
@@ -196,11 +244,15 @@ PhyLayer::~PhyLayer()
 
 void uhd_msg_handler(uhd::msg::type_t type, const std::string &msg)
 {
-
-  if ((!strcmp(msg.c_str(), "O")) || (!strcmp(msg.c_str(), "D")))
+  
+  if ((!strcmp(msg.c_str(), "O")) || (!strcmp(msg.c_str(), "D"))){
     PhyLayer::uhd_msg = 1;
-  else if (!strcmp(msg.c_str(), "U"))
+    std::cout << msg << "\n";
+  }
+  else if (!strcmp(msg.c_str(), "U")){
     PhyLayer::uhd_msg = 2;
+    std::cout << msg << "\n";
+  }
 }
 
 void PhyLayer::set_uhd(uhd::usrp::multi_usrp::sptr &usrp_tx,
@@ -259,26 +311,6 @@ void PhyLayer::set_attributes()
   set_rx_rate(rx_params.rx_rate);
   set_rx_gain_uhd(rx_params.rx_gain_uhd);
 
-  resampler_factor = 4; // samples/symbol
-
-  filter_delay = 14;      // filter delay
-  beta = 0.25f; // filter excess bandwidth
-
-  h_len = 2 * resampler_factor * filter_delay + 1;
-  num_symbols = fgbuffer_len + 2 * filter_delay;
-
-  num_samples = resampler_factor * num_symbols;
-
-  h = new float[h_len];
-  g = new float[h_len];
-
-  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
-
-  for (int i = 0; i < h_len; i++)
-    g[i] = h[h_len - i - 1];
-
-  interp = firinterp_crcf_create(resampler_factor, h, h_len);
-  decim = firdecim_crcf_create(resampler_factor, g, h_len);
 
   pthread_mutex_init(&tx_rx_mutex, NULL);
   dprintf("Finished creating PHY\n");
@@ -530,7 +562,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     
     metadata_tx.start_of_burst = false; // never SOB when continuou
     usrp_buffer.resize(fgbuffer_len);
-  } // while loop
+  } 
+    if(loop){
+      memset(&usrp_buffer[0],0,100*sizeof(std::complex<float>));
+      test_loop->transmit(usrp_buffer, 100);
+    }
+  // while loop
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
@@ -997,6 +1034,12 @@ void PhyLayer::update_rx_params()
     fs = ofdmflexframesync_create(
         rx_params.numSubcarriers, rx_params.cp_len, rx_params.taper_len,
         rx_params.subcarrierAlloc, rxCallback, (void *)this);
+    for(int i = 0; i < consumers;i++){
+      ofdmflexframesync_destroy(fsyncs[i]);
+      fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
+                      rx_params.taper_len, rx_params.subcarrierAlloc,
+                      rxCallback, (void *)this);
+    }
     recreate_fs = false;
   }
 
@@ -1019,7 +1062,7 @@ void *PHY_rx_worker(void *_arg)
 
   // set up receive buffers
   PHY->rx_buffer_len =
-      PHY->usrp_rx->get_device()->get_max_recv_samps_per_packet();
+       PHY->usrp_rx->get_device()->get_max_recv_samps_per_packet();
   PHY->rx_buffer = (std::complex<float> *)malloc(PHY->rx_buffer_len *
                                                  sizeof(std::complex<float>));
 
@@ -1061,38 +1104,42 @@ void *PHY_rx_worker(void *_arg)
     rx_stream->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
     bool rx_continue = true;
 
-    const size_t samps_per_buff = rx_stream->get_max_num_samps();
+    const size_t samps_per_buff = PHY->rx_buffer_len;//rx_stream->get_max_num_samps();
     std::vector<std::vector<std::complex<float>>> buffs(
         PHY->usrp_rx->get_rx_num_channels(), std::vector<std::complex<float>>(samps_per_buff));
-
+    
     //create a vector of pointers to point to each of the channel buffers
     std::vector<std::complex<float> *> buff_ptrs;
     for (size_t i = 0; i < buffs.size(); i++)
       buff_ptrs.push_back(&buffs[i].front());
-
+    
     std::vector<std::complex<float>> recv(10000);
-    std::complex<float> recv_array[10000];
+    std::complex<float> recv_array[10*PHY->rx_buffer_len];
     // run receiver
     nco_crcf q = nco_crcf_create(LIQUID_NCO);
     nco_crcf_set_frequency(q, 2*M_PI*PHY->nco_offset/PHY->rx_params.rx_rate);
-    ofdmflexframesync_debug_enable(PHY->fs);
+
     while (rx_continue)
     {
       //    dprintf("Reading \n");
       // grab data from USRP and push through the frame synchronizer
       int num_rx_samps = 0;
       pthread_mutex_lock(&(PHY->rx_mutex));
+
       if (PHY->loop)
       {
         num_rx_samps = PHY->test_loop->receive(recv);
         if (num_rx_samps > 0)
         {
           memcpy(recv_array, &recv[0], num_rx_samps * sizeof(std::complex<float>));
-
+          //std::cout << "Adding to Queue\n";
+          PHY->recvQueue->enqueue(recv_array,num_rx_samps);
+          //std::cout << "Done Adding to Queue\n";
+          /*
           std::complex<float> x[num_rx_samps];
           std::complex<float> y[num_rx_samps];
 
-
+          
 
           memcpy(x, &recv_array[0], num_rx_samps * sizeof(std::complex<float>));
 
@@ -1106,15 +1153,34 @@ void *PHY_rx_worker(void *_arg)
           firdecim_crcf_execute_block(PHY->decim, &recv_array[0], recv_symbols, p);
           memcpy(&recv_array[0], p, recv_symbols * sizeof(std::complex<float>));
           num_rx_samps = recv_symbols;
+          */
         }
       }
       else
       {
+        //std::cout << "Here1\n";
         num_rx_samps = rx_stream->recv(
             buff_ptrs, PHY->rx_buffer_len, PHY->metadata_rx);
+        
         memcpy(PHY->rx_buffer, buff_ptrs[0], PHY->rx_buffer_len * sizeof(std::complex<float>));
         memcpy(recv_array, buff_ptrs[0], PHY->rx_buffer_len * sizeof(std::complex<float>));
 
+        //fft_execute(fft);
+        /*
+        double sum_power = 0;
+        for (unsigned int i = 0; i < num_rx_samps; i++)
+        {
+          sum_power = sum_power + pow(std::abs(recv_array[i]), 2);
+        }
+
+        sum_power = sqrt(sum_power);
+        */
+        if(num_rx_samps > 0){
+          //std::cout << "Power: " << sum_power <<"\n";
+          PHY->recvQueue->enqueue(recv_array,num_rx_samps);
+        }
+        //std::cout << "Here2\n";
+        /*
         std::complex<float> x[num_rx_samps];
         std::complex<float> y[num_rx_samps];
 
@@ -1133,7 +1199,9 @@ void *PHY_rx_worker(void *_arg)
         firdecim_crcf_execute_block(PHY->decim, &recv_array[0], recv_symbols, p);
         memcpy(&recv_array[0], p, recv_symbols * sizeof(std::complex<float>));
         num_rx_samps = recv_symbols;
+        */
       }
+      /*
       if (num_rx_samps > 0)
       {
         ofdmflexframesync_execute(PHY->fs, recv_array, num_rx_samps);
@@ -1171,6 +1239,7 @@ void *PHY_rx_worker(void *_arg)
           }
         }
       }
+      */
       pthread_mutex_unlock(&(PHY->rx_mutex));
       // update parameters if necessary
       pthread_mutex_lock(&PHY->rx_mutex);
@@ -1189,6 +1258,7 @@ void *PHY_rx_worker(void *_arg)
         PHY->rx_worker_state = WORKER_HALTED;
       }
     } // while rx running
+    PHY->recvQueue->stopConsumers();
     dprintf("rx_worker finished running\n");
     nco_crcf_destroy(q);
     pthread_mutex_lock(&PHY->rx_mutex);
@@ -1201,6 +1271,58 @@ void *PHY_rx_worker(void *_arg)
   free(buffer_F)
       dprintf("rx_worker exiting thread\n");
   pthread_exit(NULL);
+}
+
+
+void *analysis(void *_arg){
+  PhyLayer::ThreadInfo *threadInfo = (PhyLayer::ThreadInfo * )_arg;
+
+  PhyLayer *PHY = threadInfo->PHY;
+  int consumer = threadInfo->consumer;
+
+  std::cout << "Consumer " << consumer << "\n";
+  nco_crcf q = nco_crcf_create(LIQUID_NCO);
+  float rx_rate = PHY->rx_params.rx_rate;
+  float nco_offset = PHY->nco_offset;
+  nco_crcf_set_frequency(q, 2*M_PI*PHY->nco_offset/PHY->rx_params.rx_rate);
+  bool rx_continue = true;
+  int n = 1;
+  std::complex<float> *x = new std::complex<float> [n];
+  std::complex<float> *y = new std::complex<float>[n];
+  while(rx_continue){
+    int num_rx_samps = 0;
+    std::complex<float> *recv_array = PHY->recvQueue->dequeue(consumer,num_rx_samps);
+    if(num_rx_samps!=n){
+      delete[]x;
+      delete[]y;
+      n = num_rx_samps;
+      x = new std::complex<float> [n];
+      y = new std::complex<float>[n];
+    }
+    
+
+    memcpy(x, &recv_array[0], num_rx_samps * sizeof(std::complex<float>));
+    if(nco_offset!=PHY->nco_offset){
+      nco_offset = PHY->nco_offset;
+      nco_crcf_destroy(q);
+      q = nco_crcf_create(LIQUID_NCO);
+      nco_crcf_set_frequency(q, 2*M_PI*nco_offset/rx_rate);
+    }
+
+    if(rx_rate!=PHY->rx_params.rx_rate){
+      rx_rate = PHY->rx_params.rx_rate;
+      nco_crcf_destroy(q);
+      q = nco_crcf_create(LIQUID_NCO);
+      nco_crcf_set_frequency(q, 2*M_PI*nco_offset/rx_rate);
+    }
+
+    nco_crcf_mix_block_down(q, x, x, num_rx_samps);
+    int recv_symbols = num_rx_samps / PHY->resampler_factor;
+    firdecim_crcf_execute_block(PHY->decim[consumer], x, recv_symbols, x);
+    ofdmflexframesync_execute(PHY->fsyncs[consumer], x, recv_symbols);
+  }
+  nco_crcf_destroy(q);
+
 }
 
 // function to handle frames received by the PHY object

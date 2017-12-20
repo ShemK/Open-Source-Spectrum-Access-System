@@ -49,17 +49,25 @@ int Loop::receive(std::vector<std::complex<float> > &recv){
   //if(sem_trywait(&mutex) == 0){
     int sval;
     sem_getvalue(&mutex, &sval);
+
+    if(sval > 0){
+      return 0;
+    }
     //printf("Current RX semaphore Value: %d\n", sval);
     if(shared->data[0] != std::complex<float>(1000, -1000)){
       memcpy(&recv[0],&shared->data[0],shared->num_samples*sizeof(std::complex<float>));
+      shared->data[0] = std::complex<float>(1000, -1000);
+      if(sval < 1){
+        sem_post(&mutex);
+      } 
+    return shared->num_samples;
     } else{
+      if(sval < 1){
+        sem_post(&mutex);
+      } 
       return 0;
     }
-    shared->data[0] = std::complex<float>(1000, -1000);
-    if(sval < 1){
-      sem_post(&mutex);
-    } 
-    return shared->num_samples;
+
   //} else{
   //  return 0;
   //}

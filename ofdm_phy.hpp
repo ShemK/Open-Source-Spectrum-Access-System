@@ -18,6 +18,7 @@
 #include "MAC.hpp"
 #include "loop.hpp"
 #include <sys/time.h>
+#include "BufferQ.h"
 
 #define PHY_CONTROL_INFO_BYTES 6
 
@@ -25,6 +26,8 @@
 void *PHY_tx_worker(void *_arg);
 void *PHY_rx_worker(void *_arg);
 void *PHY_ce_worker(void *_arg);
+void *analysis(void *_arg);
+
 
 // function that receives frame from PHY layer
 int rxCallback(unsigned char *_header, int _header_valid,
@@ -681,6 +684,7 @@ private:
   bool reset_fs;
   void update_rx_params();
   ofdmflexframesync fs; // frame synchronizer object
+  ofdmflexframesync *fsyncs;
   unsigned int frame_num;
   unsigned int frame_uhd_overflows; // overflows that have occurred
   std::complex<float> *rx_buffer;
@@ -747,7 +751,7 @@ private:
   sem_t *test_phore;
  
   firinterp_crcf interp;
-  firdecim_crcf  decim;
+  firdecim_crcf  *decim;
 
 
   unsigned int resampler_factor;                   // samples/symbol
@@ -764,6 +768,21 @@ private:
 
   float *h;
   float *g; 
-  float nco_offset = 0.5e6;
+  float nco_offset = 0.1e6;
   bool loop = false;
+
+  friend void *analysis(void *_arg);
+
+  BufferQ<std::complex<float>> *recvQueue;
+  pthread_t *analysisThreads;
+
+  int consumers;
+
+  struct ThreadInfo{
+    PhyLayer *PHY;
+    int consumer;
+  };
+
+  ThreadInfo *threadInfo;
+  
 };

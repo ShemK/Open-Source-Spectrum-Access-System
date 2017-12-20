@@ -96,29 +96,29 @@ void initialize_node_parameters(struct node_parameters *np)
  // strncpy(np->target_ip, "10.0.0.3", sizeof(np->target_ip));
   // initial USRP settings
   np->rx_freq = 450e6;
-  np->rx_rate = 2e6;
-  np->rx_gain = 0.0;
+  np->rx_rate = 1e6;
+  np->rx_gain = 30.0;
 
   np->tx_freq = 450e6;
-  np->tx_rate = 2e6;
+  np->tx_rate = 1e6;
   np->tx_gain = 80.0;
 
   // initial liquid OFDM settings
   np->tx_gain_soft = 0;
-  np->tx_modulation = LIQUID_MODEM_PSK4;
+  np->tx_modulation = LIQUID_MODEM_BPSK;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_CONV_V27;
   np->tx_fec1 = LIQUID_FEC_NONE;
-  np->tx_cp_len = 64;
-  np->rx_cp_len = 64;
+  np->tx_cp_len = 4;
+  np->rx_cp_len = 4;
   np->tx_taper_len = 4;
 
-  np->tx_subcarriers = 256;
+  np->tx_subcarriers = 32;
   np->tx_guard_subcarriers = 4;
   np->tx_central_nulls = 6;
   np->tx_pilot_freq = 4;
 
-  np->rx_subcarriers = 256;
+  np->rx_subcarriers = 32;
   np->rx_guard_subcarriers = 4;
   np->rx_central_nulls = 6;
   np->rx_pilot_freq = 4;
