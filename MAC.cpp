@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 2
+#define DEBUG 1
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -201,25 +201,24 @@ void *MAC_tx_worker(void *_arg)
             }
             break;
           case ETH_P_BATMAN:
-            if (nread > 70)
-            {
-              new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
-              printf(YEL "BATMAN IP Packet with Frame Number: %d for Peer: ", new_segment.frame_num);
-              for (int i = 0; i < 6; i++)
-              {
-                printf("%02x:", (unsigned char)peer_address[i]);
-              }
+            //if (nread > 70)
+            //{
+            new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
+            if((memcmp(peer_address, mac->broadcast_address, 6) == 0)){
+              new_segment.routing_packet = true;
+              new_segment.arp_packet = true;
             }
-            else
+            printf(YEL "BATMAN IP Packet of size %d with Frame Number: %d for Peer: ", new_segment.size, new_segment.frame_num);
+            for (int i = 0; i < 6; i++)
             {
-              dprintf(YEL "BATMAN Packet\n" RESET);
+              printf("%02x:", (unsigned char)peer_address[i]);
             }
-
-            //new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
+            printf("\n" RESET);
+   
             memset(new_segment.segment, 0, nread);
             new_segment.size = nread;
             memcpy(new_segment.segment, frame, nread);
-            new_segment.arp_packet = false;
+            //new_segment.arp_packet = false;
             mac->ip_tx_queue.push(new_segment);
             memset(frame, 0, nread);
             break;
@@ -237,12 +236,16 @@ void *MAC_tx_worker(void *_arg)
         if (mac->ip_tx_queue.front().arp_packet)
         {
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
-                              UDP_PACKET, mac->ip_tx_queue.front().frame_num);
+                              1, mac->ip_tx_queue.front().frame_num);
         }
         else
         {
+          int type = 0;
+          if(mac->ip_tx_queue.front().routing_packet){
+            type = 1;
+          }
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
-                              mac->getProtocol(mac->ip_tx_queue.front().segment), mac->ip_tx_queue.front().frame_num);
+                              type, mac->ip_tx_queue.front().frame_num);
         }
       }
     }
@@ -251,11 +254,11 @@ void *MAC_tx_worker(void *_arg)
   pthread_exit(NULL);
 }
 
-void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &frame_num)
+void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame_num)
 {
   char *frame = new char[MAX_BUF];
   memcpy(frame, segment, segment_len);
-
+  
   if (tx_channel_state == FREE && segment_len > 0)
   {
     if (DEBUG == 1 || DEBUG > 2)
@@ -346,9 +349,11 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
         {
           dprintf(YEL "New Transmission - No more frames\n" RESET);
         }
+        if(ip_type == 1){
+          myState = BACKING_OFF;
+          backOff();
+        }
 
-        myState = BACKING_OFF;
-        backOff();
       }
       else
       {
@@ -372,10 +377,11 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
         {
           dprintf(YEL "New Transmission - More frames to follow\n" RESET);
         }
-
-        myState = BACKING_OFF;
-        backOff();
-        myState = TRANSMITTING;
+        if(ip_type == 1){
+          myState = BACKING_OFF;
+          backOff();
+          myState = TRANSMITTING;
+        }
       }
       else
       {
@@ -387,6 +393,7 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
       }
       new_transmission = false;
     }
+
     // add CRC to frame
     addCRC(frame, frame_len);
     convert_bits_int(frame);
@@ -400,7 +407,18 @@ void MAC::transmit_frame(char *segment, int segment_len, char ip_protocol, int &
     last_tx = timeout;
     timeout.tv_sec = timeout.tv_sec + 1;
     timeout.tv_nsec = timeout.tv_nsec;
-    int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
+    int status = 0;
+
+    if(ip_type == 1){
+      char phy_control = 0x00;
+      status = mq_timedsend(phy_tx_queue, &phy_control, 1, 0, &timeout);
+    } else{
+      char phy_control = 0x02;
+      status = mq_timedsend(phy_tx_queue, &phy_control, 1, 0, &timeout);
+    }
+
+    //int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
+    status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
     if (status == -1)
     {
       if (errno == ETIMEDOUT)

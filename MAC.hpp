@@ -133,7 +133,7 @@ public:
   pthread_t rx_process; // thread for transmission
   pthread_mutex_t rx_mutex;
 
-  void transmit_frame(char *segment, int segment_len, char ip_protocol, int &frame_num);
+  void transmit_frame(char *segment, int segment_len, int ip_type, int &frame_num);
 
   char *getControlFrame(FrameControl temp);
   void create_frame(char *&data, int data_len, ProtocolType newType,
@@ -163,6 +163,7 @@ public:
     int size;
     char segment[MAX_BUF];
     bool arp_packet = false;
+    bool routing_packet = false;
     int frame_num = 0;
   };
   std::queue<IpSegment> ip_tx_queue;

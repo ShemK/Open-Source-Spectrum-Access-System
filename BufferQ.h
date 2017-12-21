@@ -8,6 +8,7 @@
 #include <semaphore.h>
 #include <unistd.h>
 #include <complex>
+#include <vector>
 
 template<class T>
 class BufferQ{
@@ -18,10 +19,12 @@ private:
     pthread_cond_t cond;
     pthread_mutex_t consumer_mutex;
 
-    sem_t *phores;
+    std::vector<sem_t> phores;
+    //sem_t *phores;
     pthread_mutex_t* mutices;
 
     int *mutex_bool;
+    bool addingConsumer;
 public:
    
     BufferQ(int q_size, int consumers);
@@ -31,6 +34,7 @@ public:
     T* dequeue(int consumer,int &size);
     void printData(T *input, int size);
     void stopConsumers();
+    void addConsumer();
 
     struct Slot{
         int rank;
@@ -66,23 +70,35 @@ BufferQ<T>::BufferQ(int q_size, int consumers){
     }
     mutices = new pthread_mutex_t[q_size];
     mutex_bool = new int[q_size];
-    phores = new sem_t[q_size];
     for(int i = 0; i < q_size; i++){
+        sem_t newPhore;
+        phores.push_back(newPhore);
         sem_init(&phores[i],0,0);
         status = pthread_mutex_init(&mutices[i],NULL);
         mutex_bool[i] = 0;
     }
     consumer_stopped = false;
-
+    addingConsumer = false;
 }
 
 template<class T>
 BufferQ<T>::~BufferQ(){
+    for(int i = 0; i < q_size; i++){
+        delete slots[i].data;
+    }
     delete []slots;
+    delete []head;
+    delete []mutices;
 }
 
 template<class T>
 void BufferQ<T>::enqueue(T *input, int size){
+
+    if(addingConsumer){
+        pthread_mutex_lock(&mutices[tail]);
+
+        pthread_mutex_lock(&mutices[tail]);
+    }
     if(slots[tail].rank > 0){
         int p = 0;
         sem_getvalue(&phores[tail],&p);
@@ -185,5 +201,10 @@ void BufferQ<T>::stopConsumers(){
     }
 }
 
+// dynamic addition of consumer still in testing
+template<class T>
+void BufferQ<T>::addConsumer(){
+
+}
 
 #endif

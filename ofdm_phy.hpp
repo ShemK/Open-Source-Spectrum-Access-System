@@ -669,8 +669,8 @@ public:
   friend void uhd_msg_handler(uhd::msg::type_t type, const std::string &msg);
   static int uhd_msg;
   bool transmitting = false;
-
-
+  
+  void set_nco_offset(int consumer,float nco_offset);
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -768,7 +768,8 @@ private:
 
   float *h;
   float *g; 
-  float nco_offset = 0.1e6;
+  float nco_offset = 0.5e6;
+  float tx_nco_offset = nco_offset;
   bool loop = false;
 
   friend void *analysis(void *_arg);
@@ -781,6 +782,8 @@ private:
   struct ThreadInfo{
     PhyLayer *PHY;
     int consumer;
+    float nco_offset;
+    bool new_info;
   };
 
   ThreadInfo *threadInfo;
