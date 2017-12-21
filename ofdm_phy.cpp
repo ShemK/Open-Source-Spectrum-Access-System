@@ -163,8 +163,8 @@ PhyLayer::PhyLayer()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 24;      // filter delay
-  beta = 0.25f; // filter excess bandwidth
+  filter_delay = 32;      // filter delay
+  beta = 0.1f; // filter excess bandwidth
 
   h_len = 2 * resampler_factor * filter_delay + 1;
   num_symbols = fgbuffer_len + 2 * filter_delay;
@@ -428,7 +428,18 @@ void *PHY_tx_worker(void *_arg)
       timespec timeout;
       timeout.tv_sec = time(NULL);
       timeout.tv_nsec = 100;
-      int status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+
+
+      int status = 0;
+      if(PHY->random_data){
+        memset(buffer,'a',1000);
+        status = 1000;
+        PHY->tx_nco_offset = PHY->random_offset;
+        usleep(1000);
+      } else{
+        status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+      }
+
       if (status == -1)
       {
         if (errno != ETIMEDOUT)
@@ -515,7 +526,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   std::vector<std::complex<float>> usrp_buffer(fgbuffer_len);
 
   pthread_mutex_lock(&tx_params_mutex);
-  float tx_gain_soft_lin = powf(10.0f, tx_params.tx_gain_soft / 20.0f);
+  float tx_gain_soft_lin = powf(10.0f, resampler_factor*tx_params.tx_gain_soft / 20.0f);
   tx_header[0] = ((frame_num >> 8) & 0x3f);
   tx_header[0] |= (frame_type << 6);
   tx_header[1] = (frame_num)&0xff;
@@ -569,7 +580,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
         usrp_buffer.push_back(0);
       }
       num_symbols = fgbuffer_len + 2 * filter_delay;
-      num_samples = filter_delay * num_symbols;
+      num_samples = resampler_factor * num_symbols;
     }
 
     std::complex<float> z[num_samples];
@@ -592,7 +603,11 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     }
     
     metadata_tx.start_of_burst = false; // never SOB when continuou
-    usrp_buffer.resize(fgbuffer_len);
+    
+    if(!last_symbol){
+      usrp_buffer.resize(fgbuffer_len);
+    }
+   
   } 
   /*
   if(loop){
