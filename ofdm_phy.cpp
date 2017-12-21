@@ -163,8 +163,8 @@ PhyLayer::PhyLayer()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 24;      // filter delay
-  beta = 0.25f; // filter excess bandwidth
+  filter_delay = 32;      // filter delay
+  beta = 0.05f; // filter excess bandwidth
 
   h_len = 2 * resampler_factor * filter_delay + 1;
   num_symbols = fgbuffer_len + 2 * filter_delay;
@@ -174,13 +174,13 @@ PhyLayer::PhyLayer()
   h = new float[h_len];
   g = new float[h_len];
 
-  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
+  liquid_firdes_rkaiser(resampler_factor, filter_delay, beta, 0.1f, h);
 
   for (int i = 0; i < h_len; i++)
     g[i] = h[h_len - i - 1];
 
   interp = firinterp_crcf_create(resampler_factor, h, h_len);
-
+  interp2 = firinterp_crcf_create(resampler_factor, h, h_len);
   decim = new firdecim_crcf[consumers];
   for(int i = 0; i < consumers;i++){
     decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
@@ -428,7 +428,18 @@ void *PHY_tx_worker(void *_arg)
       timespec timeout;
       timeout.tv_sec = time(NULL);
       timeout.tv_nsec = 100;
-      int status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+      int status = 0;
+      if(PHY->random_data){
+        memset(buffer,'a',1000);
+        status = 1000;
+        PHY->tx_nco_offset = PHY->random_offset;
+        usleep(1000);
+      } else{
+        status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+      }
+      
+      
+      
       if (status == -1)
       {
         if (errno != ETIMEDOUT)
@@ -515,7 +526,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   std::vector<std::complex<float>> usrp_buffer(fgbuffer_len);
 
   pthread_mutex_lock(&tx_params_mutex);
-  float tx_gain_soft_lin = powf(10.0f, tx_params.tx_gain_soft / 20.0f);
+  float tx_gain_soft_lin = powf(10.0f, resampler_factor*tx_params.tx_gain_soft / 20.0f);
   tx_header[0] = ((frame_num >> 8) & 0x3f);
   tx_header[0] |= (frame_type << 6);
   tx_header[1] = (frame_num)&0xff;
@@ -543,7 +554,6 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
 
   num_symbols = fgbuffer_len;
   num_samples = resampler_factor * num_symbols;
-  
   nco_crcf q = nco_crcf_create(LIQUID_NCO);
   nco_crcf_set_frequency(q, 2*M_PI*tx_nco_offset/tx_params.tx_rate);
   printf("offset: %f \n",tx_nco_offset);
@@ -555,10 +565,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     last_symbol = ofdmflexframegen_write(fg, fgbuffer, fgbuffer_len);
 
     // copy symbol and apply gain
+    
     for (i = 0; i < fgbuffer_len; i++)
     {
       usrp_buffer[i] = fgbuffer[i] * tx_gain_soft_lin;
     }
+    
 
     //ofdmflexframesync_execute(fs, &usrp_buffer[0], usrp_buffer.size());
 
@@ -569,16 +581,17 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
         usrp_buffer.push_back(0);
       }
       num_symbols = fgbuffer_len + 2 * filter_delay;
-      num_samples = filter_delay * num_symbols;
+      num_samples = resampler_factor * num_symbols;
     }
 
     std::complex<float> z[num_samples];
 
     firinterp_crcf_execute_block(interp, &usrp_buffer[0], usrp_buffer.size(), z);
-
+  
     usrp_buffer.resize(num_samples);
 
     nco_crcf_mix_block_up(q, z, z, usrp_buffer.size());
+    
     
     memcpy(&usrp_buffer[0], z, usrp_buffer.size() * sizeof(std::complex<float>));
 
@@ -591,8 +604,11 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
       test_loop->transmit(usrp_buffer, usrp_buffer.size());
     }
     
-    metadata_tx.start_of_burst = false; // never SOB when continuou
-    usrp_buffer.resize(fgbuffer_len);
+    //metadata_tx.start_of_burst = false; // never SOB when continuou
+    if(!last_symbol){
+      usrp_buffer.resize(fgbuffer_len);
+    }
+    
   } 
   /*
   if(loop){
@@ -604,10 +620,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
+ 
   usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                               metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
 
+ 
   nco_crcf_destroy(q);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
@@ -990,6 +1008,7 @@ void PhyLayer::update_tx_params()
     tune.dsp_freq = tx_params.tx_dsp_freq;
 
     usrp_tx->set_tx_freq(tune);
+    usleep(2e6);
     update_usrp_tx = false;
     pthread_mutex_unlock(&tx_mutex);
   }
@@ -1041,13 +1060,14 @@ void PhyLayer::update_rx_params()
     usrp_rx->set_rx_gain(rx_params.rx_gain_uhd);
     usrp_rx->set_rx_rate(rx_params.rx_rate);
 
-    uhd::tune_request_t tune1(rx_params.rx_freq);
+    uhd::tune_request_t tune1;//(rx_params.rx_freq);
     tune1.rf_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
     tune1.dsp_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
     tune1.rf_freq = rx_params.rx_freq;
     tune1.dsp_freq = rx_params.rx_dsp_freq;
 
     usrp_rx->set_rx_freq(tune1, 0);
+    usleep(2e6);
     /*
     uhd::tune_request_t tune2(rx_params.rx_freq+10e6);
     tune2.rf_freq_policy = uhd::tune_request_t::POLICY_MANUAL;

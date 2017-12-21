@@ -410,10 +410,10 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
     int status = 0;
 
     if(ip_type == 1){
-      char phy_control = 0x00;
+      char phy_control = 0x03;
       status = mq_timedsend(phy_tx_queue, &phy_control, 1, 0, &timeout);
     } else{
-      char phy_control = 0x02;
+      char phy_control = 0x03;
       status = mq_timedsend(phy_tx_queue, &phy_control, 1, 0, &timeout);
     }
 
