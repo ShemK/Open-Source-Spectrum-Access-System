@@ -31,7 +31,7 @@ public:
     ~BufferQ();
 
     void enqueue(T *input,int size);
-    T* dequeue(int consumer,int &size);
+    T* dequeue(int consumer,int &size, bool wait = true);
     void printData(T *input, int size);
     void stopConsumers();
     void addConsumer();
@@ -149,23 +149,34 @@ void BufferQ<T>::enqueue(T *input, int size){
 }
 
 template<class T>
-T* BufferQ<T>::dequeue(int consumer, int &size){
+T* BufferQ<T>::dequeue(int consumer, int &size,bool wait){
     if(consumer >= consumers){
         size = 0;
         return NULL;
     }
     if(consumer_stopped){
-        pthread_exit(NULL);
+        size = -1;
+        return NULL;
     }
     int curr_head = head[consumer];
 
     // check if there is new data
     if(slots[curr_head].rank == 0){
-        sem_wait(&phores[curr_head]);
+        if(!wait){
+            int status = sem_trywait(&phores[curr_head]); 
+            if(status < 0){
+                size = 0;
+                return NULL;
+            }
+        } else{
+          sem_wait(&phores[curr_head]);
+        }
         sem_post(&phores[curr_head]);
     }
     if(consumer_stopped){
-        pthread_exit(NULL);
+        //pthread_exit(NULL);
+        size = -1;
+        return NULL;
     }
     // dequeue data at the head of the consumer
     size = slots[curr_head].size;

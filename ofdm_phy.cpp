@@ -594,10 +594,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     metadata_tx.start_of_burst = false; // never SOB when continuou
     usrp_buffer.resize(fgbuffer_len);
   } 
+  /*
   if(loop){
     memset(&usrp_buffer[0],0,100*sizeof(std::complex<float>));
     test_loop->transmit(usrp_buffer, 100);
   }
+  */
   // while loop
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
@@ -1144,8 +1146,8 @@ void *PHY_rx_worker(void *_arg)
     for (size_t i = 0; i < buffs.size(); i++)
       buff_ptrs.push_back(&buffs[i].front());
     
-    std::vector<std::complex<float>> recv(10000);
-    std::complex<float> recv_array[10*PHY->rx_buffer_len];
+    std::vector<std::complex<float>> recv(50000);
+    std::complex<float> recv_array[50000];
     // run receiver
     while (rx_continue)
     {
@@ -1232,6 +1234,9 @@ void *analysis(void *_arg){
   while(rx_continue){
     int num_rx_samps = 0;
     std::complex<float> *recv_array = PHY->recvQueue->dequeue(consumer,num_rx_samps);
+    if(num_rx_samps == -1){
+      break;
+    }
     if(num_rx_samps!=n){
       delete[]x;
       n = num_rx_samps;

@@ -23,6 +23,7 @@
 #include <complex>
 #include <semaphore.h>
 #include <sys/mman.h>
+#include "BufferQ.h"
 
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
@@ -35,7 +36,7 @@
 
 typedef unsigned short uint16;
 
-#define MAX_SHARED_BUFFER 300000
+#define MAX_SHARED_BUFFER 50000
 #define PMODE 0777
 
 class Loop
@@ -55,6 +56,8 @@ public:
     int num_samples = 0;
     std::complex<float> data[MAX_SHARED_BUFFER];
   };
+
+  BufferQ<std::complex<float>> *theQ;//((int)100,1);
 
   shared_struct *shared;
 

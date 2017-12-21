@@ -2,6 +2,7 @@
 
 Loop::Loop()
 {
+  theQ = new BufferQ<std::complex<float>>(100,1);
   sem_init(&mutex,0,1);
 
   fd_shm = shm_open("/shared_loop", O_CREAT | O_RDWR, 0777);
@@ -21,57 +22,25 @@ Loop::Loop()
 
 Loop::~Loop()
 {
-
+  delete theQ;
 }
 
 
 void Loop::transmit(std::vector<std::complex<float>> usrp_buffer,int buffer_len){
-  //char *frame = new char[MAX_BUF];
-  //int frame_len = buffer_len*sizeof(std::complex<float>);
-  int sval;
-  sem_getvalue(&mutex, &sval);
-  //printf("Current TX semaphore Value: %d\n", sval);
-  sem_wait(&mutex);
-  shared->num_samples = buffer_len;
-  memcpy(&shared->data[0],&usrp_buffer[0],buffer_len*sizeof(std::complex<float>));
-  /*
-  for(int i = 0; i < buffer_len; i++){
-    shared->data[i] = usrp_buffer[i];
-  }
-  */
-  //sem_post(&mutex);
-  //delete[] frame;
+
+  theQ->enqueue(&usrp_buffer[0],buffer_len);
+
 }
 
 int Loop::receive(std::vector<std::complex<float> > &recv){
-  //sem_wait(&mutex);
 
-  //if(sem_trywait(&mutex) == 0){
-    int sval;
-    sem_getvalue(&mutex, &sval);
-
-    if(sval > 0){
-      return 0;
-    }
-    //printf("Current RX semaphore Value: %d\n", sval);
-    if(shared->data[0] != std::complex<float>(1000, -1000)){
-      memcpy(&recv[0],&shared->data[0],shared->num_samples*sizeof(std::complex<float>));
-      shared->data[0] = std::complex<float>(1000, -1000);
-      if(sval < 1){
-        sem_post(&mutex);
-      } 
-    return shared->num_samples;
-    } else{
-      if(sval < 1){
-        sem_post(&mutex);
-      } 
-      return 0;
-    }
-
-  //} else{
-  //  return 0;
-  //}
-
+  int size = 0;
+  std::complex<float> *x = theQ->dequeue(0,size,false);
+  if(size > 0){
+    memcpy(&recv[0],x,size*sizeof(std::complex<float>));
+  }
+  
+  return size;
 }
 
 void Loop::manipulate_header(char *payload){

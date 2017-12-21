@@ -770,7 +770,7 @@ private:
   float *g; 
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
-  bool loop = false;
+  bool loop = true;
 
   friend void *analysis(void *_arg);
 
