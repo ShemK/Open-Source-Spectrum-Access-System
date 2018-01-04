@@ -20,6 +20,16 @@
 #include <sys/time.h>
 #include "BufferQ.h"
 
+#define RED "\x1B[31m"
+#define GRN "\x1B[32m"
+#define YEL "\x1B[33m"
+#define BLU "\x1B[34m"
+#define MAG "\x1B[35m"
+#define CYN "\x1B[36m"
+#define WHT "\x1B[37m"
+#define RESET "\x1B[0m"
+
+
 #define PHY_CONTROL_INFO_BYTES 6
 
 // thread functions
@@ -768,11 +778,12 @@ private:
 
   float *h;
   float *g; 
-  float nco_offset = 0.5e6;
+  float nco_offset = 0;
   float tx_nco_offset = nco_offset;
   bool loop = false;
-  bool random_data = false;
+  bool random_data = true;
   float random_offset = nco_offset;
+  bool multi_input = false;
 
   friend void *analysis(void *_arg);
 
@@ -789,5 +800,17 @@ private:
   };
 
   ThreadInfo *threadInfo;
-  
+
+  int rand_num;
+  bool wait_for_slot = false;
+  bool set_slot = false;
+  bool slot_acquired = false;
+  bool resend_slot_reply = false;
+  int slot = 0;
+  int num_slots = 1;
+  int start_time = 0;
+  int slot_time = 20; //milliseconds
+  int next_slot = 0;
+  int next_slot_ns = 0;
+  int time_offset_ns = 0;
 };

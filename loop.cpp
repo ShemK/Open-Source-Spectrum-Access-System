@@ -2,7 +2,7 @@
 
 Loop::Loop()
 {
-  theQ = new BufferQ<std::complex<float>>(100,1);
+  theQ = new BufferQ<std::complex<float>>(5000,1);
   sem_init(&mutex,0,1);
 
   fd_shm = shm_open("/shared_loop", O_CREAT | O_RDWR, 0777);

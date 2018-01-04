@@ -106,7 +106,7 @@ PhyLayer::PhyLayer()
   // create frame synchronizer
   fs = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                                 rx_params.taper_len, rx_params.subcarrierAlloc,
-                                rxCallback, (void *)this);
+                                rxCallback, (void *)&threadInfo[0]);
 
   // initialize update flags to false
   update_tx_flag = false;
@@ -132,8 +132,8 @@ PhyLayer::PhyLayer()
   phy_tx_queue = mq_open("/mac2phy", O_RDONLY | O_CREAT, PMODE, &attr_tx);
   phy_rx_queue = mq_open("/phy2mac", O_WRONLY | O_CREAT, PMODE, &attr_rx);
 
-  consumers = 4;
-  int q_len = 500;
+  consumers = 1;
+  int q_len = 1000;
   recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
   analysisThreads = new pthread_t[consumers];
   threadInfo = new ThreadInfo[consumers];
@@ -142,7 +142,7 @@ PhyLayer::PhyLayer()
   for(int i = 0; i < consumers;i++){
     fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                                 rx_params.taper_len, rx_params.subcarrierAlloc,
-                                rxCallback, (void *)this);
+                                rxCallback, (void *)&threadInfo[i]);
 
     threadInfo[i].PHY = this;
     threadInfo[i].consumer = i;
@@ -161,9 +161,9 @@ PhyLayer::PhyLayer()
     }
   }
 
-  resampler_factor = 4; // samples/symbol
+  resampler_factor = 2; // samples/symbol
 
-  filter_delay = 32;      // filter delay
+  filter_delay = 2;      // filter delay
   beta = 0.1f; // filter excess bandwidth
 
   h_len = 2 * resampler_factor * filter_delay + 1;
@@ -174,7 +174,7 @@ PhyLayer::PhyLayer()
   h = new float[h_len];
   g = new float[h_len];
 
-  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
+  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.1f, h);
 
   for (int i = 0; i < h_len; i++)
     g[i] = h[h_len - i - 1];
@@ -185,6 +185,8 @@ PhyLayer::PhyLayer()
   for(int i = 0; i < consumers;i++){
     decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
   }
+  srand (time(NULL));
+  rand_num = 1000;//rand() % 1000;  
 }
 
 // Destructor
@@ -431,14 +433,40 @@ void *PHY_tx_worker(void *_arg)
 
 
       int status = 0;
-      if(PHY->random_data){
-        memset(buffer,'a',1000);
-        status = 1000;
-        PHY->tx_nco_offset = PHY->random_offset;
-        usleep(1000);
-      } else{
-        status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+      if(PHY->slot_acquired){
+        if(PHY->random_data){
+          status = 1000;
+          memset(buffer,'a',status);
+          
+          PHY->tx_nco_offset = PHY->random_offset;
+        } else{
+          status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+        }
+        //std::cout << "Next Slot: " <<   PHY->next_slot<< "\n";
+        if(PHY->next_slot!=0 && status != 1){
+            timespec temp_time;
+            clock_gettime(CLOCK_REALTIME, &temp_time);
+            //std::cout << "Current time: " <<   temp_time.tv_sec<< "\n";
+            if(temp_time.tv_sec <= PHY->next_slot){
+              int wait_dur =  PHY->next_slot - temp_time.tv_sec;
+
+              wait_dur = wait_dur*1e6 +  (PHY->next_slot_ns - temp_time.tv_nsec )/1000;
+              //std::cout << "waiting: " <<  wait_dur << "\n";
+              //if(wait_dur < )
+              //std::cout << "Current Time NS: " <<  temp_time.tv_nsec << "\n";
+              PHY->next_slot_ns = PHY->next_slot_ns + 2*PHY->slot_time*1000000;
+              //std::cout << "Next Slot NS: " <<  PHY->next_slot_ns  << "\n";
+              if(wait_dur > 0){
+                usleep(wait_dur);
+              } else{ status = 0;}
+              if(PHY->next_slot_ns >= 1e9){
+                PHY->next_slot =  PHY->next_slot + PHY->next_slot_ns/1000000000;
+                PHY->next_slot_ns = PHY->next_slot_ns % 1000000000;
+              }
+            } 
+        }
       }
+
 
       if (status == -1)
       {
@@ -471,8 +499,40 @@ void *PHY_tx_worker(void *_arg)
       }
       else
       {
+        if(!PHY->slot_acquired || PHY->resend_slot_reply){
+          status = 0;
+          if(!(PHY->wait_for_slot || PHY->set_slot) ){
+            status = 10;
+            buffer[0] = 0x00;
+            memcpy(&buffer[1],(char *) &PHY->rand_num ,sizeof(int));
+            PHY->tx_nco_offset = PHY->random_offset;
+            
+          } else if (PHY->wait_for_slot|| PHY->resend_slot_reply){
+            std::cout << "Waiting for slots\n";
+            status = 10;
+            buffer[0] = 0x02;
+            PHY->resend_slot_reply = false;
+          } else if(PHY->set_slot){
+            usleep(1e6);
+            if(!PHY->slot_acquired){
+              std::cout << "Setting slots\n";
+              status = 10;
+              buffer[0] = 0x01;
+              timespec start;
+              clock_gettime(CLOCK_REALTIME, &start);
+              int temp = start.tv_sec + 5;
+              PHY->start_time = temp;
+              memcpy(&buffer[1],(char *) &temp ,sizeof(int));
+              temp = PHY->num_slots + 1;
+              memcpy(&buffer[5],(char *) &temp ,sizeof(char));
+              temp = start.tv_nsec;
+              memcpy(&buffer[6],(char *) &temp ,sizeof(int));
+            }
+          }
+          usleep(1e6);
+        }
+
         payload_len = status;
-        //  strncpy((char*)payload, buffer, payload_len);
         memcpy(payload, (unsigned char *)buffer, payload_len);
         PHY->tx_frame_counter++;
         // time_t t = time(0);
@@ -484,7 +544,10 @@ void *PHY_tx_worker(void *_arg)
         }
         printf("\n");
         */
-        PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
+        if(payload_len > 0){
+          PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
+        }
+        
         memset(buffer, 0, buffer_len);
       }
       // change state to stopped once all frames have been transmitted
@@ -545,7 +608,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // assemble frame
   ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
   // dprintf("Transmitting Frame!!!!\n");
-  printf("-----------------Transmitting--------------\n");
+  printf("-----------------Transmitting at slot %d--------------\n", slot);
   printf("Frame_num transmitted: %d with %d bytes at %lus and %luus \n",
          frame_num - 1, _payload_len, ts.tv_sec, ts.tv_usec);
   // generate a single OFDM frame
@@ -556,7 +619,9 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   num_samples = resampler_factor * num_symbols;
   
   nco_crcf q = nco_crcf_create(LIQUID_NCO);
+  nco_crcf q2 = nco_crcf_create(LIQUID_NCO);
   nco_crcf_set_frequency(q, 2*M_PI*tx_nco_offset/tx_params.tx_rate);
+  nco_crcf_set_frequency(q2, -2*M_PI*tx_nco_offset/tx_params.tx_rate);
   printf("offset: %f \n",tx_nco_offset);
   bool header = true;
   while (!last_symbol)
@@ -572,7 +637,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     }
 
     //ofdmflexframesync_execute(fs, &usrp_buffer[0], usrp_buffer.size());
-
+    /*
     if (last_symbol)
     {
       for (; i < num_symbols; i++)
@@ -584,14 +649,31 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     }
 
     std::complex<float> z[num_samples];
+    std::complex<float> z2[num_samples];
 
     firinterp_crcf_execute_block(interp, &usrp_buffer[0], usrp_buffer.size(), z);
 
     usrp_buffer.resize(num_samples);
+    if(multi_input){
+      
+      memcpy(z2,z,usrp_buffer.size()* sizeof(std::complex<float>));
+    }
 
+   
     nco_crcf_mix_block_up(q, z, z, usrp_buffer.size());
-    
+    if(multi_input){
+      nco_crcf_mix_block_up(q2, z2, z2, usrp_buffer.size());
+      //std::cout << "\n-------------------------------------------\n";
+      for (i = 0; i < usrp_buffer.size(); i++)
+      {
+        z[i] = z[i] + z2[i];
+      }
+
+    }
+
+
     memcpy(&usrp_buffer[0], z, usrp_buffer.size() * sizeof(std::complex<float>));
+    */
 
     // send samples to the device
     usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
@@ -609,12 +691,14 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     }
    
   } 
-  /*
+  //firinterp_crcf_destroy(interp);
+  //interp = firinterp_crcf_create(resampler_factor, h, h_len);
+  
   if(loop){
-    memset(&usrp_buffer[0],0,100*sizeof(std::complex<float>));
-    test_loop->transmit(usrp_buffer, 100);
+    memset(&usrp_buffer[0],0,30*sizeof(std::complex<float>));
+    test_loop->transmit(usrp_buffer, 30);
   }
-  */
+  
   // while loop
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
@@ -624,6 +708,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
                               uhd::device::SEND_MODE_FULL_BUFF);
 
   nco_crcf_destroy(q);
+  nco_crcf_destroy(q2);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
 
@@ -1081,12 +1166,12 @@ void PhyLayer::update_rx_params()
     ofdmflexframesync_destroy(fs);
     fs = ofdmflexframesync_create(
         rx_params.numSubcarriers, rx_params.cp_len, rx_params.taper_len,
-        rx_params.subcarrierAlloc, rxCallback, (void *)this);
+        rx_params.subcarrierAlloc, rxCallback, (void *)&threadInfo[0]);
     for(int i = 0; i < consumers;i++){
       ofdmflexframesync_destroy(fsyncs[i]);
       fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                       rx_params.taper_len, rx_params.subcarrierAlloc,
-                      rxCallback, (void *)this);
+                      rxCallback, (void *)&threadInfo[i]);
     }
     recreate_fs = false;
   }
@@ -1292,9 +1377,14 @@ int rxCallback(unsigned char *_header, int _header_valid,
                unsigned char *_payload, unsigned int _payload_len,
                int _payload_valid, framesyncstats_s _stats, void *_userdata)
 {
+
+  PhyLayer::ThreadInfo *threadInfo = (PhyLayer::ThreadInfo * )_userdata;
+
+  PhyLayer *PHY = threadInfo->PHY;
+  int consumer = threadInfo->consumer;
   // typecast user argument as PHY object
-  PhyLayer *PHY = (PhyLayer *)_userdata;
-  printf("\n---------------------Received---------------\n");
+  //PhyLayer *PHY = (PhyLayer *)_userdata;
+  printf("\n---------------------Received at thread %d---------------\n",consumer);
   unsigned int frame_num = ((_header[0] & 0x3F) << 8 | _header[1]);
   printf("Frame_num received: %d\n", frame_num);
   struct timeval ts;
@@ -1304,29 +1394,88 @@ int rxCallback(unsigned char *_header, int _header_valid,
   {
     if (_payload_valid == 1)
     {
-      timespec timeout;
-      timeout.tv_sec = time(NULL);
-      timeout.tv_nsec = 100;
+      //if(threadInfo->nco_offset != PHY->tx_nco_offset){
+        timespec timeout;
+        clock_gettime(CLOCK_REALTIME, &timeout);
+        //timeout.tv_sec = time(NULL);
+        //timeout.tv_nsec = 100;
 
-      int status = mq_timedsend(PHY->phy_rx_queue, (char *)_payload, _payload_len, 0, &timeout);
-      if (status == -1)
-      {
-        perror("Queue is full\n");
-        printf("mq_send failure\n");
-      }
-      else
-      {
-        printf("mq_send to mac successful\n");
-      }
+        if(_payload_len <= 10){
+          if(_payload[0] == 0x00){
+            int temp = 0;
+            memcpy(&temp,(int *)&_payload[1],sizeof(int));
+            std::cout << "Rx rand: " << temp << "\n";
+            if(temp < PHY->rand_num){
+              PHY->wait_for_slot = true;
+            } else if(temp > PHY->rand_num){
+              PHY->set_slot = true;
+            }
+          }
+
+          if(_payload[0] == 0x01){
+            if(!PHY->set_slot){
+              int temp;
+              memcpy(&temp,(int *)&_payload[1],sizeof(int));
+              PHY->start_time = temp;
+              temp = 0;
+              temp = (int) _payload[5];
+              PHY->next_slot = PHY->start_time;
+              if(temp!=PHY->slot){
+                PHY->slot = temp;
+                PHY->num_slots++;
+              }
+              PHY->next_slot_ns = PHY->slot_time *(PHY->slot-1)*1000000;
+              memcpy(&temp,(int *)&_payload[6],sizeof(int));
+              PHY->time_offset_ns = temp - timeout.tv_nsec;
+              std::cout << "Time Offset: " << PHY->time_offset_ns << "\n";
+              PHY->next_slot_ns = PHY->next_slot_ns  + PHY->time_offset_ns ;
+              if(PHY->slot_acquired){
+                PHY->resend_slot_reply = true;
+              }
+              PHY->slot_acquired = true;
+
+              // FIXME :: What happens if I never reply after being given a slot????
+            } 
+
+          }
+          if(_payload[0] == 0x02){
+            if(PHY->set_slot){
+              PHY->slot = 1;
+              PHY->num_slots++;
+              PHY->slot_acquired = true;
+              PHY->next_slot = PHY->start_time;
+            } else{
+              if(!PHY->wait_for_slot){
+                PHY->set_slot = true;
+              }
+            }
+          }
+        } else{
+          int status = mq_timedsend(PHY->phy_rx_queue, (char *)_payload, _payload_len, 0, &timeout);
+          if (status == -1)
+          {
+            perror("Queue is full");
+            printf("mq_send failure\n");
+          }
+          else
+          {
+            printf("mq_send to mac successful\n");
+          }
+      // } else{
+      //   printf("My Valid Payload\n");
+      // }
+        }
+
+
     }
     else
     {
-      printf("Invalid Payload\n");
+      printf( RED "Invalid Payload\n" RESET);
     }
   }
   else
   {
-    printf("Invalid Header\n");
+    printf(YEL "Invalid Header\n" RESET);
   }
 
   return 0;
