@@ -95,16 +95,16 @@ void initialize_node_parameters(struct node_parameters *np)
  // strncpy(np->my_ip, "10.0.0.2", sizeof(np->my_ip));
  // strncpy(np->target_ip, "10.0.0.3", sizeof(np->target_ip));
   // initial USRP settings
-  np->rx_freq = 450e6;
+  np->rx_freq = 454e6;
   np->rx_rate = 4e6;
-  np->rx_gain = 0.0;
+  np->rx_gain = 20.0;
 
   np->tx_freq = 450e6;
   np->tx_rate = 4e6;
   np->tx_gain = 100.0;
 
   // initial liquid OFDM settings
-  np->tx_gain_soft = -6;
+  np->tx_gain_soft = -12;
   np->tx_modulation = LIQUID_MODEM_QAM8;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_CONV_V27;
@@ -131,14 +131,10 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
 
   char *alloc = new char[np->tx_subcarriers];
   memset(alloc,OFDMFRAME_SCTYPE_DATA,np->tx_subcarriers);
-  float pilot_perc =  0.125;
-  int p = np->tx_subcarriers*pilot_perc;
-  for(int i = 0; i < np->tx_subcarriers*pilot_perc; i++){
-    alloc[i*p] = OFDMFRAME_SCTYPE_PILOT;
-  }
+
   
   // at the edge - issue with liquid dsp
-  int count = np->tx_subcarriers/16;
+  int count = np->tx_subcarriers/2;
   for(int i = 0; i < count;i++){
     int x = (np->tx_subcarriers/2)-count/2+i;
     alloc[x] = OFDMFRAME_SCTYPE_NULL;
@@ -151,7 +147,13 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
     alloc[i] = OFDMFRAME_SCTYPE_NULL;
     alloc[np->tx_subcarriers-1-i] = OFDMFRAME_SCTYPE_NULL;
   }
-  
+
+  int no_p = np->tx_subcarriers/16;
+  int p = np->tx_subcarriers/(2*no_p);
+  for(int i = 0; i < no_p/2; i++){
+    alloc[i*p] = OFDMFRAME_SCTYPE_PILOT;
+    alloc[np->tx_subcarriers-1-i*p] = OFDMFRAME_SCTYPE_PILOT;
+  }  
   PhyLayer *PHY = (PhyLayer *)PHY_p;
   //  PHY->set_ip(np->my_ip);
   PHY->set_rx_freq(np->rx_freq);

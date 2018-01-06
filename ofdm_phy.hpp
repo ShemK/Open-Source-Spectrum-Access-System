@@ -772,7 +772,7 @@ private:
   float tx_nco_offset = nco_offset;
   bool loop = false;
   bool random_data = false;
-  float random_offset = nco_offset;
+  float random_offset = 3*nco_offset;
 
   friend void *analysis(void *_arg);
 
@@ -786,8 +786,15 @@ private:
     int consumer;
     float nco_offset;
     bool new_info;
+    ofdmflexframesync *fs_thread;
   };
 
   ThreadInfo *threadInfo;
+
+  bool route_resend = false;
+
+  char tx_side = 0x00;
+
+  void changeTxChannel();
   
 };

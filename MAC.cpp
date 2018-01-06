@@ -6,7 +6,7 @@
 #include <string>
 #include <array>
 
-#define DEBUG 1
+#define DEBUG 3
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -186,6 +186,7 @@ void *MAC_tx_worker(void *_arg)
             if (!mac->isAddressBanned(peer_address))
             {
               new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
+              new_segment.peer_pos = mac->getPeerPosition(peer_address);
               printf(YEL "IP Packet with Frame Number: %d for Peer: ", new_segment.frame_num);
               for (int i = 0; i < 6; i++)
               {
@@ -204,6 +205,7 @@ void *MAC_tx_worker(void *_arg)
             //if (nread > 70)
             //{
             new_segment.frame_num = mac->updatePeerTxStatistics(peer_address);
+            new_segment.peer_pos= mac->getPeerPosition(peer_address);
             if((memcmp(peer_address, mac->broadcast_address, 6) == 0)){
               new_segment.routing_packet = true;
               new_segment.arp_packet = true;
@@ -236,13 +238,24 @@ void *MAC_tx_worker(void *_arg)
         if (mac->ip_tx_queue.front().arp_packet)
         {
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
-                              1, mac->ip_tx_queue.front().frame_num);
+                              3, mac->ip_tx_queue.front().frame_num);
         }
         else
         {
           int type = 0;
+          if(mac->ip_tx_queue.front().peer_pos >=0){
+            int pos = mac->ip_tx_queue.front().peer_pos;
+            if(mac->peerlist[pos].rx_side == MAC::LOW_CHANNEL){
+              type = 0;
+            }
+            if(mac->peerlist[pos].rx_side == MAC::HIGH_CHANNEL){
+              type = 1;
+            }
+
+          }
+          
           if(mac->ip_tx_queue.front().routing_packet){
-            type = 1;
+            type = 3;
           }
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
                               type, mac->ip_tx_queue.front().frame_num);
@@ -263,7 +276,7 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
   {
     if (DEBUG == 1 || DEBUG > 2)
     {
-      dprintf(YEL "\n----------------Transmitting-------------------\n" RESET);
+      dprintf(YEL "\n----------------Transmitting--type %d-----------------\n" RESET, ip_type);
       dprintf(CYN "Current TX Queue Length: %lu\n" RESET, ip_tx_queue.size());
       dprintf(RED "Current Retransmissions: %d\n" RESET, retransmissions);
     }
@@ -351,7 +364,7 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
         }
         if(ip_type == 1){
           myState = BACKING_OFF;
-          backOff();
+          //backOff();
         }
 
       }
@@ -379,7 +392,7 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
         }
         if(ip_type == 1){
           myState = BACKING_OFF;
-          backOff();
+          //backOff();
           myState = TRANSMITTING;
         }
       }
@@ -408,17 +421,17 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
     timeout.tv_sec = timeout.tv_sec + 1;
     timeout.tv_nsec = timeout.tv_nsec;
     int status = 0;
-
-    if(ip_type == 1){
-      char phy_control = 0x00;
-      status = mq_timedsend(phy_tx_queue, &phy_control, 1, 0, &timeout);
-    } else{
-      char phy_control = 0x02;
-      status = mq_timedsend(phy_tx_queue, &phy_control, 1, 0, &timeout);
+    
+    if(ip_type == 0){
+      frame[frame_len] = 0x00;
+    } else if(ip_type == 1){
+      frame[frame_len] = 0x01;
+    } else if(ip_type == 3){
+      frame[frame_len] = 0x03;
     }
-
+    printf("MAC CONTROL: %x\n",frame[frame_len]);
     //int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
-    status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
+    status = mq_timedsend(phy_tx_queue, frame, frame_len+1, 0, &timeout);
     if (status == -1)
     {
       if (errno == ETIMEDOUT)
@@ -430,13 +443,14 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
         perror(RED "mq_send failure\n" RESET);
       }
     }
+    /*
     else
     {
       if (DEBUG == 1 || DEBUG > 2)
       {
         dprintf(CYN "mq_send successful with frame_num: %d\n" RESET, frame_num);
       }
-
+      
       //frame_num++;
       if (!ip_tx_queue.front().arp_packet)
       {
@@ -511,7 +525,8 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
         dprintf(YEL "SENDING ARP PACKET\n" RESET);
         ip_tx_queue.pop();
       }
-    }
+    }*/
+    ip_tx_queue.pop();
     pthread_mutex_unlock(&tx_mutex);
   }
   else
@@ -675,9 +690,9 @@ void *MAC_rx_worker(void *_arg)
           dprintf("\n----------------Receiving-------------------\n");
         }
 
-        if (mac->isCorrectCRC(buf, status))
+        if (mac->isCorrectCRC(buf+1, status-1))
         {
-          if (DEBUG == 2 || DEBUG > 2)
+          //if (DEBUG == 2 || DEBUG > 2)
           {
             dprintf("Correct CRC Received for %d bytes\n", status);
           }
@@ -687,7 +702,7 @@ void *MAC_rx_worker(void *_arg)
 
           //mac->analyzeReceivedFrame(buf, status);
           //pthread_mutex_unlock(&mac->rx_mutex);
-          if (DEBUG == 2 || DEBUG > 2)
+          //if (DEBUG == 2 || DEBUG > 2)
           {
             dprintf("Asynchronous Analyze Thread Launched\n");
           }
@@ -729,14 +744,15 @@ void *MAC_rx_worker(void *_arg)
 // Analyze any received frame to make decisions on the state of the channel
 void MAC::analyzeReceivedFrame(char *buf, int buf_len)
 {
+  buf_len = buf_len - 1;
+  char rx_side = buf[0];
+  buf = buf+1;
   //dprintf("Packet Received\n");
   recv_header = getMACHeader(buf);
   recv_payload = getPayLoad(buf, buf_len);
   int recv_payload_len = buf_len - CONTROL_FRAME_LEN;
   char *sourceMAC = extractSourceMAC(recv_payload);
   char *destinationMAC = extractDestinationMAC(recv_payload);
-
-  // double frame_error_rate = 0;
 
   int frame_num = buffToInteger(recv_header + FRAME_NUM_POS);
   if (DEBUG == 2 || DEBUG > 2)
@@ -826,11 +842,13 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
 
           if (ether_type == ETH_P_ARP)
           {
+            updatePeerRxStatistics(sourceMAC, frame_num, rx_side,buf_len);
             printf("ARP Packet Received : %d\n", ether_type);
             char *sourceIP_str = ipAddr_toString((unsigned char *)sourceIP);
             char *sourceMAC_str = macAddr_toString((unsigned char *)sourceMAC);
             sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str, sourceMAC_str);
             system(systemCMD);
+            
           }
         }
         else
@@ -848,10 +866,12 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
             {
               frames_before_last_frame++;
             }
-            updatePeerRxStatistics(sourceMAC, frame_num, buf_len);
+            updatePeerRxStatistics(sourceMAC, frame_num, rx_side,buf_len);
           }
           if (ether_type == ETH_P_ARP)
           {
+
+            updatePeerRxStatistics(sourceMAC, frame_num, rx_side,buf_len);
             printf("ARP Packet Received : %d\n", ether_type);
             char *sourceIP_str = ipAddr_toString((unsigned char *)sourceIP);
             char *sourceMAC_str = macAddr_toString((unsigned char *)sourceMAC);
@@ -871,7 +891,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
               {
                 frames_before_last_frame++;
               }
-              updatePeerRxStatistics(sourceMAC, frame_num, buf_len);
+              updatePeerRxStatistics(sourceMAC, frame_num, rx_side,buf_len);
             } 
           }
           sendToIPLayer(recv_payload, recv_payload_len);
@@ -1062,7 +1082,7 @@ int MAC::updatePeerTxStatistics(char peer_address[6])
     new_peer->frames_received = 0;
     new_peer->frame_errors = 0;
     peerlist.push_back(*new_peer);
-    printf("New Peer Added\n");
+    printf("New TX Peer Added\n");
     return new_peer->frames_sent;
   }
   else
@@ -1075,7 +1095,8 @@ int MAC::updatePeerTxStatistics(char peer_address[6])
   }
 }
 
-void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, int frame_len)
+
+void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, char rx_side,int frame_len)
 {
   dprintf(YEL "Peer List Size: %lu\n" RESET, peerlist.size());
   int pos = getPeerPosition(peer_address);
@@ -1087,8 +1108,9 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, i
     new_peer->frames_sent = 0;
     new_peer->frames_received = frame_num_received + 1;
     new_peer->frame_errors = 0;
+    new_peer->rx_side = rx_side;
     peerlist.push_back(*new_peer);
-    printf("New RX Peer Added\n");
+    printf("New RX Peer Added with rx_side: %x\n",rx_side);
   }
   else
   {
@@ -1096,6 +1118,7 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, i
     printf("RX Peer Exists\n");
 
     peerlist.at(pos).frame_errors = frame_num_received - peerlist.at(pos).frames_received;
+    peerlist.at(pos).rx_side = rx_side;
     peerlist.at(pos).frames_received++;
     peerlist.at(pos).bit_error_rate = ((float)peerlist.at(pos).frame_errors) / ((float)frame_num_received);
     printf(MAG "Frame Num Received: %d\n" RESET, frame_num_received);
@@ -1139,7 +1162,7 @@ void MAC::sendACK(char *recv_payload, int frame_num)
   memcpy(ack_frame + FRAME_NUM_POS, &conv_frame_num, 4);
   frame_len = frame_len + CONTROL_FRAME_LEN;
   addCRC(ack_frame, frame_len);
-  int status = mq_send(phy_tx_queue, ack_frame, frame_len, 0);
+  int status = 0;//mq_send(phy_tx_queue, ack_frame, frame_len, 0);
 
   if (status == -1)
   {

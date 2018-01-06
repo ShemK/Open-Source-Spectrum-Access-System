@@ -128,6 +128,10 @@ public:
   Channel_state tx_channel_state;
   FrameControl packet_FrameControl;
 
+  enum RRCChannel{
+    LOW_CHANNEL = 0x00,
+    HIGH_CHANNEL = 0x01
+  };
   pthread_t tx_process; // thread for transmission
   pthread_mutex_t tx_mutex;
   pthread_t rx_process; // thread for transmission
@@ -165,6 +169,7 @@ public:
     bool arp_packet = false;
     bool routing_packet = false;
     int frame_num = 0;
+    int peer_pos = 0;
   };
   std::queue<IpSegment> ip_tx_queue;
   int tx_continuation = 0;
@@ -176,6 +181,7 @@ public:
     int frames_received;
     int frame_errors;
     double bit_error_rate;
+    char rx_side;
   };
 
 
@@ -183,7 +189,7 @@ public:
   int peer_number = 0;
   int getPeerPosition(char peer_address[6]);
   int updatePeerTxStatistics(char peer_address[6]);
-  void updatePeerRxStatistics(char peer_address[6], int frame_num_received, int frame_len);
+  void updatePeerRxStatistics(char peer_address[6], int frame_num_received, char rx_side,int frame_len);
   //Peer new_peer;
 
 
@@ -203,6 +209,8 @@ public:
   char *extractSourceIP(char *payload, int pos);
 
   struct timespec last_tx;
+
+  //std::map<std::string, char rx_side> rrc_map;
 };
 
 void *MAC_tx_worker(void *_arg);
