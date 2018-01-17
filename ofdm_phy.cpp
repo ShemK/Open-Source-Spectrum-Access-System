@@ -133,58 +133,17 @@ PhyLayer::PhyLayer()
   phy_rx_queue = mq_open("/phy2mac", O_WRONLY | O_CREAT, PMODE, &attr_rx);
 
   consumers = 4;
-  int q_len = 500;
-  recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
-  analysisThreads = new pthread_t[consumers];
-  threadInfo = new ThreadInfo[consumers];
-  fsyncs = new ofdmflexframesync[consumers];
-  int count = 0;
-  for(int i = 0; i < consumers;i++){
-    fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
-                                rx_params.taper_len, rx_params.subcarrierAlloc,
-                                rxCallback, (void *)&threadInfo[i]);
-    threadInfo[i].fs_thread = &fsyncs[i];
-    threadInfo[i].PHY = this;
-    threadInfo[i].consumer = i;
-    
-    if(i%2 == 0){
-      count++;
-      threadInfo[i].nco_offset = (2*count-1)*nco_offset;
-    } else{
-      threadInfo[i].nco_offset = -1*(2*count-1)*nco_offset;
-    }
-    
-    //threadInfo[i].nco_offset = 2*nco_offset;
-    int status = pthread_create(&analysisThreads[i],NULL,analysis,(void *) &threadInfo[i]);
-    if(status < 0){
-      perror("Failed to create threads");
-    }
-  }
+
+  
 
   resampler_factor = 4; // samples/symbol
 
   filter_delay = 32;      // filter delay
   beta = 0.01f; // filter excess bandwidth
 
-  h_len = 2 * resampler_factor * filter_delay + 1;
-  num_symbols = fgbuffer_len + 2 * filter_delay;
+  resetRxChannels();
 
-  num_samples = resampler_factor * num_symbols;
-
-  h = new float[h_len];
-  g = new float[h_len];
-
-  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
-
-  for (int i = 0; i < h_len; i++)
-    g[i] = h[h_len - i - 1];
-
-  interp = firinterp_crcf_create(resampler_factor, h, h_len);
-
-  decim = new firdecim_crcf[consumers];
-  for(int i = 0; i < consumers;i++){
-    decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
-  }
+  //resetResampler();
 }
 
 // Destructor
@@ -460,25 +419,7 @@ void *PHY_tx_worker(void *_arg)
             exit(0);
           }
         }
-      } /*else if(status == 1){
-        printf("Changing offset: %0x\n", buffer[0]);
-        if(buffer[0] == 0x00){
-          PHY->tx_nco_offset  = 1*PHY->nco_offset;
-          //printf("Changing offset -0 \n");
-        }
-        if(buffer[0]==0x01){
-          PHY->tx_nco_offset  = -1*PHY->nco_offset;
-          //printf("Changing offset -1 \n");
-        }
-        if(buffer[0]==0x02){
-          PHY->tx_nco_offset  = 3*PHY->nco_offset;
-          //printf("Changing offset -2 \n");
-        }
-        if(buffer[0]==0x03){
-          PHY->tx_nco_offset  = -3*PHY->nco_offset;
-          //printf("Changing offset -3 \n");
-        }
-      }*/
+      } 
       else
       {
         char control = buffer[status-1];
@@ -489,21 +430,13 @@ void *PHY_tx_worker(void *_arg)
         } else if(control== PHY->tx_side){
 
         } else{
-          PHY->changeTxChannel();
+          //PHY->changeTxChannel();
         }
         payload_len = status-1;
         //  strncpy((char*)payload, buffer, payload_len);
         memcpy(payload, (unsigned char *)buffer, payload_len);
         PHY->tx_frame_counter++;
-        // time_t t = time(0);
-        // struct tm *now = localtime(&t);
-        // log << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
-        /*  for (int i = 0; i < 6; i++)
-        {
-          printf("%02x:", (unsigned char)payload[i]);
-        }
-        printf("\n");
-        */
+
         pthread_mutex_lock(&PHY->tx_params_mutex);
         if (PHY->update_tx_flag)
         {
@@ -513,7 +446,7 @@ void *PHY_tx_worker(void *_arg)
     
         PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
         if(PHY->route_resend){
-          PHY->changeTxChannel();
+          //PHY->changeTxChannel();
           PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
           PHY->route_resend = false;
           printf("Current tx_freq: %f\n", PHY->get_tx_freq());
@@ -596,7 +529,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   
   nco_crcf q = nco_crcf_create(LIQUID_NCO);
   nco_crcf_set_frequency(q, 2*M_PI*tx_nco_offset/tx_params.tx_rate);
-  printf("offset: %f \n",tx_nco_offset);
+  //printf("offset: %f \n",tx_nco_offset);
   bool header = true;
   while (!last_symbol)
   {
@@ -611,7 +544,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     }
 
     //ofdmflexframesync_execute(fs, &usrp_buffer[0], usrp_buffer.size());
-
+    /*
     if (last_symbol)
     {
       for (; i < num_symbols; i++)
@@ -631,7 +564,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     nco_crcf_mix_block_up(q, z, z, usrp_buffer.size());
     
     memcpy(&usrp_buffer[0], z, usrp_buffer.size() * sizeof(std::complex<float>));
-
+    */
     // send samples to the device
     usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
@@ -641,12 +574,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
       test_loop->transmit(usrp_buffer, usrp_buffer.size());
     }
     
-    metadata_tx.start_of_burst = false; // never SOB when continuou
+    //metadata_tx.start_of_burst = false; // never SOB when continuou
     
     if(!last_symbol){
       usrp_buffer.resize(fgbuffer_len);
     }
-   
+    
   } 
   /*
   if(loop){
@@ -1094,7 +1027,7 @@ void PhyLayer::update_rx_params()
   {
     usrp_rx->set_rx_gain(rx_params.rx_gain_uhd);
     usrp_rx->set_rx_rate(rx_params.rx_rate);
-
+    //usrp_rx->set_master_clock_rate(4*rx_params.rx_rate);
     uhd::tune_request_t tune1(rx_params.rx_freq);
     tune1.rf_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
     tune1.dsp_freq_policy = uhd::tune_request_t::POLICY_MANUAL;
@@ -1122,6 +1055,8 @@ void PhyLayer::update_rx_params()
         rx_params.numSubcarriers, rx_params.cp_len, rx_params.taper_len,
         rx_params.subcarrierAlloc, rxCallback, (void *)&threadInfo[0]);
     threadInfo[0].fs_thread = &fs;
+    //setRxChannels(consumers);
+    
     for(int i = 0; i < consumers;i++){
       ofdmflexframesync_destroy(fsyncs[i]);
       fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
@@ -1325,6 +1260,7 @@ void *analysis(void *_arg){
   }
   delete[]x;
   nco_crcf_destroy(q);
+  firdecim_crcf_destroy(PHY->decim[consumer]);
 
 }
 
@@ -1648,4 +1584,94 @@ void PhyLayer::changeTxChannel(){
   pthread_mutex_unlock(&tx_params_mutex);
   // sleep and wait for the usrp to change frequency
   usleep(20000);
+}
+
+void PhyLayer::resetResampler(){
+
+  h_len = 2 * resampler_factor * filter_delay + 1;
+  num_symbols = fgbuffer_len + 2 * filter_delay;
+
+  num_samples = resampler_factor * num_symbols;
+  delete h;
+  delete g;
+  h = new float[h_len];
+  g = new float[h_len];
+
+  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
+
+  for (int i = 0; i < h_len; i++)
+    g[i] = h[h_len - i - 1];
+
+  interp = firinterp_crcf_create(resampler_factor, h, h_len);
+  delete decim;
+  decim = new firdecim_crcf[consumers];
+  for(int i = 0; i < consumers;i++){
+    decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
+  }
+  
+}
+void PhyLayer::setRxChannels(double rx_rate,int channels){
+
+  if(channels > 0){
+    this->consumers = channels;
+    resampler_factor = channels;
+    if(channels%2 == 0){
+      nco_offset = (rx_rate/2)/channels;
+    } else{
+      nco_offset = (rx_rate/2)/(channels+1);
+    }
+    resetRxChannels();
+  }
+}
+
+void PhyLayer::resetRxChannels(){
+  pthread_mutex_lock(&rx_mutex);
+  delete recvQueue;
+  usleep(1000); // needed just in case all threads do not stop
+  delete analysisThreads;
+  delete threadInfo;
+  delete fsyncs;
+
+  resetResampler();
+
+  int q_len = 500;
+  recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
+  analysisThreads = new pthread_t[consumers];
+  threadInfo = new ThreadInfo[consumers];
+  fsyncs = new ofdmflexframesync[consumers];
+  int count = 0;
+  for(int i = 0; i < consumers;i++){
+    fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
+                                rx_params.taper_len, rx_params.subcarrierAlloc,
+                                rxCallback, (void *)&threadInfo[i]);
+    threadInfo[i].fs_thread = &fsyncs[i];
+    threadInfo[i].PHY = this;
+    threadInfo[i].consumer = i;
+    if(consumers%2 == 0){
+      if(i%2 == 0){
+        count++;
+        threadInfo[i].nco_offset = (2*count-1)*nco_offset;
+      } else{
+        threadInfo[i].nco_offset = -1*(2*count-1)*nco_offset;
+      }
+    } else{
+      if(i == 0){
+        threadInfo[i].nco_offset = 0;
+      } else{
+        if(i%2 == 0){
+          threadInfo[i].nco_offset = 2*count*nco_offset;
+        } else{
+          count++;
+          threadInfo[i].nco_offset = -2*count*nco_offset;
+        }
+      }
+    }
+
+    //threadInfo[i].nco_offset = 2*nco_offset;
+    int status = pthread_create(&analysisThreads[i],NULL,analysis,(void *) &threadInfo[i]);
+    if(status < 0){
+      perror("Failed to create threads");
+    }
+  }
+  pthread_mutex_unlock(&rx_mutex);
 }

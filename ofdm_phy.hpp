@@ -671,6 +671,7 @@ public:
   bool transmitting = false;
   
   void set_nco_offset(int consumer,float nco_offset);
+  void setRxChannels(double rx_rate,int channels);
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -771,7 +772,7 @@ private:
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
   bool loop = false;
-  bool random_data = false;
+  bool random_data = true;
   float random_offset = 3*nco_offset;
 
   friend void *analysis(void *_arg);
@@ -796,5 +797,6 @@ private:
   char tx_side = 0x00;
 
   void changeTxChannel();
-  
+  void resetResampler();
+  void resetRxChannels();
 };

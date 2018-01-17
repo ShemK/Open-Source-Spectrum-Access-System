@@ -21,6 +21,7 @@
 #include "timer.h"
 #include "ofdm_phy.hpp"
 #include "radio.hpp"
+#include "config_reader.hpp"
 
 #define DEBUG 0
 #if DEBUG == 1
@@ -68,6 +69,16 @@ int main(int argc, char **argv)
 
   PHY->usrp_rx->set_time_now(t0, 0);
 
+  ConfigReader myConfig("network.cfg");
+  if(myConfig.get_status() != -1){
+    np.rx_freq = myConfig.rx_freq;
+    np.rx_rate = myConfig.rx_rate;
+    PHY->setRxChannels(np.rx_rate,myConfig.channels);
+    printf("RX FREQ: %f\n",np.rx_freq);
+    np.tx_freq = myConfig.tx_freq;
+    printf("TX FREQ: %f\n",np.tx_freq);
+    np.tx_rate = myConfig.tx_rate;
+  }
   Initialize_PHY(&np, (void *)PHY, argc, argv);
 
   // initialize sig_terminate flag and check return from socket call
@@ -95,16 +106,16 @@ void initialize_node_parameters(struct node_parameters *np)
  // strncpy(np->my_ip, "10.0.0.2", sizeof(np->my_ip));
  // strncpy(np->target_ip, "10.0.0.3", sizeof(np->target_ip));
   // initial USRP settings
-  np->rx_freq = 454e6;
+  np->rx_freq = 458e6;
   np->rx_rate = 4e6;
   np->rx_gain = 20.0;
 
-  np->tx_freq = 450e6;
-  np->tx_rate = 4e6;
-  np->tx_gain = 100.0;
+  np->tx_freq = 460.5e6;
+  np->tx_rate = 2e6;
+  np->tx_gain = 80.0;
 
   // initial liquid OFDM settings
-  np->tx_gain_soft = -12;
+  np->tx_gain_soft = -6;
   np->tx_modulation = LIQUID_MODEM_QAM8;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_CONV_V27;
@@ -176,3 +187,6 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->set_tx_fec0(np->tx_fec0);
   PHY->set_tx_fec1(np->tx_fec1);
 }
+
+
+// NOTE: Issues with the usrp creating out of band interference
