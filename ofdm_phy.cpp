@@ -545,7 +545,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   usrp_tx->get_device()->send(&usrp_buffer.front(), filter_delay,
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
-  //ofdmflexframegen_print(fg);
+  ofdmflexframegen_print(fg);
   int ofdm_symbols = 0;
   /*
   float fc=0.44f;         // filter cutoff frequency
@@ -622,11 +622,17 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
-  
+  /*
   usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                               metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
   
+  memset(&usrp_buffer.front(),0,fgbuffer_len);
+
+  usrp_tx->get_device()->send(&usrp_buffer.front(), filter_delay,
+                                metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
+                                uhd::device::SEND_MODE_FULL_BUFF);
+  */                              
   nco_crcf_destroy(q);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;

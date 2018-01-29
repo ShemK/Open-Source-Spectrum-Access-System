@@ -116,16 +116,16 @@ void initialize_node_parameters(struct node_parameters *np)
   np->tx_gain = 80.0;
 
   // initial liquid OFDM settings
-  np->tx_gain_soft = -6;
-  np->tx_modulation = LIQUID_MODEM_QAM8;
+  np->tx_gain_soft = -4;
+  np->tx_modulation = LIQUID_MODEM_QAM32;
   np->tx_crc = LIQUID_CRC_32;
-  np->tx_fec0 = LIQUID_FEC_CONV_V27;
+  np->tx_fec0 = LIQUID_FEC_RS_M8;
   np->tx_fec1 = LIQUID_FEC_RS_M8;
   np->tx_cp_len = 32;
   np->rx_cp_len = 32;
   np->tx_taper_len = 4;
 
-  int subcarriers = 1024;
+  int subcarriers = 512;
   np->tx_subcarriers = subcarriers;
   np->tx_guard_subcarriers = 4;
   np->tx_central_nulls = 6;
@@ -206,7 +206,7 @@ char *highPassAlloc(struct node_parameters *np, int type){
   }
 
   // insert pilots
-  int no_p = np->tx_subcarriers/16;
+  int no_p = np->tx_subcarriers/4;
   int p = np->tx_subcarriers/(2*no_p);
   for(int i = 0; i < no_p/2; i++){
     alloc[i*p] = OFDMFRAME_SCTYPE_PILOT;
