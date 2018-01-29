@@ -1,5 +1,5 @@
 #include "config_reader.hpp"
-
+#include <cmath>
 ConfigReader::ConfigReader(const char *file){
   config_t cfg, *cf;
   cf = &cfg;
@@ -60,14 +60,22 @@ ConfigReader::ConfigReader(const char *file){
             return;
         } 
         
-        if(node_id <= channels){
+        if(node_id <= channels*2){
             tx_rate = rx_rate/channels;
+            //tx_rate = rx_rate;
             if(node_id%2 == 0){
-                rx_freq = rx_freq + (node_id/2)*tx_rate;
-                tx_freq = rx_freq - (rx_rate/2 + tx_rate/2);
+                //rx_freq = rx_freq + (node_id/2)*tx_rate;
+                //tx_freq = rx_freq - (rx_rate/2 + tx_rate/2);
+                rx_freq = rx_freq + rx_rate;
+                tx_freq = rx_freq - (rx_rate + rx_rate/2) + (node_id-1)*tx_rate/2;
+                
+                //tx_freq = rx_freq - rx_rate;
             } else{
-                rx_freq = rx_freq - (((node_id + 1)/2) - 1)*tx_rate;
-                tx_freq = rx_freq + (rx_rate/2 + tx_rate/2);
+                //rx_freq = rx_freq - (((node_id + 1)/2) - 1)*tx_rate;
+                //tx_freq = rx_freq + (rx_rate/2 + tx_rate/2);
+                rx_freq = rx_freq;// + 0*rx_rate/2;
+                tx_freq = rx_freq + (rx_rate + rx_rate/2) - node_id*tx_rate/2;
+                //tx_freq = rx_freq + rx_rate;
             }
         }
     } 

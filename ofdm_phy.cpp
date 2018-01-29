@@ -31,7 +31,7 @@
 #include <ctime>
 #include <fftw3.h>
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG == 1
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -138,7 +138,7 @@ PhyLayer::PhyLayer()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 32;      // filter delay
+  filter_delay = 8;      // filter delay
   beta = 0.01f; // filter excess bandwidth
 
   resetRxChannels();
@@ -363,7 +363,7 @@ void *PHY_tx_worker(void *_arg)
     // variables to keep track of number of frames and max tx time if needeed
     PHY->tx_frame_counter = 0;
     timer_tic(PHY->tx_timer);
-
+    struct mq_attr attr_tx;
     // run transmitter
     bool tx_continue = true;
     while (tx_continue)
@@ -391,21 +391,27 @@ void *PHY_tx_worker(void *_arg)
       /*
       // getting information from the mac
       */
+      struct timespec timeout;
+      clock_gettime(CLOCK_REALTIME, &timeout);
 
-      timespec timeout;
-      timeout.tv_sec = time(NULL);
-      timeout.tv_nsec = 100;
-
+      timeout.tv_nsec = timeout.tv_nsec + 5 * 1e6;
+      if (timeout.tv_nsec > 1e9)
+      {
+        timeout.tv_sec = timeout.tv_sec + 1;
+        timeout.tv_nsec = timeout.tv_nsec - 1e9;
+      }
 
       int status = 0;
       if(PHY->random_data){
-        memset(buffer,'a',1000);
         status = 1000;
+        memset(buffer,'a',status);
+        
         PHY->tx_nco_offset = PHY->random_offset;
         buffer[status-1] = PHY->tx_side;
-        usleep(1000);
+        usleep(1000000);
       } else{
         status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
+        mq_getattr(PHY->phy_tx_queue,&attr_tx);
         PHY->tx_nco_offset = PHY->random_offset;
       }
 
@@ -422,10 +428,11 @@ void *PHY_tx_worker(void *_arg)
       } 
       else
       {
+        printf("Current Queue Len: %lu \n",attr_tx.mq_curmsgs);
         char control = buffer[status-1];
-        printf("MAC Control: %x\n",control);
+        dprintf("MAC Control: %x\n",control);
         if(control == 0x03){
-          printf("Control Frame\n");
+          dprintf("Control Frame\n");
           //PHY->route_resend = true;
         } else if(control== PHY->tx_side){
 
@@ -490,11 +497,13 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   pthread_mutex_unlock(&tx_rx_mutex);
   // vector buffer to send data to device
   std::vector<std::complex<float>> usrp_buffer(fgbuffer_len);
-
+  memset(&usrp_buffer.front(),0,fgbuffer_len);
   if(tx_params.tx_freq > rx_params.rx_freq){
     tx_header[3] = 0x00;
+    tx_nco_offset = -3*nco_offset;
   } else{
     tx_header[3] = 0x01; 
+    tx_nco_offset = 3*nco_offset;
   }
 
   pthread_mutex_lock(&tx_params_mutex);
@@ -517,9 +526,10 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // assemble frame
   ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
   // dprintf("Transmitting Frame!!!!\n");
-  printf("-----------------Transmitting--------------\n");
-  printf("Frame_num transmitted: %d with %d bytes at %lus and %luus \n",
+  dprintf("-----------------Transmitting--------------\n");
+  dprintf("Frame_num transmitted: %d with %d bytes at %lus and %luus \n",
          frame_num - 1, _payload_len, ts.tv_sec, ts.tv_usec);
+  //dprintf("FG BUFFER LEN: %d\n",fgbuffer_len);
   // generate a single OFDM frame
   bool last_symbol = false;
   unsigned int i;
@@ -529,20 +539,39 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   
   nco_crcf q = nco_crcf_create(LIQUID_NCO);
   nco_crcf_set_frequency(q, 2*M_PI*tx_nco_offset/tx_params.tx_rate);
-  //printf("offset: %f \n",tx_nco_offset);
+  dprintf("offset: %f \n",tx_nco_offset);
   bool header = true;
+  // send initial zeros for the decimation filter filter_delay
+  usrp_tx->get_device()->send(&usrp_buffer.front(), filter_delay,
+                                metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
+                                uhd::device::SEND_MODE_FULL_BUFF);
+  //ofdmflexframegen_print(fg);
+  int ofdm_symbols = 0;
+  /*
+  float fc=0.44f;         // filter cutoff frequency
+  float ft=0.02f;         // filter transition
+  float As=100.0f;         // stop-band attenuation [dB]
+  float mu=0.0f;          // fractional timing offset
+
+    // estimate required filter length and generate filter
+  unsigned int h_len = estimate_req_filter_len(ft,As);
+  float hf[h_len];
+  printf("Filter Length: %d\n",h_len);
+  //liquid_firdes_kaiser(h_len,fc,As,mu,hf);
+  //firfilt_crcf tx_filt = firfilt_crcf_create(hf,h_len); 
+  */
   while (!last_symbol)
   {
 
     // generate symbol
     last_symbol = ofdmflexframegen_write(fg, fgbuffer, fgbuffer_len);
-
+    
     // copy symbol and apply gain
     for (i = 0; i < fgbuffer_len; i++)
     {
       usrp_buffer[i] = fgbuffer[i] * tx_gain_soft_lin;
     }
-
+    //firfilt_crcf_execute_block(tx_filt, &usrp_buffer[0], usrp_buffer.size(), &usrp_buffer[0]);
     //ofdmflexframesync_execute(fs, &usrp_buffer[0], usrp_buffer.size());
     /*
     if (last_symbol)
@@ -577,10 +606,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     //metadata_tx.start_of_burst = false; // never SOB when continuou
     
     if(!last_symbol){
-      usrp_buffer.resize(fgbuffer_len);
+      //usrp_buffer.resize(fgbuffer_len);
     }
-    
+    ofdm_symbols++;
   } 
+  //firfilt_crcf_destroy(tx_filt);
+  printf("OFDM SYMBOLS SENT: %d\n",ofdm_symbols);
   /*
   if(loop){
     memset(&usrp_buffer[0],0,100*sizeof(std::complex<float>));
@@ -591,17 +622,19 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   // send a few extra samples to the device
   // NOTE: this seems necessary to preserve last OFDM symbol in
   //       frame from corruption
+  
   usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                               metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
-
+  
   nco_crcf_destroy(q);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
-
+  
   usrp_tx->get_device()->send("", 0, metadata_tx,
                               uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
+  
   pthread_mutex_unlock(&tx_mutex);
 
   pthread_mutex_lock(&tx_rx_mutex);
@@ -1201,8 +1234,8 @@ void *PHY_rx_worker(void *_arg)
   } // while rx thread is running
   
   free(PHY->rx_buffer);
-  free(buffer_F)
-      dprintf("rx_worker exiting thread\n");
+  free(buffer_F);
+  dprintf("rx_worker exiting thread\n");
   pthread_exit(NULL);
 }
 
@@ -1257,6 +1290,17 @@ void *analysis(void *_arg){
     int recv_symbols = num_rx_samps / PHY->resampler_factor;
     firdecim_crcf_execute_block(PHY->decim[consumer], x, recv_symbols, x);
     ofdmflexframesync_execute(PHY->fsyncs[consumer], x, recv_symbols);
+    float rssi = ofdmflexframesync_get_rssi(PHY->fsyncs[consumer]);
+    if(rssi > -30){
+      //printf(GRN"RSSI: %f\n" RESET ,rssi);
+    }
+    
+    if(threadInfo->packet_found){
+      threadInfo->packet_found = false;
+      //nco_crcf_destroy(q);
+      //q = nco_crcf_create(LIQUID_NCO);
+      //nco_crcf_set_frequency(q, 2*M_PI*nco_offset/rx_rate);
+    }
   }
   delete[]x;
   nco_crcf_destroy(q);
@@ -1272,17 +1316,18 @@ int rxCallback(unsigned char *_header, int _header_valid,
   // typecast user argument as PHY object
   PhyLayer::ThreadInfo *threadInfo = (PhyLayer::ThreadInfo * )_userdata;
   PhyLayer *PHY = threadInfo->PHY;
+  threadInfo->packet_found = true;
   int consumer = threadInfo->consumer;
   float freq_offset = threadInfo->nco_offset;
   float rssi = ofdmflexframesync_get_rssi(*threadInfo->fs_thread);
   // typecast user argument as PHY object
   //PhyLayer *PHY = (PhyLayer *)_userdata;
-  printf("\n---------------------Received at thread %d with offset %f and rssi %f---------------\n",consumer,freq_offset,rssi);
+  dprintf("\n---------------------Received at thread %d with offset %f and rssi %f---------------\n",consumer,freq_offset,rssi);
   unsigned int frame_num = ((_header[0] & 0x3F) << 8 | _header[1]);
-  printf("Frame_num received: %d and %x\n", frame_num,_header[3]);
+  dprintf("Frame_num received: %d and %x\n", frame_num,_header[3]);
   struct timeval ts;
   gettimeofday(&ts, NULL);
-  printf("Received %d bytes at %lus and %luus\n", _payload_len, ts.tv_sec, ts.tv_usec);
+  dprintf("Received %d bytes at %lus and %luus\n", _payload_len, ts.tv_sec, ts.tv_usec);
   if (_header_valid == 1)
   {
     if (_payload_valid == 1)
@@ -1297,21 +1342,21 @@ int rxCallback(unsigned char *_header, int _header_valid,
       if (status == -1)
       {
         perror("Queue is full\n");
-        printf("mq_send failure\n");
+        dprintf("mq_send failure\n");
       }
       else
       {
-        printf("mq_send to mac successful\n");
+        dprintf(GRN "mq_send to mac successful\n" RESET);
       }
     }
     else
     {
-      printf("Invalid Payload\n");
+      dprintf( RED "Invalid Payload\n" RESET);
     }
   }
   else
   {
-    printf("Invalid Header\n");
+     dprintf(YEL "Invalid Header\n" RESET);
   }
 
   return 0;
@@ -1563,13 +1608,13 @@ void PhyLayer::changeTxChannel(){
   // sleep and wait for any prior tx to finish
   usleep(20000);
   if(tx_side == 0x00){
-    printf("Changing to Upper Channels\n");
+    dprintf("Changing to Upper Channels\n");
     set_tx_freq(tx_params.tx_freq + 2*tx_params.tx_rate);
     random_offset = -3*nco_offset;
     tx_nco_offset = random_offset;
     tx_side = 0x01;
   } else{
-    printf("Changing to Lower Channels\n");
+    dprintf("Changing to Lower Channels\n");
     set_tx_freq(tx_params.tx_freq - 2*tx_params.tx_rate);
     random_offset = 3*nco_offset;
     tx_nco_offset = random_offset;

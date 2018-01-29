@@ -5,8 +5,10 @@
 #include <stdexcept>
 #include <string>
 #include <array>
+#include "config_reader.hpp"
 
-#define DEBUG 3
+
+#define DEBUG 0
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -25,6 +27,21 @@ MAC::MAC()
   dprintf("Bringing up tun interface\n");
   dprintf("Connecting to tun interface\n");
   sprintf(systemCMD, "sudo ip link set dev %s up", tun_name);
+  system(systemCMD);
+
+  sprintf(systemCMD, "sudo modprobe batman-adv");
+  system(systemCMD);
+  sprintf(systemCMD, "sudo batctl if add mac_interface");
+  system(systemCMD);
+
+  int node_id = 200;
+
+  ConfigReader myConfig("network.cfg");
+  if(myConfig.get_status() != -1){
+    node_id = myConfig.node_id;
+  }
+
+  sprintf(systemCMD, "sudo ifconfig bat0 192.168.1.%d",node_id);
   system(systemCMD);
 
   memset(prev_packet, 0, MAX_BUF);
@@ -417,9 +434,13 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
 
     struct timespec timeout;
     clock_gettime(CLOCK_REALTIME, &timeout);
-    last_tx = timeout;
     timeout.tv_sec = timeout.tv_sec + 1;
-    timeout.tv_nsec = timeout.tv_nsec;
+    timeout.tv_nsec = timeout.tv_nsec + 5 * 1e6;
+    if (timeout.tv_nsec > 1e9)
+    {
+      timeout.tv_sec = timeout.tv_sec + 1;
+      timeout.tv_nsec = timeout.tv_nsec - 1e9;
+    }
     int status = 0;
     
     if(ip_type == 0){
@@ -429,6 +450,8 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
     } else if(ip_type == 3){
       frame[frame_len] = 0x03;
     }
+
+    
     printf("MAC CONTROL: %x\n",frame[frame_len]);
     //int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
     status = mq_timedsend(phy_tx_queue, frame, frame_len+1, 0, &timeout);

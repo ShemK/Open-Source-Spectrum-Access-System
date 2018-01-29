@@ -33,7 +33,7 @@
 
 typedef unsigned short uint16;
 
-#define MAX_BUF 2000 // maximum buffer tx frame
+#define MAX_BUF 3000 // maximum buffer tx frame
 #define MTU 1500
 #define CONTROL_FRAME_LEN 7
 #define ETH_HEADER_LEN 18 //14 + 4 for ethernet
