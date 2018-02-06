@@ -3,7 +3,10 @@ import socket
 import struct
 import fcntl
 import os
-
+'''
+    Object used to read the configuration files to create dictionaries
+    Object can also write a new configuration file
+'''
 class ConfigEditor(object):
     #   initialize ConfigEditor
     def __init__(self):
@@ -61,6 +64,7 @@ class ConfigEditor(object):
 
 
 
+# Test
 def main():
     configEditor = ConfigEditor()
     my_ip_address = configEditor.get_ip_address('eth0')
