@@ -19,6 +19,7 @@
 #include "loop.hpp"
 #include <sys/time.h>
 #include "BufferQ.h"
+#include <fftw3.h>
 
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
@@ -682,6 +683,7 @@ public:
   
   void set_nco_offset(int consumer,float nco_offset);
   void setRxChannels(double rx_rate,int channels);
+  char *createSubcarrierLayout(int num_subcarriers);
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -789,7 +791,7 @@ private:
 
   BufferQ<std::complex<float>> *recvQueue;
   pthread_t *analysisThreads;
-
+  pthread_mutex_t *analysisMutex;
   int consumers;
 
   struct ThreadInfo{
@@ -807,7 +809,21 @@ private:
 
   char tx_side = 0x00;
 
+  int split_num = 0;
   void changeTxChannel();
   void resetResampler();
   void resetRxChannels();
+  void adjustRxFreq(float freq_offset, int consumer);
+
+  float phase_shift;
+
+
+  struct SubcarrierInfo{
+    float guard_nulls = float(1)/32; // fraction of nulls on either edge
+    float dc_nulls = float(1)/32; // fraction of nulls at the center
+    float pilots = float(1)/4; // fraction of pilots
+  };
+
+  SubcarrierInfo subcarrierInfo;
+
 };

@@ -36,8 +36,7 @@ bool start_msg_received = false;
 void initialize_node_parameters(struct node_parameters *np);
 void Initialize_PHY(struct node_parameters *np, void *PHY_p,
                     int argc, char **argv);
-char *highPassAlloc(struct node_parameters *np, int type = 0);
-char *lowPassAlloc(struct node_parameters *np);
+char *highPassAlloc(PhyLayer *PHY, int num_subcarriers);
 void terminate(int signum)
 {
   printf("\nTerminating all Threads\n");
@@ -79,6 +78,9 @@ int main(int argc, char **argv)
     np.tx_freq = myConfig.tx_freq;
     printf("TX FREQ: %f\n",np.tx_freq);
     np.tx_rate = myConfig.tx_rate;
+    if(np.tx_freq > 5e9){
+      //np.tx_freq = np.tx_freq + 7e3;
+    }
   }
   Initialize_PHY(&np, (void *)PHY, argc, argv);
 
@@ -109,23 +111,23 @@ void initialize_node_parameters(struct node_parameters *np)
   // initial USRP settings
   np->rx_freq = 458e6;
   np->rx_rate = 4e6;
-  np->rx_gain = 20.0;
+  np->rx_gain = 60.0;
 
-  np->tx_freq = 462.5e6;
+  np->tx_freq = 5800.500e6;
   np->tx_rate = 4e6;
-  np->tx_gain = 80.0;
+  np->tx_gain = 90.0;
 
   // initial liquid OFDM settings
   np->tx_gain_soft = -4;
-  np->tx_modulation = LIQUID_MODEM_QAM32;
+  np->tx_modulation = LIQUID_MODEM_QAM8;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_RS_M8;
-  np->tx_fec1 = LIQUID_FEC_RS_M8;
-  np->tx_cp_len = 32;
-  np->rx_cp_len = 32;
+  np->tx_fec1 = LIQUID_FEC_CONV_V27;
+  np->tx_cp_len = 16;
+  np->rx_cp_len = 16;
   np->tx_taper_len = 4;
 
-  int subcarriers = 512;
+  int subcarriers = 64;
   np->tx_subcarriers = subcarriers;
   np->tx_guard_subcarriers = 4;
   np->tx_central_nulls = 6;
@@ -142,7 +144,7 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
 {
 
 
-  char *alloc = highPassAlloc(np);
+  
   PhyLayer *PHY = (PhyLayer *)PHY_p;
   //  PHY->set_ip(np->my_ip);
   PHY->set_rx_freq(np->rx_freq);
@@ -165,14 +167,12 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->set_tx_fec0(np->tx_fec0);
   PHY->set_tx_fec1(np->tx_fec1);
 
+  char *alloc = highPassAlloc(PHY,np->tx_subcarriers);
 
-  if(np->tx_freq >= np->rx_freq ){
-    PHY->set_tx_subcarrier_alloc(highPassAlloc(np));
-    PHY->set_rx_subcarrier_alloc(highPassAlloc(np,1));
-  } else{
-    PHY->set_tx_subcarrier_alloc(highPassAlloc(np,1));
-    PHY->set_rx_subcarrier_alloc(highPassAlloc(np));    
-  }
+  PHY->set_tx_subcarrier_alloc(alloc);
+  PHY->set_rx_subcarrier_alloc(alloc);
+
+  delete alloc;
 
   //PHY->set_rx_subcarrier_alloc(alloc);
   //PHY->set_tx_subcarrier_alloc(alloc);
@@ -180,46 +180,7 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
 
 // type == 0 -> high pass
 // otherwise low pass
-char *highPassAlloc(struct node_parameters *np, int type){
-  char *alloc = new char[np->tx_subcarriers];
-  memset(alloc,OFDMFRAME_SCTYPE_NULL,np->tx_subcarriers);
-
-  
-  int count = np->tx_subcarriers/2;
-  int less_nulls = 16;
-  int more_nulls = 16;
-  int q = more_nulls;
-  int r = less_nulls; 
-  
-  if(type != 0){
-    r = more_nulls;
-    q = less_nulls;
-  }
-  // LOWER BAND
-  int s = 0;
-  for(int i = 1; i <= (np->tx_subcarriers - np->tx_subcarriers/q)/2;i++){
-      alloc[np->tx_subcarriers-s-i] = OFDMFRAME_SCTYPE_DATA;
-  }
-  // HIGHER BAND
-  for(int i = 0; i < (np->tx_subcarriers - np->tx_subcarriers/r)/2;i++){
-      alloc[s+i] = OFDMFRAME_SCTYPE_DATA;
-  }
-
-  // insert pilots
-  int no_p = np->tx_subcarriers/4;
-  int p = np->tx_subcarriers/(2*no_p);
-  for(int i = 0; i < no_p/2; i++){
-    alloc[i*p] = OFDMFRAME_SCTYPE_PILOT;
-    alloc[np->tx_subcarriers-1-i*p] = OFDMFRAME_SCTYPE_PILOT;
-  }  
-  
-  // insert DC NULLS
-  count = np->tx_subcarriers/32;
-  for(int i = 0; i < count; i++){
-    alloc[i] = OFDMFRAME_SCTYPE_NULL;
-    alloc[np->tx_subcarriers-1-i] = OFDMFRAME_SCTYPE_NULL;
-  }
-
-  return alloc;
+char *highPassAlloc(PhyLayer *PHY, int num_subcarriers){
+  return PHY->createSubcarrierLayout(num_subcarriers);
 }
 // NOTE: Issues with the usrp creating out of band interference

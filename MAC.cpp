@@ -434,7 +434,7 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
 
     struct timespec timeout;
     clock_gettime(CLOCK_REALTIME, &timeout);
-    timeout.tv_sec = timeout.tv_sec + 1;
+    timeout.tv_sec = timeout.tv_sec + 2;
     timeout.tv_nsec = timeout.tv_nsec + 5 * 1e6;
     if (timeout.tv_nsec > 1e9)
     {
@@ -465,9 +465,9 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
       {
         perror(RED "mq_send failure\n" RESET);
       }
+    } else{
+      ip_tx_queue.pop();
     }
- 
-    ip_tx_queue.pop();
     pthread_mutex_unlock(&tx_mutex);
   }
   else

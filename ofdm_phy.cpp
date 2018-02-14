@@ -138,7 +138,7 @@ PhyLayer::PhyLayer()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 8;      // filter delay
+  filter_delay = 32;      // filter delay
   beta = 0.01f; // filter excess bandwidth
 
   resetRxChannels();
@@ -334,9 +334,10 @@ void *PHY_tx_worker(void *_arg)
   PhyLayer *PHY = (PhyLayer *)_arg;
 
   // set up transmit buffer
-  int buffer_len = MAX_BUF;
-  char buffer[MAX_BUF];
-  unsigned char *payload = new unsigned char[MAX_BUF];
+  int max_buffer = 5000;
+  int buffer_len = max_buffer;
+  char buffer[max_buffer];
+  unsigned char *payload = new unsigned char[max_buffer];
   unsigned int payload_len;
   int nread;
   std::ofstream log("yo.txt");
@@ -368,13 +369,13 @@ void *PHY_tx_worker(void *_arg)
     bool tx_continue = true;
     while (tx_continue)
     {
+    
       pthread_mutex_lock(&PHY->tx_params_mutex);
       if (PHY->update_tx_flag)
       {
         PHY->update_tx_params();
       }
       pthread_mutex_unlock(&PHY->tx_params_mutex);
-
 
       if(PHY->tx_params.tx_freq > PHY->rx_params.rx_freq){
         PHY->tx_side = 0x01;
@@ -403,16 +404,24 @@ void *PHY_tx_worker(void *_arg)
 
       int status = 0;
       if(PHY->random_data){
-        status = 1000;
-        memset(buffer,'a',status);
+        status = 50;
+        memset(buffer,0xFF,status);
         
         PHY->tx_nco_offset = PHY->random_offset;
         buffer[status-1] = PHY->tx_side;
+        //PHY->split_num = 1400;
         usleep(1000000);
       } else{
         status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
         mq_getattr(PHY->phy_tx_queue,&attr_tx);
         PHY->tx_nco_offset = PHY->random_offset;
+        if(attr_tx.mq_curmsgs >=2){
+          PHY->split_num = status-1;
+          timeout.tv_sec = timeout.tv_sec + 1;
+          int m = mq_timedreceive(PHY->phy_tx_queue, buffer+PHY->split_num, buffer_len - PHY->split_num, 0, &timeout);
+          printf("M: %d\n",m);
+          status  = PHY->split_num + m;
+        }
       }
 
       if (status == -1)
@@ -511,8 +520,12 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   tx_header[0] = ((frame_num >> 8) & 0x3f);
   tx_header[0] |= (frame_type << 6);
   tx_header[1] = (frame_num)&0xff;
+  tx_header[4] = ((split_num >> 8) & 0x3f);
+  tx_header[5] = (split_num)&0xff;
+  split_num = 0;
   frame_num++;
   pthread_mutex_unlock(&tx_params_mutex);
+
 
   // set up the metadta flags
   metadata_tx.start_of_burst = true; // never SOB when continuous
@@ -542,7 +555,10 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   dprintf("offset: %f \n",tx_nco_offset);
   bool header = true;
   // send initial zeros for the decimation filter filter_delay
-  usrp_tx->get_device()->send(&usrp_buffer.front(), filter_delay,
+  std::vector<std::complex<float>> delay_vec(2*resampler_factor*filter_delay+1);
+  memset(&delay_vec.front(),0,delay_vec.size());
+  // send initial zeros for the decimation filter filter_delay
+  usrp_tx->get_device()->send(&delay_vec.front(), delay_vec.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
   ofdmflexframegen_print(fg);
@@ -560,6 +576,8 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   //liquid_firdes_kaiser(h_len,fc,As,mu,hf);
   //firfilt_crcf tx_filt = firfilt_crcf_create(hf,h_len); 
   */
+
+
   while (!last_symbol)
   {
 
@@ -593,7 +611,9 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     nco_crcf_mix_block_up(q, z, z, usrp_buffer.size());
     
     memcpy(&usrp_buffer[0], z, usrp_buffer.size() * sizeof(std::complex<float>));
+    
     */
+
     // send samples to the device
     usrp_tx->get_device()->send(&usrp_buffer.front(), usrp_buffer.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
@@ -628,11 +648,17 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
                               uhd::device::SEND_MODE_FULL_BUFF);
   
   memset(&usrp_buffer.front(),0,fgbuffer_len);
-
-  usrp_tx->get_device()->send(&usrp_buffer.front(), filter_delay,
+ */
+  usrp_tx->get_device()->send(&usrp_buffer.front(),usrp_buffer.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
-  */                              
+                      
+
+  /*
+  usrp_tx->get_device()->send(&delay_vec.front(), delay_vec.size(),
+                                metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
+                                uhd::device::SEND_MODE_FULL_BUFF);
+  */
   nco_crcf_destroy(q);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
@@ -1083,6 +1109,7 @@ void PhyLayer::update_rx_params()
 
     usrp_rx->set_rx_freq(tune2, 1);
 */
+    printf(GRN" New RX Freq: %f\n" RESET,usrp_rx->get_rx_freq());
     update_usrp_rx = false;
   }
 
@@ -1097,11 +1124,13 @@ void PhyLayer::update_rx_params()
     //setRxChannels(consumers);
     
     for(int i = 0; i < consumers;i++){
+      pthread_mutex_lock(&analysisMutex[i]);
       ofdmflexframesync_destroy(fsyncs[i]);
       fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                       rx_params.taper_len, rx_params.subcarrierAlloc,
                       rxCallback, (void *)&threadInfo[i]);
       threadInfo[i].fs_thread = &fsyncs[i];
+      pthread_mutex_unlock(&analysisMutex[i]);
     }
     recreate_fs = false;
   }
@@ -1207,7 +1236,7 @@ void *PHY_rx_worker(void *_arg)
         memcpy(recv_array, buff_ptrs[0], PHY->rx_buffer_len * sizeof(std::complex<float>));
 
         if(num_rx_samps > 0){
-          //std::cout << "Power: " << sum_power <<"\n";
+     
           PHY->recvQueue->enqueue(recv_array,num_rx_samps);
         }
 
@@ -1219,9 +1248,8 @@ void *PHY_rx_worker(void *_arg)
       pthread_mutex_lock(&PHY->rx_params_mutex);
       if (PHY->update_rx_flag)
         PHY->update_rx_params();
-      pthread_mutex_unlock(&PHY->rx_mutex);
       pthread_mutex_unlock(&PHY->rx_params_mutex);
-
+      pthread_mutex_unlock(&PHY->rx_mutex);
       // we need to tightly control the state of the worker thread
       // to protect against issues with abrupt starts and stops
       if (PHY->rx_state == RX_STOPPED)
@@ -1282,6 +1310,7 @@ void *analysis(void *_arg){
       q = nco_crcf_create(LIQUID_NCO);
       nco_crcf_set_frequency(q, 2*M_PI*nco_offset/rx_rate);
       std::cout << "Consumer " << consumer << "- Offset: " <<  threadInfo->nco_offset << "\n";
+      threadInfo->new_info = false;
     }
     
     if(rx_rate!=PHY->rx_params.rx_rate){
@@ -1292,11 +1321,18 @@ void *analysis(void *_arg){
       std::cout << "Consumer " << consumer << "- Offset: " <<  threadInfo->nco_offset << "\n";
     }
 
-    nco_crcf_mix_block_down(q, x, x, num_rx_samps);
+    if(threadInfo->nco_offset!=0.0f){
+      nco_crcf_mix_block_down(q, x, x, num_rx_samps);
+    }
     int recv_symbols = num_rx_samps / PHY->resampler_factor;
+
+    pthread_mutex_lock(&PHY->analysisMutex[consumer]);
     firdecim_crcf_execute_block(PHY->decim[consumer], x, recv_symbols, x);
+   
     ofdmflexframesync_execute(PHY->fsyncs[consumer], x, recv_symbols);
+    
     float rssi = ofdmflexframesync_get_rssi(PHY->fsyncs[consumer]);
+    pthread_mutex_unlock(&PHY->analysisMutex[consumer]);
     if(rssi > -30){
       //printf(GRN"RSSI: %f\n" RESET ,rssi);
     }
@@ -1331,33 +1367,70 @@ int rxCallback(unsigned char *_header, int _header_valid,
   dprintf("\n---------------------Received at thread %d with offset %f and rssi %f---------------\n",consumer,freq_offset,rssi);
   unsigned int frame_num = ((_header[0] & 0x3F) << 8 | _header[1]);
   dprintf("Frame_num received: %d and %x\n", frame_num,_header[3]);
+  unsigned int split = ((_header[4] & 0x3F) << 8 | _header[5]);
+  dprintf("Frame_num received: %d and %x split at %d\n", frame_num,_header[3],split);
   struct timeval ts;
   gettimeofday(&ts, NULL);
   dprintf("Received %d bytes at %lus and %luus\n", _payload_len, ts.tv_sec, ts.tv_usec);
+  printf("CFO: %f\n",ofdmflexframesync_get_cfo(*threadInfo->fs_thread));
   if (_header_valid == 1)
-  {
-    if (_payload_valid == 1)
+  { // debugging
+    //ofdmflexframesync_debug_enable(*threadInfo->fs_thread);
+    //std::string file = "debug/Poor_Packet" + std::to_string(consumer)+".m";
+    PHY->adjustRxFreq(ofdmflexframesync_get_cfo(*threadInfo->fs_thread), consumer);
+     if (_payload_valid == 1)
     {
-      timespec timeout;
-      timeout.tv_sec = time(NULL);
-      timeout.tv_nsec = 100;
+      //ofdmflexframesync_debug_print(*threadInfo->fs_thread,file.c_str());
+      struct timespec timeout;
+      clock_gettime(CLOCK_REALTIME, &timeout);
       char mac_load[_payload_len+1];
       mac_load[0] = _header[3];
-      memcpy(&mac_load[1],(char *)_payload, _payload_len);
-      int status = mq_timedsend(PHY->phy_rx_queue, (char *)mac_load, _payload_len+1, 0, &timeout);
-      if (status == -1)
-      {
-        perror("Queue is full\n");
-        dprintf("mq_send failure\n");
+      int count = 1;
+      if(split > 0){
+        count = 2;
       }
-      else
-      {
-        dprintf(GRN "mq_send to mac successful\n" RESET);
+      for(int i = 0; i < count; i++){
+          int new_len = _payload_len;
+          timeout.tv_sec = timeout.tv_sec + 1;
+          if(i == 0){
+            if(count > 1){
+              new_len = split;
+            }
+            memcpy(&mac_load[1],(char *)_payload, new_len);
+          } else{
+            new_len = _payload_len - split;
+            if(new_len > 0){
+              memcpy(&mac_load[1],(char *)_payload + split, new_len);
+            } else{
+              new_len = -1;
+            }
+            
+          }
+          printf("CFO: %f\n",ofdmflexframesync_get_cfo(*threadInfo->fs_thread));
+
+          int status = -1;
+          if(!PHY->random_data){
+            status = mq_timedsend(PHY->phy_rx_queue, (char *)mac_load, new_len+1, 0, &timeout);
+          }
+          if (status == -1)
+          {
+            perror("Queue is full\n");
+            dprintf(GRN "mq_send failure\n" RESET);
+          }
+          else
+          {
+            dprintf(GRN "mq_send to mac successful\n" RESET);
+          }
       }
+      
+
     }
     else
     {
+      
       dprintf( RED "Invalid Payload\n" RESET);
+      //ofdmflexframesync_debug_print(*threadInfo->fs_thread,file.c_str());
+
     }
   }
   else
@@ -1366,6 +1439,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
   }
 
   return 0;
+
 }
 // set receiver frequency
 void PhyLayer::set_rx_freq(double _rx_freq)
@@ -1639,6 +1713,11 @@ void PhyLayer::changeTxChannel(){
 
 void PhyLayer::resetResampler(){
 
+  float fc= 0.5f/resampler_factor;          // filter cutoff frequency
+  float As=60.0f;         // stop-band attenuation [dB]
+  float mu=0.0f;          // fractional timing offset
+  float ft = 0.1;
+  //h_len= estimate_req_filter_len(ft,As);
   h_len = 2 * resampler_factor * filter_delay + 1;
   num_symbols = fgbuffer_len + 2 * filter_delay;
 
@@ -1648,8 +1727,11 @@ void PhyLayer::resetResampler(){
   h = new float[h_len];
   g = new float[h_len];
 
-  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.3f, h);
-
+  liquid_firdes_rrcos(resampler_factor, filter_delay, beta, 0.1f, h);
+  //liquid_firdes_kaiser(h_len,fc,As,mu,h);
+  phase_shift = -1*fir_group_delay(h,h_len,fc);
+  printf("Filter Linear Phase Shift: %f",phase_shift);
+  // NOTE: Don't think this is needed if the filter is symmetrical
   for (int i = 0; i < h_len; i++)
     g[i] = h[h_len - i - 1];
 
@@ -1688,16 +1770,23 @@ void PhyLayer::resetRxChannels(){
   int q_len = 500;
   recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
   analysisThreads = new pthread_t[consumers];
+  analysisMutex = new pthread_mutex_t[consumers]; 
   threadInfo = new ThreadInfo[consumers];
   fsyncs = new ofdmflexframesync[consumers];
   int count = 0;
   for(int i = 0; i < consumers;i++){
+    int status = pthread_mutex_init(&analysisMutex[i], NULL); 
+    if(status < 0){
+      perror("Failed to create thread mutexes");
+    }
+    pthread_mutex_lock(&analysisMutex[i]);
     fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                                 rx_params.taper_len, rx_params.subcarrierAlloc,
                                 rxCallback, (void *)&threadInfo[i]);
     threadInfo[i].fs_thread = &fsyncs[i];
     threadInfo[i].PHY = this;
     threadInfo[i].consumer = i;
+    pthread_mutex_unlock(&analysisMutex[i]);
     if(consumers%2 == 0){
       if(i%2 == 0){
         count++;
@@ -1719,10 +1808,84 @@ void PhyLayer::resetRxChannels(){
     }
 
     //threadInfo[i].nco_offset = 2*nco_offset;
-    int status = pthread_create(&analysisThreads[i],NULL,analysis,(void *) &threadInfo[i]);
+
+    status = pthread_create(&analysisThreads[i],NULL,analysis,(void *) &threadInfo[i]);
     if(status < 0){
       perror("Failed to create threads");
     }
+
   }
   pthread_mutex_unlock(&rx_mutex);
+}
+
+void PhyLayer::adjustRxFreq(float offset, int consumer){
+  if(offset > 0.001){
+    //set_rx_freq(rx_params.rx_freq + 2e3);
+    threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset + 0.05e3;
+    threadInfo[consumer].new_info = true;
+  } else if(offset < -0.001){
+    //set_rx_freq(rx_params.rx_freq - 2e3);
+    threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset - 0.05e3;
+    threadInfo[consumer].new_info = true;
+  } else{
+    
+    if(get_rx_subcarriers() == 64){
+      
+      int n = 512;
+
+      char *alloc = createSubcarrierLayout(n);
+
+      // update rx
+      pthread_mutex_lock(&rx_mutex);
+      usleep(60000000);
+      set_rx_subcarriers(n);
+      set_rx_subcarrier_alloc(alloc);
+      pthread_mutex_unlock(&rx_mutex);
+
+      // update tx
+      pthread_mutex_lock(&tx_mutex);
+      set_tx_subcarriers(n);
+      set_tx_subcarrier_alloc(alloc);
+      pthread_mutex_unlock(&tx_mutex);
+
+
+      delete alloc;
+    }
+    
+  }
+}
+
+char *PhyLayer::createSubcarrierLayout(int num_subcarriers){
+  char *alloc = new char[num_subcarriers];
+  memset(alloc,OFDMFRAME_SCTYPE_NULL,num_subcarriers);
+
+  
+  int count = num_subcarriers/2;
+  
+  int num_nulls = (num_subcarriers - (int)num_subcarriers*subcarrierInfo.guard_nulls)/2 ;  // LOWER BAND
+  int s = 0;
+  for(int i = 1; i <= num_nulls;i++){
+      alloc[num_subcarriers-s-i] = OFDMFRAME_SCTYPE_DATA;
+  }
+  // HIGHER BAND
+  for(int i = 0; i < num_nulls;i++){
+      alloc[s+i] = OFDMFRAME_SCTYPE_DATA;
+  }
+
+  // insert pilots
+  int no_p = (int) num_subcarriers*subcarrierInfo.pilots;
+  int p = num_subcarriers/(2*no_p);
+  for(int i = 0; i < no_p/2; i++){
+    alloc[i*p] = OFDMFRAME_SCTYPE_PILOT;
+    alloc[num_subcarriers-1-i*p] = OFDMFRAME_SCTYPE_PILOT;
+  }  
+  
+  // insert DC NULLS
+  count = num_subcarriers*subcarrierInfo.dc_nulls;
+  for(int i = 0; i < count; i++){
+    alloc[i] = OFDMFRAME_SCTYPE_NULL;
+    alloc[num_subcarriers-1-i] = OFDMFRAME_SCTYPE_NULL;
+  }
+
+  return alloc;
 }
