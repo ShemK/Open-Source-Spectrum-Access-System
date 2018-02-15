@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <ctime>
 #include <fftw3.h>
+#include "CognitiveEngine.hpp"
 
 #define DEBUG 1
 #if DEBUG == 1
@@ -134,6 +135,7 @@ PhyLayer::PhyLayer()
 
   consumers = 4;
 
+  CE = new CognitiveEngine(this);
   
 
   resampler_factor = 4; // samples/symbol
@@ -153,9 +155,10 @@ PhyLayer::~PhyLayer()
   delete h;
   delete g;
   dprintf("Stopping transceiver\n");
+  stop_ce();
   stop_rx();
   stop_tx();
-
+ 
   mq_close(phy_tx_queue);
   mq_close(phy_rx_queue);
   mq_unlink("/mac2phy");
@@ -195,6 +198,9 @@ PhyLayer::~PhyLayer()
   dprintf("destructor destroying tx condition...\n");
   pthread_cond_destroy(&tx_cond);
 
+  void *ce_exit_status;
+  pthread_join(ce_process, &tx_exit_status);  
+
   // destroy framing objects
   dprintf("destructor destroying other objects...\n");
   ofdmflexframegen_destroy(fg);
@@ -214,6 +220,7 @@ PhyLayer::~PhyLayer()
   delete analysisThreads;
   delete threadInfo;
   delete fsyncs;
+  delete CE;
 
 }
 
@@ -273,6 +280,9 @@ void PhyLayer::set_attributes()
   pthread_mutex_init(&tx_params_mutex, NULL); // transmitter parameter mutex
   pthread_cond_init(&tx_cond, NULL);          // transmitter condition
   pthread_create(&tx_process, NULL, PHY_tx_worker, (void *)this);
+
+  pthread_create(&ce_process, NULL, PHY_ce_worker, (void *)this);
+
 
   tx_timer = timer_create();
 
@@ -1120,16 +1130,20 @@ void PhyLayer::update_rx_params()
     fs = ofdmflexframesync_create(
         rx_params.numSubcarriers, rx_params.cp_len, rx_params.taper_len,
         rx_params.subcarrierAlloc, rxCallback, (void *)&threadInfo[0]);
-    threadInfo[0].fs_thread = &fs;
+    threadInfo[0].fsync_t = &fs;
     //setRxChannels(consumers);
     
     for(int i = 0; i < consumers;i++){
       pthread_mutex_lock(&analysisMutex[i]);
-      ofdmflexframesync_destroy(fsyncs[i]);
-      fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
+      if(threadInfo[i].reset_fsync){
+        ofdmflexframesync_destroy(fsyncs[i]);
+        fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                       rx_params.taper_len, rx_params.subcarrierAlloc,
                       rxCallback, (void *)&threadInfo[i]);
-      threadInfo[i].fs_thread = &fsyncs[i];
+        threadInfo[i].fsync_t = &fsyncs[i];
+        threadInfo[i].reset_fsync = false;
+        threadInfo[i].num_subcarriers = rx_params.numSubcarriers;
+      }
       pthread_mutex_unlock(&analysisMutex[i]);
     }
     recreate_fs = false;
@@ -1361,7 +1375,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
   threadInfo->packet_found = true;
   int consumer = threadInfo->consumer;
   float freq_offset = threadInfo->nco_offset;
-  float rssi = ofdmflexframesync_get_rssi(*threadInfo->fs_thread);
+  float rssi = ofdmflexframesync_get_rssi(*threadInfo->fsync_t);
   // typecast user argument as PHY object
   //PhyLayer *PHY = (PhyLayer *)_userdata;
   dprintf("\n---------------------Received at thread %d with offset %f and rssi %f---------------\n",consumer,freq_offset,rssi);
@@ -1372,15 +1386,25 @@ int rxCallback(unsigned char *_header, int _header_valid,
   struct timeval ts;
   gettimeofday(&ts, NULL);
   dprintf("Received %d bytes at %lus and %luus\n", _payload_len, ts.tv_sec, ts.tv_usec);
-  printf("CFO: %f\n",ofdmflexframesync_get_cfo(*threadInfo->fs_thread));
+  float cfo = ofdmflexframesync_get_cfo(*threadInfo->fsync_t);
+  printf("CFO: %f\n",cfo);
   if (_header_valid == 1)
   { // debugging
-    //ofdmflexframesync_debug_enable(*threadInfo->fs_thread);
+    //ofdmflexframesync_debug_enable(*threadInfo->fsync_t);
     //std::string file = "debug/Poor_Packet" + std::to_string(consumer)+".m";
-    PHY->adjustRxFreq(ofdmflexframesync_get_cfo(*threadInfo->fs_thread), consumer);
+    
+    //PHY->adjustRxFreq(ofdmflexframesync_get_cfo(*threadInfo->fsync_t), consumer);
+    Engine::ChannelInfo new_info;
+    new_info.rssi = rssi;
+    new_info.cfo = cfo;
+    new_info.channelId = consumer;
+    new_info.info_flag = Engine::PACKET_FLAG;
+    
+    PHY->CE->pushInfo(new_info);
+    
      if (_payload_valid == 1)
     {
-      //ofdmflexframesync_debug_print(*threadInfo->fs_thread,file.c_str());
+      //ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
       struct timespec timeout;
       clock_gettime(CLOCK_REALTIME, &timeout);
       char mac_load[_payload_len+1];
@@ -1406,7 +1430,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
             }
             
           }
-          printf("CFO: %f\n",ofdmflexframesync_get_cfo(*threadInfo->fs_thread));
+          printf("CFO: %f\n",ofdmflexframesync_get_cfo(*threadInfo->fsync_t));
 
           int status = -1;
           if(!PHY->random_data){
@@ -1429,7 +1453,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
     {
       
       dprintf( RED "Invalid Payload\n" RESET);
-      //ofdmflexframesync_debug_print(*threadInfo->fs_thread,file.c_str());
+      //ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
 
     }
   }
@@ -1766,6 +1790,7 @@ void PhyLayer::resetRxChannels(){
   delete fsyncs;
 
   resetResampler();
+  CE->create_rx_links(consumers); // create ce information
 
   int q_len = 500;
   recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
@@ -1783,7 +1808,7 @@ void PhyLayer::resetRxChannels(){
     fsyncs[i] = ofdmflexframesync_create(rx_params.numSubcarriers, rx_params.cp_len,
                                 rx_params.taper_len, rx_params.subcarrierAlloc,
                                 rxCallback, (void *)&threadInfo[i]);
-    threadInfo[i].fs_thread = &fsyncs[i];
+    threadInfo[i].fsync_t = &fsyncs[i];
     threadInfo[i].PHY = this;
     threadInfo[i].consumer = i;
     pthread_mutex_unlock(&analysisMutex[i]);
@@ -1819,17 +1844,13 @@ void PhyLayer::resetRxChannels(){
 }
 
 void PhyLayer::adjustRxFreq(float offset, int consumer){
-  if(offset > 0.001){
+  if(offset != 0.0f){
     //set_rx_freq(rx_params.rx_freq + 2e3);
-    threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset + 0.05e3;
-    threadInfo[consumer].new_info = true;
-  } else if(offset < -0.001){
-    //set_rx_freq(rx_params.rx_freq - 2e3);
-    threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset - 0.05e3;
+    threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset + offset;
     threadInfo[consumer].new_info = true;
   } else{
     
-    if(get_rx_subcarriers() == 64){
+    if(threadInfo[consumer].num_subcarriers == 64){
       
       int n = 512;
 
@@ -1837,7 +1858,8 @@ void PhyLayer::adjustRxFreq(float offset, int consumer){
 
       // update rx
       pthread_mutex_lock(&rx_mutex);
-      usleep(60000000);
+      usleep(10000);
+      threadInfo[consumer].reset_fsync = true;
       set_rx_subcarriers(n);
       set_rx_subcarrier_alloc(alloc);
       pthread_mutex_unlock(&rx_mutex);
@@ -1888,4 +1910,26 @@ char *PhyLayer::createSubcarrierLayout(int num_subcarriers){
   }
 
   return alloc;
+}
+
+void PhyLayer::reset_syncs(){
+  for(int i = 0; i < consumers; i++){
+    threadInfo[i].reset_fsync = true;
+  }
+  CE->create_rx_links(consumers);
+}
+
+
+void *PHY_ce_worker(void *_arg){
+  PhyLayer *PHY = (PhyLayer *) _arg;
+  // taking a lot of cpu circles
+  // need to make it event based
+  while(!PHY->ce_complete){
+    PHY->CE->execute();
+  }
+}
+
+void PhyLayer::stop_ce()
+{
+  ce_complete = true;
 }

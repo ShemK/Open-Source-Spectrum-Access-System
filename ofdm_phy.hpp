@@ -5,6 +5,10 @@
 //
 //
 */
+
+ #ifndef PHY_H
+ #define PHY_H
+
 #include <liquid/liquid.h>
 #include <pthread.h>
 #include <iostream>
@@ -19,6 +23,7 @@
 #include "loop.hpp"
 #include <sys/time.h>
 #include "BufferQ.h"
+#include "Engine.hpp"
 #include <fftw3.h>
 
 #define RED "\x1B[31m"
@@ -684,6 +689,29 @@ public:
   void set_nco_offset(int consumer,float nco_offset);
   void setRxChannels(double rx_rate,int channels);
   char *createSubcarrierLayout(int num_subcarriers);
+  void reset_syncs();
+
+  void changeTxChannel();
+  void resetResampler();
+  void resetRxChannels();
+  void adjustRxFreq(float freq_offset, int consumer);
+
+
+  struct ThreadInfo{
+    PhyLayer *PHY;
+    int consumer;
+    float nco_offset;
+    bool new_info;
+    bool reset_fsync;
+    ofdmflexframesync *fsync_t;
+    bool packet_found;
+    bool rx_stat_flag;
+    int num_subcarriers;
+  };
+
+  ThreadInfo *threadInfo;
+
+  bool ce_complete;
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -748,8 +776,8 @@ private:
 
   // transmitter threading objects
   pthread_t tx_process;            // thread for transmission
-  pthread_mutex_t tx_mutex;        //
-  pthread_mutex_t tx_state_mutex;  // mutex to check for any change in tx
+        //
+  pthread_mutex_t tx_mutex;  // mutex to check for any change in tx
   pthread_mutex_t tx_params_mutex; // change in params
   pthread_cond_t tx_cond;
   bool tx_complete;
@@ -757,8 +785,15 @@ private:
   int tx_worker_state;
   int tx_state;
   friend void *PHY_tx_worker(void *); // process called by thread
-
   pthread_mutex_t tx_rx_mutex;  
+
+
+  pthread_t ce_process;
+  pthread_mutex_t ce_mutex;
+  
+
+  friend void *PHY_ce_worker(void *);
+  void stop_ce();
 
   Loop *test_loop;
   sem_t *test_phore;
@@ -784,7 +819,7 @@ private:
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
   bool loop = false;
-  bool random_data = false;
+  bool random_data = true;
   float random_offset = 3*nco_offset;
 
   friend void *analysis(void *_arg);
@@ -794,26 +829,12 @@ private:
   pthread_mutex_t *analysisMutex;
   int consumers;
 
-  struct ThreadInfo{
-    PhyLayer *PHY;
-    int consumer;
-    float nco_offset;
-    bool new_info;
-    ofdmflexframesync *fs_thread;
-    bool packet_found;
-  };
-
-  ThreadInfo *threadInfo;
-
   bool route_resend = false;
 
   char tx_side = 0x00;
 
   int split_num = 0;
-  void changeTxChannel();
-  void resetResampler();
-  void resetRxChannels();
-  void adjustRxFreq(float freq_offset, int consumer);
+
 
   float phase_shift;
 
@@ -826,4 +847,8 @@ private:
 
   SubcarrierInfo subcarrierInfo;
 
+  Engine *CE;
+
 };
+
+#endif

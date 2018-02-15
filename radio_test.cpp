@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     np.rx_rate = myConfig.rx_rate;
     PHY->setRxChannels(np.rx_rate,myConfig.channels);
     printf("RX FREQ: %f\n",np.rx_freq);
-    np.tx_freq = myConfig.tx_freq;
+    //np.tx_freq = myConfig.tx_freq;
     printf("TX FREQ: %f\n",np.tx_freq);
     np.tx_rate = myConfig.tx_rate;
     if(np.tx_freq > 5e9){
@@ -113,7 +113,7 @@ void initialize_node_parameters(struct node_parameters *np)
   np->rx_rate = 4e6;
   np->rx_gain = 60.0;
 
-  np->tx_freq = 5800.500e6;
+  np->tx_freq = 5800.507e6;
   np->tx_rate = 4e6;
   np->tx_gain = 90.0;
 
@@ -170,6 +170,7 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   char *alloc = highPassAlloc(PHY,np->tx_subcarriers);
 
   PHY->set_tx_subcarrier_alloc(alloc);
+  PHY->reset_syncs();
   PHY->set_rx_subcarrier_alloc(alloc);
 
   delete alloc;
