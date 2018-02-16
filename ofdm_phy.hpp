@@ -712,6 +712,10 @@ public:
   ThreadInfo *threadInfo;
 
   bool ce_complete;
+
+  void set_node_id(int node_id);
+  int get_node_id();
+  int my_node_id;
 private:
   //=================================================================================
   // Private Receiver Objects

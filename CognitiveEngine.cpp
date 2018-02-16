@@ -1,5 +1,5 @@
 #include "CognitiveEngine.hpp"
-
+#include <iostream>
 
 CognitiveEngine::CognitiveEngine(PhyLayer *PHY){
     pthread_mutex_init(&queueMutex,NULL);
@@ -75,19 +75,21 @@ CognitiveEngine::ChannelInfo CognitiveEngine::pullInfo(){
 void CognitiveEngine::calculateStats(ChannelInfo &new_info){
     pthread_mutex_lock(&stateMutex);
     int j = new_info.channelId;
-    
+    rx_channels[j].node_id = new_info.tx_node_id;
     if(rx_channels[j].no_of_points >= max_points){
         rx_channels[j].sum_evm = rx_channels[j].sum_evm - rx_channels[j].last_evm;
         rx_channels[j].sum_rssi = rx_channels[j].sum_rssi - rx_channels[j].last_rssi;
         if(rx_channels[j].no_of_points > 1){
             rx_channels[j].no_of_points--;
         } 
+        rx_channels[j].last_rssi = new_info.rssi;
+        rx_channels[j].last_evm = new_info.evm;
     } else{
         rx_channels[j].sum_evm = rx_channels[j].sum_evm + new_info.evm;
         rx_channels[j].sum_rssi = rx_channels[j].sum_rssi + new_info.rssi;
         rx_channels[j].no_of_points++;
         rx_channels[j].avg_rssi = rx_channels[j].sum_rssi/rx_channels[j].no_of_points;
-        rx_channels[j].avg_evm = rx_channels[j].sum_rssi/rx_channels[j].no_of_points;
+        rx_channels[j].avg_evm = rx_channels[j].sum_evm/rx_channels[j].no_of_points;
     }
     pthread_mutex_unlock(&stateMutex);
 }
@@ -107,4 +109,58 @@ void CognitiveEngine::caliberateFrequency(int channel, float cfo){
         offset = -1e3;
     }
     PHY->adjustRxFreq(offset,channel);
+}
+
+
+unsigned char* CognitiveEngine::modifyTxPacket(unsigned char *packet,unsigned int &packet_len, int node_id){
+    unsigned char *new_packet = new unsigned char[packet_len + sizeof(ExchangeInfo)];
+    //std::cout << "----------Sending Info: -----------------" << "\n";
+    if(node_id == -1){
+        txInfo.node_id = -1;
+        memcpy(new_packet,&txInfo,sizeof(txInfo));
+        memcpy(new_packet+sizeof(txInfo),packet,packet_len);
+        packet_len = packet_len + sizeof(txInfo);
+        return new_packet;
+    } else{
+        for(int i = 0; i < num_rx_channels; i++){
+            if(node_id == rx_channels[i].node_id){
+                txInfo.avg_rssi = rx_channels[i].avg_rssi;
+                txInfo.node_id = node_id;
+                txInfo.avg_evm = rx_channels[i].avg_evm;
+                memcpy(new_packet,&txInfo,sizeof(txInfo));
+                memcpy(new_packet+sizeof(txInfo),packet,packet_len);
+                packet_len = packet_len + sizeof(txInfo);
+                return new_packet;// if node_id is found
+            }
+        }
+        txInfo.node_id = -1;
+        memcpy(new_packet,&txInfo,sizeof(txInfo));
+        memcpy(new_packet+sizeof(txInfo),packet,packet_len);
+        packet_len = packet_len + sizeof(txInfo);
+        
+        //printSharedInfo(txInfo);
+        return new_packet;
+    }
+
+}
+
+unsigned char * CognitiveEngine::getSharedInformation(unsigned char *packet, unsigned int &packet_len){
+    packet_len = packet_len - sizeof(ExchangeInfo);
+    ExchangeInfo *recvInfo = (ExchangeInfo *) packet;
+    std::cout << "----------Received Info: -----------------" << "\n";
+    printSharedInfo(*recvInfo);
+    return packet+sizeof(ExchangeInfo);
+}
+
+void CognitiveEngine::printSharedInfo(ExchangeInfo info){
+    std::cout << "node_id: " << info.node_id << "\n";
+    std::cout << "rssi: " << info.avg_rssi << "\n";
+    std::cout << "evm: " << info.avg_evm << "\n";
+}
+
+void CognitiveEngine::printStatInfo(ChannelInfo info){
+    std::cout << "node_id: " << info.tx_node_id << "\n";
+    std::cout << "rssi: " << info.rssi<< "\n";
+    std::cout << "evm: " << info.evm<< "\n";
+    std::cout << "channel_id: " << info.channelId << "\n";
 }

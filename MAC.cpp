@@ -262,17 +262,19 @@ void *MAC_tx_worker(void *_arg)
           int type = 0;
           if(mac->ip_tx_queue.front().peer_pos >=0){
             int pos = mac->ip_tx_queue.front().peer_pos;
+            /*
             if(mac->peerlist[pos].rx_side == MAC::LOW_CHANNEL){
               type = 0;
             }
             if(mac->peerlist[pos].rx_side == MAC::HIGH_CHANNEL){
               type = 1;
             }
-
+            */
+            type = (int) mac->peerlist[pos].rx_side;
           }
           
           if(mac->ip_tx_queue.front().routing_packet){
-            type = 3;
+            type = -1;
           }
           mac->transmit_frame(mac->ip_tx_queue.front().segment, mac->ip_tx_queue.front().size,
                               type, mac->ip_tx_queue.front().frame_num);
@@ -443,12 +445,10 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
     }
     int status = 0;
     
-    if(ip_type == 0){
-      frame[frame_len] = 0x00;
-    } else if(ip_type == 1){
-      frame[frame_len] = 0x01;
-    } else if(ip_type == 3){
-      frame[frame_len] = 0x03;
+    if(ip_type == -1){
+      frame[frame_len] = 0x10;
+    } else{
+      frame[frame_len] = (char) ip_type;
     }
 
     

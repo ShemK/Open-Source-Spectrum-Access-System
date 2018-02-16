@@ -81,6 +81,7 @@ int main(int argc, char **argv)
     if(np.tx_freq > 5e9){
       //np.tx_freq = np.tx_freq + 7e3;
     }
+    PHY->set_node_id(myConfig.node_id);
   }
   Initialize_PHY(&np, (void *)PHY, argc, argv);
 

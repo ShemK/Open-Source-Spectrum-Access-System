@@ -450,7 +450,7 @@ void *PHY_tx_worker(void *_arg)
         printf("Current Queue Len: %lu \n",attr_tx.mq_curmsgs);
         char control = buffer[status-1];
         dprintf("MAC Control: %x\n",control);
-        if(control == 0x03){
+        if(control == 0x10){
           dprintf("Control Frame\n");
           //PHY->route_resend = true;
         } else if(control== PHY->tx_side){
@@ -532,11 +532,14 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   tx_header[1] = (frame_num)&0xff;
   tx_header[4] = ((split_num >> 8) & 0x3f);
   tx_header[5] = (split_num)&0xff;
+  tx_header[3] = (char) my_node_id;
   split_num = 0;
   frame_num++;
   pthread_mutex_unlock(&tx_params_mutex);
 
 
+  unsigned char *payload = CE->modifyTxPacket(_payload,_payload_len,my_node_id);
+  
   // set up the metadta flags
   metadata_tx.start_of_burst = true; // never SOB when continuous
   metadata_tx.end_of_burst = false;  //
@@ -547,7 +550,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   struct timeval ts;
   gettimeofday(&ts, NULL);
   // assemble frame
-  ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
+  ofdmflexframegen_assemble(fg, tx_header, payload, _payload_len);
   // dprintf("Transmitting Frame!!!!\n");
   dprintf("-----------------Transmitting--------------\n");
   dprintf("Frame_num transmitted: %d with %d bytes at %lus and %luus \n",
@@ -1399,9 +1402,10 @@ int rxCallback(unsigned char *_header, int _header_valid,
     new_info.cfo = cfo;
     new_info.channelId = consumer;
     new_info.info_flag = Engine::PACKET_FLAG;
-    
+    new_info.tx_node_id = (int) _header[3];
+
     PHY->CE->pushInfo(new_info);
-    
+    unsigned char *payload = PHY->CE->getSharedInformation(_payload,_payload_len);
      if (_payload_valid == 1)
     {
       //ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
@@ -1409,6 +1413,7 @@ int rxCallback(unsigned char *_header, int _header_valid,
       clock_gettime(CLOCK_REALTIME, &timeout);
       char mac_load[_payload_len+1];
       mac_load[0] = _header[3];
+      printf("packet from: %d\n",(int) mac_load[0]);
       int count = 1;
       if(split > 0){
         count = 2;
@@ -1420,11 +1425,11 @@ int rxCallback(unsigned char *_header, int _header_valid,
             if(count > 1){
               new_len = split;
             }
-            memcpy(&mac_load[1],(char *)_payload, new_len);
+            memcpy(&mac_load[1],(char *)payload, new_len);
           } else{
             new_len = _payload_len - split;
             if(new_len > 0){
-              memcpy(&mac_load[1],(char *)_payload + split, new_len);
+              memcpy(&mac_load[1],(char *)payload + split, new_len);
             } else{
               new_len = -1;
             }
@@ -1799,6 +1804,7 @@ void PhyLayer::resetRxChannels(){
   threadInfo = new ThreadInfo[consumers];
   fsyncs = new ofdmflexframesync[consumers];
   int count = 0;
+  float low_freq = -nco_offset*consumers/2;
   for(int i = 0; i < consumers;i++){
     int status = pthread_mutex_init(&analysisMutex[i], NULL); 
     if(status < 0){
@@ -1812,6 +1818,7 @@ void PhyLayer::resetRxChannels(){
     threadInfo[i].PHY = this;
     threadInfo[i].consumer = i;
     pthread_mutex_unlock(&analysisMutex[i]);
+    
     if(consumers%2 == 0){
       if(i%2 == 0){
         count++;
@@ -1932,4 +1939,12 @@ void *PHY_ce_worker(void *_arg){
 void PhyLayer::stop_ce()
 {
   ce_complete = true;
+}
+
+void PhyLayer::set_node_id(int node_id){
+  my_node_id = node_id;
+}
+
+int PhyLayer::get_node_id(){
+  return my_node_id;
 }

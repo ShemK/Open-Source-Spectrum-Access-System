@@ -22,11 +22,14 @@ public:
         float rssi;
         float evm;
         float cfo; // carrier frequency offset
+        int tx_node_id;
         
     };
 
     virtual void create_rx_links(int num_channels) = 0;
     virtual void pushInfo(ChannelInfo &new_info) = 0;
+    virtual unsigned char* modifyTxPacket(unsigned char *packet, unsigned int &packet_len,int node_id);
+    virtual unsigned char *getSharedInformation(unsigned char *packet, unsigned int & packet_len);
 
     pthread_mutex_t queueMutex;
 
