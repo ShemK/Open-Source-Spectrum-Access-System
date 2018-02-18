@@ -114,7 +114,7 @@ void CognitiveEngine::caliberateFrequency(int channel, float cfo){
 
 unsigned char* CognitiveEngine::modifyTxPacket(unsigned char *packet,unsigned int &packet_len, int node_id){
     unsigned char *new_packet = new unsigned char[packet_len + sizeof(ExchangeInfo)];
-    //std::cout << "----------Sending Info: -----------------" << "\n";
+    std::cout << "----------Sending Info for node: " << node_id << "---------\n";
     if(node_id == -1){
         txInfo.node_id = -1;
         memcpy(new_packet,&txInfo,sizeof(txInfo));
@@ -138,7 +138,7 @@ unsigned char* CognitiveEngine::modifyTxPacket(unsigned char *packet,unsigned in
         memcpy(new_packet+sizeof(txInfo),packet,packet_len);
         packet_len = packet_len + sizeof(txInfo);
         
-        //printSharedInfo(txInfo);
+        printSharedInfo(txInfo);
         return new_packet;
     }
 

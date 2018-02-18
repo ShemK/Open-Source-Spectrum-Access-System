@@ -823,7 +823,7 @@ private:
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
   bool loop = false;
-  bool random_data = true;
+  bool random_data = false;
   float random_offset = 3*nco_offset;
 
   friend void *analysis(void *_arg);
