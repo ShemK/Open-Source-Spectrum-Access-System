@@ -112,9 +112,9 @@ void initialize_node_parameters(struct node_parameters *np)
   // initial USRP settings
   np->rx_freq = 458e6;
   np->rx_rate = 4e6;
-  np->rx_gain = 60.0;
+  np->rx_gain = 90.0;
 
-  np->tx_freq = 5800.507e6;
+  np->tx_freq = 5800.50e6;
   np->tx_rate = 4e6;
   np->tx_gain = 90.0;
 

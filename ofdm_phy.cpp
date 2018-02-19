@@ -140,7 +140,7 @@ PhyLayer::PhyLayer()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 32;      // filter delay
+  filter_delay = 8;      // filter delay
   beta = 0.01f; // filter excess bandwidth
 
   resetRxChannels();
@@ -420,7 +420,12 @@ void *PHY_tx_worker(void *_arg)
         PHY->tx_nco_offset = PHY->random_offset;
         buffer[status-1] = PHY->tx_side;
         //PHY->split_num = 1400;
-        usleep(1000000);
+        if(PHY->get_rx_subcarriers() > 64){
+          usleep(100000);
+        } else{
+          usleep(1000000);
+        }
+        
       } else{
         status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
         mq_getattr(PHY->phy_tx_queue,&attr_tx);
@@ -1352,7 +1357,12 @@ void *analysis(void *_arg){
     int recv_symbols = num_rx_samps / PHY->resampler_factor;
 
     pthread_mutex_lock(&PHY->analysisMutex[consumer]);
-    firdecim_crcf_execute_block(PHY->decim[consumer], x, recv_symbols, x);
+    #if USE_IRR == 1
+      iirdecim_crcf_execute_block(PHY->decim[consumer], x, recv_symbols, x);
+    #else
+      firdecim_crcf_execute_block(PHY->decim[consumer], x, recv_symbols, x);
+    #endif
+    
    
     ofdmflexframesync_execute(PHY->fsyncs[consumer], x, recv_symbols);
     
@@ -1371,7 +1381,11 @@ void *analysis(void *_arg){
   }
   delete[]x;
   nco_crcf_destroy(q);
-  firdecim_crcf_destroy(PHY->decim[consumer]);
+  #if USE_IRR == 1
+    iirdecim_crcf_destroy(PHY->decim[consumer]);
+  #else
+    firdecim_crcf_destroy(PHY->decim[consumer]);
+  #endif
 
 }
 
@@ -1401,8 +1415,8 @@ int rxCallback(unsigned char *_header, int _header_valid,
   printf("CFO: %f\n",cfo);
   if (_header_valid == 1)
   { // debugging
-    //ofdmflexframesync_debug_enable(*threadInfo->fsync_t);
-    //std::string file = "debug/Poor_Packet" + std::to_string(consumer)+".m";
+    ofdmflexframesync_debug_enable(*threadInfo->fsync_t);
+    std::string file = "debug/Poor_Packet" + std::to_string(consumer)+".m";
     
     //PHY->adjustRxFreq(ofdmflexframesync_get_cfo(*threadInfo->fsync_t), consumer);
     Engine::ChannelInfo new_info;
@@ -1411,12 +1425,12 @@ int rxCallback(unsigned char *_header, int _header_valid,
     new_info.channelId = consumer;
     new_info.info_flag = Engine::PACKET_FLAG;
     new_info.tx_node_id = (int) _header[3];
-
+    ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
     PHY->CE->pushInfo(new_info);
     unsigned char *payload = PHY->CE->getSharedInformation(_payload,_payload_len);
      if (_payload_valid == 1)
     {
-      //ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
+      
       struct timespec timeout;
       clock_gettime(CLOCK_REALTIME, &timeout);
       char mac_load[_payload_len+1];
@@ -1771,12 +1785,58 @@ void PhyLayer::resetResampler(){
   // NOTE: Don't think this is needed if the filter is symmetrical
   for (int i = 0; i < h_len; i++)
     g[i] = h[h_len - i - 1];
+  /*
+  h_len = 65;
+  std::ifstream in("filter_4_w.bin", std::ios::binary);
+  //float *h = new float[65];
+  in.read((char *)h,65*sizeof(float));
+  for(int i = 0; i < 65; i++){
+        std::cout << h[i] << "\n";
+  }
+  in.close();
+  */
+  #if USE_IRR == 1
+      h[0] = 1;
+    h[1] = -0.138953;
+    h[2] = 1.064738;
+    h[3] = -0.332159;
+    h[4] = 0.532316;
+    g[0] = 1;
+    g[1] = -1.893729;
+    g[2] = 1.646765;
+    g[3] = -0.656669;
+    g[4] = 0.104911;
+
+    for (int i = 0; i < h_len; i++)
+      h[i] = h[i]*1;//0.09467772965877035;
+    /*
+    liquid_iirdes(LIQUID_IIRDES_ELLIP,
+                   LIQUID_IIRDES_LOWPASS,
+                   LIQUID_IIRDES_SOS,
+                   10,
+                   fc,
+                   fc+0.1,
+                   1.0f,
+                   60.0f,
+                   h,
+                   g);
+    */
+  #endif
 
   interp = firinterp_crcf_create(resampler_factor, h, h_len);
   delete decim;
-  decim = new firdecim_crcf[consumers];
+  #if USE_IRR == 1
+    decim = new iirdecim_crcf[consumers];
+  #else
+    decim = new firdecim_crcf[consumers];
+  #endif
+  
   for(int i = 0; i < consumers;i++){
-    decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
+    #if USE_IRR == 1
+       decim[i] = iirdecim_crcf_create(resampler_factor,h,5,g,5);
+    #else
+      decim[i] = firdecim_crcf_create(resampler_factor, g, h_len);
+    #endif
   }
   
 }
@@ -1887,7 +1947,7 @@ void PhyLayer::adjustRxFreq(float offset, int consumer){
       set_rx_subcarrier_alloc(alloc);
       pthread_mutex_unlock(&rx_mutex);
 
-      usleep(30000000);
+      usleep(30000000); // need to find a way of closing the program while in this sleep mode
       // update tx
       pthread_mutex_lock(&tx_mutex);
       set_tx_subcarriers(n);

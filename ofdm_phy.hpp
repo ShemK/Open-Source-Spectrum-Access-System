@@ -38,6 +38,9 @@
 
 #define PHY_CONTROL_INFO_BYTES 6
 
+#define USE_IRR 0
+
+
 // thread functions
 void *PHY_tx_worker(void *_arg);
 void *PHY_rx_worker(void *_arg);
@@ -803,7 +806,12 @@ private:
   sem_t *test_phore;
  
   firinterp_crcf interp;
-  firdecim_crcf  *decim;
+  bool use_iir = true;
+  #if USE_IRR == 1
+    iirdecim_crcf  *decim;
+  #else
+    firdecim_crcf  *decim;
+  #endif
 
 
   unsigned int resampler_factor;                   // samples/symbol
@@ -842,7 +850,7 @@ private:
 
   float phase_shift;
 
-
+  
   struct SubcarrierInfo{
     float guard_nulls = float(1)/32; // fraction of nulls on either edge
     float dc_nulls = float(1)/32; // fraction of nulls at the center
@@ -852,6 +860,7 @@ private:
   SubcarrierInfo subcarrierInfo;
 
   Engine *CE;
+
 
 };
 
