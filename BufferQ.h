@@ -138,7 +138,7 @@ void BufferQ<T>::enqueue(T *input, int size){
         diff = curr_diff;
     }
     //std::cout << tail-head[consumers-1] << "\n";
-    if(diff > 50 ){
+    if(diff > q_size/10){
         std::cout << "Producer Faster than Consumers\n";
         usleep(10000);
     }

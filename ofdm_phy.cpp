@@ -98,7 +98,9 @@ PhyLayer::PhyLayer()
   fg = ofdmflexframegen_create(tx_params.numSubcarriers, tx_params.cp_len,
                                tx_params.taper_len, tx_params.subcarrierAlloc,
                                &tx_params.fgprops);
-
+  fg_arq = ofdmflexframegen_create(tx_params.numSubcarriers, tx_params.cp_len,
+                                 tx_params.taper_len, tx_params.subcarrierAlloc,
+                                 &tx_params.fgprops);
   // allocate memory for frame generator output (single OFDM symbol)
   fgbuffer_len = tx_params.numSubcarriers + tx_params.cp_len;
   fgbuffer =
@@ -140,7 +142,7 @@ PhyLayer::PhyLayer()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 8;      // filter delay
+  filter_delay = 32;      // filter delay
   beta = 0.01f; // filter excess bandwidth
 
   resetRxChannels();
@@ -420,8 +422,8 @@ void *PHY_tx_worker(void *_arg)
         PHY->tx_nco_offset = PHY->random_offset;
         buffer[status-1] = PHY->tx_side;
         //PHY->split_num = 1400;
-        if(PHY->get_rx_subcarriers() > 64){
-          usleep(100000);
+        if(PHY->rx_sync){
+          usleep(1000000);
         } else{
           usleep(1000000);
         }
@@ -452,7 +454,7 @@ void *PHY_tx_worker(void *_arg)
       } 
       else
       {
-        printf("Current Queue Len: %lu \n",attr_tx.mq_curmsgs);
+        dprintf("Current Queue Len: %lu \n",attr_tx.mq_curmsgs);
         char control = buffer[status-1];
         dprintf("MAC Control: %x\n",control);
 
@@ -468,6 +470,9 @@ void *PHY_tx_worker(void *_arg)
         //  strncpy((char*)payload, buffer, payload_len);
         // TODO: Need to reduce the amount of memcpys
         int tx_id = (int) control;
+
+        PHY->CE->storePayload((unsigned char *)buffer,payload_len,PHY->frame_num);
+
         unsigned char *temp_payload = PHY->CE->modifyTxPacket((unsigned char *) buffer,payload_len,tx_id);
 
 
@@ -475,7 +480,7 @@ void *PHY_tx_worker(void *_arg)
 
         delete [] temp_payload; // free mem
         PHY->tx_frame_counter++;
- 
+
         pthread_mutex_lock(&PHY->tx_params_mutex);
         if (PHY->update_tx_flag)
         {
@@ -483,7 +488,15 @@ void *PHY_tx_worker(void *_arg)
         }
         pthread_mutex_unlock(&PHY->tx_params_mutex);
         
-        PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
+        Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)payload;
+        if(!tempInfo->sending_nack){
+          PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
+        } else{
+          PHY->transmit_frame(PhyLayer::ARQ_PACKET, payload, payload_len);
+        }
+        
+
+
         if(PHY->route_resend){
           //PHY->changeTxChannel();
           PHY->transmit_frame(PhyLayer::DATA, payload, payload_len);
@@ -492,6 +505,19 @@ void *PHY_tx_worker(void *_arg)
         }
         memset(buffer, 0, buffer_len);
       }
+
+      if(PHY->CE->getNackServiceSize() > 0){
+        Engine::NACK temp = PHY->CE->popServiceNack();
+        for(int i = 0; i < temp.errors; i++){
+          printf(CYN "---------Resending Frame: %d-------------\n" RESET,temp.expected_frame+i);
+          unsigned char *temp_payload = PHY->CE->getPayload(temp.expected_frame+i, payload_len);
+          temp_payload = PHY->CE->modifyTxPacket(temp_payload,payload_len,temp.node_id);
+          Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)temp_payload;
+          tempInfo->retransmit = true;
+          PHY->transmit_frame(PhyLayer::ARQ_PACKET,temp_payload, payload_len,temp.expected_frame+i);
+        }
+      }
+
       // change state to stopped once all frames have been transmitted
       // or max transmission time has passed when in burst mode
       pthread_mutex_lock(&PHY->tx_params_mutex);
@@ -521,9 +547,14 @@ void *PHY_tx_worker(void *_arg)
 
 void PhyLayer::transmit_frame(unsigned int frame_type,
                               unsigned char *_payload,
-                              unsigned int _payload_len)
+                              unsigned int _payload_len,
+                              unsigned int custom_frame_num)
 {
 
+  if(_payload_len <= 0){
+    return;
+  }
+  int temp_num = 0;
   pthread_mutex_lock(&tx_rx_mutex);
   transmitting = true;
   pthread_mutex_unlock(&tx_rx_mutex);
@@ -540,14 +571,24 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
 
   pthread_mutex_lock(&tx_params_mutex);
   float tx_gain_soft_lin = powf(10.0f, resampler_factor*tx_params.tx_gain_soft / 20.0f);
-  tx_header[0] = ((frame_num >> 8) & 0x3f);
-  tx_header[0] |= (frame_type << 6);
-  tx_header[1] = (frame_num)&0xff;
+  if(custom_frame_num == 0){
+    tx_header[0] = ((frame_num >> 8) & 0x3f);
+    tx_header[0] |= (frame_type << 6);
+    tx_header[1] = (frame_num)&0xff;
+    temp_num = frame_num;
+    frame_num++;
+  } else{
+    tx_header[0] = ((custom_frame_num >> 8) & 0x3f);
+    tx_header[0] |= (frame_type << 6);
+    tx_header[1] = (custom_frame_num)&0xff;
+    temp_num = custom_frame_num;
+  }
+
   tx_header[4] = ((split_num >> 8) & 0x3f);
   tx_header[5] = (split_num)&0xff;
   tx_header[3] = (char) my_node_id;
   split_num = 0;
-  frame_num++;
+  
   pthread_mutex_unlock(&tx_params_mutex);
 
 
@@ -563,11 +604,16 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   struct timeval ts;
   gettimeofday(&ts, NULL);
   // assemble frame
-  ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
+  if(frame_type == DATA){
+    ofdmflexframegen_assemble(fg, tx_header, _payload, _payload_len);
+  } else if(frame_type == ARQ_PACKET){
+    ofdmflexframegen_assemble(fg_arq, tx_header, _payload, _payload_len);
+  }
+  
   // dprintf("Transmitting Frame!!!!\n");
   dprintf("-----------------Transmitting--------------\n");
   dprintf("Frame_num transmitted: %d with %d bytes at %lus and %luus \n",
-         frame_num - 1, _payload_len, ts.tv_sec, ts.tv_usec);
+         temp_num, _payload_len, ts.tv_sec, ts.tv_usec);
   //dprintf("FG BUFFER LEN: %d\n",fgbuffer_len);
   // generate a single OFDM frame
   bool last_symbol = false;
@@ -587,7 +633,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   usrp_tx->get_device()->send(&delay_vec.front(), delay_vec.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
-  ofdmflexframegen_print(fg);
+  //ofdmflexframegen_print(fg);
   int ofdm_symbols = 0;
   /*
   float fc=0.44f;         // filter cutoff frequency
@@ -608,8 +654,11 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   {
 
     // generate symbol
-    last_symbol = ofdmflexframegen_write(fg, fgbuffer, fgbuffer_len);
-    
+    if(frame_type == DATA){
+      last_symbol = ofdmflexframegen_write(fg, fgbuffer, fgbuffer_len);
+    } else if(frame_type == ARQ_PACKET){
+      last_symbol = ofdmflexframegen_write(fg_arq, fgbuffer, fgbuffer_len);
+    }
     // copy symbol and apply gain
     for (i = 0; i < fgbuffer_len; i++)
     {
@@ -657,7 +706,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
     ofdm_symbols++;
   } 
   //firfilt_crcf_destroy(tx_filt);
-  printf("OFDM SYMBOLS SENT: %d\n",ofdm_symbols);
+  dprintf("OFDM SYMBOLS SENT: %d\n",ofdm_symbols);
   /*
   if(loop){
     memset(&usrp_buffer[0],0,100*sizeof(std::complex<float>));
@@ -680,11 +729,11 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
                                 uhd::device::SEND_MODE_FULL_BUFF);
                       
 
-  /*
+  
   usrp_tx->get_device()->send(&delay_vec.front(), delay_vec.size(),
                                 metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                                 uhd::device::SEND_MODE_FULL_BUFF);
-  */
+  
   nco_crcf_destroy(q);
   // send a mini EOB packet
   metadata_tx.end_of_burst = true;
@@ -1081,6 +1130,10 @@ void PhyLayer::update_tx_params()
     fg = ofdmflexframegen_create(tx_params.numSubcarriers, tx_params.cp_len,
                                  tx_params.taper_len, tx_params.subcarrierAlloc,
                                  &tx_params.fgprops);
+    fg_arq = ofdmflexframegen_create(tx_params.numSubcarriers, tx_params.cp_len,
+                                 tx_params.taper_len, tx_params.subcarrierAlloc,
+                                 &tx_params.fgprops);
+    properties_changed = true;
     pthread_mutex_unlock(&tx_mutex);
     recreate_fg = false;
   }
@@ -1190,7 +1243,7 @@ void *PHY_rx_worker(void *_arg)
 
   std::complex<float> *buffer_F = (std::complex<float> *)malloc(PHY->rx_buffer_len *
                                                                 sizeof(std::complex<float>));
-
+  // unused fft??? Hopefully use it somewhere
   fftplan fft = fft_create_plan(PHY->rx_buffer_len, reinterpret_cast<liquid_float_complex *>(PHY->rx_buffer),
                                 reinterpret_cast<liquid_float_complex *>(buffer_F),
                                 LIQUID_FFT_FORWARD, 0);
@@ -1416,23 +1469,45 @@ int rxCallback(unsigned char *_header, int _header_valid,
   if (_header_valid == 1)
   { // debugging
     ofdmflexframesync_debug_enable(*threadInfo->fsync_t);
-    std::string file = "debug/Poor_Packet" + std::to_string(consumer)+".m";
-    
+    std::string file;
+    if(_payload_valid == 1){
+      file = "debug/Good_Packet_" + std::to_string(consumer)+ "_" +  std::to_string(threadInfo->debug_packets) +".m";
+    } else{
+      file = "debug/Poor_Packet_" + std::to_string(consumer)+ "_" +  std::to_string(threadInfo->debug_packets) +".m";
+    }
+    threadInfo->debug_packets++;
+    if(threadInfo->debug_packets > 10){
+      threadInfo->debug_packets = 0;
+    }
+    ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
     //PHY->adjustRxFreq(ofdmflexframesync_get_cfo(*threadInfo->fsync_t), consumer);
+    
+    struct timespec timeout;
+    clock_gettime(CLOCK_REALTIME, &timeout);
+    Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)_payload;
+    unsigned char *payload = PHY->CE->getSharedInformation(_payload,_payload_len);
+
     Engine::ChannelInfo new_info;
     new_info.rssi = rssi;
     new_info.cfo = cfo;
     new_info.channelId = consumer;
     new_info.info_flag = Engine::PACKET_FLAG;
     new_info.tx_node_id = (int) _header[3];
-    ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
+    if(_payload_valid == 1){
+      new_info.payload_valid = true;
+      new_info.frame_num = frame_num;
+      new_info.time_stamp = timeout.tv_sec;
+      new_info.payload_len = _payload_len;
+      new_info.retransmit = tempInfo->retransmit;
+      printf("Retransmit: %d\n",tempInfo->retransmit);
+    } else{
+      new_info.payload_valid = false;
+    }
+
     PHY->CE->pushInfo(new_info);
-    unsigned char *payload = PHY->CE->getSharedInformation(_payload,_payload_len);
+
      if (_payload_valid == 1)
     {
-      
-      struct timespec timeout;
-      clock_gettime(CLOCK_REALTIME, &timeout);
       char mac_load[_payload_len+1];
       mac_load[0] = _header[3];
       printf("packet from: %d\n",(int) mac_load[0]);
@@ -1466,11 +1541,11 @@ int rxCallback(unsigned char *_header, int _header_valid,
           if (status == -1)
           {
             perror("Queue is full\n");
-            dprintf(GRN "mq_send failure\n" RESET);
+            printf(GRN "mq_send failure\n" RESET);
           }
           else
           {
-            dprintf(GRN "mq_send to mac successful\n" RESET);
+            printf(GRN "mq_send to mac successful\n" RESET);
           }
       }
       
@@ -1479,14 +1554,14 @@ int rxCallback(unsigned char *_header, int _header_valid,
     else
     {
       
-      dprintf( RED "Invalid Payload\n" RESET);
+      printf( RED "Invalid Payload\n" RESET);
       //ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
 
     }
   }
   else
   {
-     dprintf(YEL "Invalid Header\n" RESET);
+     printf(YEL "Invalid Header\n" RESET);
   }
 
   return 0;
@@ -1865,7 +1940,7 @@ void PhyLayer::resetRxChannels(){
   resetResampler();
   CE->create_rx_links(consumers); // create ce information
 
-  int q_len = 500;
+  int q_len = 4000;
   recvQueue = new BufferQ<std::complex<float>>(q_len,consumers);
   analysisThreads = new pthread_t[consumers];
   analysisMutex = new pthread_mutex_t[consumers]; 
@@ -1921,17 +1996,20 @@ void PhyLayer::resetRxChannels(){
 void PhyLayer::adjustRxFreq(float offset, int consumer){
   if(offset != 0.0f){
     //set_rx_freq(rx_params.rx_freq + 2e3);
-    /*
+    
     if(threadInfo[consumer].num_subcarriers > 64){
       if(offset < 0){
         offset = -0.05e3;
       } else{
         offset = 0.05e3;
       }
-    }
-    */
+    } 
+  
     threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset + offset;
     threadInfo[consumer].new_info = true;
+    
+    
+
   } else{
     
     if(threadInfo[consumer].num_subcarriers == 64){
@@ -1954,7 +2032,7 @@ void PhyLayer::adjustRxFreq(float offset, int consumer){
       set_tx_subcarrier_alloc(alloc);
       pthread_mutex_unlock(&tx_mutex);
 
-
+      rx_sync = true;
       delete alloc;
     }
     
@@ -2024,4 +2102,14 @@ void PhyLayer::set_node_id(int node_id){
 
 int PhyLayer::get_node_id(){
   return my_node_id;
+}
+
+void PhyLayer::setARQOfdmProperties(ofdmflexframegenprops_s props){
+  pthread_mutex_lock(&tx_mutex);
+  fg_arq = ofdmflexframegen_create(tx_params.numSubcarriers,tx_params.cp_len,
+                                 tx_params.taper_len, tx_params.subcarrierAlloc,
+                                  &props);
+
+  properties_changed = false;
+  pthread_mutex_unlock(&tx_mutex);
 }

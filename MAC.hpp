@@ -179,9 +179,12 @@ public:
     char mac_address[6];
     int frames_sent;
     int frames_received;
+    int expected_frame = 0;
+    int last_frame_recv = 0;
     int frame_errors;
     double bit_error_rate;
     char rx_side;
+    int count = 0;
   };
 
 

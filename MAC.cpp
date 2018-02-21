@@ -8,7 +8,7 @@
 #include "config_reader.hpp"
 
 
-#define DEBUG 0
+#define DEBUG 2
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -638,10 +638,10 @@ void *MAC_rx_worker(void *_arg)
             dprintf("Correct CRC Received for %d bytes\n", status);
           }
 
-          std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
-                                             mac, buf, status);
+          //std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
+                                             //mac, buf, status);
 
-          //mac->analyzeReceivedFrame(buf, status);
+          mac->analyzeReceivedFrame(buf, status);
           //pthread_mutex_unlock(&mac->rx_mutex);
           //if (DEBUG == 2 || DEBUG > 2)
           {
@@ -896,7 +896,7 @@ void MAC::sendToIPLayer(char *payload, int payload_len)
     perror(RED "Error writing to TAP interface\n" RESET);
   }
   if (DEBUG == 2 || DEBUG > 2)
-    dprintf(GRN "Done Writing to TAP interface\n" RESET);
+    dprintf(GRN "Done Writing %d bytes to TAP interface\n" RESET,payload_len);
 }
 
 /*
@@ -1047,8 +1047,11 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, c
     MAC::Peer *new_peer = new Peer;
     memcpy(new_peer->mac_address, peer_address, 6);
     new_peer->frames_sent = 0;
+    new_peer->last_frame_recv = frame_num_received;
     new_peer->frames_received = frame_num_received + 1;
+    new_peer->expected_frame = frame_num_received + 1;
     new_peer->frame_errors = 0;
+
     new_peer->rx_side = rx_side;
     peerlist.push_back(*new_peer);
     printf("New RX Peer Added with rx_side: %x\n",rx_side);
@@ -1057,11 +1060,19 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, c
   {
     // if peer exists;
     printf("RX Peer Exists\n");
-
-    peerlist.at(pos).frame_errors = frame_num_received - peerlist.at(pos).frames_received;
+    printf(MAG "Expected: %d\n" RESET, peerlist.at(pos).expected_frame);
+    peerlist.at(pos).frame_errors = peerlist.at(pos).frame_errors + frame_num_received - peerlist.at(pos).expected_frame;//frames_received;
+    peerlist.at(pos).expected_frame = frame_num_received+1;
     peerlist.at(pos).rx_side = rx_side;
     peerlist.at(pos).frames_received++;
-    peerlist.at(pos).bit_error_rate = ((float)peerlist.at(pos).frame_errors) / ((float)frame_num_received);
+    int diff_frame = frame_num_received - peerlist.at(pos).last_frame_recv;
+    printf("Frame Diff: %d\n",diff_frame);
+
+    if(diff_frame < 0 || diff_frame > 1000){
+      peerlist.at(pos).last_frame_recv = frame_num_received;
+      peerlist.at(pos).frame_errors = 0;
+    }
+    peerlist.at(pos).bit_error_rate = ((float)peerlist.at(pos).frame_errors) / ((float)diff_frame);
     printf(MAG "Frame Num Received: %d\n" RESET, frame_num_received);
     printf("Frame Errors: %d\n", peerlist.at(pos).frame_errors);
     std::cout << std::fixed;

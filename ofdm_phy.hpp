@@ -125,7 +125,9 @@ public:
     ///
     /// The received frame was too corrupted to determine
     /// its type.
-    UNKNOWN
+    UNKNOWN,
+
+    ARQ_PACKET
   };
 
   /// \brief Contains parameters defining how
@@ -710,6 +712,7 @@ public:
     bool packet_found;
     bool rx_stat_flag;
     int num_subcarriers;
+    int debug_packets = 0;
   };
 
   ThreadInfo *threadInfo;
@@ -719,6 +722,18 @@ public:
   void set_node_id(int node_id);
   int get_node_id();
   int my_node_id;
+
+
+  int expected_frame = 0;
+  int last_frame_recv = 0;
+  int frame_errors;
+  int total_frames_received = 0;
+  int last_frame_time = 0;
+  double frame_rate;
+  double total_bits;
+  bool retx;
+  void setARQOfdmProperties(ofdmflexframegenprops_s props);
+  bool properties_changed;
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -769,8 +784,10 @@ private:
   void update_tx_params();
   void transmit_frame(unsigned int frame_type,
                       unsigned char *_payload,
-                      unsigned int _payload_len);
+                      unsigned int _payload_len,
+                      unsigned int custom_frame_num = 0);
   ofdmflexframegen fg;           // frame generator object
+  ofdmflexframegen fg_arq;
   unsigned int fgbuffer_len;     // length of frame generator buffer
   std::complex<float> *fgbuffer; // frame generator output buffer [size:
                                  // numSubcarriers + cp_len x 1]
@@ -831,7 +848,7 @@ private:
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
   bool loop = false;
-  bool random_data = false;
+  bool random_data = true;
   float random_offset = 3*nco_offset;
 
   friend void *analysis(void *_arg);
@@ -860,8 +877,7 @@ private:
   SubcarrierInfo subcarrierInfo;
 
   Engine *CE;
-
-
+  bool rx_sync = false;
 };
 
 #endif

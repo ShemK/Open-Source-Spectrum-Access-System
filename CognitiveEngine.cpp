@@ -1,17 +1,26 @@
 #include "CognitiveEngine.hpp"
 #include <iostream>
-
+#include <stdexcept>
 CognitiveEngine::CognitiveEngine(PhyLayer *PHY){
     pthread_mutex_init(&queueMutex,NULL);
     pthread_mutex_init(&stateMutex,NULL);
+    pthread_mutex_init(&nackMutex,NULL);
+    pthread_mutex_init(&nackServiceMutex,NULL);
     links_created = false;
     this->PHY = PHY;
-    
+    ofdmflexframegenprops_init_default(&arq_props);
+    arq_props.check = LIQUID_CRC_32;
+    arq_props.fec0 = LIQUID_FEC_RS_M8;
+    arq_props.fec1 = LIQUID_FEC_RS_M8;
+    arq_props.mod_scheme = LIQUID_MODEM_BPSK;
 }
 
 
 CognitiveEngine::~CognitiveEngine(){
     delete rx_channels;
+    for(auto it = retx_map.begin();it != retx_map.end();it++){
+        delete [] it->second.payload;
+    }
 }
 
 void CognitiveEngine::execute(){
@@ -33,9 +42,17 @@ void CognitiveEngine::execute(){
             default:
                 break;
         }
+    } else{
+        // place a counter that decreases when no packet is received from nodes
+    }
+
+    if(PHY->properties_changed){
+        PHY->setARQOfdmProperties(arq_props);
     }
 }
 
+// create rx links based on the rx channels
+// NOTE: might need to convert this to a hash map
 void CognitiveEngine::create_rx_links(int num_channels){
     pthread_mutex_lock(&stateMutex);
     if(num_channels < 0){
@@ -56,6 +73,7 @@ void CognitiveEngine::create_rx_links(int num_channels){
 void CognitiveEngine::pushInfo(ChannelInfo &new_info){
     pthread_mutex_lock(&queueMutex);
     info_queue.push(new_info);
+    printf("Info Queue Len: %lu\n",info_queue.size());
     pthread_mutex_unlock(&queueMutex);
 }
 
@@ -76,7 +94,7 @@ void CognitiveEngine::calculateStats(ChannelInfo &new_info){
     pthread_mutex_lock(&stateMutex);
     int j = new_info.channelId;
     rx_channels[j].node_id = new_info.tx_node_id;
-    if(rx_channels[j].no_of_points >= max_points){
+    if(rx_channels[j].no_of_points >= max_points){ // there is an interval at which these stats are calculated
         rx_channels[j].sum_evm = rx_channels[j].sum_evm - rx_channels[j].last_evm;
         rx_channels[j].sum_rssi = rx_channels[j].sum_rssi - rx_channels[j].last_rssi;
         if(rx_channels[j].no_of_points > 1){
@@ -90,6 +108,9 @@ void CognitiveEngine::calculateStats(ChannelInfo &new_info){
         rx_channels[j].no_of_points++;
         rx_channels[j].avg_rssi = rx_channels[j].sum_rssi/rx_channels[j].no_of_points;
         rx_channels[j].avg_evm = rx_channels[j].sum_evm/rx_channels[j].no_of_points;
+    }
+    if(new_info.payload_valid){
+        calculatePacketLoss(new_info);
     }
     pthread_mutex_unlock(&stateMutex);
 }
@@ -114,7 +135,8 @@ void CognitiveEngine::caliberateFrequency(int channel, float cfo){
 
 unsigned char* CognitiveEngine::modifyTxPacket(unsigned char *packet,unsigned int &packet_len, int node_id){
     unsigned char *new_packet = new unsigned char[packet_len + sizeof(ExchangeInfo)];
-    std::cout << "----------Sending Info for node: " << node_id << "---------\n";
+    //std::cout << "----------Sending Info for node: " << node_id << "---------\n";
+    memset(&txInfo,0,sizeof(txInfo));
     if(node_id == -1){
         txInfo.node_id = -1;
         memcpy(new_packet,&txInfo,sizeof(txInfo));
@@ -127,6 +149,12 @@ unsigned char* CognitiveEngine::modifyTxPacket(unsigned char *packet,unsigned in
                 txInfo.avg_rssi = rx_channels[i].avg_rssi;
                 txInfo.node_id = node_id;
                 txInfo.avg_evm = rx_channels[i].avg_evm;
+                if(nack_queue.size() > 0){
+                    txInfo.infoNack = popNack();
+                    txInfo.sending_nack = true;
+                } else{
+                    
+                }
                 memcpy(new_packet,&txInfo,sizeof(txInfo));
                 memcpy(new_packet+sizeof(txInfo),packet,packet_len);
                 packet_len = packet_len + sizeof(txInfo);
@@ -137,8 +165,7 @@ unsigned char* CognitiveEngine::modifyTxPacket(unsigned char *packet,unsigned in
         memcpy(new_packet,&txInfo,sizeof(txInfo));
         memcpy(new_packet+sizeof(txInfo),packet,packet_len);
         packet_len = packet_len + sizeof(txInfo);
-        
-        printSharedInfo(txInfo);
+        //printSharedInfo(txInfo);
         return new_packet;
     }
 
@@ -156,6 +183,17 @@ void CognitiveEngine::printSharedInfo(ExchangeInfo info){
     std::cout << "node_id: " << info.node_id << "\n";
     std::cout << "rssi: " << info.avg_rssi << "\n";
     std::cout << "evm: " << info.avg_evm << "\n";
+    std::cout << "retransmit?: " << info.retransmit<< "\n";
+    std::cout << "nack?: " << info.sending_nack << "\n";
+    if(info.sending_nack == 1){
+        printf(CYN "Lost Expected Frame: %d\n" RESET,info.infoNack.expected_frame );
+        printf(CYN "Errors Reported: %d\n" RESET,info.infoNack.errors );
+        if(info.node_id == PHY->get_node_id()){
+            pthread_mutex_lock(&nackServiceMutex);
+            nack_service_queue.push(info.infoNack);
+            pthread_mutex_unlock(&nackServiceMutex);
+        }
+    }
 }
 
 void CognitiveEngine::printStatInfo(ChannelInfo info){
@@ -164,3 +202,113 @@ void CognitiveEngine::printStatInfo(ChannelInfo info){
     std::cout << "evm: " << info.evm<< "\n";
     std::cout << "channel_id: " << info.channelId << "\n";
 }
+
+void CognitiveEngine::calculatePacketLoss(ChannelInfo &new_info){
+    try{
+        int key = new_info.tx_node_id;
+        if(!new_info.retransmit){
+            
+            int new_error = new_info.frame_num - node_info[key].expected_frame;
+            node_info[key].frame_errors = node_info[key].frame_errors + new_error;
+            node_info[key].total_frames_received++;
+            node_info[key].total_bits = node_info[key].total_bits + new_info.payload_len*8;
+        
+        // reset calculations
+        
+            int diff_frame = new_info.frame_num - node_info[key].last_frame_received;
+            if(diff_frame <= 0 || diff_frame > 1000){
+                node_info[key].last_frame_received = new_info.frame_num;
+                node_info[key].frame_errors = 0;
+                node_info[key].last_frame_time = new_info.time_stamp;
+                node_info[key].total_bits = 0;
+            }
+
+            float error_rate = ((float)node_info[key].frame_errors) / ((float)diff_frame);
+        
+    
+            createNack(key,new_error);
+
+            node_info[key].expected_frame = new_info.frame_num+1;
+
+
+            int time_elapsed = new_info.time_stamp - node_info[key].last_frame_time;
+            if(time_elapsed > 1){
+                double bit_rate = node_info[key].total_bits/((double)time_elapsed);
+                printf(BLU "BitRate: %f\n" RESET,bit_rate);
+            }
+            printf(BLU "PHY Errors: %d\n" RESET,node_info[key].frame_errors);
+            printf(BLU "PHY Error Rate: %f\n" RESET,error_rate);
+        } else{
+            node_info[key].frame_errors--;
+        }
+
+        
+    }
+    catch (const std::out_of_range& oor) {
+        NodeInfo new_node;
+        new_node.node_id = new_info.tx_node_id;
+        new_node.last_frame_time = new_info.time_stamp;
+        new_node.last_frame_received = new_info.frame_num;
+        node_info.emplace(new_node.node_id,new_node);
+    }
+}
+
+void CognitiveEngine::createNack(int node_id,int new_error){
+
+    if(new_error > 0 && new_error < acceptable_nacks){
+        NACK new_nack;
+        new_nack.expected_frame = node_info[node_id].expected_frame;
+        new_nack.errors = new_error; 
+        new_nack.node_id = node_id;
+
+        pthread_mutex_lock(&nackMutex);
+        nack_queue.push(new_nack);
+        pthread_mutex_unlock(&nackMutex);
+    }
+}
+
+Engine::NACK CognitiveEngine::popNack(){
+    pthread_mutex_lock(&nackMutex);
+    NACK temp = nack_queue.front();
+    nack_queue.pop();
+    pthread_mutex_unlock(&nackMutex);
+    return temp;
+}
+
+void CognitiveEngine::storePayload(unsigned char *payload, unsigned int payload_len, unsigned int frame_num){
+    PayloadInfo new_load;
+    new_load.payload_len = payload_len;
+    new_load.payload = new unsigned char[payload_len];
+    memcpy(new_load.payload,payload,payload_len);
+    retx_map.emplace(frame_num,new_load);
+
+    if(retx_map.size() > 20){
+        delete [] retx_map[frame_num-20].payload;
+        retx_map.erase(frame_num-20);
+    }
+}
+
+
+unsigned char * CognitiveEngine::getPayload(unsigned int frame_num, unsigned int &payload_len){
+    try{
+        payload_len = retx_map.at(frame_num).payload_len;
+        return retx_map.at(frame_num).payload;
+    }
+    catch (const std::out_of_range& oor) {
+        payload_len = 0;
+        return NULL;
+    }
+}
+
+int CognitiveEngine::getNackServiceSize(){
+    return nack_service_queue.size();
+}
+
+Engine::NACK CognitiveEngine::popServiceNack(){
+    pthread_mutex_lock(&nackServiceMutex);
+    NACK temp = nack_service_queue.front();
+    nack_service_queue.pop();
+    pthread_mutex_unlock(&nackServiceMutex);
+    return temp;
+}
+
