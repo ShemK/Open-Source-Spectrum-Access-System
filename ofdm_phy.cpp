@@ -407,7 +407,7 @@ void *PHY_tx_worker(void *_arg)
       struct timespec timeout;
       clock_gettime(CLOCK_REALTIME, &timeout);
 
-      timeout.tv_nsec = timeout.tv_nsec + 5 * 1e6;
+      timeout.tv_nsec = timeout.tv_nsec + 1e3;
       if (timeout.tv_nsec > 1e9)
       {
         timeout.tv_sec = timeout.tv_sec + 1;
@@ -432,13 +432,14 @@ void *PHY_tx_worker(void *_arg)
         status = mq_timedreceive(PHY->phy_tx_queue, buffer, buffer_len, 0, &timeout);
         mq_getattr(PHY->phy_tx_queue,&attr_tx);
         PHY->tx_nco_offset = PHY->random_offset;
+        /*
         if(attr_tx.mq_curmsgs >=2){
           PHY->split_num = status-1;
           timeout.tv_sec = timeout.tv_sec + 1;
           int m = mq_timedreceive(PHY->phy_tx_queue, buffer+PHY->split_num, buffer_len - PHY->split_num, 0, &timeout);
           printf("M: %d\n",m);
           status  = PHY->split_num + m;
-        }
+        }*/
       }
 
       if (status == -1)
@@ -471,7 +472,7 @@ void *PHY_tx_worker(void *_arg)
         // TODO: Need to reduce the amount of memcpys
         int tx_id = (int) control;
 
-        PHY->CE->storePayload((unsigned char *)buffer,payload_len,PHY->frame_num);
+        PHY->CE->storePayload((unsigned char *)buffer,payload_len,tx_id,PHY->frame_num);
 
         unsigned char *temp_payload = PHY->CE->modifyTxPacket((unsigned char *) buffer,payload_len,tx_id);
 
@@ -506,16 +507,28 @@ void *PHY_tx_worker(void *_arg)
         memset(buffer, 0, buffer_len);
       }
 
-      if(PHY->CE->getNackServiceSize() > 0){
-        Engine::NACK temp = PHY->CE->popServiceNack();
+      if((PHY->CE->getNackServiceSize()) > 0 && PHY->implement_arq){
+        Engine::NACK temp = PHY->CE->popServiceNack(); // pop the nack to be serviced
         for(int i = 0; i < temp.errors; i++){
           printf(CYN "---------Resending Frame: %d-------------\n" RESET,temp.expected_frame+i);
-          unsigned char *temp_payload = PHY->CE->getPayload(temp.expected_frame+i, payload_len);
-          temp_payload = PHY->CE->modifyTxPacket(temp_payload,payload_len,temp.node_id);
+          unsigned char *temp_payload = PHY->CE->getPayload(temp.expected_frame+i, payload_len,temp.sender_id);
+          temp_payload = PHY->CE->modifyTxPacket(temp_payload,payload_len,temp.sender_id);
           Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)temp_payload;
           tempInfo->retransmit = true;
           PHY->transmit_frame(PhyLayer::ARQ_PACKET,temp_payload, payload_len,temp.expected_frame+i);
         }
+      }
+
+      if(PHY->CE->getNackSize() > 0){
+          
+          unsigned char *temp_payload = (unsigned char *)buffer;
+          payload_len = 1;
+          Engine::NACK temp_nack = PHY->CE->getNackFront(); // get the nack to be sent
+          temp_payload = PHY->CE->modifyTxPacket(temp_payload,payload_len,temp_nack.sender_id); // add channel info
+          Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)temp_payload;
+          PHY->CE->storePayload(temp_payload,payload_len,temp_nack.sender_id,PHY->frame_num); // why store??
+          printf(CYN "---------Sending Nack to %d-------------\n" RESET, tempInfo->infoNack.node_id);
+          PHY->transmit_frame(PhyLayer::ARQ_PACKET,temp_payload, payload_len);
       }
 
       // change state to stopped once all frames have been transmitted
@@ -1479,14 +1492,15 @@ int rxCallback(unsigned char *_header, int _header_valid,
     if(threadInfo->debug_packets > 10){
       threadInfo->debug_packets = 0;
     }
-    ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
+    //ofdmflexframesync_debug_print(*threadInfo->fsync_t,file.c_str());
     //PHY->adjustRxFreq(ofdmflexframesync_get_cfo(*threadInfo->fsync_t), consumer);
     
     struct timespec timeout;
     clock_gettime(CLOCK_REALTIME, &timeout);
-    Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)_payload;
-    unsigned char *payload = PHY->CE->getSharedInformation(_payload,_payload_len);
 
+
+    unsigned char *payload;
+    Engine::ExchangeInfo *tempInfo =  (Engine::ExchangeInfo *)_payload;
     Engine::ChannelInfo new_info;
     new_info.rssi = rssi;
     new_info.cfo = cfo;
@@ -1494,6 +1508,8 @@ int rxCallback(unsigned char *_header, int _header_valid,
     new_info.info_flag = Engine::PACKET_FLAG;
     new_info.tx_node_id = (int) _header[3];
     if(_payload_valid == 1){
+     
+      payload = PHY->CE->getSharedInformation(_payload,_payload_len);
       new_info.payload_valid = true;
       new_info.frame_num = frame_num;
       new_info.time_stamp = timeout.tv_sec;
@@ -1504,52 +1520,86 @@ int rxCallback(unsigned char *_header, int _header_valid,
       new_info.payload_valid = false;
     }
 
-    PHY->CE->pushInfo(new_info);
+    PHY->CE->pushInfo(new_info); // push info to calculate channel statistics
+    
 
-     if (_payload_valid == 1)
+    if (_payload_valid == 1)
     {
-      char mac_load[_payload_len+1];
-      mac_load[0] = _header[3];
-      printf("packet from: %d\n",(int) mac_load[0]);
-      int count = 1;
-      if(split > 0){
-        count = 2;
+      if(tempInfo->node_id==-1){ // if control frame
+        PhyLayer::RxPayLoad readyLoad;
+        readyLoad.payload_len = _payload_len;
+        readyLoad.payload = payload;
+        readyLoad.header = _header;
+        readyLoad.split = split;
+        PHY->sendUpNetworkStack(readyLoad);
+        return 0;
       }
-      for(int i = 0; i < count; i++){
-          int new_len = _payload_len;
-          timeout.tv_sec = timeout.tv_sec + 1;
-          if(i == 0){
-            if(count > 1){
-              new_len = split;
-            }
-            memcpy(&mac_load[1],(char *)payload, new_len);
+
+      Engine::NACK new_nack = PHY->CE->calculatePacketLoss(new_info); // calculate packet loss
+      try{
+        if((new_nack.errors > 0 || PHY->peerRxLoads[_header[3]].wait) && PHY->implement_arq && tempInfo->node_id!=-1){
+          if(new_nack.errors > 0 && !PHY->peerRxLoads[_header[3]].wait){
+            PHY->peerRxLoads[_header[3]].errors = new_nack.errors + 2;
+            PHY->peerRxLoads[_header[3]].wait = true;
+            PHY->peerRxLoads[_header[3]].start = new_nack.expected_frame;
+            PHY->peerRxLoads[_header[3]].end = new_nack.expected_frame;
+          } else if(new_nack.errors > 0){
+            PHY->peerRxLoads[_header[3]].errors =  PHY->peerRxLoads[_header[3]].errors + new_nack.errors;
           } else{
-            new_len = _payload_len - split;
-            if(new_len > 0){
-              memcpy(&mac_load[1],(char *)payload + split, new_len);
-            } else{
-              new_len = -1;
-            }
-            
+             PHY->peerRxLoads[_header[3]].errors--;
           }
-          printf("CFO: %f\n",ofdmflexframesync_get_cfo(*threadInfo->fsync_t));
-
-          int status = -1;
-          if(!PHY->random_data){
-            status = mq_timedsend(PHY->phy_rx_queue, (char *)mac_load, new_len+1, 0, &timeout);
+          PhyLayer::RxPayLoad newPayloadStruct;
+          newPayloadStruct.header = new unsigned char[8];
+          newPayloadStruct.payload_len = _payload_len;
+          newPayloadStruct.payload = new unsigned char[_payload_len];
+          newPayloadStruct.split = split;
+          newPayloadStruct.frame_num = frame_num;
+          memcpy(newPayloadStruct.payload,payload,_payload_len);
+          memcpy(newPayloadStruct.header,_header,8);
+          PHY->peerRxLoads[_header[3]].payload_table.emplace(frame_num,newPayloadStruct);
+          if(PHY->peerRxLoads[_header[3]].errors <= 0 ){
+            PHY->peerRxLoads[_header[3]].wait = false;
           }
-          if (status == -1)
-          {
-            perror("Queue is full\n");
-            printf(GRN "mq_send failure\n" RESET);
+          if(frame_num >= PHY->peerRxLoads[_header[3]].end){
+            PHY->peerRxLoads[_header[3]].end = frame_num;
           }
-          else
-          {
-            printf(GRN "mq_send to mac successful\n" RESET);
-          }
+          printf("//////////Table Size %lu\n",PHY->peerRxLoads[_header[3]].payload_table.size());
+        }
+        
       }
-      
+      catch (const std::out_of_range& oor) {
+        PhyLayer::PeerRxLoad peerLoad;
+        peerLoad.wait = false;
+        peerLoad.node_id = _header[3];
+        PHY->peerRxLoads.emplace(_header[3],peerLoad);
+      }
 
+      if(!PHY->peerRxLoads[_header[3]].wait){
+        if(PHY->peerRxLoads[_header[3]].payload_table.size() > 0){
+          for(int i = PHY->peerRxLoads[_header[3]].start; i <= PHY->peerRxLoads[_header[3]].end ;i++ ){
+            try{
+              printf("Sending Queued Table: %d\n",i);
+              printf("Actual NUM: %d\n",PHY->peerRxLoads[_header[3]].payload_table[i].frame_num);
+              if(PHY->peerRxLoads[_header[3]].payload_table[i].frame_num!=0){
+                PHY->sendUpNetworkStack(PHY->peerRxLoads[_header[3]].payload_table[i]);
+                delete [] PHY->peerRxLoads[_header[3]].payload_table[i].header;
+                delete [] PHY->peerRxLoads[_header[3]].payload_table[i].payload;
+              }
+            }
+            catch (const std::out_of_range& oor) {
+
+            }
+          }
+          PHY->peerRxLoads[_header[3]].payload_table.clear();
+        } else{
+          PhyLayer::RxPayLoad readyLoad;
+          readyLoad.payload_len = _payload_len;
+          readyLoad.payload = payload;
+          readyLoad.header = _header;
+          readyLoad.split = split;
+          PHY->sendUpNetworkStack(readyLoad);
+        }
+      }
     }
     else
     {
@@ -1566,6 +1616,55 @@ int rxCallback(unsigned char *_header, int _header_valid,
 
   return 0;
 
+}
+
+
+void PhyLayer::sendUpNetworkStack(RxPayLoad &readyLoad){
+      struct timespec timeout;
+      clock_gettime(CLOCK_REALTIME, &timeout);
+      int split = readyLoad.split;
+      int _payload_len = readyLoad.payload_len;
+      unsigned char *payload = readyLoad.payload;
+      unsigned char *_header = readyLoad.header;
+      char mac_load[_payload_len+1];
+      mac_load[0] = (char) _header[3];
+      printf("packet from: %d\n",(int) mac_load[0]);
+      int count = 1;
+      if(split > 0){
+          count = 2;
+        }
+        for(int i = 0; i < count; i++){
+            int new_len = _payload_len;
+            timeout.tv_sec = timeout.tv_sec + 1;
+            if(i == 0){
+              if(count > 1){
+                new_len = split;
+              }
+              memcpy(&mac_load[1],(char *)payload, new_len);
+            } else{
+              new_len = _payload_len - split;
+              if(new_len > 0){
+                memcpy(&mac_load[1],(char *)payload + split, new_len);
+              } else{
+                new_len = -1;
+              }
+              
+            }
+ 
+            int status = -1;
+            if(!random_data){
+              status = mq_timedsend(phy_rx_queue, (char *)mac_load, new_len+1, 0, &timeout);
+            }
+            if (status == -1)
+            {
+              perror("Queue is full\n");
+              printf(GRN "mq_send failure\n" RESET);
+            }
+            else
+            {
+              printf(GRN "mq_send to mac successful\n" RESET);
+            }
+        }
 }
 // set receiver frequency
 void PhyLayer::set_rx_freq(double _rx_freq)

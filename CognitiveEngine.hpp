@@ -64,6 +64,7 @@ public:
         int node_id;
         int rx_channel_id;
         int expected_frame = 0;
+        int prev_expected_frame = 0;
         int last_frame_received = 0;
         int last_frame_time = 0;
         int frame_errors = 0;
@@ -94,7 +95,16 @@ public:
         unsigned char *payload;
         int payload_len;
     };
-    std::unordered_map<int,PayloadInfo> retx_map; // hashmap for arq
+     // hashmap for arq
+    
+    struct ReceiverPayLoad{
+        int node_id;
+        unsigned int frame_num = 0;
+        std::unordered_map<int,PayloadInfo> retx_queue;
+    };
+
+    std::unordered_map<int,ReceiverPayLoad> retx_map;
+
 
     std::queue <NACK> nack_queue;
     pthread_mutex_t nackMutex;
@@ -104,20 +114,24 @@ public:
 
     void printSharedInfo(ExchangeInfo info);
     void printStatInfo(ChannelInfo info);
-    void calculatePacketLoss(ChannelInfo &new_info);
-    void storePayload(unsigned char *payload,unsigned int payload_len, unsigned int frame_num); // store payload in retransmission queue
-    unsigned char * getPayload(unsigned int frame_num, unsigned int &payload_len);
+    Engine::NACK calculatePacketLoss(ChannelInfo &new_info);
+    void storePayload(unsigned char *payload,unsigned int payload_len, int node_id,unsigned int &frame_num); // store payload in retransmission queue
+    unsigned char * getPayload(unsigned int frame_num, unsigned int &payload_len,int node_id);
     int getNackServiceSize();
+    int getNackSize();
     std::map<int,ExchangeInfo> myInfo;
 
     Engine::NACK popServiceNack();
 
 
     ExchangeInfo txInfo;
-    void createNack(int node_id,int new_error);
-    NACK popNack();
+    Engine::NACK createNack(int node_id,int new_error);
+    Engine::NACK popNack();
+    Engine::NACK getNackFront();
 
     ofdmflexframegenprops_s arq_props;
+
+    int max_tx_queue_size = 100;
 private:
     
 };

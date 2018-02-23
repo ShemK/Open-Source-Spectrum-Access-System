@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     np.rx_rate = myConfig.rx_rate;
     PHY->setRxChannels(np.rx_rate,myConfig.channels);
     printf("RX FREQ: %f\n",np.rx_freq);
-    //np.tx_freq = myConfig.tx_freq;
+    np.tx_freq = myConfig.tx_freq;
     printf("TX FREQ: %f\n",np.tx_freq);
     np.tx_rate = myConfig.tx_rate;
     if(np.tx_freq > 5e9){
@@ -112,7 +112,7 @@ void initialize_node_parameters(struct node_parameters *np)
   // initial USRP settings
   np->rx_freq = 458e6;
   np->rx_rate = 4e6;
-  np->rx_gain = 0.0;
+  np->rx_gain = 60.0;
 
   np->tx_freq = 5800.508e6;
   np->tx_rate = 4e6;
@@ -120,7 +120,7 @@ void initialize_node_parameters(struct node_parameters *np)
 
   // initial liquid OFDM settings
   np->tx_gain_soft = -6;
-  np->tx_modulation = LIQUID_MODEM_QAM8;
+  np->tx_modulation = LIQUID_MODEM_PSK8;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_RS_M8;
   np->tx_fec1 = LIQUID_FEC_RS_M8;

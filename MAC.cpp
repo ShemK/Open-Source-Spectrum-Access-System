@@ -43,7 +43,8 @@ MAC::MAC()
 
   sprintf(systemCMD, "sudo ifconfig bat0 192.168.1.%d",node_id);
   system(systemCMD);
-
+  sprintf(systemCMD, "sudo ifconfig bat0 mtu %s", "3000");
+  system(systemCMD);
   memset(prev_packet, 0, MAX_BUF);
   // Get reference to TUN interface
   tunfd = tun_alloc(tun_name, IFF_TAP);
@@ -113,6 +114,8 @@ void MAC::set_ip(const char *ip)
   sprintf(systemCMD, "sudo ifconfig %s %s netmask 255.255.0.0", tun_name, ip);
   system(systemCMD);
   sprintf(systemCMD, "sudo ifconfig %s txqueuelen %s", tun_name, "15000");
+  system(systemCMD);
+  sprintf(systemCMD, "sudo ifconfig %s mtu %s", tun_name, "3000");
   system(systemCMD);
   std::string mac_str = exec("ifconfig mac_interface | grep HWaddr | awk '{print $5}'");
   for (uint idx = 0; idx < 6; ++idx)

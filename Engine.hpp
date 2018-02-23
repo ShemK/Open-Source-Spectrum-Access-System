@@ -34,8 +34,9 @@ public:
 
     struct NACK{
         int expected_frame;
-        int errors;
+        int errors = 0;
         int node_id;
+        int sender_id;
     };
 
     // lazy way of creating a modular header for information
@@ -54,10 +55,13 @@ public:
     virtual void pushInfo(ChannelInfo &new_info) = 0;
     virtual unsigned char* modifyTxPacket(unsigned char *packet, unsigned int &packet_len,int node_id);
     virtual unsigned char *getSharedInformation(unsigned char *packet, unsigned int & packet_len);
-    virtual void storePayload(unsigned char *payload,unsigned int payload_len, unsigned int frame_num) = 0;
-    virtual unsigned char * getPayload(unsigned int frame_num, unsigned int &payload_len) = 0; 
+    virtual void storePayload(unsigned char *payload,unsigned int payload_len, int node_id,unsigned int &frame_num) = 0;
+    virtual unsigned char * getPayload(unsigned int frame_num, unsigned int &payload_len, int node_id) = 0; 
     virtual int getNackServiceSize() = 0;
+    virtual int getNackSize() = 0;
     virtual NACK popServiceNack() = 0;
+    virtual NACK calculatePacketLoss(ChannelInfo &new_info) = 0;
+    virtual NACK getNackFront() = 0;
     pthread_mutex_t queueMutex;
 
     std::queue<ChannelInfo> info_queue;

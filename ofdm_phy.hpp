@@ -25,6 +25,8 @@
 #include "BufferQ.h"
 #include "Engine.hpp"
 #include <fftw3.h>
+#include <unordered_map>
+#include <stdexcept>
 
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
@@ -734,6 +736,31 @@ public:
   bool retx;
   void setARQOfdmProperties(ofdmflexframegenprops_s props);
   bool properties_changed;
+
+  struct RxPayLoad{
+    unsigned char *header;
+    unsigned char *payload;
+    int payload_len;
+    int frame_num;
+    int split;
+  };
+
+  struct PeerRxLoad{
+    bool wait;
+    int errors;
+    int start;
+    int end;
+    char node_id;
+    std::unordered_map<int,RxPayLoad> payload_table;
+    int original_errors;
+  };
+
+  std::unordered_map<char,PeerRxLoad> peerRxLoads;
+
+  void sendUpNetworkStack(RxPayLoad &readyLoad);
+
+  bool implement_arq = true;
+
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -848,7 +875,7 @@ private:
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
   bool loop = false;
-  bool random_data = true;
+  bool random_data = false;
   float random_offset = 3*nco_offset;
 
   friend void *analysis(void *_arg);
@@ -878,6 +905,9 @@ private:
 
   Engine *CE;
   bool rx_sync = false;
+
+  
+
 };
 
 #endif
