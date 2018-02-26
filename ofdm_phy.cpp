@@ -198,6 +198,7 @@ PhyLayer::~PhyLayer()
 
   
   recvQueue->stopConsumers();
+  
   for (int i = 0; i < consumers; i++)
   {
     pthread_join(analysisThreads[i],NULL);
