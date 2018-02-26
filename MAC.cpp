@@ -43,8 +43,6 @@ MAC::MAC()
 
   sprintf(systemCMD, "sudo ifconfig bat0 192.168.1.%d",node_id);
   system(systemCMD);
-  sprintf(systemCMD, "sudo ifconfig bat0 mtu %s", "3000");
-  system(systemCMD);
   memset(prev_packet, 0, MAX_BUF);
   // Get reference to TUN interface
   tunfd = tun_alloc(tun_name, IFF_TAP);

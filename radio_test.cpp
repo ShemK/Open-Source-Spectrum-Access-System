@@ -174,7 +174,7 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
   PHY->reset_syncs();
   PHY->set_rx_subcarrier_alloc(alloc);
 
-  delete alloc;
+  delete []alloc;
 
   //PHY->set_rx_subcarrier_alloc(alloc);
   //PHY->set_tx_subcarrier_alloc(alloc);

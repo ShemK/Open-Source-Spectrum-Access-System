@@ -118,7 +118,7 @@ void CognitiveEngine::calculateStats(ChannelInfo &new_info){
 
 
 void CognitiveEngine::caliberateFrequency(int channel, float cfo){
-    float offset = 0.005e3f;
+    float offset = 0.0f;
     if(cfo > 0.001){
         offset = 0.05e3;
     } else if(cfo < -0.001){
@@ -224,7 +224,7 @@ Engine::NACK CognitiveEngine::calculatePacketLoss(ChannelInfo &new_info){
             // reset calculations
             
                 int diff_frame = new_info.frame_num - node_info[key].last_frame_received;
-                if(diff_frame <= 0 || diff_frame > 1000){
+                if(diff_frame <= 0 || diff_frame > 2000){
                     node_info[key].last_frame_received = new_info.frame_num;
                     node_info[key].frame_errors = 0;
                     node_info[key].last_frame_time = new_info.time_stamp;

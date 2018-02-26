@@ -83,12 +83,15 @@ BufferQ<T>::BufferQ(int q_size, int consumers){
 
 template<class T>
 BufferQ<T>::~BufferQ(){
+    consumer_stopped = true;
     for(int i = 0; i < q_size; i++){
-        delete slots[i].data;
+        sem_post(&phores[i]);
+        delete [] slots[i].data;
     }
     delete []slots;
     delete []head;
     delete []mutices;
+    delete []mutex_bool;
 }
 
 template<class T>
@@ -96,7 +99,7 @@ void BufferQ<T>::enqueue(T *input, int size){
 
     if(addingConsumer){
         pthread_mutex_lock(&mutices[tail]);
-
+            // to add more consumers
         pthread_mutex_lock(&mutices[tail]);
     }
     if(slots[tail].rank > 0){

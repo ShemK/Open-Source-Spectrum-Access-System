@@ -735,7 +735,7 @@ public:
   double total_bits;
   bool retx;
   void setARQOfdmProperties(ofdmflexframegenprops_s props);
-  bool properties_changed;
+  bool properties_changed = false;
 
   struct RxPayLoad{
     unsigned char *header;
@@ -753,14 +753,17 @@ public:
     char node_id;
     std::unordered_map<int,RxPayLoad> payload_table;
     int original_errors;
+    int start_time;
   };
 
   std::unordered_map<char,PeerRxLoad> peerRxLoads;
 
   void sendUpNetworkStack(RxPayLoad &readyLoad);
 
-  bool implement_arq = true;
+  bool implement_arq = false;
+  bool initializing  = true;
 
+  void sendLotsOfDataThread(char peer_id);
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -906,7 +909,7 @@ private:
   Engine *CE;
   bool rx_sync = false;
 
-  
+
 
 };
 

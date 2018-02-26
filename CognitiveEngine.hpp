@@ -31,7 +31,7 @@ public:
     int acceptable_nacks = 5;
     int num_rx_channels;
 
-    bool links_created;
+    bool links_created = false;
 
 
     enum RxLinkState{

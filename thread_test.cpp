@@ -17,14 +17,17 @@ void *consume(void *_arg){
     std::string file = "thread_"+std::to_string(y->consumer);
     std::cout << "Filename: " << file << "\n";
     std::ofstream out(file.c_str());
-    while(count < 1000000){   
+    while(count < 1000){   
         int s = 0;
         int *x = myQueue->dequeue(y->consumer,s);
-        if(x[0]-count !=0){
-            std::cout << "mismatch: " << x[0]-count << "\n";
+        if(x!=NULL){
+            if(x[0]-count !=0){
+            //std::cout << "mismatch: " << x[0]-count << "\n";
+            }
+            out << x[0]-count << "\n";
+            //delete [] x;
         }
-        out << x[0]-count << "\n";
-        //delete [] x;
+
         count++;
     }
     out.close();
@@ -34,7 +37,7 @@ void *consume(void *_arg){
 void *produce(void *_arg){
     BufferQ<int> *myQueue = (BufferQ<int> *) _arg;
     int count = 0;
-    while(count < 1000000){
+    while(count < 1000){
         //std::cout << "Producer: " << count << "\n";
         int p[3] = {10,1,3};
         p[0] = count;
@@ -47,8 +50,8 @@ void *produce(void *_arg){
 
 
 int main(){
-    const int consumers = 1;
-    BufferQ<int> myQueue(100000,consumers);
+    const int consumers = 2;
+    BufferQ<int> myQueue(10000,consumers);
 
     pthread_t thread1;
     pthread_t threads[consumers];
