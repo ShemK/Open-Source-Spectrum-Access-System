@@ -288,7 +288,7 @@ void PhyLayer::set_attributes()
 
   resampler_factor = 4; // samples/symbol
 
-  filter_delay = 32; // filter delay
+  filter_delay = 8; // filter delay
   beta = 0.01f;      // filter excess bandwidth
 
   recvQueue = NULL;
@@ -683,7 +683,7 @@ void PhyLayer::transmit_frame(unsigned int frame_type,
   usrp_tx->get_device()->send(&delay_vec.front(), delay_vec.size(),
                               metadata_tx, uhd::io_type_t::COMPLEX_FLOAT32,
                               uhd::device::SEND_MODE_FULL_BUFF);
-  //ofdmflexframegen_print(fg);
+  ofdmflexframegen_print(fg);
   int ofdm_symbols = 0;
   /*
   float fc=0.44f;         // filter cutoff frequency
@@ -2231,7 +2231,7 @@ void PhyLayer::adjustRxFreq(float offset, int consumer)
   if (offset != 0.0f)
   {
     //set_rx_freq(rx_params.rx_freq + 2e3);
-
+  /*
     if (threadInfo[consumer].num_subcarriers > 64)
     {
       if (offset < 0)
@@ -2243,7 +2243,7 @@ void PhyLayer::adjustRxFreq(float offset, int consumer)
         offset = 0.05e3;
       }
     }
-
+    */
     threadInfo[consumer].nco_offset = threadInfo[consumer].nco_offset + offset;
     threadInfo[consumer].new_info = true;
   }

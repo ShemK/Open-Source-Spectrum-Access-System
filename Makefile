@@ -4,7 +4,7 @@
 # http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 
 GPP=g++
-CFLAGS=-std=c++11
+CFLAGS=-std=c++11 -g
 LIBS=-lboost_system -luhd -lliquid -lm -lc -lpthread -lrt -lz -lconfig
 OBJ_DIR=obj
 LIB_DIR=lib
@@ -21,7 +21,7 @@ client: directories client.cpp $(MAC_DEPS)
 	$(GPP) -o client client.cpp $(MAC_DEPS) $(LIBS) $(CFLAGS)
 
 radio_test: directories $(PHY_DEPS)
-	$(GPP) -o radio_test $(PHY_DEPS) BufferQ.h $(LIBS)
+	$(GPP) -o radio_test $(PHY_DEPS) BufferQ.h $(LIBS) $(CFLAGS) 
 
 lib: directories $(MAC_DEPS)
 	$(GPP) -fPIC -shared -Wl,-soname,libmactest.so.1 -o $(OBJ_DIR)/libmactest.so.1.0 $(MAC_DEPS) $(LIBS) $(CFLAGS)
