@@ -346,7 +346,7 @@ class JsonListener{
 							'grantState'=>$row['grantState']];
 						$operationParam = (object)[];
 						$operationParam->{'maxEirp'} = 100;
-						$newLowFreq = $this->chooseRandomChannel($fccId,$grantId);
+						$newLowFreq = $this->chooseRandomChannel($fccId,$grantId,$row['lowFrequency']);
 						$operationParam->{'operationalFrequencyRange'}->{'lowFrequency'} =$newLowFreq;
 						$operationParam->{'operationalFrequencyRange'}->{'highFrequency'} = $newLowFreq + 10e6;
 						$replyObj->{'operationParam'} = $operationParam;
@@ -564,9 +564,18 @@ class JsonListener{
 		}
 	}
 
-	private function chooseRandomChannel($fccId,$grantId){
+	private function chooseRandomChannel($fccId,$grantId,$lowFrequency){
 		$cbsd_table = "cbsdInfo_".$fccId;
 		$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3650e6 and pu_absent = 1;';
+
+
+		if($lowFrequency > 3550e6 && $lowFrequency < 3750e6){
+				$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3750e6 and pu_absent = 1;';
+		}elseif ($lowFrequency > 800e6 && $lowFrequency < 1000e6) {
+				$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 800e6 and "lowFrequency" < 1000e6 and pu_absent = 1;';
+		}elseif ($lowFrequency > 400e6 && $lowFrequency < 600e6) {
+				$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 400e6 and "lowFrequency" < 600e6 and pu_absent = 1;';
+		}
 		$channels = array();
 		$result = $this->myDBHandler->query($query);
 		while($row = $this->myDBHandler->fetchResults($result)){
