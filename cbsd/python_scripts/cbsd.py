@@ -7,12 +7,14 @@ import socket
 import gps_reader
 from gps_reader import *
 
-scripts = os.path.dirname(os.path.abspath(__file__))
-scripts = scripts + '../python_scripts'
-sys.path.insert(0, scripts)
+#scripts = os.path.dirname(os.path.abspath(__file__))
+#scripts = scripts + '../python_scripts'
+#sys.path.insert(0, scripts)
+
+#print scripts
 
 scripts = os.path.dirname(os.path.abspath(__file__))
-scripts = scripts + '../config_scripts'
+scripts = scripts + '/../config_scripts'
 sys.path.insert(0, scripts)
 
 import scenario_controller

@@ -44,10 +44,14 @@ class ConfigEditor(object):
 
     #   read basic information that every node should have
     def create_basic_node_configuration(self):
-        config_path = os.path.dirname(os.path.abspath(__file__))
-        config_path = config_path + '/basic_node.cfg'
-        return self.read_config_file(config_path)
+        #config_path = os.path.dirname(os.path.abspath(__file__))
+        #config_path = config_path + '/basic_node.cfg'
+        return self.create_configuration('basic_node.cfg')
 
+    def create_configuration(self,filename):
+        config_path = os.path.dirname(os.path.abspath(__file__))
+        config_path = config_path + '/'+filename
+        return self.read_config_file(config_path)
     #   set the attributes for a node dictionary and return a new dict
     def set_node_attribute(self,node,key,value):
         temp_node = node.copy()#dict(node) # create a new copy of dictionary

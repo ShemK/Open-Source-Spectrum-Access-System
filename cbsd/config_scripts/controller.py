@@ -34,7 +34,7 @@ class Controller(object):
         random.seed()
         self.channels = []
         while len(self.channels) < self.channel_num:
-            newChannel = random.randint(355,364) * 10e6
+            newChannel = random.randint(80,90) * 10e6
             if newChannel not in self.channels:
                 self.channels.append(newChannel)
 
@@ -64,8 +64,12 @@ class Controller(object):
     def analyze_instruction(self,instruction):
         self.cornet_config = instruction
         self.random_distribution = instruction['random_distribution']
-        self.period = instruction['max_time']
-        self.grouped = instruction['grouped']
+        key = 'max_time'
+        if key in instruction:
+            self.period = instruction['max_time']
+        key = 'grouped'
+        if key in instruction:
+            self.grouped = instruction['grouped']
 
 
 # Utilized to send and receive information from a socket
