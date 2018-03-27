@@ -14,6 +14,7 @@ ALL             ALL = NOPASSWD: /bin/systemctl restart fakegps.service
 
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl status fakegps.service
+ALL             ALL = NOPASSWD: /bin/systemctl is-active fakegps.service
 
 # Add commands for start rem
 ALL             ALL = NOPASSWD: /bin/systemctl start channel_analysis.service
@@ -27,6 +28,7 @@ ALL             ALL = NOPASSWD: /bin/systemctl restart channel_analysis.service
 
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl status channel_analysis.service
+ALL             ALL = NOPASSWD: /bin/systemctl is-active channel_analysis.service
 
 # Add commands for start rem
 ALL             ALL = NOPASSWD: /bin/systemctl start sdr_phy.service
@@ -37,9 +39,11 @@ ALL             ALL = NOPASSWD: /bin/systemctl stop sdr_phy.service
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl restart sdr_phy.service
 
-# Add commands to restart rem
+# Add commands for status of rem
 ALL             ALL = NOPASSWD: /bin/systemctl status sdr_phy.service
 
+# Add commands for activity of rem
+ALL             ALL = NOPASSWD: /bin/systemctl is-active sdr_phy.service
 
 # Add commands for start rem
 ALL             ALL = NOPASSWD: /bin/systemctl start cbsd_start.service
@@ -52,6 +56,7 @@ ALL             ALL = NOPASSWD: /bin/systemctl restart cbsd_start.service
 
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl status cbsd_start.service
+ALL             ALL = NOPASSWD: /bin/systemctl is-active cbsd_start.service
 
 # Add commands for start rem
 ALL             ALL = NOPASSWD: /bin/systemctl start aggregator.service
@@ -62,5 +67,6 @@ ALL             ALL = NOPASSWD: /bin/systemctl stop aggregator.service
 # Add commands to restart rem
 ALL             ALL = NOPASSWD: /bin/systemctl restart aggregator.service
 
-# Add commands to restart rem
+# Add commands to status rem
 ALL             ALL = NOPASSWD: /bin/systemctl status aggregator.service
+ALL             ALL = NOPASSWD: /bin/systemctl is-active aggregator.service

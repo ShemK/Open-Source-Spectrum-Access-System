@@ -61,6 +61,9 @@ echo "Installing Dependencies - Going to take a long time"
 sudo apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran
 
 sudo pip install scipy pynmea2 numpy psycopg2 pandas plotly libconf
+
+sudo chmod -R 755 /usr/local/lib/python2.7/dist-packages/*
+
 echo "--------------------------------------------------------------"
 echo "Cloning rem branch from github repository"
 echo "--------------------------------------------------------------"
