@@ -28,13 +28,14 @@ class uhd_control(gr.sync_block):
     """
     docstring for block uhd_control
     """
-    def __init__(self, hop_time, bw, freq, gain):
+    def __init__(self, hop_time, bw, max_bw, freq, gain):
         self.st = time.time()
         self.bw = bw
         self.freq = freq
         self.base_freq = freq
         self.gain = gain
         self.hop_time = hop_time
+        self.max_bw = max_bw
         gr.sync_block.__init__(self,
             name="uhd_control",
             in_sig=None,
@@ -43,7 +44,7 @@ class uhd_control(gr.sync_block):
         self.message_port_register_out(pmt.intern("center_freq"))
         self.message_port_register_out(pmt.intern("gain"))
         self.message_port_register_out(pmt.intern("bandwidth"))
-        self.max_count = (150e6)/self.bw
+        self.max_count = (self.max_bw)/self.bw
         self.count = 0
 
     def work(self, input_items, output_items):
@@ -64,7 +65,7 @@ class uhd_control(gr.sync_block):
             self.message_port_pub(pmt.intern("center_freq"), pmt.from_double(self.freq))
             self.message_port_pub(pmt.intern("bandwidth"), pmt.from_double(self.bw))
             self.message_port_pub(pmt.intern("gain"), pmt.from_double(self.gain))
-            self.max_count = (150e6)/self.bw
+            self.max_count = (self.max_bw)/self.bw
             if self.count > self.max_count:
                 self.freq = self.base_freq
                 self.count = 0

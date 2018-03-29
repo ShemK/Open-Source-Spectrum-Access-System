@@ -132,7 +132,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>3560e6</value>
+      <value>800e6</value>
     </param>
   </block>
   <block>
@@ -908,7 +908,7 @@
     </param>
     <param>
       <key>hop_time</key>
-      <value>1</value>
+      <value>0.5</value>
     </param>
     <param>
       <key>id</key>
@@ -2111,7 +2111,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(624, 252)</value>
+      <value>(624, 272)</value>
     </param>
     <param>
       <key>_rotation</key>
