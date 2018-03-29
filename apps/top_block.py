@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Thu Mar  1 21:41:34 2018
+# Generated: Thu Mar 29 18:35:29 2018
 ##################################################
 
 from gnuradio import blocks
@@ -26,7 +26,7 @@ class top_block(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 20e6
-        self.freq = freq = 3560e6
+        self.freq = freq = 800e6
         self.N = N = 2048
 
         ##################################################
@@ -44,7 +44,7 @@ class top_block(gr.top_block):
         self.uhd_usrp_source_0.set_gain(20, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0.set_bandwidth(samp_rate, 0)
-        self.sas_uhd_control_0 = sas.uhd_control(1, samp_rate, freq, 20)
+        self.sas_uhd_control_0 = sas.uhd_control(0.5, samp_rate, 150e6, freq, 20)
         self.sas_sas_buffer_write_0 = sas.sas_buffer_write(N)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, N)
         self.blocks_null_sink_2 = blocks.null_sink(gr.sizeof_float*1)
