@@ -5,6 +5,7 @@ https://github.com/ardikars/CodeLab/blob/master/c/arp.c
 
 */
 
+#include "MAC.hpp"
 #include <dnet.h>
 #include <stdio.h>
 #include <stdlib.h>

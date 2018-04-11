@@ -2,11 +2,6 @@
 
 ///g++ -o test_arp test_arp.cpp ArpRouter.cpp -ldnet -std=c++11
 
-/*
-**  Class to be utilized for future routing purposes 
-**  Used to manipulate the ARP table
-*/
-
 ArpRouter::ArpRouter(){
   if ((arp = arp_open()) == NULL){
     perror("arp_open");
