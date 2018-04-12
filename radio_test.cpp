@@ -120,7 +120,7 @@ void initialize_node_parameters(struct node_parameters *np)
 
   // initial liquid OFDM settings
   np->tx_gain_soft = -4;
-  np->tx_modulation = LIQUID_MODEM_QAM4;
+  np->tx_modulation = LIQUID_MODEM_PSK8;
   np->tx_crc = LIQUID_CRC_32;
   np->tx_fec0 = LIQUID_FEC_RS_M8;
   np->tx_fec1 = LIQUID_FEC_RS_M8;
@@ -145,14 +145,14 @@ void Initialize_PHY(struct node_parameters *np, void *PHY_p,
 {
 
 
-  
+
   PhyLayer *PHY = (PhyLayer *)PHY_p;
   //  PHY->set_ip(np->my_ip);
   PHY->set_rx_freq(np->rx_freq);
   PHY->set_rx_rate(np->rx_rate);
   PHY->set_rx_gain_uhd(np->rx_gain);
   PHY->set_rx_subcarriers(np->rx_subcarriers);
-  
+
   PHY->set_rx_cp_len(np->rx_cp_len);
   PHY->set_rx_taper_len(np->rx_taper_len);
   PHY->set_tx_freq(np->tx_freq);

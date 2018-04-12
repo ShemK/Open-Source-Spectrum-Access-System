@@ -8,7 +8,7 @@
 #include "config_reader.hpp"
 
 
-#define DEBUG 0
+#define DEBUG 2
 #if DEBUG > 0
 #define dprintf(...) printf(__VA_ARGS__)
 #else
@@ -43,7 +43,6 @@ MAC::MAC()
 
   sprintf(systemCMD, "sudo ifconfig bat0 192.168.1.%d",node_id);
   system(systemCMD);
-
   memset(prev_packet, 0, MAX_BUF);
   // Get reference to TUN interface
   tunfd = tun_alloc(tun_name, IFF_TAP);
@@ -114,6 +113,8 @@ void MAC::set_ip(const char *ip)
   system(systemCMD);
   sprintf(systemCMD, "sudo ifconfig %s txqueuelen %s", tun_name, "15000");
   system(systemCMD);
+  sprintf(systemCMD, "sudo ifconfig %s mtu %s", tun_name, "3000");
+  system(systemCMD);
   std::string mac_str = exec("ifconfig mac_interface | grep HWaddr | awk '{print $5}'");
   for (uint idx = 0; idx < 6; ++idx)
   {
@@ -166,14 +167,14 @@ void *MAC_tx_worker(void *_arg)
         }
         else
         {
-          /* 
+          /*
           dprintf("%d bytes ready for transmission\n", nread);
           for (int i = 0; i < nread; i++)
           {
             dprintf("%x ", frame[i]);
           }
           dprintf("\n");
-          
+
           dprintf(YEL "Packet Received from tun interface\n" RESET);
           */
           uint16 ether_type = -1;
@@ -233,7 +234,7 @@ void *MAC_tx_worker(void *_arg)
               printf("%02x:", (unsigned char)peer_address[i]);
             }
             printf("\n" RESET);
-   
+
             memset(new_segment.segment, 0, nread);
             new_segment.size = nread;
             memcpy(new_segment.segment, frame, nread);
@@ -272,7 +273,7 @@ void *MAC_tx_worker(void *_arg)
             */
             type = (int) mac->peerlist[pos].rx_side;
           }
-          
+
           if(mac->ip_tx_queue.front().routing_packet){
             type = -1;
           }
@@ -290,7 +291,7 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
 {
   char *frame = new char[MAX_BUF];
   memcpy(frame, segment, segment_len);
-  
+
   if (tx_channel_state == FREE && segment_len > 0)
   {
     if (DEBUG == 1 || DEBUG > 2)
@@ -444,14 +445,14 @@ void MAC::transmit_frame(char *segment, int segment_len, int ip_type, int &frame
       timeout.tv_nsec = timeout.tv_nsec - 1e9;
     }
     int status = 0;
-    
+
     if(ip_type == -1){
       frame[frame_len] = 0x10;
     } else{
       frame[frame_len] = (char) ip_type;
     }
 
-    
+
     printf("MAC CONTROL: %x\n",frame[frame_len]);
     //int status = mq_timedsend(phy_tx_queue, frame, frame_len, 0, &timeout);
     status = mq_timedsend(phy_tx_queue, frame, frame_len+1, 0, &timeout);
@@ -638,10 +639,10 @@ void *MAC_rx_worker(void *_arg)
             dprintf("Correct CRC Received for %d bytes\n", status);
           }
 
-          std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
-                                             mac, buf, status);
+          //std::future<void> fut = std::async(std::launch::async, &MAC::analyzeReceivedFrame,
+                                             //mac, buf, status);
 
-          //mac->analyzeReceivedFrame(buf, status);
+          mac->analyzeReceivedFrame(buf, status);
           //pthread_mutex_unlock(&mac->rx_mutex);
           //if (DEBUG == 2 || DEBUG > 2)
           {
@@ -789,7 +790,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
             char *sourceMAC_str = macAddr_toString((unsigned char *)sourceMAC);
             sprintf(systemCMD, "sudo arp -s %s %s", sourceIP_str, sourceMAC_str);
             system(systemCMD);
-            
+
           }
         }
         else
@@ -833,7 +834,7 @@ void MAC::analyzeReceivedFrame(char *buf, int buf_len)
                 frames_before_last_frame++;
               }
               updatePeerRxStatistics(sourceMAC, frame_num, rx_side,buf_len);
-            } 
+            }
           }
           sendToIPLayer(recv_payload, recv_payload_len);
         }
@@ -896,7 +897,7 @@ void MAC::sendToIPLayer(char *payload, int payload_len)
     perror(RED "Error writing to TAP interface\n" RESET);
   }
   if (DEBUG == 2 || DEBUG > 2)
-    dprintf(GRN "Done Writing to TAP interface\n" RESET);
+    dprintf(GRN "Done Writing %d bytes to TAP interface\n" RESET,payload_len);
 }
 
 /*
@@ -1047,8 +1048,11 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, c
     MAC::Peer *new_peer = new Peer;
     memcpy(new_peer->mac_address, peer_address, 6);
     new_peer->frames_sent = 0;
+    new_peer->last_frame_recv = frame_num_received;
     new_peer->frames_received = frame_num_received + 1;
+    new_peer->expected_frame = frame_num_received + 1;
     new_peer->frame_errors = 0;
+
     new_peer->rx_side = rx_side;
     peerlist.push_back(*new_peer);
     printf("New RX Peer Added with rx_side: %x\n",rx_side);
@@ -1057,11 +1061,19 @@ void MAC::updatePeerRxStatistics(char peer_address[6], int frame_num_received, c
   {
     // if peer exists;
     printf("RX Peer Exists\n");
-
-    peerlist.at(pos).frame_errors = frame_num_received - peerlist.at(pos).frames_received;
+    printf(MAG "Expected: %d\n" RESET, peerlist.at(pos).expected_frame);
+    peerlist.at(pos).frame_errors = peerlist.at(pos).frame_errors + frame_num_received - peerlist.at(pos).expected_frame;//frames_received;
+    peerlist.at(pos).expected_frame = frame_num_received+1;
     peerlist.at(pos).rx_side = rx_side;
     peerlist.at(pos).frames_received++;
-    peerlist.at(pos).bit_error_rate = ((float)peerlist.at(pos).frame_errors) / ((float)frame_num_received);
+    int diff_frame = frame_num_received - peerlist.at(pos).last_frame_recv;
+    printf("Frame Diff: %d\n",diff_frame);
+
+    if(diff_frame < 0 || diff_frame > 1000){
+      peerlist.at(pos).last_frame_recv = frame_num_received;
+      peerlist.at(pos).frame_errors = 0;
+    }
+    peerlist.at(pos).bit_error_rate = ((float)peerlist.at(pos).frame_errors) / ((float)diff_frame);
     printf(MAG "Frame Num Received: %d\n" RESET, frame_num_received);
     printf("Frame Errors: %d\n", peerlist.at(pos).frame_errors);
     std::cout << std::fixed;

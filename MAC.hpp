@@ -34,7 +34,7 @@
 typedef unsigned short uint16;
 
 #define MAX_BUF 3000 // maximum buffer tx frame
-#define MTU 1500
+#define MTU 3000
 #define CONTROL_FRAME_LEN 7
 #define ETH_HEADER_LEN 18 //14 + 4 for ethernet
 #define IP_HEADER_LEN 20
@@ -179,9 +179,12 @@ public:
     char mac_address[6];
     int frames_sent;
     int frames_received;
+    int expected_frame = 0;
+    int last_frame_recv = 0;
     int frame_errors;
     double bit_error_rate;
     char rx_side;
+    int count = 0;
   };
 
 

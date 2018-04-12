@@ -25,6 +25,8 @@
 #include "BufferQ.h"
 #include "Engine.hpp"
 #include <fftw3.h>
+#include <unordered_map>
+#include <stdexcept>
 
 #define RED "\x1B[31m"
 #define GRN "\x1B[32m"
@@ -125,7 +127,9 @@ public:
     ///
     /// The received frame was too corrupted to determine
     /// its type.
-    UNKNOWN
+    UNKNOWN,
+
+    ARQ_PACKET
   };
 
   /// \brief Contains parameters defining how
@@ -688,7 +692,7 @@ public:
   friend void uhd_msg_handler(uhd::msg::type_t type, const std::string &msg);
   static int uhd_msg;
   bool transmitting = false;
-  
+
   void set_nco_offset(int consumer,float nco_offset);
   void setRxChannels(double rx_rate,int channels);
   char *createSubcarrierLayout(int num_subcarriers);
@@ -710,6 +714,7 @@ public:
     bool packet_found;
     bool rx_stat_flag;
     int num_subcarriers;
+    int debug_packets = 0;
   };
 
   ThreadInfo *threadInfo;
@@ -719,6 +724,46 @@ public:
   void set_node_id(int node_id);
   int get_node_id();
   int my_node_id;
+
+
+  int expected_frame = 0;
+  int last_frame_recv = 0;
+  int frame_errors;
+  int total_frames_received = 0;
+  int last_frame_time = 0;
+  double frame_rate;
+  double total_bits;
+  bool retx;
+  void setARQOfdmProperties(ofdmflexframegenprops_s props);
+  bool properties_changed = false;
+
+  struct RxPayLoad{
+    unsigned char *header;
+    unsigned char *payload;
+    int payload_len;
+    int frame_num;
+    int split;
+  };
+
+  struct PeerRxLoad{
+    bool wait;
+    int errors;
+    int start;
+    int end;
+    char node_id;
+    std::unordered_map<int,RxPayLoad> payload_table;
+    int original_errors;
+    int start_time;
+  };
+
+  std::unordered_map<char,PeerRxLoad> peerRxLoads;
+
+  void sendUpNetworkStack(RxPayLoad &readyLoad);
+
+  bool implement_arq = false;
+  bool initializing  = true;
+
+  void sendLotsOfDataThread(char peer_id);
 private:
   //=================================================================================
   // Private Receiver Objects
@@ -769,8 +814,10 @@ private:
   void update_tx_params();
   void transmit_frame(unsigned int frame_type,
                       unsigned char *_payload,
-                      unsigned int _payload_len);
+                      unsigned int _payload_len,
+                      unsigned int custom_frame_num = 0);
   ofdmflexframegen fg;           // frame generator object
+  ofdmflexframegen fg_arq;
   unsigned int fgbuffer_len;     // length of frame generator buffer
   std::complex<float> *fgbuffer; // frame generator output buffer [size:
                                  // numSubcarriers + cp_len x 1]
@@ -792,19 +839,19 @@ private:
   int tx_worker_state;
   int tx_state;
   friend void *PHY_tx_worker(void *); // process called by thread
-  pthread_mutex_t tx_rx_mutex;  
+  pthread_mutex_t tx_rx_mutex;
 
 
   pthread_t ce_process;
   pthread_mutex_t ce_mutex;
-  
+
 
   friend void *PHY_ce_worker(void *);
   void stop_ce();
 
   Loop *test_loop;
   sem_t *test_phore;
- 
+
   firinterp_crcf interp;
   bool use_iir = true;
   #if USE_IRR == 1
@@ -815,7 +862,7 @@ private:
 
 
   unsigned int resampler_factor;                   // samples/symbol
-    
+
   unsigned int filter_delay;                   // filter delay
   float beta;                 // filter excess bandwidth
 
@@ -827,7 +874,7 @@ private:
   unsigned int num_samples;
 
   float *h;
-  float *g; 
+  float *g;
   float nco_offset = 0.5e6;
   float tx_nco_offset = nco_offset;
   bool loop = false;
@@ -850,7 +897,7 @@ private:
 
   float phase_shift;
 
-  
+
   struct SubcarrierInfo{
     float guard_nulls = float(1)/32; // fraction of nulls on either edge
     float dc_nulls = float(1)/32; // fraction of nulls at the center
@@ -860,6 +907,8 @@ private:
   SubcarrierInfo subcarrierInfo;
 
   Engine *CE;
+  bool rx_sync = false;
+
 
 
 };
