@@ -38,8 +38,6 @@ CREATE TABLE IF NOT EXISTS blacklisted_cbsds (
   UNIQUE ("cbsdId")
 );
 
-INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{\n        \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
-
 CREATE TABLE registered_cbsds (
   "userId" varchar(19) NOT NULL,
   "fccId" varchar(19) NOT NULL,
@@ -54,7 +52,8 @@ CREATE TABLE registered_cbsds (
   "cbsdId" varchar(45) NOT NULL,
   "last_active" INT DEFAULT 0,
   PRIMARY KEY ("userId","fccId","cbsdId"),
-  UNIQUE("cbsdId")
+  UNIQUE("cbsdId"),
+  UNIQUE("fccId")
 );
 
 CREATE OR REPLACE function populate_cbsd_table(LowerFreq FLOAT, fccID varchar(45))
@@ -94,7 +93,7 @@ EXECUTE format('
     "maxEirp" int DEFAULT NULL,
     "grantState" grant_category,
     "channelType" channel_type,
-    "pu_absent" smallint DEFAULT 1, 
+    "pu_absent" smallint DEFAULT 1,
     PRIMARY KEY ("lowFrequency","highFrequency")
   );', 'cbsdinfo_'||NEW."fccId");
 
@@ -114,15 +113,6 @@ CREATE TRIGGER cbsd_id_update_trigger
   AFTER INSERT ON registered_cbsds
   FOR EACH ROW
   EXECUTE PROCEDURE CREATE_CBSD_CHANNEL_TABLE();
-
-
-INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa',NULL);
-
-INSERT INTO registered_cbsds VALUES ('cbd3','cbd563','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237asfasf',NULL);
-
-INSERT INTO registered_cbsds VALUES ('cbd4','cbd564','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','12gcafqrqds',NULL);
-
-INSERT INTO registered_cbsds VALUES ('cbd5','cbd565','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1zvxzvafa',NULL);
 
 DROP TABLE IF EXISTS cbsd_channels;
 
@@ -166,10 +156,6 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
-select populate_cbsd_channels(400000000);
-select populate_cbsd_channels(800000000);
-select populate_cbsd_channels(1000000000);
-select populate_cbsd_channels(3500000000);
 /* REM */
 /*
 **
@@ -319,10 +305,6 @@ $$ LANGUAGE plpgsql;
 
 INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
 
-select populate(400000000);
-select populate(800000000);
-select populate(1000000000);
-select populate(3500000000);
 
 INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
 
@@ -394,3 +376,40 @@ CREATE TRIGGER truncateTrigger
   AFTER INSERT ON spectrumInfo
   FOR EACH ROW
   EXECUTE PROCEDURE truncateSpectrumInfo();
+
+
+
+DROP TABLE IF EXISTS SensorCBSDConnection;
+
+CREATE TABLE IF NOT EXISTS SensorCBSDConnection(
+  "fccId" varchar(19) NOT NULL,
+  nodeID bigserial,
+  "distance" FLOAT DEFAULT 99999999,
+  FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID),
+  FOREIGN KEY ("fccId") REFERENCES  registered_cbsds("fccId")
+);
+
+
+/* Prepopulate Insertions */
+
+INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa',NULL);
+
+INSERT INTO registered_cbsds VALUES ('cbd3','cbd563','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237asfasf',NULL);
+
+INSERT INTO registered_cbsds VALUES ('cbd4','cbd564','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','12gcafqrqds',NULL);
+
+INSERT INTO registered_cbsds VALUES ('cbd5','cbd565','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1zvxzvafa',NULL);
+
+INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{\n        \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
+
+
+select populate_cbsd_channels(400000000);
+select populate_cbsd_channels(800000000);
+select populate_cbsd_channels(1000000000);
+select populate_cbsd_channels(3500000000);
+
+
+select populate(400000000);
+select populate(800000000);
+select populate(1000000000);
+select populate(3500000000);
