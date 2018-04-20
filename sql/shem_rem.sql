@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS blacklisted_cbsds (
   "groupingParam" text,
   "measCapability" text,
   "cbsdId" varchar(45) NOT NULL,
+  id SERIAL,
   PRIMARY KEY ("userId","fccId","cbsdId"),
   UNIQUE ("cbsdId")
 );
@@ -51,6 +52,7 @@ CREATE TABLE registered_cbsds (
   "measCapability" text,
   "cbsdId" varchar(45) NOT NULL,
   "last_active" INT DEFAULT 0,
+  id SERIAL,
   PRIMARY KEY ("userId","fccId","cbsdId"),
   UNIQUE("cbsdId"),
   UNIQUE("fccId")
@@ -174,7 +176,8 @@ CREATE TABLE IF NOT EXISTS NodeInfo(
   latitude FLOAT DEFAULT NULL,
   longitude FLOAT DEFAULT NULL, /*last known location*/
   last_active timestamp,  /*last known time of contact*/
-  Stat INT); /*indicator for node status, deprecated. can be reused for as counter for last known
+  Stat INT,
+  id SERIAL); /*indicator for node status, deprecated. can be reused for as counter for last known
 --Add m-sequence for each node, validate parameters (IP, MAC)*/
 
 
@@ -303,11 +306,6 @@ END
 $$ LANGUAGE plpgsql;
 
 
-INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
-
-
-INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
-
 CREATE OR REPLACE FUNCTION truncateSpectrumInfo()
 RETURNS trigger AS $NOTHING$
   DECLARE
@@ -389,6 +387,71 @@ CREATE TABLE IF NOT EXISTS SensorCBSDConnection(
   FOREIGN KEY ("fccId") REFERENCES  registered_cbsds("fccId")
 );
 
+CREATE OR REPLACE FUNCTION CREATE_CBSD_SENSOR_LINK()
+RETURNS TRIGGER AS $$
+
+DECLARE
+i INTEGER DEFAULT 1;
+temp_id VARCHAR(19);
+node_id INT;
+table_len INTEGER;
+temp_table VARCHAR(19);
+
+BEGIN
+
+ IF TG_TABLE_NAME = 'nodeinfo' THEN
+  temp_table = 'registered_cbsds';
+ ELSE
+  temp_table = 'nodeinfo';
+ END IF;
+
+
+ EXECUTE format('
+   SELECT COUNT(*) FROM %s;',
+      temp_table) INTO table_len;
+
+ IF table_len > 0 THEN
+  FOR i IN 1..table_len
+  LOOP
+
+   IF TG_TABLE_NAME = 'nodeinfo' THEN
+   EXECUTE format('
+      SELECT "fccId" FROM %s WHERE id = %s;',
+      temp_table,i) INTO temp_id;
+
+   EXECUTE format('
+      INSERT INTO sensorcbsdconnection("fccId", "nodeid") VALUES(%L,%s);',
+      temp_id,NEW.nodeID);
+
+   ELSE
+
+   EXECUTE format('
+      SELECT nodeID FROM %s WHERE id = %s;',
+      temp_table,i) INTO node_id;
+
+   EXECUTE format('
+      INSERT INTO sensorcbsdconnection("fccId", "nodeid") VALUES(%L,%s);',
+      NEW."fccId",node_id);
+
+   END IF;
+  END LOOP;
+
+ end IF;
+ RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER sensor_cbsd_trigger
+  AFTER INSERT ON registered_cbsds
+  FOR EACH ROW
+  EXECUTE PROCEDURE CREATE_CBSD_SENSOR_LINK();
+
+CREATE TRIGGER cbsd_sensor_trigger
+  AFTER INSERT ON NodeInfo
+  FOR EACH ROW
+  EXECUTE PROCEDURE CREATE_CBSD_SENSOR_LINK();
+
 
 /* Prepopulate Insertions */
 
@@ -402,6 +465,7 @@ INSERT INTO registered_cbsds VALUES ('cbd5','cbd565','hask124ba','CB987','A','ya
 
 INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{\n        \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
 
+INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
 
 select populate_cbsd_channels(400000000);
 select populate_cbsd_channels(800000000);
