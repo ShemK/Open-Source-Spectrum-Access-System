@@ -383,8 +383,9 @@ CREATE TABLE IF NOT EXISTS SensorCBSDConnection(
   "fccId" varchar(19) NOT NULL,
   nodeID bigserial,
   "distance" FLOAT DEFAULT 99999999,
-  FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID),
-  FOREIGN KEY ("fccId") REFERENCES  registered_cbsds("fccId")
+  FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID) ON DELETE CASCADE,
+  FOREIGN KEY ("fccId") REFERENCES  registered_cbsds("fccId") ON DELETE CASCADE,
+  PRIMARY KEY ("fccId",nodeID)
 );
 
 CREATE OR REPLACE FUNCTION CREATE_CBSD_SENSOR_LINK()
@@ -398,7 +399,7 @@ table_len INTEGER;
 temp_table VARCHAR(19);
 
 BEGIN
-
+ /*Check the table the caused the trigger */
  IF TG_TABLE_NAME = 'nodeinfo' THEN
   temp_table = 'registered_cbsds';
  ELSE
@@ -441,6 +442,111 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION VALID_JSON(str varchar)
+returns boolean language plpgsql as $$
+declare
+    j json;
+begin
+    j:= str;
+    return true;
+exception
+    when others then return false;
+end $$;
+
+
+
+
+DROP FUNCTION IF EXISTS CALCULATE_CBSD_SENSOR_DISTANCE(TEXT,TEXT,TEXT,INT);
+CREATE OR REPLACE FUNCTION CALCULATE_CBSD_SENSOR_DISTANCE(TEXT,TEXT,TEXT,INT)
+RETURNS TEXT AS $$
+
+DECLARE
+  result FLOAT;
+  info TEXT;
+  cbsd_lat FLOAT;
+  cbsd_long FLOAT;
+  sensor_lat FLOAT;
+  sensor_long FLOAT;
+  json_info JSON;
+  check12 BOOLEAN;
+  cbsd_table TEXT;
+  sensor_table TEXT;
+BEGIN
+
+  cbsd_table = $1;
+  sensor_table = $2;
+
+  EXECUTE FORMAT('
+    SELECT "installationParam"
+    FROM %s
+    WHERE "fccId" = %L
+  ',$1,$3) INTO info;
+
+
+  EXECUTE format('
+  SELECT valid_json(%L)',info) INTO check12;
+
+  IF check12 = 't' THEN
+   json_info := info;
+   info = json_info -> 'latitude';
+   cbsd_lat = json_info -> 'latitude';
+   cbsd_long = json_info -> 'longitude';
+
+   EXECUTE FORMAT('
+     SELECT latitude FROM %s WHERE nodeid = %s;
+   ',$2,$4) INTO sensor_lat;
+
+   EXECUTE FORMAT('
+     SELECT longitude FROM %s WHERE nodeid = %s;
+     ',$2,$4) INTO sensor_long;
+
+     /*https://sciencing.com/convert-gps-coordinates-feet-7695232.html*/
+  result = 131332796.6*(acos(cos(cbsd_lat)*cos(cbsd_long)*cos(sensor_lat)*cos(sensor_long) + cos(cbsd_lat)*sin(cbsd_long)*cos(sensor_lat)*sin(sensor_long) + sin(cbsd_lat)*sin(sensor_lat))/360)*0.3048;
+  info = result;
+
+  ELSIF check12 = 'f' THEN
+   info = 999999999999;
+  END IF;
+
+  return info;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION UPDATE_CBSD_SENSOR_DISTANCE()
+RETURNS TRIGGER AS $$
+
+DECLARE
+  result FLOAT;
+  info TEXT;
+  node_id INT;
+  distance FLOAT;
+BEGIN
+
+  FOR node_id IN
+  SELECT sensorcbsdconnection.nodeid,sensorcbsdconnection.distance FROM
+  sensorcbsdconnection
+  WHERE sensorcbsdconnection."fccId" = NEW."fccId"
+  LOOP
+    distance = CALCULATE_CBSD_SENSOR_DISTANCE('registered_cbsds','NodeInfo',NEW."fccId",node_id);
+    EXECUTE FORMAT('
+    UPDATE sensorcbsdconnection
+    SET distance = %s
+    WHERE nodeid = %s AND "fccId" = %L',distance, node_id,NEW."fccId");
+
+  END LOOP;
+
+
+   RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS cbsd_sensor_distance_trigger ON registered_cbsds;
+
+CREATE TRIGGER cbsd_sensor_distance_trigger
+  AFTER INSERT OR UPDATE ON registered_cbsds
+  FOR EACH ROW
+  EXECUTE PROCEDURE UPDATE_CBSD_SENSOR_DISTANCE();
+
 
 CREATE TRIGGER sensor_cbsd_trigger
   AFTER INSERT ON registered_cbsds
@@ -453,19 +559,18 @@ CREATE TRIGGER cbsd_sensor_trigger
   EXECUTE PROCEDURE CREATE_CBSD_SENSOR_LINK();
 
 
+
 /* Prepopulate Insertions */
 
-INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa',NULL);
+INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP,latitude,longitude) VALUES (1, 1, 1,1,37.425056,-122.084113);
 
-INSERT INTO registered_cbsds VALUES ('cbd3','cbd563','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237asfasf',NULL);
+INSERT INTO registered_cbsds VALUES ('cbd1','cbd561','hask124ba','CB987','A','yap','Nay','{"latitude": 37.425056,"longitude": -122.084113,"height": 9.3,"heightType":"AGL","indoorDeployment": false,"antennaAzimuth": 271,"antennaDowntilt": 3,"antennaGain": 16,"antennaBeamwidth": 30}',NULL,' ["EUTRA_CARRIER_RSSI_ALWAYS","EUTRA_CARRIER_RSSI_NON_TX]','1237gasd9yfa',NULL);
 
-INSERT INTO registered_cbsds VALUES ('cbd4','cbd564','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','12gcafqrqds',NULL);
+INSERT INTO registered_cbsds VALUES ('cbd3','cbd563','hask124ba','CB987','A','yap','Nay','{"latitude": 37.425056,"longitude": -122.084113,"height": 9.3,"heightType":"AGL","indoorDeployment": false,"antennaAzimuth": 271,"antennaDowntilt": 3,"antennaGain": 16,"antennaBeamwidth": 30}',NULL,' ["EUTRA_CARRIER_RSSI_ALWAYS","EUTRA_CARRIER_RSSI_NON_TX]','1zzvasasa',NULL);
+INSERT INTO registered_cbsds VALUES ('cbd4','cbd564','hask124ba','CB987','A','yap','Nay','{"latitude": 37.425056,"longitude": -122.084113,"height": 9.3,"heightType":"AGL","indoorDeployment": false,"antennaAzimuth": 271,"antennaDowntilt": 3,"antennaGain": 16,"antennaBeamwidth": 30}',NULL,' ["EUTRA_CARRIER_RSSI_ALWAYS","EUTRA_CARRIER_RSSI_NON_TX]','vzvafqqwa',NULL);
+INSERT INTO registered_cbsds VALUES ('cbd5','cbd565','hask124ba','CB987','A','yap','Nay','{"latitude": 37.425056,"longitude": -122.084113,"height": 9.3,"heightType":"AGL","indoorDeployment": false,"antennaAzimuth": 271,"antennaDowntilt": 3,"antennaGain": 16,"antennaBeamwidth": 30}',NULL,' ["EUTRA_CARRIER_RSSI_ALWAYS","EUTRA_CARRIER_RSSI_NON_TX]','qfasfscaa',NULL);
 
-INSERT INTO registered_cbsds VALUES ('cbd5','cbd565','hask124ba','CB987','A','yap','Nay','{\n       \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1zvxzvafa',NULL);
-
-INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{\n        \"latitude\": 37.425056,\n        \"longitude\": -122.084113,\n       \"height\": 9.3,\n        \"heightType\": \"AGL\",\n        \"indoorDeployment\": false,\n        \"antennaAzimuth\": 271,\n        \"antennaDowntilt\": 3,\n       \"antennaGain\": 16,\n        \"antennaBeamwidth\": 30\n      }',NULL,' [\"EUTRA_CARRIER_RSSI_ALWAYS\",\n           \"EUTRA_CARRIER_RSSI_NON_TX\"\n     ]','1237gasd9yfa');
-
-INSERT INTO NodeInfo(nodeID, nodeType, nodeMAC, nodeIP) VALUES (1, 1, 1,1);
+INSERT INTO blacklisted_cbsds VALUES ('cbd2','cbd562','hask124ba','CB987','A','yap','Nay','{"latitude": 37.425056,"longitude": -122.084113,"height": 9.3,"heightType":"AGL","indoorDeployment": false,"antennaAzimuth": 271,"antennaDowntilt": 3,"antennaGain": 16,"antennaBeamwidth": 30}',NULL,' ["EUTRA_CARRIER_RSSI_ALWAYS","EUTRA_CARRIER_RSSI_NON_TX]','qfasfscaa',NULL);
 
 select populate_cbsd_channels(400000000);
 select populate_cbsd_channels(800000000);
