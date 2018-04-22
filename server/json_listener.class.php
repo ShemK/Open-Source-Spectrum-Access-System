@@ -131,6 +131,7 @@ class JsonListener{
 														if(is_array($value) || is_object($value)) {
 															$value = json_encode($value);
 														}
+														$value = preg_replace('/\s+/', '', $value);
 														$query = $this->create_update_query('registered_cbsds',array($key => $value),array("cbsdId" => $cbsdId));
 														$result = $this->myDBHandler->query($query);
 													}
