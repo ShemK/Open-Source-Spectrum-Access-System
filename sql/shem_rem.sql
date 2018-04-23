@@ -181,74 +181,6 @@ CREATE TABLE IF NOT EXISTS NodeInfo(
 --Add m-sequence for each node, validate parameters (IP, MAC)*/
 
 
-CREATE OR REPLACE function populate_node_table(LowerFreq FLOAT, nodeID BIGINT)
-RETURNS void as $$
-DECLARE
-  i INTEGER DEFAULT 1;
-  LF FLOAT DEFAULT 1000000000;
-  t text;
-  sql text;
-BEGIN
-    LF:= LowerFreq;
-    FOR i in 1..100
-    LOOP
-
-    EXECUTE format('
-      INSERT INTO %s(startfreq, endfreq) VALUES(%s,%s);',
-      'channelinfo_'||nodeID,LF,LF + 2000000);
-
-    i := i+1;
-    LF := LF + 2000000;
-    END LOOP;
-END
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION CREATE_NODE_CHANNEL_TABLE()
-RETURNS trigger AS $$
-
-BEGIN
-
-EXECUTE format('
-  CREATE TABLE IF NOT EXISTS %s(
-    channelID serial PRIMARY KEY,
-    startfreq FLOAT UNIQUE,
-    endfreq FLOAT,
-    occ FLOAT DEFAULT NULL
-  );', 'channelinfo_'||NEW.nodeID);
-
-  perform populate_node_table(400000000.0,NEW.nodeID);
-  perform populate_node_table(800000000.0,NEW.nodeID);
-  perform populate_node_table(1000000000.0,NEW.nodeID);
-  perform populate_node_table(3500000000.0,NEW.nodeID);
-  RETURN NEW;
-END
-$$ LANGUAGE plpgsql;
-
-
-CREATE TRIGGER node_id_trigger
-  AFTER INSERT ON nodeInfo
-  FOR EACH ROW
-  EXECUTE PROCEDURE CREATE_NODE_CHANNEL_TABLE();
-
-
-DROP TRIGGER delete_node_id_trigger ON NodeInfo;
-
-DROP FUNCTION DELETE_NODE_CHANNEL_TABLE();
-
-CREATE OR REPLACE FUNCTION DELETE_NODE_CHANNEL_TABLE()
-RETURNS trigger AS $$
-BEGIN
-
-EXECUTE format('DROP TABLE %s ;', 'channelinfo_'||OLD.nodeID);
-
-RETURN NEW;
-END
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER delete_node_id_trigger
-  AFTER DELETE ON nodeInfo
-  FOR EACH ROW
-  EXECUTE PROCEDURE DELETE_NODE_CHANNEL_TABLE();
 
 CREATE TABLE IF NOT EXISTS ChannelInfo(
   channelID serial PRIMARY KEY,
@@ -383,6 +315,8 @@ CREATE TABLE IF NOT EXISTS SensorCBSDConnection(
   "fccId" varchar(19) NOT NULL,
   nodeID bigserial,
   "distance" FLOAT DEFAULT 99999999,
+  "pu_flag" INT DEFAULT 3,
+  "pu_possible_distance" FLOAT DEFAULT 9999999,
   FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID) ON DELETE CASCADE,
   FOREIGN KEY ("fccId") REFERENCES  registered_cbsds("fccId") ON DELETE CASCADE,
   PRIMARY KEY ("fccId",nodeID)
@@ -558,6 +492,165 @@ CREATE TRIGGER cbsd_sensor_trigger
   FOR EACH ROW
   EXECUTE PROCEDURE CREATE_CBSD_SENSOR_LINK();
 
+
+
+
+CREATE OR REPLACE function populate_node_table(LowerFreq FLOAT, nodeID BIGINT)
+RETURNS void as $$
+DECLARE
+  i INTEGER DEFAULT 1;
+  LF FLOAT DEFAULT 1000000000;
+  t text;
+  sql text;
+BEGIN
+    LF:= LowerFreq;
+    FOR i in 1..100
+    LOOP
+
+    EXECUTE format('
+      INSERT INTO %s(startfreq, endfreq) VALUES(%s,%s);',
+      'channelinfo_'||nodeID,LF,LF + 2000000);
+
+    i := i+1;
+    LF := LF + 2000000;
+    END LOOP;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION MAKE_DECISION(TEXT)
+RETURNS FLOAT AS $$
+DECLARE
+temp FLOAT;
+fccId TEXT;
+nodeid INTEGER;
+distance FLOAT;
+pu_distance FLOAT;
+lowfreq FLOAT;
+BEGIN
+  fccId = $1;
+  CREATE TEMPORARY TABLE decision_table(nodeid BIGINT, lowfrequency FLOAT, pu_distance FLOAT, id SERIAL, PRIMARY KEY (id)) ON COMMIT DROP;
+  FOR nodeid,distance IN
+  SELECT sensorcbsdconnection.nodeid,sensorcbsdconnection.distance
+  FROM sensorcbsdconnection
+  WHERE "fccId" = $1 AND pu_flag = 1
+  LOOP
+    FOR lowfreq, pu_distance IN
+    EXECUTE FORMAT('
+      SELECT startfreq,nearest FROM channelinfo_%s
+      WHERE nearest > %s
+      ',nodeid,distance)
+    LOOP
+      lowfreq = TRUNC((lowfreq/10000000))*10000000;
+      INSERT INTO decision_table(nodeid,lowfrequency,pu_distance) VALUES (nodeid,lowfreq,pu_distance);
+
+      EXECUTE FORMAT('
+        UPDATE %s
+        SET pu_absent = 0
+        WHERE "lowFrequency" = %s
+        ;','cbsdinfo_'||fccId,lowfreq);
+    END LOOP;
+
+  END LOOP;
+
+  /*-----Need to add decision for when multiple sensors see same  pu*/
+DROP TABLE IF EXISTS decision_table;
+return temp;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION MAXIMUM_DISTANCE_LIMIT()
+RETURNS trigger AS $$
+DECLARE
+fcc_id TEXT;
+distance FLOAT;
+BEGIN
+  FOR fcc_id, distance IN
+    SELECT sensorcbsdconnection."fccId", sensorcbsdconnection.distance FROM
+    sensorcbsdconnection
+    WHERE nodeid = TG_ARGV[0]::INTEGER
+  LOOP
+
+    IF distance < NEW.nearest THEN
+      EXECUTE FORMAT('
+      UPDATE sensorcbsdconnection
+      SET pu_flag = 1,
+      pu_possible_distance = %s
+      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
+      PERFORM MAKE_DECISION(fcc_id);
+    ELSIF distance < NEW.near THEN
+      EXECUTE FORMAT('
+      UPDATE sensorcbsdconnection
+      SET pu_flag = 2,
+      pu_possible_distance = %s
+      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.near,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
+    ELSIF distance < NEW.furthest THEN
+      EXECUTE FORMAT('
+      UPDATE sensorcbsdconnection
+      SET pu_flag = 3,
+      pu_possible_distance = %s
+      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.furthest,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
+    END IF;
+  END LOOP;
+
+RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION CREATE_NODE_CHANNEL_TABLE()
+RETURNS trigger AS $$
+
+BEGIN
+
+  EXECUTE format('
+  CREATE TABLE IF NOT EXISTS %s(
+    channelID serial PRIMARY KEY,
+    startfreq FLOAT UNIQUE,
+    endfreq FLOAT,
+    occ FLOAT DEFAULT NULL,
+    nearest FLOAT DEFAULT 0,
+    near FLOAT DEFAULT 0,
+    furthest FLOAT DEFAULT 0
+  );', 'channelinfo_'||NEW.nodeID);
+
+  EXECUTE format('
+    CREATE TRIGGER sensor_detection_trigger_%s
+      AFTER INSERT OR UPDATE ON %s
+      FOR EACH ROW
+        EXECUTE PROCEDURE MAXIMUM_DISTANCE_LIMIT(%s);
+  ',NEW.nodeID,'channelinfo_'||NEW.nodeID,NEW.nodeID);
+  perform populate_node_table(400000000.0,NEW.nodeID);
+  perform populate_node_table(800000000.0,NEW.nodeID);
+  perform populate_node_table(1000000000.0,NEW.nodeID);
+  perform populate_node_table(3500000000.0,NEW.nodeID);
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER node_id_trigger
+  AFTER INSERT ON nodeInfo
+  FOR EACH ROW
+  EXECUTE PROCEDURE CREATE_NODE_CHANNEL_TABLE();
+
+
+DROP TRIGGER delete_node_id_trigger ON NodeInfo;
+
+DROP FUNCTION DELETE_NODE_CHANNEL_TABLE();
+
+CREATE OR REPLACE FUNCTION DELETE_NODE_CHANNEL_TABLE()
+RETURNS trigger AS $$
+BEGIN
+
+EXECUTE format('DROP TABLE %s ;', 'channelinfo_'||OLD.nodeID);
+
+RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER delete_node_id_trigger
+  AFTER DELETE ON nodeInfo
+  FOR EACH ROW
+  EXECUTE PROCEDURE DELETE_NODE_CHANNEL_TABLE();
 
 
 /* Prepopulate Insertions */
