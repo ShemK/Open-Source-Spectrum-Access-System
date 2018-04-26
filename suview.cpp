@@ -3,7 +3,7 @@
 
 #include <QtCharts>
 
-
+//#include "/usr/include/x86_64-linux-gnu/qt5/QtCharts/QtCharts"
 SuView::SuView(int pos, QWidget *parent) :
   QDialog(parent),
   ui(new Ui::SuView)

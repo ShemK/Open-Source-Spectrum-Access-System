@@ -166,12 +166,23 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
 
                 } else{
                   if(known_nodes.at(status).type!=SU){
+                      int sval;
                       known_nodes.at(status).type = SU;
-                      QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
-                                                  Qt::LowEventPriority);
-                      QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
-                      //updateVisualNode(status);
+                      sem_getvalue(&graphic_mutex, &sval);
+                      std::cout << "Graphics Sem Value: " << sval << "\n";
+                      if(sval >= 1){
+                          sval = sem_trywait(&graphic_mutex);
+                          if(sval >=0){
+                              QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                                          Qt::LowEventPriority);
+                              QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
+                            }
+
+                        }
                     }
+
+
+
 
                   pmt::pmt_t thru = pmt::dict_ref(received_dict, pmt::string_to_symbol("throughput"), not_found);
                   if(thru!=not_found){
@@ -206,11 +217,20 @@ void Rem::analyzeInfo(const char *recv_buffer, int recv_len){
                       //pmt::pmt_t values = pmt::dict_values (group);
 
                     }
+                  int sval;
                   updateGroupee(nodeTemp,status);
-                  QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
-                                              Qt::LowEventPriority);
-                  QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
-                 //updateVisualNode(status);
+                  sem_getvalue(&graphic_mutex, &sval);
+                  std::cout << "Graphics Sem Value: " << sval << "\n";
+                  if(sval >= 1){
+                      sval = sem_trywait(&graphic_mutex);
+                      if(sval >= 0){
+                          QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                                      Qt::LowEventPriority);
+                          QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,status));
+                        }
+
+                   }
+
                 }
             } else{
               std::cout << "Missing Node ID" << std::endl;
@@ -237,9 +257,19 @@ void Rem::updateGroupee(short unsigned int nodeTemp, int status){
           if(pos > 0){
               if(known_nodes.at(pos).type!=SU){
                   known_nodes.at(pos).type = SU;
-                  QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
-                                              Qt::LowEventPriority);
-                  QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,pos));
+                  int sval;
+                  sem_getvalue(&graphic_mutex, &sval);
+                  std::cout << "Graphics Sem Value: " << sval << "\n";
+                  if(sval >= 1){
+                      sval = sem_trywait(&graphic_mutex);
+                      if(sval >= 0){
+                          QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                                      Qt::LowEventPriority);
+                          QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,pos));
+                        }
+
+                    }
+
                   //updateVisualNode(pos);
 
                 }
@@ -287,8 +317,9 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
           known_nodes[nodePos].channels[pos].occ_history.pop_front();
         }
       sem_getvalue(&graphic_mutex, &sval);
-      std::cout << "Sensor Sem Value: " << sval << "\n";
-      if(sval > 0){
+      std::cout << "Graphics Sem Value: " << sval << "\n";
+      if(sval >= 1){
+          sem_wait(&graphic_mutex);
           QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
                                       Qt::HighEventPriority);
           QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
@@ -327,11 +358,11 @@ void Rem::updateVisualNode(int nodePos){
         }
 
 
-      sem_wait(&graphic_mutex);
+
       if(detected){
           if(strcmp(known_nodes[nodePos].node_color.c_str(),"red") != 0){
               QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
-                                          Qt::LowEventPriority);
+                                          Qt::HighEventPriority);
               QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, above_threshold));
               known_nodes[nodePos].node_color = "red";
             }
@@ -339,12 +370,11 @@ void Rem::updateVisualNode(int nodePos){
         } else{
           if(strcmp(known_nodes[nodePos].node_color.c_str(),"green") != 0){
               QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
-                                          Qt::LowEventPriority);
+                                          Qt::HighEventPriority);
               QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, below_threshold));
               known_nodes[nodePos].node_color = "green";
             }
         }
-      sem_post(&graphic_mutex);
 
     } else if (known_nodes[nodePos].type == SU){
       QString su_color("background-color: blue");
@@ -359,23 +389,24 @@ void Rem::updateVisualNode(int nodePos){
           su_color = temp_color;
           new_color = "yellow";
         }
-      sem_wait(&graphic_mutex);
+
       if(strcmp(new_color.c_str(), known_nodes[nodePos].node_color.c_str()) !=0){
           QString visualID(known_nodes[nodePos].visualID.c_str());
 
           QToolButton *button = ui->centralWidget->findChild<QToolButton *>(visualID);
 
           QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
-                                      Qt::LowEventPriority);
+                                      Qt::HighEventPriority);
           QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, su_color));
 
           known_nodes[nodePos].node_color = new_color;
 
         }
-      sem_post(&graphic_mutex);
+
 
     }
 
+    sem_post(&graphic_mutex);
 
 }
 // TODO: Efficient search needed

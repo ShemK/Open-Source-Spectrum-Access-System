@@ -1,6 +1,7 @@
 #include "sensorview.h"
 #include "ui_sensorview.h"
 #include <QtCharts>
+//#include "/usr/include/x86_64-linux-gnu/qt5/QtCharts/QtCharts"
 
 using namespace QtCharts;
 
@@ -60,7 +61,7 @@ void SensorView::updateView(){
 
 
   for(unsigned int i = 0; i< rem->known_nodes[pos].channels.size();i++){
-      if(rem->known_nodes[pos].channels[i].lowFrequency <= 3650e6){
+      if(rem->known_nodes[pos].channels[i].lowFrequency <= 3850e6){
           channels.push_back(rem->known_nodes[pos].channels[i]);
         }
 
@@ -91,7 +92,7 @@ void SensorView::updateView(){
   QValueAxis *axisY = new QValueAxis;
   axisY->setLinePenColor(series->pen().color());
   axisY->setMin(0);
-  axisY->setRange(0, 0.35);
+  axisY->setRange(0, 0.25);
   QString yTitle("Occupancy Metric");
   axisY->setTitleText(yTitle);
 

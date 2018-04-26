@@ -101,7 +101,7 @@ public:
   friend void *listener(void *);
   bool app_open = true;
 
-  double occ_threshold = 0.01;
+  double occ_threshold = 0.1;
 
   int node_num = 12;
 

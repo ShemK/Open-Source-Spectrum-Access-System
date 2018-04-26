@@ -23,6 +23,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
+INCLUDEPATH += /usr/include/x86_64-linux-gnu/qt5/QtCharts/ /home/neutron/Qt/5.9.1/gcc_64/lib/
+DEPENDPATH += /usr/lib/x86_64-linux-gnu/
+
+
 SOURCES += \
         main.cpp \
         rem.cpp \
@@ -42,8 +46,10 @@ FORMS += \
     sensorview.ui \
     suview.ui
 
-LIBS += -lconfig -lgnuradio-pmt
+LIBS += -lconfig -lgnuradio-pmt -lQt5Charts
 
 CONFIG += c++11
 
-QT += charts
+CONFIG += static
+
+#QT += charts
