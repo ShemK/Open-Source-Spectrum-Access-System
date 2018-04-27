@@ -291,46 +291,53 @@ void Rem::organizeData(int nodePos, double occ, double lowFreq,double bandwidth)
   int sval;
   sem_getvalue(&node_phores[nodePos], &sval);
   std::cout << "Semaphore Value for " << nodePos << " " << sval << "\n";
-  if(sval > 0){
-      sem_wait(&node_phores[nodePos]);
+  bool info_update = true;
+  if(sval > 0 && nodePos !=-1){
+      sem_trywait(&node_phores[nodePos]);
+      if(sval > 0){
+
+          info_update = false;
+        }
     }
 
+  if(info_update){
+      if(pos == -1){
 
-  if(pos == -1){
+          channelInfo c;
+          c.lowFrequency = lowFreq;
+          c.occ = occ;
+          known_nodes[nodePos].channels.push_back(c);
+          using namespace std::placeholders;
+          std::sort(known_nodes[nodePos].channels.begin(),known_nodes[nodePos].channels.end(),std::bind(&Rem::channelSort,this,_1,_2));
+          std::cout << "New Channel: " << lowFreq << std::endl;
+        } else{
 
-      channelInfo c;
-      c.lowFrequency = lowFreq;
-      c.occ = occ;
-      known_nodes[nodePos].channels.push_back(c);
-      using namespace std::placeholders;
-      std::sort(known_nodes[nodePos].channels.begin(),known_nodes[nodePos].channels.end(),std::bind(&Rem::channelSort,this,_1,_2));
-      std::cout << "New Channel: " << lowFreq << std::endl;
-    } else{
+          known_nodes[nodePos].current_channel = pos;
+          known_nodes[nodePos].channels[pos].lowFrequency = lowFreq;
+          known_nodes[nodePos].channels[pos].bandwidth = bandwidth;
+          known_nodes[nodePos].channels[pos].highFrequency = lowFreq + bandwidth;
+          known_nodes[nodePos].channels[pos].occ = occ;
+          known_nodes[nodePos].channels[pos].occ_history.push_back(occ);
+          if(known_nodes[nodePos].channels[pos].occ_history.size() > 20){
+              known_nodes[nodePos].channels[pos].occ_history.pop_front();
+            }
+          sem_getvalue(&graphic_mutex, &sval);
+          std::cout << "Graphics Sem Value: " << sval << "\n";
+          if(sval >= 1){
+              sem_wait(&graphic_mutex);
+              QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
+                                          Qt::HighEventPriority);
+              QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
+             //updateVisualNode(nodePos);
+            }
 
-      known_nodes[nodePos].current_channel = pos;
-      known_nodes[nodePos].channels[pos].lowFrequency = lowFreq;
-      known_nodes[nodePos].channels[pos].bandwidth = bandwidth;
-      known_nodes[nodePos].channels[pos].highFrequency = lowFreq + bandwidth;
-      known_nodes[nodePos].channels[pos].occ = occ;
-      known_nodes[nodePos].channels[pos].occ_history.push_back(occ);
-      if(known_nodes[nodePos].channels[pos].occ_history.size() > 20){
-          known_nodes[nodePos].channels[pos].occ_history.pop_front();
+          std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].lowFrequency << std::endl;
+          std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].occ << std::endl;
+
         }
-      sem_getvalue(&graphic_mutex, &sval);
-      std::cout << "Graphics Sem Value: " << sval << "\n";
-      if(sval >= 1){
-          sem_wait(&graphic_mutex);
-          QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest),
-                                      Qt::HighEventPriority);
-          QMetaObject::invokeMethod(this, "updateVisualNode", Q_ARG(int,nodePos));
-         //updateVisualNode(nodePos);
-        }
-
-      std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].lowFrequency << std::endl;
-      std::cout << "Node: " << nodePos << " " << known_nodes[nodePos].channels[pos].occ << std::endl;
-
+      sem_post(&node_phores[nodePos]);
     }
-  sem_post(&node_phores[nodePos]);
+
 
 }
 
@@ -357,14 +364,13 @@ void Rem::updateVisualNode(int nodePos){
             }
         }
 
-
-
       if(detected){
           if(strcmp(known_nodes[nodePos].node_color.c_str(),"red") != 0){
               QCoreApplication::postEvent(button, new QEvent(QEvent::UpdateRequest),
                                           Qt::HighEventPriority);
               QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, above_threshold));
               known_nodes[nodePos].node_color = "red";
+              printf("Updating to red for node %d\n",nodePos);
             }
 
         } else{
@@ -373,6 +379,7 @@ void Rem::updateVisualNode(int nodePos){
                                           Qt::HighEventPriority);
               QMetaObject::invokeMethod(button, "setStyleSheet", Q_ARG(QString, below_threshold));
               known_nodes[nodePos].node_color = "green";
+              printf("Updating to green for node %d\n",nodePos);
             }
         }
 
