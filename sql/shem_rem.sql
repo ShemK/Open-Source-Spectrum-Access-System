@@ -317,6 +317,7 @@ CREATE TABLE IF NOT EXISTS SensorCBSDConnection(
   "distance" FLOAT DEFAULT 99999999,
   "pu_flag" INT DEFAULT 3,
   "pu_possible_distance" FLOAT DEFAULT 9999999,
+  "pu_frequencies" FLOAT[],
   FOREIGN KEY (nodeID) REFERENCES NodeInfo (nodeID) ON DELETE CASCADE,
   FOREIGN KEY ("fccId") REFERENCES  registered_cbsds("fccId") ON DELETE CASCADE,
   PRIMARY KEY ("fccId",nodeID)
@@ -517,7 +518,7 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION MAKE_DECISION(TEXT)
+CREATE OR REPLACE FUNCTION MAKE_DECISION(TEXT,INT,FLOAT)
 RETURNS FLOAT AS $$
 DECLARE
 temp FLOAT;
@@ -528,33 +529,25 @@ pu_distance FLOAT;
 lowfreq FLOAT;
 BEGIN
   fccId = $1;
+  lowfreq = $3;
   CREATE TEMPORARY TABLE decision_table(nodeid BIGINT, lowfrequency FLOAT, pu_distance FLOAT, id SERIAL, PRIMARY KEY (id)) ON COMMIT DROP;
   FOR nodeid,distance IN
   SELECT sensorcbsdconnection.nodeid,sensorcbsdconnection.distance
   FROM sensorcbsdconnection
   WHERE "fccId" = $1 AND pu_flag = 1
   LOOP
-    FOR lowfreq, pu_distance IN
-    EXECUTE FORMAT('
-      SELECT startfreq,nearest FROM channelinfo_%s
-      WHERE nearest > %s
-      ',nodeid,distance)
-    LOOP
-      lowfreq = TRUNC((lowfreq/10000000))*10000000;
-      INSERT INTO decision_table(nodeid,lowfrequency,pu_distance) VALUES (nodeid,lowfreq,pu_distance);
 
       EXECUTE FORMAT('
         UPDATE %s
-        SET pu_absent = 0
+        SET pu_absent = %s
         WHERE "lowFrequency" = %s
-        ;','cbsdinfo_'||fccId,lowfreq);
-    END LOOP;
-
+        ;','cbsdinfo_'||fccId,$2,lowfreq);
   END LOOP;
 
-  /*-----Need to add decision for when multiple sensors see same  pu*/
-DROP TABLE IF EXISTS decision_table;
-return temp;
+  /*-----TODO:Need to add decision for when multiple sensors see same  pu*/
+
+  DROP TABLE IF EXISTS decision_table;
+  return temp;
 END
 $$ LANGUAGE plpgsql;
 
@@ -563,20 +556,42 @@ RETURNS trigger AS $$
 DECLARE
 fcc_id TEXT;
 distance FLOAT;
+lowfreq FLOAT;
+frequencies FLOAT[];
+known BOOLEAN;
+
 BEGIN
+  known = FALSE;
+  lowfreq = TRUNC((NEW.startfreq/10000000))*10000000;
   FOR fcc_id, distance IN
     SELECT sensorcbsdconnection."fccId", sensorcbsdconnection.distance FROM
     sensorcbsdconnection
     WHERE nodeid = TG_ARGV[0]::INTEGER
   LOOP
 
+
+  EXECUTE FORMAT('
+    SELECT sensorcbsdconnection.pu_frequencies FROM sensorcbsdconnection WHERE nodeid = %s::INTEGER AND "fccId" = %L
+    ',TG_ARGV[0],fcc_id) INTO frequencies;
+
+  IF ARRAY_LENGTH(frequencies,1) > 0 THEN
+      SELECT lowfreq = ANY(frequencies) INTO known; /* check if frequency is contained in array*/
+  END IF;
+
     IF distance < NEW.nearest THEN
-      EXECUTE FORMAT('
-      UPDATE sensorcbsdconnection
-      SET pu_flag = 1,
-      pu_possible_distance = %s
-      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
-      PERFORM MAKE_DECISION(fcc_id);
+
+      IF known = FALSE THEN /* If not contained - add it to array*/
+	      EXECUTE FORMAT('
+	      UPDATE sensorcbsdconnection
+	      SET pu_flag = 1,
+	      pu_possible_distance = %s,
+	      pu_frequencies = array_cat(
+		        (SELECT sensorcbsdconnection.pu_frequencies FROM sensorcbsdconnection WHERE nodeid = %s::INTEGER AND "fccId" = %L)
+		          ,''{%s}'')
+	      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,TG_ARGV[0],fcc_id,lowfreq,TG_ARGV[0],fcc_id);
+
+	      PERFORM MAKE_DECISION(fcc_id,0,lowfreq);
+       END IF;
     ELSIF distance < NEW.near THEN
       EXECUTE FORMAT('
       UPDATE sensorcbsdconnection
@@ -584,18 +599,23 @@ BEGIN
       pu_possible_distance = %s
       WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.near,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
     ELSIF distance < NEW.furthest THEN
-      EXECUTE FORMAT('
-      UPDATE sensorcbsdconnection
-      SET pu_flag = 3,
-      pu_possible_distance = %s
-      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.furthest,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
+      IF known = TRUE THEN
+          PERFORM MAKE_DECISION(fcc_id,1,lowfreq);
+		      EXECUTE FORMAT('
+	      UPDATE sensorcbsdconnection
+	      SET pu_flag = 3,
+	      pu_possible_distance = %s,
+	      pu_frequencies = array_remove(
+		        (SELECT sensorcbsdconnection.pu_frequencies FROM sensorcbsdconnection WHERE nodeid = %s::INTEGER AND "fccId" = %L)
+		          ,%s::FLOAT)
+	      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,TG_ARGV[0],fcc_id,lowfreq,TG_ARGV[0],fcc_id);
+      END IF;
     END IF;
   END LOOP;
 
 RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION CREATE_NODE_CHANNEL_TABLE()
 RETURNS trigger AS $$
