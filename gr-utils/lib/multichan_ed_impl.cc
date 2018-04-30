@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "multichan_ed_impl.h"
+#include <math.h>
 
 using namespace boost::accumulators;
 using namespace boost::interprocess;
@@ -118,7 +119,7 @@ namespace gr {
         acc=for_each(buf.begin(), buf.end(),acc);
         means[i]=mean(acc);
         variances[i]=variance(acc);
-
+        noise_floor[i] = -73.6 - 10*log10(fft_len/2);
         if(means[i]-noise_floor[i]> threshold && means[i]>-150.0)
           {
             fcstates[i]=1;
