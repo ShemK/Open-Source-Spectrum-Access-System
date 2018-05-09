@@ -35,9 +35,9 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
     long int currentTime  = tp.tv_sec;
     double secondsPassed = currentTime - startTime;
     //printf("secondsPassed: %f\n", secondsPassed);
-    values_thrown++;
-    if(secondsPassed < 0.2){
-      if(values_thrown > 10){
+    values_thrown++; // values thrown away when the frequency_change happens
+    if(secondsPassed < 0.001){
+      if(values_thrown > 10){ // 10 values are thrown away
         occ_values.push_back(occ_vector);
       }
       //printf("OCC SIZE:%lu\n",occ_values.size());
