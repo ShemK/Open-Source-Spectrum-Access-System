@@ -10,6 +10,14 @@ scripts = scripts + '/../cbsd/config_scripts'
 sys.path.insert(0, scripts)
 import config_editor
 
+scripts = os.path.dirname(os.path.abspath(__file__))
+scripts = scripts + '/../cbsd/python_scripts'
+sys.path.insert(0, scripts)
+
+from logger import logger
+
+
+
 class PrimaryUser(object):
 
     def __init__(self,pu_type):
@@ -18,7 +26,8 @@ class PrimaryUser(object):
         self.channel_list = []
         self.json_decoder = json.JSONDecoder()
         self.configEditor = config_editor.ConfigEditor()
-        self.ip = "127.0.0.1"
+        self.ip = "localhost"
+        self.primaryLogger = None
 
     def initializeParameters(self, parameters):
         pass
@@ -31,7 +40,7 @@ class PrimaryUser(object):
         self.tx_freq = self.channel_list[0];
         self.node  = self.configEditor.set_node_attribute(self.node,'tx_freq',self.tx_freq+self.tx_rate/2)
         self.configEditor.add_to_output("node1",self.node)
-        self.configEditor.add_to_output("run_time",60.0)
+        self.configEditor.add_to_output("run_time",self.run_time)
         self.configEditor.add_to_output("num_nodes",1)
         config_path = os.path.dirname(os.path.abspath(__file__))
         config_path = config_path + "/../crts/scenarios/sas_scenarios/sas_"+self.pu_type+".cfg"
@@ -55,14 +64,23 @@ class PrimaryUser(object):
             if key in self.cornet_config:
                 self.init_sc = self.cornet_config['scenario_controller']
                 self.ip = self.cornet_config['ip']
-
             key = 'pu_type'
 
             if key in self.cornet_config:
                 self.pu_type = self.cornet_config['pu_type']
+                self.run_time = self.cornet_config['run_time']
+
+
+            if 'log' in self.cornet_config and 'log_path' in self.cornet_config:
+                self.primaryLogger = logger('primary',self.cornet_config['log_path'] + '/pu')
+
         else:
             print "No SAS Provided, assuming localhost"
-            self.sas_ip = "127.0.0.1"
+            self.sas_ip = "localhost"
+
+    def log(self,key,value):
+        if self.primaryLogger != None:
+            self.primaryLogger.write(key,value)
 
 class radioThread(threading.Thread):
 
@@ -83,6 +101,10 @@ class radioThread(threading.Thread):
         x_path = os.path.dirname(os.path.abspath('__file__'))
         x_path = x_path + "/../crts/crts_controller -s sas_scenarios/sas_"+self.pu.pu_type
         print x_path
+        self.pu.log('Starting PU',self.pu.pu_type)
+        self.pu.log('run_time',self.pu.run_time)
+        self.pu.log('tx_rate',self.pu.tx_rate)
+        self.pu.log('tx_freq',self.pu.tx_freq)
         os.system(x_path)
 
     def stop_thread(self):
@@ -94,7 +116,8 @@ def main():
     pu.get_command()
     pu.create_node_file()
     pu.start_radio()
-    time.sleep(120)
+    pu.radio.join()
+    #time.sleep(120)
 
 if __name__ == '__main__':
     main()

@@ -18,6 +18,7 @@ scripts = scripts + '/../config_scripts'
 sys.path.insert(0, scripts)
 
 import scenario_controller
+from logger import logger
 
 class Cbsd(object):
     _fccId = "cbd561"
@@ -63,12 +64,18 @@ class Cbsd(object):
         self.create_installationParameterObj()
         self._json_encoder = json.JSONEncoder()
         self._json_decoder = json.JSONDecoder()
-        self.gpsReader = GPSReader(self)
-        self.start_gps()
         self.grouped = None
         self.init_sc = None
         self.sc = scenario_controller.ScenarioController()
         self.manual = False
+        self.log = False
+        self.log_path = None
+        self.grantLogger = None
+        self.sas_ip = "localhost"
+        self.location = dict()
+        self.new_location_update = False
+        self.gpsReader = GPSReader(self,port=8354)
+        self.start_gps()
 
     def _create_registration_request_obj(self):
         temp_registrationObj = {'registrationRequest': {
@@ -124,13 +131,14 @@ class Cbsd(object):
         self._inquired_channels.append(temp_channel)
 
     def _create_spectrum_request_obj(self):
-        if(self._cbsd_registered == True):
+        if(self._cbsd_registered):
             if len(self._inquired_channels) > 0:
                 self._spectrumInquiryRequestObj = { 'spectrumInquiryRequest' : {
                                                         'cbsdId':self._cbsdId,
                                                         'inquiredSpectrum':self._inquired_channels
                                                         }
                                                     }
+                self._spectrumInquiryRequestObj = self.update_request_with_location('spectrumInquiryRequest',self._spectrumInquiryRequestObj)
                 return True
             else:
                 print('CBSD has not selected channels to inquire')
@@ -141,7 +149,9 @@ class Cbsd(object):
 
 
     def get_spectrumInquiryRequestObj(self):
-        if self._create_spectrum_request_obj() == True:
+        if self._create_spectrum_request_obj():
+            print "Spectrum Request OBJ"
+            print self._spectrumInquiryRequestObj
             return self._spectrumInquiryRequestObj
 
     def set_spectrumInquiryResponseObj(self,spectrumInquiryResponse):
@@ -159,7 +169,7 @@ class Cbsd(object):
                 self._grant_state = "IDLE"
 
     def _create_grant_request_obj(self):
-        if(self._cbsd_registered == True):
+        if(self._cbsd_registered):
             if len(self._available_channels) > 0:
                 self._operationFrequencyRange = self._available_channels[0]
                 #self._available_channels.clear()
@@ -175,6 +185,7 @@ class Cbsd(object):
                                             }
                                         }
                 self._grant_state = "IDLE"
+                self._grantRequestObj = self.update_request_with_location('grantRequest',self._grantRequestObj)
                 return True
             else:
                 print("No Operational Frequency Range Selected")
@@ -184,7 +195,7 @@ class Cbsd(object):
             return False
 
     def get_grantRequestObj(self):
-        if self._create_grant_request_obj() == True:
+        if self._create_grant_request_obj():
             return self._grantRequestObj
 
     def get_grantExpireTime(self):
@@ -204,9 +215,16 @@ class Cbsd(object):
             self.get_grantExpireTime_seconds(self._grantExpireTime)
             #clear channel list
             self._inquired_channels = []
+            if self.log_path != None:
+                self.grantLogger = logger(self._grantId,self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
+                #self.grantLogger.write('Grant',"hello")
+                self.grantLogger.write('Grant',self._grantId,self.log)
+                self.grantLogger.write('grantResponse',grantResponse,self.log)
+
+            return True
         else:
             self._grant_state = "IDLE"
-
+            return False
     def get_grantExpireTime_seconds(self,grantExpireTime=None):
         if grantExpireTime == None:
             return self._grantExpireTime_seconds
@@ -219,7 +237,7 @@ class Cbsd(object):
     def _create_heart_request_obj(self):
         if((self._grant_state == "GRANTED") \
             or (self._grant_state == "AUTHORIZED")):
-            if(self._cbsd_registered == True):
+            if(self._cbsd_registered):
                 self._heartbeatRequestObj = { 'heartbeatRequest': {
                                                 'cbsdId': self._cbsdId,
                                                 'grantId': self._grantId,
@@ -227,6 +245,9 @@ class Cbsd(object):
                                                 'operationState': self._grant_state
                                                 }
                                             }
+                print "========================================================================================================="
+                self._heartbeatRequestObj  = self.update_request_with_location('heartbeatRequest',self._heartbeatRequestObj)
+                print self._heartbeatRequestObj
         else:
             return None
 
@@ -235,11 +256,12 @@ class Cbsd(object):
             self._heartbeatResponseObj = heartbeatResponse
             responseCode = heartbeatResponse['heartbeatResponse'] \
                                                     ['response']['responseCode']
-
+            self.grantLogger.write('heartbeatResponse',heartbeatResponse,self.log)
             if(responseCode=="0"):
                 self._grantId = heartbeatResponse['heartbeatResponse']['grantId']
                 if 'heartbeatInterval' in heartbeatResponse['heartbeatResponse']:
                     self._heartbeatInterval = heartbeatResponse['heartbeatResponse']['heartbeatInterval']
+
                 if 'operationParam' in heartbeatResponse['heartbeatResponse']:
                     print "Change Operational parameters"
                     operationFrequency = heartbeatResponse['heartbeatResponse']['operationParam']['operationalFrequencyRange']
@@ -250,6 +272,7 @@ class Cbsd(object):
                     print "New High Frequency: ", highFrequency
                     self.sc.set_parameter(1,'freq',lowFrequency)
                     self.sc.set_parameter(2,'freq',highFrequency)
+                    self.grantLogger.write('Frequency Change',lowFrequency,self.log)
             else:
                 self._grant_state = "IDLE"
 
@@ -259,7 +282,7 @@ class Cbsd(object):
     def _create_relinquishment_request_obj(self):
         if((self._grant_state == "GRANTED") \
             or (self._grant_state == "AUTHORIZED")):
-            if(self._cbsd_registered == True):
+            if(self._cbsd_registered):
                 self._reliquishmentRequestObj = { 'relinquishmentRequest': {
                                                     'cbsdId': self._cbsdId,
                                                     'grantId': self._grantId
@@ -377,12 +400,16 @@ class Cbsd(object):
 
                     # get dictionary
                     json_response = self._json_decoder.decode(response)
-                    self.set_grantResponseObj(json_response)
+                    granted = self.set_grantResponseObj(json_response)
 
+                    if granted:
+                        print "Channel Grant Accepted"
 
-                    print "Channel Grant Accepted"
+                        print "\n---------------------------------------------------------\n"
+                    else:
+                        print "Channel Grant Rejected"
 
-                    print "\n---------------------------------------------------------\n"
+                        print "\n---------------------------------------------------------\n"
 
                 except ValueError:
                     print "Unexpected Message From SAS: Connection Broken"
@@ -410,8 +437,8 @@ class Cbsd(object):
                 self.my_heartbeat_Thread.start()
 
                 current_time = time.mktime(datetime.datetime.utcnow().timetuple())
-         #     print("server_time: ",newCbsd.get_grantExpireTime())
-       #     print("client time: ", datetime.datetime.utcnow().timetuple())
+         #      print("server_time: ",newCbsd.get_grantExpireTime())
+       #        print("client time: ", datetime.datetime.utcnow().timetuple())
                 self.grantTimeLeft = self.get_grantExpireTime_seconds() - current_time
                 print "Grant Ends in: ", self.grantTimeLeft,"s"
                 return self.my_heartbeat_Thread
@@ -436,6 +463,8 @@ class Cbsd(object):
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
         sock.bind(('localhost', 7800))
         data, addr = sock.recvfrom(1024)
+        sock.settimeout(600.0)
+        # TODO: If timeout is exceeded?????
         json_command = self._json_decoder.decode(data)
         print json_command
         channel_list = json_command['channels']
@@ -450,6 +479,11 @@ class Cbsd(object):
             self.init_sc = self.cornet_config['scenario_controller']
 
             cbsd_parameters = self.cornet_config['cbsd']
+
+            if 'log' in self.cornet_config:
+                self.log = self.cornet_config['log']
+                if self.log:
+                    self.log_path = self.cornet_config['log_path']
             try:
                 if cbsd_parameters != None:
                     for key,value in cbsd_parameters.iteritems():
@@ -494,3 +528,36 @@ class Cbsd(object):
 
     def stop_cbsd(self):
         self.stop_gps()
+
+    def get_fccID(self):
+        return self._fccId
+
+    def get_grantId(self):
+        return self._grantId
+
+    def get_cbsdId(self):
+        return self._cbsdId
+
+    def get_current_time_s(self):
+        return time.mktime(datetime.datetime.utcnow().timetuple())
+
+    def update_location(self,new_loc):
+        if bool(self.location):
+
+            if (self.location['latitude'] != new_loc['latitude']) or (self.location['longitude'] != new_loc['longitude']):
+                self.location = new_loc.copy()
+                self.add_installation_parameters('latitude',new_loc['latitude'])
+                self.add_installation_parameters('longitude',new_loc['longitude'])
+                print "New Location: ", new_loc
+                self.new_location_update = True
+        else:
+            self.location = new_loc.copy()
+            self.new_location_update = True
+
+    def update_request_with_location(self,key,request):
+        if self.new_location_update:
+            request[key]['installationParam'] = self.installationParameters
+            self.new_location_update = False
+            return request
+        else:
+            return request

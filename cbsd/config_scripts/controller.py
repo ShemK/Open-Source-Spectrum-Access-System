@@ -21,7 +21,7 @@ class Controller(object):
         self.random_distribution = random_distribution
         self.radio_port = port
         self.period = period
-        self.messageHandler = TransportHandler('0.0.0.0',port)
+        self.messageHandler = TransportHandler('localhost',port)
         self.json_encoder = json.JSONEncoder()
         self.json_decoder = json.JSONDecoder()
         self.instructionListener = InstructionListener(self,self.messageHandler)

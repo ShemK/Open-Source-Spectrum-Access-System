@@ -53,7 +53,10 @@ def getCommand():
     try:
         newCbsd.get_command()
     except Exception as e:
-        print "Issue communicating with controller",e
+        print "Issue communicating with controller "
+        print e
+        stop_radio = True
+        sys.exit()
 
 def register():
         global newCbsd
@@ -139,14 +142,14 @@ def run_radio():
             informationParser.sendStatus()
 
 
-            '''
-                Get Grant Request
-            '''
+
+            #    Get Grant Request
+
 
             newCbsd.sendGrantRequest(my_server_connection)
-            '''
-                start sending heartbeats
-            '''
+
+            #    start sending heartbeats
+
             print "GRANT STATE: ", newCbsd.get_grant_state()
             if newCbsd.get_grant_state() == "GRANTED" or newCbsd.get_grant_state() == "AUTHORIZED":
                 # NOTE: this information is already being sent by crts
@@ -167,16 +170,16 @@ def run_radio():
             my_heartbeat_Thread = newCbsd.startSendingHeartBeats(my_server_connection)
 
 
-            '''
-                start radio interface
-            '''
+
+            #    start radio interface
+
 
             start_radio_Thread = cbsd_thread.cbsd_thread(newCbsd,my_server_connection,\
                                                         "start_radio",0,config_editor = configEditor,\
                                                         heartbeat_thread = my_heartbeat_Thread);
-            '''
-             start grant timer
-            '''
+
+            # start grant timer
+
             newCbsd.startGrant(my_server_connection,start_radio_Thread)
             if newCbsd.get_grant_state() != "IDLE":
                 print "Starting Radio"
@@ -185,7 +188,7 @@ def run_radio():
             if newCbsd.my_heartbeat_Thread!=None:
                 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
                 my_port = 7816
-                sock.bind(("0.0.0.0",my_port))
+                sock.bind(("localhost",my_port))
                 sock.settimeout(1.0)
                 data = None
                 while data == None and stop_radio == False:
