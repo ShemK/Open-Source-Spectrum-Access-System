@@ -156,6 +156,20 @@ class CornetController(object):
                 print 'You want to log information but no log path provided'
                 sys.exit()
 
+    def sendInfoToChannelEmulator(self):
+        self.channel_emulators = self.cornet_setup.CHANNEL_EMULATOR.emulatorList
+        i = 0
+        while i < len(self.channel_emulators):
+            try:
+                emulator =  self.channel_emulators[i]
+                self.messageHandler.set_addr(emulator.ip)
+                data = self.json_encoder.encode(emulator)
+                self.messageHandler.send(data)
+            except Exception as e:
+                print "Error With Emulators: ",e
+
+            i = i+1
+
 class TransportHandler(object):
 
     def __init__(self,addr,port):
@@ -191,6 +205,8 @@ def main():
     parser.add_option('-s', '--sensor',action="store_true", dest="sensor", default=False, help="start sensors")
     parser.add_option('-c', '--secondary',action="store_true", dest="secondary", default=False, help="start secondary_users")
     parser.add_option('-d', '--stop_sensors',action="store_true", dest="stop_sensors", default=False, help="stop sensors")
+    parser.add_option('-e', '--channel_emulators',action="store_true", dest="channel_emulators", default=False, help="stop sensors")
+
 
     options, args = parser.parse_args()
 
@@ -204,6 +220,8 @@ def main():
         cornetController.start_secondary_users()
     if(options.stop_sensors):
         cornetController.stop_sensors()
+    if(options.channel_emulators):
+        cornetController.sendInfoToChannelEmulator()
 
 
 if __name__ == '__main__':
