@@ -204,7 +204,7 @@ install_services(){
   echo "Creating fake gps file"
   echo "--------------------------------------------------------------"
 
-  echo "\$GPRMC,125412.48,A,$node_id,N,$node_id,E,00.0,000.0,230506,00,E" > fake.log
+  echo "\$GPRMC,125412.48,A,37.4250$node_id,N,$-122.0841$node_id,E,00.0,000.0,230506,00,E" > fake.log
 
   sudo mkdir /opt/sas/gps/
 
@@ -248,7 +248,7 @@ install_services(){
 
   cd
 }
-while getopts dsgv option;
+while getopts dsgve option;
 do
   case "$option"
     in
@@ -271,16 +271,21 @@ do
       install_server
     ;;
     *)
-      install_dependencies
-      install_sensor_component
-      install_server
-      install_gps
-      install_services
+
     ;;
   esac
 
 done
 
+if [ $OPTIND -eq 1 ]; then
+
+  install_dependencies
+  install_sensor_component
+  install_server
+  install_gps
+  install_services
+
+fi
 
 # installing the central controllers
 sudo rm -r central_controller
@@ -323,6 +328,13 @@ chmod a+x compile.sh
 
 sudo cp test /opt/sas/aggregator/
 
+sudo cp gps_proxy.py /opt/sas/gps/
+
+sudo chmod 665 /opt/sas/gps
+
+sudo chmod 664 /opt/sas/gps/*
+
+
 cd
 
 sudo chmod -R 665 /opt/sas/aggregator/
@@ -336,3 +348,11 @@ sudo systemctl daemon-reload
 sudo systemctl enable aggregator.service
 
 sudo systemctl restart aggregator.service
+
+sudo cp auto_scripts/services/gps_proxy.service /etc/systemd/system/
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable gps_proxy.service
+
+sudo systemctl restart fakegps.service

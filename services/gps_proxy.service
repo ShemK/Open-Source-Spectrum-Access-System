@@ -1,0 +1,13 @@
+[Unit]
+Description=creates a background service that redirects gps from fakegps
+
+PartOf=fakegps.service
+
+After=fakegps.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /opt/sas/gps/gps_proxy.py
+
+[Install]
+WantedBy=fakegps.service
