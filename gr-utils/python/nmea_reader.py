@@ -67,7 +67,8 @@ class nmea_reader(gr.sync_block):
 				nmea_parser_core(self, outstr)
 			if self.protocol == 'gpsd':
 				gpsd_parser_core(self, outstr)
-		except Exception:
+		except Exception as e:
+			print e
 			pass
 
 		# bytes written to output buffer, messages and tags computed

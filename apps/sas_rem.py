@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-# Generated: Thu Mar  1 21:41:48 2018
+# Generated: Wed May  9 18:20:23 2018
 ##################################################
 
 from gnuradio import blocks
@@ -35,7 +35,7 @@ class sas_rem(gr.top_block):
         # Blocks
         ##################################################
         self.utils_psd_cvf_0 = utils.psd_cvf(samp_rate,  fft_len, firdes.WIN_BLACKMAN_hARRIS, 0.8)
-        self.utils_nmea_reader_0 = utils.nmea_reader('localhost', 2947, 'nmea')
+        self.utils_nmea_reader_0 = utils.nmea_reader('localhost', 8354, 'gpsd')
         self.sas_send_data_0 = sas.send_data(6000, '192.168.1.21', num_channels, fft_len)
         self.sas_sas_buffer_0 = sas.sas_buffer(N)
         self.sas_psql_insert_0 = sas.psql_insert(fft_len, num_channels)

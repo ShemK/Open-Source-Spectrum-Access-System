@@ -1255,6 +1255,10 @@
       <key>gain</key>
       <value>20</value>
     </param>
+    <param>
+      <key>max_bw</key>
+      <value>150e6</value>
+    </param>
   </block>
   <block>
     <key>uhd_usrp_source</key>
@@ -2639,11 +2643,11 @@
     </param>
     <param>
       <key>protocol</key>
-      <value>'nmea'</value>
+      <value>'gpsd'</value>
     </param>
     <param>
       <key>port</key>
-      <value>2947</value>
+      <value>8354</value>
     </param>
   </block>
   <block>

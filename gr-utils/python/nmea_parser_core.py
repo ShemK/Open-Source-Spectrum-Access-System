@@ -33,16 +33,23 @@ def gpsd_parser_core(self, gpsd_str):
 	G = json.loads(gpsd_str)
 	if 'TPV' not in G['class']:
 		return
-    
-	D = pmt.make_f64vector(2,PDBL(0))
-	PMT_SET(D, 1, PDBL(G['lon']))
+        D = pmt.make_vector(2, PDBL(0))
 	PMT_SET(D, 0, PDBL(G['lat']))
+	PMT_SET(D, 1, PDBL(G['lon']))
+#	D = pmt.make_f64vector(2,0)
+#       print "-----------------",G['lon']
+#	pmt.f64vector_set(D,1,float(G['lon']))
+#	pmt.f64vector_set(D,0,float(G['lat']))
+#	PMT_SET(D, 1, pmt.from_double(float(G['lon'])))
+#	PMT_SET(D, 0, PDBL(float(G['lat'])))
+#	print "===================================================================="
+#	print D
 	self.message_port_pub(pmt.intern('gps_msg'), D)
 
 def nmea_parser_core(self, nmea_str):
     fixobj = pynmea2.parse(nmea_str)
     nmea_id = fixobj.sentence_type
-    
+#    print nmea_str
     if nmea_id not in ['GGA', 'GLL', 'RMC', 'VTG']:
 		raise AttributeError("Unparsed Sentence")
     
@@ -52,5 +59,5 @@ def nmea_parser_core(self, nmea_str):
 		PMT_SET(D, 1, PDBL(fixobj.longitude))
     except AttributeError:
 		pass
-    
+#    print D    
     self.message_port_pub(pmt.intern('gps_msg'), D)
