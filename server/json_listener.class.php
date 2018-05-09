@@ -367,6 +367,10 @@ class JsonListener{
 					}
 
 				}
+				if(property_exists($newHeartBeatInquiryObj, 'installationParam')){
+					$value = $newHeartBeatInquiryObj->{'installationParam'};
+					$this->updateCBSDLocation('installationParam',$value,$cbsdId);
+				}
 			}
 		}
 		return $replyObj;
@@ -585,6 +589,15 @@ class JsonListener{
 
 		$random_pos = rand(0,count($channels)-1);
 		return $channels[$random_pos];
+	}
+
+	private function updateCBSDLocation($key,$value,$cbsdId){
+		if(is_array($value) || is_object($value)) {
+			$value = json_encode($value);
+		}
+		$value = preg_replace('/\s+/', '', $value);
+		$query = $this->create_update_query('registered_cbsds',array($key => $value),array("cbsdId" => $cbsdId));
+		$result = $this->myDBHandler->query($query);
 	}
 
 }
