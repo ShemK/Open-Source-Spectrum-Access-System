@@ -924,7 +924,11 @@
     </param>
     <param>
       <key>gain</key>
-      <value>20</value>
+      <value>30</value>
+    </param>
+    <param>
+      <key>max_bw</key>
+      <value>150e6</value>
     </param>
   </block>
   <block>
