@@ -150,8 +150,8 @@ class Cbsd(object):
 
     def get_spectrumInquiryRequestObj(self):
         if self._create_spectrum_request_obj():
-            print "Spectrum Request OBJ"
-            print self._spectrumInquiryRequestObj
+            #print "Spectrum Request OBJ"
+            #print self._spectrumInquiryRequestObj
             return self._spectrumInquiryRequestObj
 
     def set_spectrumInquiryResponseObj(self,spectrumInquiryResponse):
@@ -245,9 +245,9 @@ class Cbsd(object):
                                                 'operationState': self._grant_state
                                                 }
                                             }
-                print "========================================================================================================="
+
                 self._heartbeatRequestObj  = self.update_request_with_location('heartbeatRequest',self._heartbeatRequestObj)
-                print self._heartbeatRequestObj
+                #print self._heartbeatRequestObj
         else:
             return None
 
