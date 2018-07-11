@@ -204,7 +204,7 @@ install_services(){
   echo "Creating fake gps file"
   echo "--------------------------------------------------------------"
 
-  echo "\$GPRMC,125412.48,A,37.4250$node_id,N,$-122.0841$node_id,E,00.0,000.0,230506,00,E" > fake.log
+  echo "\$GPRMC,125412.48,A,$node_id,N,$node_id,E,00.0,000.0,230506,00,E" > fake.log
 
   sudo mkdir /opt/sas/gps/
 
@@ -235,6 +235,8 @@ install_services(){
   sudo chmod 664 /etc/systemd/system/cbsd_start.service
 
   sudo systemctl daemon-reload
+
+  sudo systemctl enable sdr_phy.service
 
   sudo systemctl enable channel_analysis.service
 
