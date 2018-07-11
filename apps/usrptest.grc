@@ -926,6 +926,10 @@
       <key>gain</key>
       <value>20</value>
     </param>
+    <param>
+      <key>max_bw</key>
+      <value>150e6</value>
+    </param>
   </block>
   <block>
     <key>uhd_usrp_source</key>
