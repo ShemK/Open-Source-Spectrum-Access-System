@@ -62,7 +62,7 @@ class RFNestInfo():
 
     def updateIndividualNodeInfo(self,info):
         location = dict()
-        #print info
+        print info
         pos = info.find("node:")
         port = int(info[pos+5])
         pos = info.find("lat")
