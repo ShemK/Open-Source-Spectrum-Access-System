@@ -4,6 +4,7 @@ import sys
 import socket
 import json
 import time
+import optparse
 
 scripts = os.path.dirname(os.path.abspath(__file__))
 scripts = scripts + '/../cbsd/config_scripts'
@@ -113,7 +114,16 @@ class radioThread(threading.Thread):
 
 def main():
     pu = PrimaryUser("interferer")
-    pu.get_command()
+    parser = optparse.OptionParser()
+    parser.add_option('-f', '--freq',action="store", dest="tx_freq", type = "float", help="tx frequency")
+    options, args = parser.parse_args()
+    if(options.tx_freq > 800 and options.tx_freq < 1000):
+        print "----------------Manual frequency-----------------"
+        pu.get_command()
+        pu.channel_list[0] = options.tx_freq*1e6
+    else:
+        print "----------------Auto frequency-----------------"
+        pu.get_command()
     pu.create_node_file()
     pu.start_radio()
     pu.radio.join()
