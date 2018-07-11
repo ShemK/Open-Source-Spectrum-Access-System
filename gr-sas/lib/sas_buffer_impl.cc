@@ -1,17 +1,17 @@
 /* -*- c++ -*- */
-/* 
+/*
  * Copyright 2017 <+YOU OR YOUR COMPANY+>.
- * 
+ *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -51,7 +51,7 @@ namespace gr {
     {
       pmt::pmt_t msg = pmt::from_float(number_of_samps);
       return msg;
-      
+
     }
 
     pmt::pmt_t pack_samp_number(float samp_number)
@@ -89,15 +89,15 @@ namespace gr {
     {
       gr_complex *out = (gr_complex *) output_items[0];
       try{
-          shared_memory_object shm (open_only, "sas_buffer", read_only);
+          shared_memory_object shm (open_only, "/sas_buffer", read_only);
           mapped_region region(shm, read_only);
           memcpy(&shared_struct, region.get_address(),sizeof(shared_struct));
-          /*
+
           std::cout << "Sample Number: " << shared_struct.sample << std::endl;
           std::cout << "Frequency: " << shared_struct.frequency << std::endl;
           std::cout << "Number of Samples: " << shared_struct.num_samples << std::endl;
           std::cout << "Sample Rate: " << shared_struct.sample_rate << std::endl;
-          */
+
 
           if(shared_struct.frequency != frequency)
           {
@@ -124,7 +124,7 @@ namespace gr {
         catch(std::exception const& e)
         {
           memset(out,0,d_N*sizeof(gr_complex));
-          //std::cout<<"Can't read from buffer\n";
+          std::cout<<"Can't read from buffer\n";
         }
 
       return noutput_items;
@@ -132,4 +132,3 @@ namespace gr {
 
   } /* namespace sas */
 } /* namespace gr */
-

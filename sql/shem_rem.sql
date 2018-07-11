@@ -494,7 +494,27 @@ CREATE TRIGGER cbsd_sensor_trigger
   EXECUTE PROCEDURE CREATE_CBSD_SENSOR_LINK();
 
 
+CREATE OR REPLACE function populate_pu_table(LowerFreq FLOAT, nodeID BIGINT)
+RETURNS void as $$
+DECLARE
+  i INTEGER DEFAULT 1;
+  LF FLOAT DEFAULT 1000000000;
+  t text;
+  sql text;
+BEGIN
+    LF:= LowerFreq;
+    FOR i in 1..100
+    LOOP
 
+    EXECUTE format('
+      INSERT INTO %s(startfreq, endfreq) VALUES(%s,%s);',
+      'channelinfo_'||nodeID||'_pu',LF,LF + 2000000);
+
+    i := i+1;
+    LF := LF + 2000000;
+    END LOOP;
+END
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE function populate_node_table(LowerFreq FLOAT, nodeID BIGINT)
 RETURNS void as $$
@@ -575,10 +595,10 @@ BEGIN
     ',TG_ARGV[0],fcc_id) INTO frequencies;
 
   IF ARRAY_LENGTH(frequencies,1) > 0 THEN
-      SELECT lowfreq = ANY(frequencies) INTO known; /* check if frequency is contained in array*/
+      SELECT NEW.startfreq = ANY(frequencies) INTO known; /* check if frequency is contained in array*/
   END IF;
 
-    IF distance < NEW.nearest THEN
+    IF distance > NEW.nearest THEN
 
       IF known = FALSE THEN /* If not contained - add it to array*/
 	      EXECUTE FORMAT('
@@ -588,17 +608,17 @@ BEGIN
 	      pu_frequencies = array_cat(
 		        (SELECT sensorcbsdconnection.pu_frequencies FROM sensorcbsdconnection WHERE nodeid = %s::INTEGER AND "fccId" = %L)
 		          ,''{%s}'')
-	      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,TG_ARGV[0],fcc_id,lowfreq,TG_ARGV[0],fcc_id);
+	      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,TG_ARGV[0],fcc_id,NEW.startfreq,TG_ARGV[0],fcc_id);
 
 	      PERFORM MAKE_DECISION(fcc_id,0,lowfreq);
        END IF;
-    ELSIF distance < NEW.near THEN
+   /*ELSIF distance < NEW.near THEN
       EXECUTE FORMAT('
       UPDATE sensorcbsdconnection
       SET pu_flag = 2,
       pu_possible_distance = %s
-      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.near,CAST(TG_ARGV[0] AS INTEGER),fcc_id);
-    ELSIF distance < NEW.furthest THEN
+      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.near,CAST(TG_ARGV[0] AS INTEGER),fcc_id); */
+    ELSIF distance < NEW.nearest THEN
       IF known = TRUE THEN
           PERFORM MAKE_DECISION(fcc_id,1,lowfreq);
 		      EXECUTE FORMAT('
@@ -608,7 +628,7 @@ BEGIN
 	      pu_frequencies = array_remove(
 		        (SELECT sensorcbsdconnection.pu_frequencies FROM sensorcbsdconnection WHERE nodeid = %s::INTEGER AND "fccId" = %L)
 		          ,%s::FLOAT)
-	      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,TG_ARGV[0],fcc_id,lowfreq,TG_ARGV[0],fcc_id);
+	      WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.nearest,TG_ARGV[0],fcc_id,NEW.startfreq,TG_ARGV[0],fcc_id);
       END IF;
     END IF;
   END LOOP;
@@ -633,16 +653,39 @@ BEGIN
     furthest FLOAT DEFAULT 0
   );', 'channelinfo_'||NEW.nodeID);
 
+  perform populate_node_table(400000000.0,NEW.nodeID);
+  perform populate_node_table(800000000.0,NEW.nodeID);
+  perform populate_node_table(1000000000.0,NEW.nodeID);
+  perform populate_node_table(3500000000.0,NEW.nodeID);
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION CREATE_NODE_PU_TABLE()
+RETURNS trigger AS $$
+
+BEGIN
+
+  EXECUTE format('
+  CREATE TABLE IF NOT EXISTS %s(
+    channelID serial PRIMARY KEY,
+    startfreq FLOAT UNIQUE,
+    endfreq FLOAT,
+    nearest FLOAT DEFAULT 9999999999999,
+    near FLOAT DEFAULT 9999999999999,
+    furthest FLOAT DEFAULT 9999999999999
+  );', 'channelinfo_'||NEW.nodeID||'_pu');
+
   EXECUTE format('
     CREATE TRIGGER sensor_detection_trigger_%s
       AFTER INSERT OR UPDATE ON %s
       FOR EACH ROW
         EXECUTE PROCEDURE MAXIMUM_DISTANCE_LIMIT(%s);
-  ',NEW.nodeID,'channelinfo_'||NEW.nodeID,NEW.nodeID);
-  perform populate_node_table(400000000.0,NEW.nodeID);
-  perform populate_node_table(800000000.0,NEW.nodeID);
-  perform populate_node_table(1000000000.0,NEW.nodeID);
-  perform populate_node_table(3500000000.0,NEW.nodeID);
+  ',NEW.nodeID,'channelinfo_'||NEW.nodeID||'_pu',NEW.nodeID);
+  perform populate_pu_table(400000000.0,NEW.nodeID);
+  perform populate_pu_table(800000000.0,NEW.nodeID);
+  perform populate_pu_table(1000000000.0,NEW.nodeID);
+  perform populate_pu_table(3500000000.0,NEW.nodeID);
   RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
@@ -652,6 +695,10 @@ CREATE TRIGGER node_id_trigger
   FOR EACH ROW
   EXECUTE PROCEDURE CREATE_NODE_CHANNEL_TABLE();
 
+CREATE TRIGGER node_pu_trigger
+  AFTER INSERT ON nodeInfo
+  FOR EACH ROW
+  EXECUTE PROCEDURE CREATE_NODE_PU_TABLE();
 
 DROP TRIGGER delete_node_id_trigger ON NodeInfo;
 
