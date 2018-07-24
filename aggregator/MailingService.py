@@ -27,7 +27,7 @@ class MailingService(object):
         self.output_sock.sendto(data, (self.dest_addr, self.dest_port))
 
 def main():
-    mailingService = MailingService('172.29.118.218',4680)
+    mailingService = MailingService('128.173.39.16',4680)
     while 1:
         mailingService.forward()
 

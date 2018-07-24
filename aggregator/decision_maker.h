@@ -15,8 +15,8 @@ public:
   double get_previous_center_frequency();
   std::vector<float> average();
   std::vector<float> max_occ();
-  long int startTime;
-  long int currentTime;
+  double startTime;
+  double currentTime;
   bool frequency_change = false;
   int times_up;
   int values_thrown;

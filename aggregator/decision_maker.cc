@@ -13,11 +13,11 @@ DecisionMaker::~DecisionMaker(){
 }
 
 std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, double center_frequency){
-
+  std::cout << "---------------------" << nodeID << "------------------------\n";
   if(occ_values.size()==0) {
     struct timeval ts;
     gettimeofday(&ts, NULL);
-    startTime = ts.tv_sec;
+    startTime = ts.tv_sec + ts.tv_usec/1e6;
   }
 
   if(this->center_frequency == 0) {
@@ -32,14 +32,16 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
   if(!frequency_change){
     struct timeval tp;
     gettimeofday(&tp, NULL);
-    long int currentTime  = tp.tv_sec;
+    double currentTime  = tp.tv_sec + tp.tv_usec/1e6;
     double secondsPassed = currentTime - startTime;
     //printf("secondsPassed: %f\n", secondsPassed);
     values_thrown++; // values thrown away when the frequency_change happens
-    if(secondsPassed < 0.001){
-      if(values_thrown > 10){ // 10 values are thrown away
+    if(secondsPassed < 0.05){
+      if(values_thrown > 5){ // 10 values are thrown away
         occ_values.push_back(occ_vector);
       }
+      printf("secondsPassed: %f\n",secondsPassed );
+      printf("values thrown: %d\n",values_thrown );
       //printf("OCC SIZE:%lu\n",occ_values.size());
       std::vector<float> temp;
       return temp;
@@ -47,6 +49,7 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
       times_up++;
       printf("Times Up\n");
     }
+
   } else{
     times_up = 0;
   }
@@ -55,13 +58,16 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
   //std::cout << "Changed Frequency " << this->center_frequency << std::endl;
   this->center_frequency = center_frequency;
   //float result = max_occ();
+
   std::vector<float> result = max_occ();//average();
+
   frequency_change = false;
 
   if(times_up > 5){
     printf("-------------------------------------------------------------\n");
     printf("----------Error with sensor %d----------------------------\n",nodeID);
     printf("-------------------------------------------------------------\n");
+    std::fill(result.begin(), result.end(), 0);
   }
   return result;
 }
@@ -88,6 +94,7 @@ std::vector<float> DecisionMaker::average(){
 
 std::vector<float> DecisionMaker::max_occ(){
   std::vector<float> result;
+  printf("OCC SIZE:%lu\n",occ_values.size());
   if(occ_values.size() > 0){
     int size = occ_values.at(0).size();
     for(int j = 0; j < size; j++) {

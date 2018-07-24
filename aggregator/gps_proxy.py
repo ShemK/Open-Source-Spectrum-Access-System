@@ -39,7 +39,7 @@ sock.listen(1)
 server_conn, addr = sock.accept()
 server_conn.settimeout(0.1)
 client_sock.connect(("localhost",2947))
-client_sock.settimeout(0.1)
+client_sock.settimeout(5)
 
 side_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 side_sock.bind(("0.0.0.0",7891))
@@ -62,14 +62,16 @@ while True:
         print "gps_data_len:", len(gps_data)
         known_gps = gps_data
     except Exception as e:
+        print "Error with gps data"
+        print e
         gps_data = None
         pass
 
     try:
         rfMessage = side_sock.recv(1024)
-        print "Message From RFNEST",rfMessage
+        print "Message From RFNEST ",rfMessage
         rfObj = json.loads(rfMessage)
-        print "Message From RFNEST",new_data
+        print "Message From RFNEST",rfObj
     except Exception as e:
         pass
 
@@ -79,8 +81,8 @@ while True:
                 known_gps = changeLocation(known_gps,rfObj['lat'],rfObj['lon'])
             print known_gps
             server_conn.send(known_gps)
-
-
+        else:
+            print "NULL GPS Data"
 
     except Exception as e:
         print e
