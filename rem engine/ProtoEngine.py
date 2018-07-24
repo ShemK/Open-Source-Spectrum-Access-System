@@ -17,10 +17,11 @@ class ProtoEngine(Engine):
     ## Try to get one single value from a batch of values
     def sanitize_data(self):
         for sensor_id, sensor in self.sensor_map.items():
-            if sensor.state == "ACTIVE":
+            if sensor.state == "ACTIVE" and sensor.spectrum_info.size > 0:
                 spectrum_info = sensor.spectrum_info;
                 try:
                     #print spectrum_info.shape
+                    #print spectrum_info
                     min_info = spectrum_info.min(axis=0)
                     calculated_info = spectrum_info.quantile(q=0.75,axis=0)
                     calculated_info = calculated_info.sort_index()
@@ -28,9 +29,12 @@ class ProtoEngine(Engine):
                     sensor.calculated_info = calculated_info
 
                     self.calculate_profile(sensor_id,sensor.calculated_info)
-
+                    #print "---------------------------------------------------------------------"
                 except Exception as e:
+                    #print "====================================================================="
                     print "Error with sensor data for sensor ",sensor_id,e
+                    #print spectrum_info
+                    #print spectrum_info.shape
 
     def calculate_profile(self,sensor_id,calculated_info):
         #print '----------------- Sensor: ',sensor_id,' -------------------'
@@ -53,17 +57,20 @@ class ProtoEngine(Engine):
 
                 self.sensor_map[sensor_id].update_thresholds(nearest_dist,near_dist,farthest_dist,key)
                 #print len(self.potential)
-
                 if key in self.sensor_map[sensor_id].potential:
-                    if psd < -98:
-                        print key, " lost a potential --------------", " at ",sensor_id
-                        self.sensor_map[sensor_id].potential.remove(key)
+                    if psd < -90:
+                        print key, " lost a potential -------------- dist ",near_dist, " at ",sensor_id
+                        self.sensor_map[sensor_id].potential.pop(key,None)
 
-                if key > 800e6 and key < 1000e6 and psd > -98:
+                if key > 800e6 and key < 1000e6 and psd > -90:
                     #print key," : ",value, " : ",psd, " : ",nearest_dist, " : ",farthest_dist
                     if key not in self.sensor_map[sensor_id].potential:
-                        self.sensor_map[sensor_id].potential.append(key)
+                        #print key," : ",value, " : ",psd, " : ",nearest_dist, " : ",farthest_dist
+                        self.sensor_map[sensor_id].potential[key] = nearest_dist
                         print key, " gained a potential ++++++++++++++ dist ",nearest_dist, " at ",sensor_id
+                    elif self.sensor_map[sensor_id].potential[key] != nearest_dist:
+                        self.sensor_map[sensor_id].potential[key] = nearest_dist
+                        print key, " Updated Distance: ", nearest_dist , " at ", sensor_id
 
 
 

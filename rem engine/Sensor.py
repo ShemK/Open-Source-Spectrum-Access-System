@@ -32,10 +32,10 @@ class Sensor():
         self.channelInfo = DataFrame()
         self.log_count = 0;
         self.last_active_time = 0;
-        self.potential = []
+        self.potential = dict()
 
     def fetch_channel_info(self):
-        #print "Table Name: ",table_name
+        #print "Table Name: ",self.table_name
         conditions = {'startfreq': ' > 800e6 AND "startfreq" < 1000e6'}
         self.channelInfo = self.dbReader.fetch_data(['startfreq','occ'],self.table_name,conditions,'ORDER BY startfreq')
         if self.channelInfo.size > 0:
@@ -74,8 +74,8 @@ class Sensor():
             spectrum_info_shape = self.spectrum_info.shape
             row_num = spectrum_info_shape[0]
 
-
-            if(row_num > 5):
+            #print self.spectrum_info
+            if(row_num > 4):
                 #print self.spectrum_info
                 ind_to_drop = self.spectrum_info.axes[0][0]
                 self.spectrum_info = self.spectrum_info.drop(ind_to_drop)
