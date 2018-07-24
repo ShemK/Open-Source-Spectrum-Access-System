@@ -207,12 +207,12 @@ class JsonListener{
 					//WHERE lowFrequency = ".$lowFrequency."
 					//AND highFrequency = ".$highFrequency.";";
 					$cbsd_table = "cbsdInfo_".$fccId;
-					$select_array = array('available','channelType');
+					$select_array = array('available','channelType','pu_absent');
 					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
 					$query = $this->create_select_query($select_array,$cbsd_table ,$where_array);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
-						if($row['available'] == 1) {
+						if($row['available'] == 1 && $row['pu_absent'] == 1) {
 							array_push($availableChannel,
 							(object)['lowFrequency'=>$lowFrequency,
 							'highFrequency'=>$highFrequency,
