@@ -216,10 +216,16 @@ class Cbsd(object):
             #clear channel list
             self._inquired_channels = []
             if self.log_path != None:
-                self.grantLogger = logger(self._grantId,self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
-                #self.grantLogger.write('Grant',"hello")
-                self.grantLogger.write('Grant',self._grantId,self.log)
-                self.grantLogger.write('grantResponse',grantResponse,self.log)
+                self.grantLogger = logger('Results',self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
+                self.grantLogger.write('Grant','hello')
+                #self.log = False
+                #self.grantLogger.write('Grant',self._grantId,self.log)
+                #self.grantLogger.write('grantResponse',grantResponse,self.log)
+                Log = logger(self._grantId, self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
+                Log.write('Hello', 'Hi',self.log)
+                Log.write('Hello2', 'Hi22',self.log)
+                self.grantLogger = Log
+                #self.log = False;
 
             return True
         else:
@@ -290,12 +296,15 @@ class Cbsd(object):
                                                 }
             self._grant_state = "IDLE"
 
+
     def get_relinquishmentRequestObj(self):
         self._create_relinquishment_request_obj()
         return self._reliquishmentRequestObj
 
     def set_relinquishmentRequest(self):
         self._relinquishGrant = True
+        self.log = False
+        self.grantLogger.close()
 
     def get_heartbeatRequestObj(self):
         self._create_heart_request_obj()

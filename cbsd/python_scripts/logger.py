@@ -17,20 +17,20 @@ class logger(object):
         print filename
         if file_type == 'csv':
             self.filename = filename + '.csv'
-            self.file_handler = open(self.filename,'a')
+            self.file_handler = open(self.filename,'w')
             self.writer = csv.writer(self.file_handler )
         else:
             self.filename = filename
-            self.file_handler  = open(self.filename,'a')
+            self.file_handler  = open(self.filename,'w')
             self.writer = csv.writer(self.file_handler )
-        pass
 
     def write(self,key,value,log = True):
         if log:
-            #print "Writing to file ======================================"
+            print "Writing to file ======================================",log, "key :", key, " value = ", value
             self.writer.writerow([time.time(),key,value])
-        pass
 
+    def close():
+        self.file_handler.close()
 # used to test if it is working
 def main():
     Log = logger('H', 'test')

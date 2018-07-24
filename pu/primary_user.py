@@ -50,7 +50,7 @@ class PrimaryUser(object):
 
     def start_radio(self):
         self.radio.start()
-        pass
+        self.radio.join()
 
     def get_command(self):
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
@@ -88,6 +88,7 @@ class radioThread(threading.Thread):
     def __init__(self,pu):
         threading.Thread.__init__(self)
         self.pu = pu
+        self.threadStopped = False
 
     def run(self):
         if self.pu.pu_type == "radar":
@@ -107,16 +108,11 @@ class radioThread(threading.Thread):
         self.pu.log('tx_rate',self.pu.tx_rate)
         self.pu.log('tx_freq',self.pu.tx_freq)
         os.system(x_path)
-
+        self.threadStopped = True
     def stop_thread(self):
         pass
 
-
-def main():
-    pu = PrimaryUser("interferer")
-    parser = optparse.OptionParser()
-    parser.add_option('-f', '--freq',action="store", dest="tx_freq", type = "float", help="tx frequency")
-    options, args = parser.parse_args()
+def run_pu(pu,options):
     if(options.tx_freq > 800 and options.tx_freq < 1000):
         print "----------------Manual frequency-----------------"
         pu.get_command()
@@ -126,7 +122,21 @@ def main():
         pu.get_command()
     pu.create_node_file()
     pu.start_radio()
-    pu.radio.join()
+
+
+def main():
+    pu = PrimaryUser("interferer")
+    parser = optparse.OptionParser()
+    parser.add_option('-f', '--freq',action="store", dest="tx_freq", type = "float", help="tx frequency")
+    parser.add_option('-l', '--loop',action="store_true", dest="loop", default=False, help="loop forever")
+    options, args = parser.parse_args()
+    if(options.loop):
+        while(options.loop):
+            if not pu.radio.is_alive():
+                run_pu(pu,options)
+    else:
+        run_pu(pu,options)
+        print pu.radio.is_alive()
     #time.sleep(120)
 
 if __name__ == '__main__':
