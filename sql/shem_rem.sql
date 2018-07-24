@@ -589,7 +589,8 @@ BEGIN
     WHERE nodeid = TG_ARGV[0]::INTEGER
   LOOP
 
-
+  frequencies = ARRAY[]::FLOAT[];
+  known = FALSE;
   EXECUTE FORMAT('
     SELECT sensorcbsdconnection.pu_frequencies FROM sensorcbsdconnection WHERE nodeid = %s::INTEGER AND "fccId" = %L
     ',TG_ARGV[0],fcc_id) INTO frequencies;
@@ -618,7 +619,7 @@ BEGIN
       SET pu_flag = 2,
       pu_possible_distance = %s
       WHERE nodeid = %s::INTEGER AND "fccId" = %L',NEW.near,CAST(TG_ARGV[0] AS INTEGER),fcc_id); */
-    ELSIF distance < NEW.nearest THEN
+    ELSIF (distance+50) < (NEW.nearest) THEN
       IF known = TRUE THEN
           PERFORM MAKE_DECISION(fcc_id,1,lowfreq);
 		      EXECUTE FORMAT('
