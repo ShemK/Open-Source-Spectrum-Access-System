@@ -230,6 +230,10 @@ class JsonListener{
 				$replyObj = (object) ['response'=>(object)['responseCode'=>'102','responseMessage'=>'Invalid CBSDID', 'responseData'=>$responseData]];
 
 			}
+			if(property_exists($newSpectrumInquiryObj, 'installationParam')){
+				$value = $newSpectrumInquiryObj->{'installationParam'};
+				$this->updateCBSDLocation('installationParam',$value,$cbsdId);
+			}
 
 		} else {
 			$replyObj = (object) ['responseCode'=>'103','responseMessage'=>'Invalid CBSDID'];
@@ -261,10 +265,10 @@ class JsonListener{
 			$highFrequency = $operationParam->{'operationalFrequencyRange'}->{'highFrequency'};
 			$cbsd_table = "cbsdInfo_".$fccId;
 			$where_array = array('lowFrequency' => $lowFrequency,'highFrequency'=>$highFrequency);
-			$query = $this->create_select_query(array('available','channelType'),$cbsd_table,$where_array);
+			$query = $this->create_select_query(array('available','channelType','pu_absent'),$cbsd_table,$where_array);
 			$result = $this->myDBHandler->query($query);
 			if($row = $this->myDBHandler->fetchResults($result)) {
-				if($row['available'] == 1) {
+				if($row['available'] == 1 && $row['pu_absent'] == 1) {
 
 					//echo time();
 					date_default_timezone_set ('UTC');
@@ -294,7 +298,10 @@ class JsonListener{
 				}
 			}
 
-
+			if(property_exists($grantInquiryObj, 'installationParam')){
+				$value = $grantInquiryObj->{'installationParam'};
+				$this->updateCBSDLocation('installationParam',$value,$cbsdId);
+			}
 			//$replyObj->{}
 		} else {
 			$replyObj = (object) ['responseCode'=>'103','responseMessage'=>'Invalid CBSDID'];
