@@ -101,6 +101,14 @@ class DbReader():
                 print "Wrong sql statement: ", sql_req
                 print e
                 return None;
+    def fetchQuery(self,query):
+        try:
+            f = psql.read_sql(query, self.conn)
+            return f
+        except Exception as e:
+            print "Wrong sql statement: ", sql_req
+            print e
+            return None;
 
 def main():
     reader = DbReader("rem","localhost","wireless","wireless")

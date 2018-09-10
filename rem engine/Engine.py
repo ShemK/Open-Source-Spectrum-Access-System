@@ -13,6 +13,7 @@ import logging
 
 from DbReader import DbReader
 from Sensor import Sensor
+import information_parser
 
 '''
     Base Class Utilized to get information from the REM
@@ -31,6 +32,7 @@ class Engine:
         self.thread_count = thread_count
         self.sensorInfo = None
         self.sensor_map = dict()
+        self.informationParser =  information_parser.InformationParser('192.168.1.21',9749)
         if(self.conn == None):
             print "Couldn't connect to database"
             sys.exit()
@@ -50,10 +52,26 @@ class Engine:
         for i in index_list:
             sensor_id = np.asscalar(nodeinfo.loc[i]['nodeid'])
             last_active = nodeinfo.loc[i]['last_active']
+            latitude  = nodeinfo.loc[i]['latitude']
+            longitude  = nodeinfo.loc[i]['longitude']
             if sensor_id not in self.sensor_map:
                 self.sensor_map[sensor_id] = Sensor(sensor_id,0,self.dbReader)
+
             self.update_sensor_info(sensor_id,last_active)
 
+            current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+            if (current_time - self.sensor_map[sensor_id].last_loc_update) > 30:
+                self.sensor_map[sensor_id].latitude = latitude
+                self.sensor_map[sensor_id].longitude = longitude
+                self.informationParser.addStatus('type','SAS')
+                self.informationParser.addStatus('status','sensor_location')
+                self.informationParser.addStatus('sensor_id',sensor_id)
+                self.informationParser.addStatus('latitude',latitude)
+                self.informationParser.addStatus('longitude',longitude)
+                current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+                self.informationParser.addStatus('time',current_time)
+                self.informationParser.sendStatus()
+                self.sensor_map[sensor_id].last_loc_update = current_time
 
     def update_sensor_info(self,sensor_id,last_active):
         current_time = time.mktime(datetime.datetime.utcnow().timetuple())
