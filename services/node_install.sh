@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# this was meant to install on all nodes
 ssh 192.168.1.20 ./install.sh
 
 ssh 192.168.1.19 ./install.sh
