@@ -1,0 +1,13 @@
+[Unit]
+Description=runs the channel emulator controller in the background
+
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStartPre=sudo /sbin/ip route add 224.0.0.0/4 dev eth2
+
+ExecStart=/home/rfnest/rftest/Software/cec/run_cec.sh
+
+[Install]
+WantedBy=multi-user.target
