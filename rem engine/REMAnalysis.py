@@ -33,6 +33,7 @@ class Cbsd():
         self.installationJson = self.json_decoder.decode(self.installationParam)
         self.latitude = self.installationJson['latitude']
         self.longitude = self.installationJson['longitude']
+
         #print l
     def get_location(self):
         pass
@@ -44,12 +45,14 @@ class REMAnalysis(threading.Thread):
         threading.Thread.__init__(self)
         self.cbsd = cbsd
         self.conn = conn
-        self.min_distance = 10
+        self.min_distance = 200
         self.stop_thread = False
         self.unavailable_frequencies = []
+        self.neighbors = []
+        self.occupied_frequencies = 0
 
     def update_cbsd_info(self):
-            logging.debug("Fetching Updating CBSD information for %s",self.cbsd.fccId)
+            logging.debug("Fetching Updated CBSD information for %s",self.cbsd.fccId)
             try:
                 df = psql.read_sql("select * from registered_cbsds", self.conn)
                 dim = df.shape
@@ -57,6 +60,27 @@ class REMAnalysis(threading.Thread):
                 for i in range(0,row_num):
                     if df.loc[i]['fccId'] == self.cbsd.fccId:
                         self.cbsd.cbsdId = df.loc[i]['cbsdId']
+
+                sql_query = 'select * from cbsdinfo_'+ self.cbsd.fccId+' WHERE "available" = 0;'
+                df = psql.read_sql(sql_query, self.conn)
+
+                dim = df.shape
+                row_num = dim[0]
+                print "Row Num ",row_num
+                for i in range(0,row_num):
+                    lowFrequency = df.loc[i]['lowFrequency']
+                    if self.occupied_frequencies==0:
+                        self.update_neighbors(self.occupied_frequencies,1)
+                    if self.occupied_frequencies != lowFrequency:
+                        self.update_neighbors(self.occupied_frequencies,1)
+
+                    self.occupied_frequencies = lowFrequency
+                    self.update_neighbors(lowFrequency,2)
+                    print "occupied for ",self.cbsd.fccId,": ",self.occupied_frequencies
+                if row_num == 0 and self.occupied_frequencies != 0:
+                    self.update_neighbors(self.occupied_frequencies,1)
+                    self.occupied_frequencies = 0
+
             except Exception as e:
                 print "Error reading registered_cbsds: ",e
 
@@ -94,7 +118,6 @@ class REMAnalysis(threading.Thread):
         index_list = nodeInfo.index.tolist()
         for i in index_list:
             dist = self.calculate_distance(nodeInfo,i)
-
             last_active = nodeInfo.loc[i]['last_active']
             current_time = time.mktime(datetime.datetime.utcnow().timetuple())
             active_time = last_active.to_pydatetime()
@@ -165,8 +188,8 @@ class REMAnalysis(threading.Thread):
                             print "Diff: ", diff.max()
 
 
-                            if diff.max() > 0.22:
-                                above_thresh = diff[(diff > 0.22)]
+                            if diff.max() > 0.2:
+                                above_thresh = diff[(diff > 0.2)]
                                 logging.info("Found channels with interference")
                                 #print_full(spectrum_info)
 
@@ -235,8 +258,28 @@ class REMAnalysis(threading.Thread):
         if (sensor_latitude!=None) and (sensor_longitude!=None):
             dist = (self.cbsd.latitude - sensor_latitude)**2 + (self.cbsd.longitude - sensor_latitude)**2
             dist = math.sqrt(dist)
+            #print "---------------------------------Distance: ", dist
         return dist
 
+    def calculate_neigbor_distance(self,new_cbsd):
+        if (new_cbsd.latitude!=None) and (new_cbsd.longitude!=None):
+            dist = (self.cbsd.latitude - new_cbsd.latitude)**2 + (self.cbsd.longitude - new_cbsd.latitude)**2
+            dist = math.sqrt(dist)
+        return dist
+    def update_neighbors(self,lowFrequency,occupied):
+        for neighbor in self.neighbors:
+            neighbor.update_from_neighbors(lowFrequency,occupied)
+
+    def update_from_neighbors(self,lowFrequency,occupied):
+        try:
+            sql_query = 'UPDATE cbsdinfo_'+self.cbsd.fccId + ' SET available = '+ str(occupied) + \
+                                        ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
+            cur = self.conn.cursor()
+            cur.execute(sql_query)
+            self.conn.commit()
+            print sql_query
+        except Exception as e:
+            print "Error Updating neighbors"
 
 class sensor():
 
@@ -253,12 +296,13 @@ class sensor():
         self.last_active = 0
         self.clock_diff = 0
         self.unavailable_frequencies = []
+        self.occupied_frequencies = []
     def fetch_channel_info(self):
         table_name = "channelinfo_" + str(self.sensor_id)
         #print "Table Name: ",table_name
         try:
             self.channelInfo = psql.read_sql("select startfreq, occ from " + table_name
-                            +" where startfreq > 3550e6 and startfreq < 3660e6", self.conn)
+                            +" where startfreq > 800e6 and startfreq < 1000e6", self.conn)
         except Exception as e:
             print "Error reading from database: ",e
 
@@ -307,7 +351,7 @@ class sensor():
 
     def update_table(self, cbsd, lowFrequency, value):
         try:
-            sql_query = 'UPDATE cbsdinfo_'+cbsd.cbsdId + ' SET pu_absent = '+ str(value) + \
+            sql_query = 'UPDATE cbsdinfo_'+cbsd.fccId + ' SET pu_absent = '+ str(value) + \
                                         ' WHERE "lowFrequency" = ' + str(lowFrequency) + ';'
             cur = self.conn.cursor()
             cur.execute(sql_query)
