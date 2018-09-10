@@ -1,6 +1,8 @@
 [Unit]
 Description=creating a service to control cbsds
 
+After=multi-user.target
+
 [Service]
 Type=simple
 ExecStart=/usr/bin/python /opt/sas/central/controller.py

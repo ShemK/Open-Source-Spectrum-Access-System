@@ -9,3 +9,4 @@ ExecStart=/usr/local/bin/gpsfake -c 1 -S /opt/sas/gps/fake.log
 
 [Install]
 WantedBy=multi-user.target
+RequiredBy=gps_proxy.service
