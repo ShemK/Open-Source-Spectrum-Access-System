@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS ChannelInfo(
   channelID serial PRIMARY KEY,
   startfreq FLOAT,
   endfreq FLOAT,
-  occ FLOAT DEFAULT NULL
+  occ FLOAT DEFAULT 0
 ); /*dummy indicator for occupancy
 --should csv for channel quality matrix be attached to this table?*/
 
@@ -314,7 +314,7 @@ DROP TABLE IF EXISTS SensorCBSDConnection;
 CREATE TABLE IF NOT EXISTS SensorCBSDConnection(
   "fccId" varchar(19) NOT NULL,
   nodeID bigserial,
-  "distance" FLOAT DEFAULT 99999999,
+  "distance" FLOAT DEFAULT 0,
   "pu_flag" INT DEFAULT 3,
   "pu_possible_distance" FLOAT DEFAULT 9999999,
   "pu_frequencies" FLOAT[],
@@ -550,19 +550,19 @@ lowfreq FLOAT;
 BEGIN
   fccId = $1;
   lowfreq = $3;
-  CREATE TEMPORARY TABLE decision_table(nodeid BIGINT, lowfrequency FLOAT, pu_distance FLOAT, id SERIAL, PRIMARY KEY (id)) ON COMMIT DROP;
+  /*CREATE TEMPORARY TABLE decision_table(nodeid BIGINT, lowfrequency FLOAT, pu_distance FLOAT, id SERIAL, PRIMARY KEY (id)) ON COMMIT DROP;
   FOR nodeid,distance IN
   SELECT sensorcbsdconnection.nodeid,sensorcbsdconnection.distance
   FROM sensorcbsdconnection
   WHERE "fccId" = $1 AND pu_flag = 1
-  LOOP
+  LOOP*/
 
       EXECUTE FORMAT('
         UPDATE %s
         SET pu_absent = %s
         WHERE "lowFrequency" = %s
         ;','cbsdinfo_'||fccId,$2,lowfreq);
-  END LOOP;
+  /*END LOOP;*/
 
   /*-----TODO:Need to add decision for when multiple sensors see same  pu*/
 
@@ -648,7 +648,8 @@ BEGIN
     channelID serial PRIMARY KEY,
     startfreq FLOAT UNIQUE,
     endfreq FLOAT,
-    occ FLOAT DEFAULT NULL,
+    occ FLOAT DEFAULT 0,
+    noise_floor FLOAT DEFAULT 0,
     nearest FLOAT DEFAULT 0,
     near FLOAT DEFAULT 0,
     furthest FLOAT DEFAULT 0
@@ -719,6 +720,24 @@ CREATE TRIGGER delete_node_id_trigger
   AFTER DELETE ON nodeInfo
   FOR EACH ROW
   EXECUTE PROCEDURE DELETE_NODE_CHANNEL_TABLE();
+
+/*https://stackoverflow.com/questions/2816544/convert-time-to-seconds-in-postgresql*/
+CREATE OR REPLACE FUNCTION to_seconds(t text)
+  RETURNS integer AS
+$BODY$
+DECLARE
+    hs INTEGER;
+    ms INTEGER;
+    s INTEGER;
+BEGIN
+    SELECT (EXTRACT( HOUR FROM  t::time) * 60*60) INTO hs;
+    SELECT (EXTRACT (MINUTES FROM t::time) * 60) INTO ms;
+    SELECT (EXTRACT (SECONDS from t::time)) INTO s;
+    SELECT (hs + ms + s) INTO s;
+    RETURN s;
+END;
+$BODY$
+  LANGUAGE 'plpgsql';
 
 
 /* Prepopulate Insertions */

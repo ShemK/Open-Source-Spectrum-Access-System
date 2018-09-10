@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sas Rem
-# Generated: Wed May  9 18:20:23 2018
+# Generated: Thu Jul 12 00:17:58 2018
 ##################################################
 
 from gnuradio import blocks
@@ -42,6 +42,7 @@ class sas_rem(gr.top_block):
         self.sas_ed_threshold_0 = sas.ed_threshold(fft_len, num_channels, 200)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, N)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
+        self.blocks_null_sink_1 = blocks.null_sink(gr.sizeof_gr_complex*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_char*1)
 
         ##################################################
@@ -59,6 +60,7 @@ class sas_rem(gr.top_block):
         self.msg_connect((self.utils_nmea_reader_0, 'gps_msg'), (self.sas_psql_insert_0, 'latlong'))
         self.msg_connect((self.utils_nmea_reader_0, 'gps_msg'), (self.sas_send_data_0, 'gps'))
         self.connect((self.blocks_null_source_0, 0), (self.sas_send_data_0, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_null_sink_1, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.utils_psd_cvf_0, 0))
         self.connect((self.sas_ed_threshold_0, 0), (self.sas_psql_insert_0, 0))
         self.connect((self.sas_sas_buffer_0, 0), (self.blocks_vector_to_stream_0, 0))
