@@ -78,27 +78,11 @@ install_sensor_component(){
   echo "Installing GNURadio Dependencies for REM"
   echo "--------------------------------------------------------------"
   #<<COMMENT
-  sudo rm -r rem/gr-sas/build
+  sudo rm -r rem/sensor/gr-sas/build
 
-  mkdir rem/gr-sas/build
+  mkdir rem/sensor/gr-sas/build
 
-  cd rem/gr-sas/build
-
-  cmake ..
-
-  make -j8
-
-  sudo make install
-
-  sudo ldconfig
-
-  cd ../../../
-
-  sudo rm -r rem/gr-utils/build
-
-  mkdir rem/gr-utils/build
-
-  cd rem/gr-utils/build
+  cd rem/sensor/gr-sas/build
 
   cmake ..
 
@@ -108,7 +92,23 @@ install_sensor_component(){
 
   sudo ldconfig
 
-  cd ../../../
+  cd ../../../../
+
+  sudo rm -r rem/sensor/gr-utils/build
+
+  mkdir rem/sensor/gr-utils/build
+
+  cd rem/sensor/gr-utils/build
+
+  cmake ..
+
+  make -j8
+
+  sudo make install
+
+  sudo ldconfig
+
+  cd ../../../../
 }
 
 #COMMENT
