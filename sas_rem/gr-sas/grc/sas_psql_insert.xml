@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<block>
+  <name>PostgreSQL insert</name>
+  <key>sas_psql_insert</key>
+  <category>SAS</category>
+  <import>import sas</import>
+  <make>sas.psql_insert($N, $num_channels)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>N</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>number of channels</name>
+    <key>num_channels</key>
+    <type>int</type>
+  </param>
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$N</vlen>
+  </sink>
+
+ 
+  <sink>
+    <name>latlong</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+
+  <sink>
+    <name>center_freq</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+  <sink>
+    <name>decision</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+   <sink>
+    <name>samp_rate</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+  <source>
+    <name>nodeid</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>mac</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>ip</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<block>
+  <name>Pipe Sink</name>
+  <key>utils_pipe_sink</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.pipe_sink($N, $filename)</make>
+  <callback>open($filename)</callback>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Vector Length</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>File Path</name>
+    <key>filename</key>
+    <type>file_save</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$N</vlen>
+  </sink>
+</block>

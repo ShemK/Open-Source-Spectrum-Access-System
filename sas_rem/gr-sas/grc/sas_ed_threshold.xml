@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<block>
+  <name>Energy Detector</name>
+  <key>sas_ed_threshold</key>
+  <category>SAS</category>
+  <import>import sas</import>
+  <make>sas.ed_threshold($fft_len, $num_channels, $threshold)</make>
+  
+  <param>
+    <name>FFT Size</name>
+    <key>fft_len</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>FFT Splits (Number of Subchannels)</name>
+    <key>num_channels</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Threshold</name>
+    <key>threshold</key>
+    <type>float</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$fft_len</vlen>
+  </sink>
+
+
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>fft_len</vlen>
+  </source>
+
+  <source>
+    <name>decision</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+   <source>
+    <name>noise_floor</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

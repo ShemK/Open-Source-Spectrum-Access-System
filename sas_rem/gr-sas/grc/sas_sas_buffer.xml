@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<block>
+  <name>SAS Buffer</name>
+  <key>sas_sas_buffer</key>
+  <category>SAS</category>
+  <import>import sas</import>
+  <make>sas.sas_buffer($N)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Vector Length</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>$N</vlen>
+  </source>
+
+  <source>
+    <name>samp_rate</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>center_freq</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>number_of_samps</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>samp_number</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

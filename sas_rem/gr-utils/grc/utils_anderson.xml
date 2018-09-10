@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<block>
+  <name>anderson</name>
+  <key>utils_anderson</key>
+  <category>[utils]</category>
+  <import>import utils</import>
+  <make>utils.anderson($N)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+   <param>
+    <name>Vector Size</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>$N</vlen>
+  </sink>
+
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <source>
+    <name>out</name>
+    <type>complex</type><!-- e.g. int, float, complex, byte, short, xxx_vector, ...-->
+    <vlen>$N</vlen>
+  </source>
+</block>

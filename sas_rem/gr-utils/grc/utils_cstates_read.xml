@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<block>
+  <name>Channel States Reader</name>
+  <key>utils_cstates_read</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.cstates_read($num_channels)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Number of Channels</name>
+    <key>num_channels</key>
+    <type>int</type>
+  </param>
+
+  
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>$num_channels</vlen>
+  </source>
+</block>

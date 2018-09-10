@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<block>
+  <name>PMT_over_socket</name>
+  <key>sas_send_data</key>
+  <category>[sas]</category>
+  <import>import sas</import>
+  <make>sas.send_data($port, $host, $num_split, $N)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  
+  <param>
+    <name>Port</name>
+    <key>port</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Number of Samples</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+
+
+  <param>
+    <name>Number of Splits for ED</name>
+    <key>num_split</key>
+    <type>int</type>
+  </param>
+
+
+  <param>
+    <name>UDP Host</name>
+    <key>host</key>
+    <type>string</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <sink>
+    <name>center_freq</name>
+    <type>message</type>
+  </sink>
+
+   <sink>
+    <name>occ</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>bw</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>gps</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+ 
+
+
+  <sink>
+    <name>noise_floor</name>
+    <type>message</type>
+  </sink>
+  
+  <sink>
+    <name>ip</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>nodeid</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>mac</name>
+    <type>message</type>
+  </sink>
+</block>

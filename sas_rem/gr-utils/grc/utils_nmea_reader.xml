@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<block>
+  <name>nmea_reader</name>
+  <key>utils_nmea_reader</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.nmea_reader($host, $port, $protocol)</make>
+  	<param>
+		<name>GPSD Host</name>
+		<key>host</key>
+		<value>localhost</value>
+		<type>string</type>
+	</param>
+	<param>
+		<name>TCP port</name>
+		<key>port</key>
+		<value>2947</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>Protocol</name>
+		<key>protocol</key>
+		<value>'nmea'</value>
+		<type>enum</type>
+		<option>
+			<name>NMEA0183</name>
+			<key>'nmea'</key>
+		</option>
+		<option>
+			<name>GPSD native</name>
+			<key>'gpsd'</key>
+		</option>
+	</param>
+
+	<source>
+		<name>out</name>
+		<type>byte</type>
+	</source>
+	<source>
+		<name>gps_msg</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+</block>
