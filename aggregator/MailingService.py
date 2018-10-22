@@ -15,6 +15,7 @@ class MailingService(object):
         self.dest_port = dest_port
         self.service = service
         self.port = 9749 # All ports will need to be placed in a configuration file
+        self.other_port = 6789
 
         if self.service == 'udp':
             self.input_sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
@@ -23,11 +24,11 @@ class MailingService(object):
 
     def forward(self):
         data, addr = self.input_sock.recvfrom(4096)
-        print "Received Something",pmt.deserialize_str(data)
+        #print "Received Something",pmt.deserialize_str(data)
         self.output_sock.sendto(data, (self.dest_addr, self.dest_port))
 
 def main():
-    mailingService = MailingService('128.173.39.16',4680)
+    mailingService = MailingService('172.29.85.203',4680)
     while 1:
         mailingService.forward()
 

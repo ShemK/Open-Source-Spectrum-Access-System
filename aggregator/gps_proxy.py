@@ -4,13 +4,22 @@ import socket
 import json
 import atexit
 from decimal import *
+import time
 
 def changeLocation(input_data,lat,lon):
+    changed_data = "";
     pos = input_data.find("lon")
     class_pos = input_data.find("class")
     speed_pos = input_data.find("speed")
+    end_bracket = input_data.find("}")
     if pos != -1 and speed_pos != -1 and class_pos != -1:
-        input_data = input_data[1:-3]
+        #print pos,speed_pos,class_pos
+        if class_pos > end_bracket:
+            speed_pos = input_data.find("speed",class_pos)
+        if speed_pos == -1:
+            return input_data
+
+        input_data = input_data[class_pos-1:speed_pos+12]
         input_list = input_data.split(',')
         lat_list = input_list[5].split(':')
         lat_list[1] = str(lat)
@@ -18,9 +27,11 @@ def changeLocation(input_data,lat,lon):
         lon_list = input_list[6].split(':')
         lon_list[1] = str(lon)
         input_list[6] = ':'.join(lon_list)
-        input_data = ','.join(input_list)
-        input_data = '{'+input_data+'}\r\n'
-        return input_data
+        changed_data = ','.join(input_list)
+        #changed_data = '{'+input_data+'}\r\n'
+        changed_data = "{"+ changed_data + "}\r\n"
+        #print "Additional data: ", input_data[speed_pos:speed_pos+15]
+        return changed_data
     else:
         return input_data
 
@@ -39,11 +50,11 @@ sock.listen(1)
 server_conn, addr = sock.accept()
 server_conn.settimeout(0.1)
 client_sock.connect(("localhost",2947))
-client_sock.settimeout(5)
+client_sock.settimeout(1)
 
 side_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 side_sock.bind(("0.0.0.0",7891))
-side_sock.settimeout(0.1)
+side_sock.settimeout(1)
 
 rfMessage = None
 rfObj = dict()
@@ -80,22 +91,27 @@ while True:
             if(bool(rfObj)):
                 known_gps = changeLocation(known_gps,rfObj['lat'],rfObj['lon'])
             print known_gps
-            server_conn.send(known_gps)
+            print "Start: " , known_gps[0:10]
+            if known_gps[0] == "{":
+                server_conn.send(known_gps)
         else:
             print "NULL GPS Data"
 
     except Exception as e:
+        print "=========================================================="
+        print "Connection to client program lost"
         print e
-
+        server_conn.close()
         sock.listen(1)
         server_conn, addr = sock.accept()
         server_conn.settimeout(0.1)
         known_gps = None
         gps_data = None
         client_sock.close()
+        #time.sleep(1)
         client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_sock.connect(("localhost",2947))
-        client_sock.settimeout(0.1)
+        client_sock.settimeout(1)
 
     try:
         data = server_conn.recv(2048)
@@ -105,4 +121,4 @@ while True:
 
     if data != None:
         client_sock.send(data)
-        print "Info from client: ", data
+        print "Info from client: ", data, " len: ",len(data)

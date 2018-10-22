@@ -92,7 +92,7 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
     }
 
     pmt_t received_dict = pmt::deserialize_str(received_string);
-    // std::cout << received_dict << "\n";
+    std::cout << received_dict << "\n";
     pmt_t key_list = pmt::dict_keys(received_dict);
     pmt::pmt_t not_found = pmt::mp(0);
 
@@ -153,7 +153,8 @@ void CentralRemConnector::analyze(const char *recv_buffer, int recv_len)
           //printf("vector\n" );
 
           std::vector<float> occ_vector = pmt::f32vector_elements(occ_pmt);
-          pushData(occ_vector,center_freq,nodeID,bandwidth,&worker);
+          std::vector<float> noise_vector = pmt::f32vector_elements(noise_pmt);
+          pushData(occ_vector,center_freq,nodeID,bandwidth,&worker,noise_vector);
           /*
           for(unsigned int i = 0; i < occ_vector.size();i++){
           occ = occ_vector[i];
@@ -361,7 +362,7 @@ bool CentralRemConnector::nodeKnown(int nodeID)
   return false;
 }
 
-void CentralRemConnector::pushData(std::vector<float> occ_vector , double center_freq, int nodeID, float bandwidth,pqxx::work *worker)
+void CentralRemConnector::pushData(std::vector<float> occ_vector , double center_freq, int nodeID, float bandwidth,pqxx::work *worker,std::vector<float> noise_vector)
 {
   //  printf("NodeID %d \n",nodeID);
   //  printf("center_freq %d \n",center_freq);
@@ -369,9 +370,9 @@ void CentralRemConnector::pushData(std::vector<float> occ_vector , double center
   for(int i = 0; i < node_info_vector.size(); i++) {
     if(nodeID == node_info_vector[i].nodeID) {
       //  printf("NodeID %d Found\n",nodeID);
-      std::vector<float> decision = node_info_vector[i].decision_maker.getDecision(occ_vector,center_freq);
+      std::vector<float> decision = node_info_vector[i].decision_maker.getDecision(occ_vector,center_freq,noise_vector);
       if(decision.size() > 0){
-
+        std::vector<float> avg_noise =  node_info_vector[i].decision_maker.noise_average();
         double frequency = node_info_vector[i].decision_maker.get_previous_center_frequency() - bandwidth/2;
         double start_freq = frequency/1e6;
         int channel_bw = round((bandwidth/1e6)/decision.size());
@@ -404,7 +405,7 @@ void CentralRemConnector::pushData(std::vector<float> occ_vector , double center
           //    std::cout << "Start Freq: " << temp_freq << "\n";
           for(int i = 0; i < (channel_bw/(2e6));i++) {
             sql = sql + "UPDATE channelinfo_" + std::to_string(nodeID) +" SET occ = "+ std::to_string(decision[k])
-            + " WHERE startfreq = " + std::to_string(temp_freq+(2e6*i)) + ";";
+            + ",noise_floor = "+ std::to_string(avg_noise[k]) + " WHERE startfreq = " + std::to_string(temp_freq+(2e6*i)) + ";";
           }
           /*
           std::cout << "\n------------------------------\n";

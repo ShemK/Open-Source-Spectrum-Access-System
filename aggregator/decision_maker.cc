@@ -10,9 +10,10 @@ DecisionMaker::DecisionMaker(){
 
 DecisionMaker::~DecisionMaker(){
   occ_values.clear();
+  noise_values.clear();
 }
 
-std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, double center_frequency){
+std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, double center_frequency,std::vector<float> noise_vector){
   std::cout << "---------------------" << nodeID << "------------------------\n";
   if(occ_values.size()==0) {
     struct timeval ts;
@@ -37,8 +38,9 @@ std::vector<float> DecisionMaker::getDecision(std::vector<float> occ_vector, dou
     //printf("secondsPassed: %f\n", secondsPassed);
     values_thrown++; // values thrown away when the frequency_change happens
     if(secondsPassed < 0.05){
-      if(values_thrown > 5){ // 10 values are thrown away
+      if(values_thrown > 5){ // 5 values are thrown away
         occ_values.push_back(occ_vector);
+        noise_values.push_back(noise_vector);
       }
       printf("secondsPassed: %f\n",secondsPassed );
       printf("values thrown: %d\n",values_thrown );
@@ -89,6 +91,26 @@ std::vector<float> DecisionMaker::average(){
     //std::cout << "Result Size: " << result.size() << "\n";
   }
   occ_values.clear();
+  return result;
+}
+
+std::vector<float> DecisionMaker::noise_average(){
+  std::vector<float> result;
+  if(noise_values.size() > 0){
+    int size = noise_values.at(0).size();
+    for(int j = 0; j < size; j++) {
+      float temp_result = 0;
+      for(int i = 0; i < noise_values.size(); i++){
+        //std::cout << "Value Size :" << occ_values.at(i).size() << "\n";
+        temp_result = temp_result + noise_values.at(i).at(j);
+      }
+      temp_result = temp_result/noise_values.size();
+      result.push_back(temp_result);
+    }
+    //std::cout << "Hello " << "\n";
+    //std::cout << "Result Size: " << result.size() << "\n";
+  }
+  noise_values.clear();
   return result;
 }
 
