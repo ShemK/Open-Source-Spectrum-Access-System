@@ -131,6 +131,7 @@ class JsonListener{
 														if(is_array($value) || is_object($value)) {
 															$value = json_encode($value);
 														}
+														$value = preg_replace('/\s+/', '', $value);
 														$query = $this->create_update_query('registered_cbsds',array($key => $value),array("cbsdId" => $cbsdId));
 														$result = $this->myDBHandler->query($query);
 													}
@@ -190,13 +191,14 @@ class JsonListener{
 		$replyObj = (object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
 		if(property_exists($newSpectrumInquiryObj, 'cbsdId')) {
 			$cbsdId = $newSpectrumInquiryObj->{'cbsdId'};
+			$select_array = array('cbsdId','fccId');
 			//$query = "SELECT cbsdId FROM registered_cbsds where cbsdId = "."'".$cbsdId."';";
-			$query = $this->create_select_query("cbsdId","registered_cbsds",array("cbsdId"=>$cbsdId));
+			$query = $this->create_select_query($select_array,"registered_cbsds",array("cbsdId"=>$cbsdId));
 			$availableChannel = array();
 			$result = $this->myDBHandler->query($query);
 
 			if($row = $this->myDBHandler->fetchResults($result)) {
-
+				$fccId = $row['fccId'];
 				$inquiredSpectrum =  $newSpectrumInquiryObj->{'inquiredSpectrum'};
 				for($i = 0; $i < count($inquiredSpectrum);$i++) {
 					$lowFrequency = $inquiredSpectrum[$i]->{'lowFrequency'};
@@ -204,13 +206,13 @@ class JsonListener{
 					//$query = "SELECT available,channelType FROM channels
 					//WHERE lowFrequency = ".$lowFrequency."
 					//AND highFrequency = ".$highFrequency.";";
-					$cbsd_table = "cbsdInfo_".$cbsdId;
-					$select_array = array('available','channelType');
+					$cbsd_table = "cbsdInfo_".$fccId;
+					$select_array = array('available','channelType','pu_absent');
 					$where_array = array('lowFrequency'=>$lowFrequency,'highFrequency'=>$highFrequency);
 					$query = $this->create_select_query($select_array,$cbsd_table ,$where_array);
 					$result = $this->myDBHandler->query($query);
 					if($row = $this->myDBHandler->fetchResults($result)) {
-						if($row['available'] == 1) {
+						if($row['available'] == 1 && $row['pu_absent'] == 1) {
 							array_push($availableChannel,
 							(object)['lowFrequency'=>$lowFrequency,
 							'highFrequency'=>$highFrequency,
@@ -228,6 +230,10 @@ class JsonListener{
 				$replyObj = (object) ['response'=>(object)['responseCode'=>'102','responseMessage'=>'Invalid CBSDID', 'responseData'=>$responseData]];
 
 			}
+			if(property_exists($newSpectrumInquiryObj, 'installationParam')){
+				$value = $newSpectrumInquiryObj->{'installationParam'};
+				$this->updateCBSDLocation('installationParam',$value,$cbsdId);
+			}
 
 		} else {
 			$replyObj = (object) ['responseCode'=>'103','responseMessage'=>'Invalid CBSDID'];
@@ -243,18 +249,26 @@ class JsonListener{
 		$replyObj = (object) ['responseCode'=>'102','Error'=>'Server Error Occured'];
 		if(property_exists($grantInquiryObj, 'cbsdId')) {
 			$cbsdId = $grantInquiryObj->{'cbsdId'};
+			$select_array = array('cbsdId','fccId');
+			//$query = "SELECT cbsdId FROM registered_cbsds where cbsdId = "."'".$cbsdId."';";
+			$query = $this->create_select_query($select_array,"registered_cbsds",array("cbsdId"=>$cbsdId));
+			$availableChannel = array();
+			$result = $this->myDBHandler->query($query);
+			$row = $this->myDBHandler->fetchResults($result);
+			$fccId = $row['fccId'];
+
 			$this->updateLastActive($cbsdId);
 			$replyObj = (object) ['cbsdId'=>$cbsdId];
 			$operationParam = $grantInquiryObj->{'operationParam'};
 			$maxEirp = $operationParam->{'maxEirp'};
 			$lowFrequency = $operationParam->{'operationalFrequencyRange'}->{'lowFrequency'};
 			$highFrequency = $operationParam->{'operationalFrequencyRange'}->{'highFrequency'};
-			$cbsd_table = "cbsdInfo_".$cbsdId;
+			$cbsd_table = "cbsdInfo_".$fccId;
 			$where_array = array('lowFrequency' => $lowFrequency,'highFrequency'=>$highFrequency);
-			$query = $this->create_select_query(array('available','channelType'),$cbsd_table,$where_array);
+			$query = $this->create_select_query(array('available','channelType','pu_absent'),$cbsd_table,$where_array);
 			$result = $this->myDBHandler->query($query);
 			if($row = $this->myDBHandler->fetchResults($result)) {
-				if($row['available'] == 1) {
+				if($row['available'] == 1 && $row['pu_absent'] == 1) {
 
 					//echo time();
 					date_default_timezone_set ('UTC');
@@ -281,10 +295,15 @@ class JsonListener{
 
 					#echo $query;
 					$result = $this->myDBHandler->query($query);
+				} else{
+
 				}
 			}
 
-
+			if(property_exists($grantInquiryObj, 'installationParam')){
+				$value = $grantInquiryObj->{'installationParam'};
+				$this->updateCBSDLocation('installationParam',$value,$cbsdId);
+			}
 			//$replyObj->{}
 		} else {
 			$replyObj = (object) ['responseCode'=>'103','responseMessage'=>'Invalid CBSDID'];
@@ -304,11 +323,20 @@ class JsonListener{
 			$cbsdId = $newHeartBeatInquiryObj->{'cbsdId'};
 			if(property_exists($newHeartBeatInquiryObj, 'grantId')) {
 				$grantId = $newHeartBeatInquiryObj->{'grantId'};
-				$cbsd_table = "cbsdInfo_".$cbsdId;
+
+				$select_array = array('cbsdId','fccId');
+				$query = $this->create_select_query($select_array,"registered_cbsds",array("cbsdId"=>$cbsdId));
+				$availableChannel = array();
+				$result = $this->myDBHandler->query($query);
+				$row = $this->myDBHandler->fetchResults($result);
+				$fccId = $row['fccId'];
+
+
+				$cbsd_table = "cbsdInfo_".$fccId;
 				$query = $this->create_select_query('*',$cbsd_table,array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				if($row = $this->myDBHandler->fetchResults($result)) {
-					if($this->queryPrimaryUserActivity($cbsdId,$grantId) == True){
+					if($this->queryPrimaryUserActivity($fccId,$grantId) == True){
 						if($row['grantState'] == 'GRANTED') {
 							$query = $this->create_update_query($cbsd_table,array('grantState' => 'AUTHORIZED'),array('grantId'=>$grantId));
 							$result = $this->myDBHandler->query($query);
@@ -328,7 +356,7 @@ class JsonListener{
 							'grantState'=>$row['grantState']];
 						$operationParam = (object)[];
 						$operationParam->{'maxEirp'} = 100;
-						$newLowFreq = $this->chooseRandomChannel($cbsdId,$grantId);
+						$newLowFreq = $this->chooseRandomChannel($fccId,$grantId,$row['lowFrequency']);
 						$operationParam->{'operationalFrequencyRange'}->{'lowFrequency'} =$newLowFreq;
 						$operationParam->{'operationalFrequencyRange'}->{'highFrequency'} = $newLowFreq + 10e6;
 						$replyObj->{'operationParam'} = $operationParam;
@@ -348,6 +376,10 @@ class JsonListener{
 					}
 
 				}
+				if(property_exists($newHeartBeatInquiryObj, 'installationParam')){
+					$value = $newHeartBeatInquiryObj->{'installationParam'};
+					$this->updateCBSDLocation('installationParam',$value,$cbsdId);
+				}
 			}
 		}
 		return $replyObj;
@@ -362,7 +394,16 @@ class JsonListener{
 		if(property_exists($newRelinquishmentInquiryObj, 'cbsdId')) {
 
 			$cbsdId = $newRelinquishmentInquiryObj->{'cbsdId'};
-			$cbsd_table = "cbsdInfo_".$cbsdId;
+
+			$select_array = array('cbsdId','fccId');
+			//$query = "SELECT cbsdId FROM registered_cbsds where cbsdId = "."'".$cbsdId."';";
+			$query = $this->create_select_query($select_array,"registered_cbsds",array("cbsdId"=>$cbsdId));
+			$availableChannel = array();
+			$result = $this->myDBHandler->query($query);
+			$row = $this->myDBHandler->fetchResults($result);
+			$fccId = $row['fccId'];
+
+			$cbsd_table = "cbsdInfo_".$fccId;
 			if(property_exists($newRelinquishmentInquiryObj, 'grantId')) {
 				$grantId = $newRelinquishmentInquiryObj->{'grantId'};
 				$query = $this->create_update_query('cbsd_channels',array('available' => 1),array('grantId'=>$grantId));
@@ -370,6 +411,13 @@ class JsonListener{
 				$query = $this->create_update_query($cbsd_table,array('available' => 1),array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				$this->updateLastActive($cbsdId);
+
+				$nullGrantID = '';
+				$nullGrantState = 'GRANTED';
+
+				$query = 'UPDATE '.$cbsd_table.' SET "grantId" = '."'".$nullGrantID."'"
+				.',available = 1 ,"grantState" = '."'".$nullGrantState."'".' WHERE "grantId" = '."'".$grantId."';";
+
 			}
 
 		}
@@ -537,9 +585,18 @@ class JsonListener{
 		}
 	}
 
-	private function chooseRandomChannel($cbsdId,$grantId){
-		$cbsd_table = "cbsdInfo_".$cbsdId;
+	private function chooseRandomChannel($fccId,$grantId,$lowFrequency){
+		$cbsd_table = "cbsdInfo_".$fccId;
 		$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3650e6 and pu_absent = 1;';
+
+
+		if($lowFrequency > 3550e6 && $lowFrequency < 3750e6){
+				$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 3550e6 and "lowFrequency" < 3750e6 and pu_absent = 1;';
+		}elseif ($lowFrequency > 800e6 && $lowFrequency < 1000e6) {
+				$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 800e6 and "lowFrequency" < 1000e6 and pu_absent = 1;';
+		}elseif ($lowFrequency > 400e6 && $lowFrequency < 600e6) {
+				$query = 'select "lowFrequency" from '.$cbsd_table.' where "lowFrequency" > 400e6 and "lowFrequency" < 600e6 and pu_absent = 1;';
+		}
 		$channels = array();
 		$result = $this->myDBHandler->query($query);
 		while($row = $this->myDBHandler->fetchResults($result)){
@@ -548,6 +605,15 @@ class JsonListener{
 
 		$random_pos = rand(0,count($channels)-1);
 		return $channels[$random_pos];
+	}
+
+	private function updateCBSDLocation($key,$value,$cbsdId){
+		if(is_array($value) || is_object($value)) {
+			$value = json_encode($value);
+		}
+		$value = preg_replace('/\s+/', '', $value);
+		$query = $this->create_update_query('registered_cbsds',array($key => $value),array("cbsdId" => $cbsdId));
+		$result = $this->myDBHandler->query($query);
 	}
 
 }
