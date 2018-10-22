@@ -65,6 +65,10 @@ install_dependencies(){
   sudo pip install scipy pynmea2 numpy psycopg2 pandas plotly libconf
 
   sudo chmod -R 755 /usr/local/lib/python2.7/dist-packages/*
+
+  sudo rm -r SAS_Setup
+  
+  git clone -b rem https://github.com/ShemK/Open-Source-Spectrum-Access-System SAS_Setup
 }
 
 install_sensor_component(){
@@ -72,33 +76,19 @@ install_sensor_component(){
   echo "Cloning rem branch from github repository"
   echo "--------------------------------------------------------------"
 
-  git clone -b rem https://github.com/ShemK/Open-Source-Spectrum-Access-System rem
+  #git clone -b rem https://github.com/ShemK/Open-Source-Spectrum-Access-System rem
+  cd SAS_Setup
 
+  git checkout rem
   echo "--------------------------------------------------------------"
   echo "Installing GNURadio Dependencies for REM"
   echo "--------------------------------------------------------------"
   #<<COMMENT
-  sudo rm -r rem/sensor/gr-sas/build
+  sudo rm -r sensor/gr-sas/build
 
-  mkdir rem/sensor/gr-sas/build
+  mkdir sensor/gr-sas/build
 
-  cd rem/sensor/gr-sas/build
-
-  cmake ..
-
-  make -j8
-
-  sudo make install
-
-  sudo ldconfig
-
-  cd ../../../../
-
-  sudo rm -r rem/sensor/gr-utils/build
-
-  mkdir rem/sensor/gr-utils/build
-
-  cd rem/sensor/gr-utils/build
+  cd sensor/gr-sas/build
 
   cmake ..
 
@@ -108,14 +98,31 @@ install_sensor_component(){
 
   sudo ldconfig
 
-  cd ../../../../
+  cd ../../../
+
+  sudo rm -r sensor/gr-utils/build
+
+  mkdir sensor/gr-utils/build
+
+  cd sensor/gr-utils/build
+
+  cmake ..
+
+  make -j8
+
+  sudo make install
+
+  sudo ldconfig
+
+  cd ../../../
 }
 
 #COMMENT
 install_server(){
   echo "Populating database"
 
-  psql -h localhost -U wireless rem < rem/sql/shem_rem.sql
+  git checkout rem
+  psql -h localhost -U wireless rem < sensor/sql/shem_rem.sql
 
   echo "---------------------------------------------"
   echo "Installing Apache Web Server"
@@ -134,13 +141,15 @@ install_server(){
   echo "Downloading Server Files"
   echo "--------------------------------------------------------------"
 
+  git checkout sas_php
+
   sudo rm -r /var/www/html/spectrumAccessSystem
 
-  sudo rm -r spectrumAccessSystem
+  #sudo rm -r spectrumAccessSystem
 
-  git clone -b sas_php https://github.com/ShemK/Open-Source-Spectrum-Access-System spectrumAccessSystem
+  #git clone -b sas_php https://github.com/ShemK/Open-Source-Spectrum-Access-System spectrumAccessSystem
 
-  sudo mv spectrumAccessSystem/server /var/www/html/spectrumAccessSystem
+  sudo mv server /var/www/html/spectrumAccessSystem
 
   sudo chmod 644 /var/www/html/spectrumAccessSystem/*
 
@@ -179,6 +188,8 @@ install_gps(){
 
   #node_id=5000.1
   echo $node_id
+
+  sudo rm -r gpsd
 }
 
 install_services(){
@@ -186,16 +197,16 @@ install_services(){
   echo "Downloading and installing service files"
   echo "--------------------------------------------------------------"
 
-
+  git checkout rem
   sudo rm -r /opt/sas
 
   sudo mkdir /opt/sas
 
   sudo chmod 665 /opt/sas
 
-  sudo cp rem/apps/top_block.py /opt/sas/
+  sudo cp sensor/apps/top_block.py /opt/sas/
 
-  sudo cp rem/apps/sas_rem.py /opt/sas/
+  sudo cp sensor/apps/sas_rem.py /opt/sas/
 
   sudo chmod 665 /opt/sas/*
 
@@ -214,23 +225,25 @@ install_services(){
 
   sudo chmod 664 /opt/sas/gps/*
 
-  sudo rm -r auto_scripts
+  #sudo rm -r auto_scripts
 
-  git clone -b auto_scripts https://github.com/ShemK/Open-Source-Spectrum-Access-System auto_scripts
+  #git clone -b auto_scripts https://github.com/ShemK/Open-Source-Spectrum-Access-System auto_scripts
 
-  sudo cp auto_scripts/services/channel_analysis.service /etc/systemd/system/
+  git checkout auto_scripts
+
+  sudo cp services/channel_analysis.service /etc/systemd/system/
 
   sudo chmod 664 /etc/systemd/system/channel_analysis.service
 
-  sudo cp auto_scripts/services/sdr_phy.service /etc/systemd/system/
+  sudo cp services/sdr_phy.service /etc/systemd/system/
 
   sudo chmod 664 /etc/systemd/system/sdr_phy.service
 
-  sudo cp auto_scripts/services/fakegps.service /etc/systemd/system/
+  sudo cp services/fakegps.service /etc/systemd/system/
 
   sudo chmod 664 /etc/systemd/system/fakegps.service
 
-  sudo cp auto_scripts/services/cbsd_start.service /etc/systemd/system/
+  sudo cp services/cbsd_start.service /etc/systemd/system/
 
   sudo chmod 664 /etc/systemd/system/cbsd_start.service
 
@@ -244,11 +257,11 @@ install_services(){
 
   sudo systemctl restart fakegps.service
 
-  sudo cp auto_scripts/services/sas_sudoers /etc/sudoers.d/sas
+  sudo cp services/sas_sudoers /etc/sudoers.d/sas
 
   sudo chmod 440 /etc/sudoers.d/sas
 
-  cd
+  #cd
 }
 while getopts dsgve option;
 do
@@ -290,15 +303,17 @@ if [ $OPTIND -eq 1 ]; then
 fi
 
 # installing the central controllers
-sudo rm -r central_controller
+#sudo rm -r central_controller
 
-git clone -b central_controller https://github.com/ShemK/Open-Source-Spectrum-Access-System central_controller
+#git clone -b central_controller https://github.com/ShemK/Open-Source-Spectrum-Access-System central_controller
+
+git checkout crts
 
 sudo mkdir /opt/sas/central/
 
 #sudo cp central_controller/controller.py /opt/sas/central/
 
-sudo cp crts_sas/cbsd/config_scripts/controller.py /opt/sas/central/
+sudo cp cbsd/config_scripts/controller.py /opt/sas/central/
 
 sudo chmod 665 /opt/sas/central
 
@@ -306,7 +321,9 @@ sudo chmod 665 /opt/sas/central/*
 
 sudo systemctl daemon-reload
 
-sudo cp auto_scripts/services/cbsd_control.service /etc/systemd/system/
+git checkout auto_scripts
+
+sudo cp services/cbsd_control.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/cbsd_control.service
 
@@ -318,11 +335,13 @@ sudo systemctl restart cbsd_control.service
 
 sudo mkdir /opt/sas/aggregator/
 
-sudo rm -r aggregator
+#sudo rm -r aggregator
 
-git clone -b rem_connector https://github.com/ShemK/Open-Source-Spectrum-Access-System aggregator
+#git clone -b rem_connector https://github.com/ShemK/Open-Source-Spectrum-Access-System aggregator
 
-cd aggregator/aggregator
+git checkout rem_connector
+
+cd aggregator
 
 chmod a+x compile.sh
 
@@ -337,11 +356,13 @@ sudo chmod 665 /opt/sas/gps
 sudo chmod 664 /opt/sas/gps/*
 
 
-cd
+cd ..
 
 sudo chmod -R 665 /opt/sas/aggregator/
 
-sudo cp auto_scripts/services/aggregator.service /etc/systemd/system/
+git checkout auto_scripts
+
+sudo cp services/aggregator.service /etc/systemd/system/
 
 sudo chmod 664 /etc/systemd/system/aggregator.service
 
@@ -351,7 +372,7 @@ sudo systemctl enable aggregator.service
 
 sudo systemctl restart aggregator.service
 
-sudo cp auto_scripts/services/gps_proxy.service /etc/systemd/system/
+sudo cp services/gps_proxy.service /etc/systemd/system/
 
 sudo systemctl daemon-reload
 
