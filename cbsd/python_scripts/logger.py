@@ -26,7 +26,7 @@ class logger(object):
 
     def write(self,key,value,log = True):
         if log:
-            print "Writing to file ======================================",log, "key :", key, " value = ", value
+            #print "Writing to file ======================================",log, "key :", key, " value = ", value
             self.writer.writerow([time.time(),key,value])
 
     def close():
