@@ -5,7 +5,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/gpsfake -c 1 -S /opt/sas/gps/fake.log
+ExecStart=/usr/local/bin/gpsfake -q -c 1 -S /opt/sas/gps/fake.log
 
 [Install]
 WantedBy=multi-user.target
