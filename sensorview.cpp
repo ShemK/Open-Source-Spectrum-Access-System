@@ -92,7 +92,7 @@ void SensorView::updateView(){
   QValueAxis *axisY = new QValueAxis;
   axisY->setLinePenColor(series->pen().color());
   axisY->setMin(0);
-  axisY->setRange(0, 0.25);
+  axisY->setRange(0, 0.4);
   QString yTitle("Occupancy Metric");
   axisY->setTitleText(yTitle);
 
@@ -163,4 +163,3 @@ void SensorView::on_buttonBox_rejected()
 {
   app_open = false;
 }
-

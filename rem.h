@@ -7,6 +7,8 @@
 #include <vector>
 #include <pmt/pmt.h>
 #include <iostream>
+#include <iomanip>
+#include <math.h>
 #include <pthread.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -21,10 +23,13 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <semaphore.h>
+#include <chrono>
+#include <ctime>
+#include <fstream>
 #include "nodeview.h"
 #include "sensorview.h"
 #include "suview.h"
-
+#include <algorithm>
 
 namespace Ui {
   class Rem;
@@ -45,6 +50,7 @@ public:
     double highFrequency;
     double bandwidth;
     double occ;
+    bool log = false;
     std::list <double> occ_history;
   };
 
@@ -53,13 +59,13 @@ public:
     double per;
     double bitrate;
   };
-
   struct transmissionInfo{
     std::string state = "";
     double tx_freq = 0;
     double rx_freq = 0;
     std::queue <performanceStats> stats;
     std::vector<short unsigned int> group;
+    bool new_change = false;
   };
 
   enum nodeState{
@@ -76,8 +82,8 @@ public:
 
   struct nodeInfo{
     int nodeID;
-    std::string latitude;
-    std::string longitude;
+    double latitude;
+    double longitude;
     std::vector<channelInfo> channels;
     std::string visualID;
     unsigned int current_channel = 0;
@@ -87,6 +93,7 @@ public:
     nodeType type;
     transmissionInfo tx_info;
     std::string node_color = "";
+    std::vector<double> log_channels;
   };
 
   struct sensor{
@@ -111,6 +118,12 @@ public:
   void organizeData(int nodeID, double occ, double lowFreq, double bandwidth);
   int getChannelPos(nodeInfo n,double lowFreq);
 
+  void analyzePuInfo(pmt::pmt_t & received_dict, pmt::pmt_t nodeID);
+
+  void analyzeSASInfo(pmt::pmt_t & received_dict);
+
+  double searchNearestPU(double latitude,double longitude);
+  long int currentTime();
   std::vector<nodeInfo> known_nodes;
   int getNodePos(int nodeID);
 
@@ -126,6 +139,25 @@ public:
   void updateGroupee(short unsigned int nodeTemp, int status);
 
   sem_t graphic_mutex;
+
+  void createResultFolder();
+
+  bool experimentRunning;
+
+  std::string currentExperiment;
+
+  int numPUs = 0;
+
+  void updatePUResults(std::fstream & out,std::string input, bool new_row = true,bool close = true);
+
+  //bool suAttributeChange(int att,pos);
+
+  enum su_att{
+    FREQ_CHANGE,
+    MOD_CHANGE,
+    RATE_CHANGE
+  };
+
 
   public slots:
   void updateVisualNode(int nodePos);
