@@ -26,7 +26,8 @@ class ProtoEngine(Engine):
                     #print spectrum_info.shape
                     #print spectrum_info
                     min_info = spectrum_info.min(axis=0)
-                    calculated_info = spectrum_info.quantile(q=0.5,axis=0) #+ #spectrum_info.quantile(q=0.5,axis=0))/2
+                    #calculated_info = spectrum_info.quantile(q=0.5,axis=0) #+ #spectrum_info.quantile(q=0.5,axis=0))/2
+                    calculated_info = spectrum_info.mean(axis=0) #+ #spectrum_info.quantile(q=0.5,axis=0))/2
                     calculated_info = calculated_info.sort_index()
                     min_info = min_info.sort_index()
                     sensor.calculated_info = calculated_info
@@ -64,9 +65,14 @@ class ProtoEngine(Engine):
                 near_pathloss = -10 - psd
                 farthest_pathloss = -10 - psd
                 self.sensor_map[sensor_id].calc_psd[key] = psd
+
+                hata_check = (near_pathloss - 69.55 - 26.16*math.log10(key/1e6) - 4.7)/44.9;
+                hata_check = math.pow(10,hata_check)*1000
                 nearest_dist = (math.pow(10,(nearest_pathloss/20))*3e8)/(4*math.pi*key)
                 near_dist = (math.pow(10,(near_pathloss/20))*3e8)/(4*math.pi*key)
                 farthest_dist = (math.pow(10,(farthest_pathloss/20))*3e8)/(4*math.pi*key)
+
+                #print key, " " ,nearest_pathloss, " ",hata_check, " ", nearest_dist
 
                 self.sensor_map[sensor_id].update_thresholds(nearest_dist,near_dist,farthest_dist,key)
                 #print len(self.potential)

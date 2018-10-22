@@ -92,7 +92,7 @@ class Sensor():
             row_num = spectrum_info_shape[0]
 
             #print self.spectrum_info
-            if(row_num > 3):
+            if(row_num > 5):
                 #print self.spectrum_info
                 ind_to_drop = self.spectrum_info.axes[0][0]
                 self.spectrum_info = self.spectrum_info.drop(ind_to_drop)
@@ -120,7 +120,7 @@ class Sensor():
             self.cbsd_pu[fccId].setLastActive(np.asscalar(self.potential_pu.loc[i]['last_active']))
             self.cbsd_pu[fccId].set_distance(self.potential_pu.loc[i]['distance'])
             #print np.asscalar(self.potential_pu.loc[i]['last_active'])
-
+            #print self.sensor_id
             freq_list = np.asarray(self.potential_pu.loc[i]['pu_frequencies'])
             freq_list = freq_list.tolist()
             self.cbsd_pu[fccId].addPotentialPuFrequencies(freq_list)
@@ -182,7 +182,7 @@ class CBSD():
 
     def addPotentialPuFrequencies(self,freq_list):
         #print self.active = True
-        if freq_list == None and self.active == False:
+        if freq_list == None or self.active == False:
             for key in self.pu_frequencies.copy():
                 if self.pu_frequencies[key] == False:
                     self.pu_frequencies.pop(key,None)
@@ -190,6 +190,7 @@ class CBSD():
                     self.pu_frequencies[key] = False
             return
 
+        #print freq_list
         for i in range(len(freq_list)):
             self.addPotentialPu(freq_list[i])
 
