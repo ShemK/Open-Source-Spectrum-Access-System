@@ -70,7 +70,7 @@ class Cbsd(object):
         self.manual = False
         self.log = False
         self.log_path = None
-        self.grantLogger = None
+        #self.grantLogger = None
         self.sas_ip = "localhost"
         self.location = dict()
         self.new_location_update = False
@@ -216,15 +216,15 @@ class Cbsd(object):
             #clear channel list
             self._inquired_channels = []
             if self.log_path != None:
-                self.grantLogger = logger('Results',self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
-                self.grantLogger.write('Grant','hello')
+                #self.grantLogger = logger('Results',self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
+                #self.grantLogger.write('Grant','hello')
                 #self.log = False
-                #self.grantLogger.write('Grant',self._grantId,self.log)
-                #self.grantLogger.write('grantResponse',grantResponse,self.log)
+                ##self.grantLogger.write('Grant',self._grantId,self.log)
+                ##self.grantLogger.write('grantResponse',grantResponse,self.log)
                 Log = logger(self._grantId, self.log_path + "/" + self.get_fccID() + "/" + self._grantId)
                 Log.write('Hello', 'Hi',self.log)
                 Log.write('Hello2', 'Hi22',self.log)
-                self.grantLogger = Log
+                #self.grantLogger = Log
                 #self.log = False;
 
             return True
@@ -262,7 +262,7 @@ class Cbsd(object):
             self._heartbeatResponseObj = heartbeatResponse
             responseCode = heartbeatResponse['heartbeatResponse'] \
                                                     ['response']['responseCode']
-            self.grantLogger.write('heartbeatResponse',heartbeatResponse,self.log)
+            #self.grantLogger.write('heartbeatResponse',heartbeatResponse,self.log)
             if(responseCode=="0"):
                 self._grantId = heartbeatResponse['heartbeatResponse']['grantId']
                 if 'heartbeatInterval' in heartbeatResponse['heartbeatResponse']:
@@ -278,7 +278,7 @@ class Cbsd(object):
                     print "New High Frequency: ", highFrequency
                     self.sc.set_parameter(1,'freq',lowFrequency)
                     self.sc.set_parameter(2,'freq',highFrequency)
-                    self.grantLogger.write('Frequency Change',lowFrequency,self.log)
+                    #self.grantLogger.write('Frequency Change',lowFrequency,self.log)
             else:
                 self._grant_state = "IDLE"
 
@@ -304,7 +304,7 @@ class Cbsd(object):
     def set_relinquishmentRequest(self):
         self._relinquishGrant = True
         self.log = False
-        self.grantLogger.close()
+        #self.grantLogger.close()
 
     def get_heartbeatRequestObj(self):
         self._create_heart_request_obj()
@@ -549,6 +549,12 @@ class Cbsd(object):
 
     def get_current_time_s(self):
         return time.mktime(datetime.datetime.utcnow().timetuple())
+
+    def isCorrectLocation(self):
+        if bool(self.location):
+            return (self.location['latitude'] != 0 and self.location['longitude']!=0)
+        else:
+            return False
 
     def update_location(self,new_loc):
         if bool(self.location):

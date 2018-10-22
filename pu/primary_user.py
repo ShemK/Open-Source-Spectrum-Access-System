@@ -4,12 +4,15 @@ import sys
 import socket
 import json
 import time
+import datetime
 import optparse
+
 
 scripts = os.path.dirname(os.path.abspath(__file__))
 scripts = scripts + '/../cbsd/config_scripts'
 sys.path.insert(0, scripts)
 import config_editor
+import information_parser
 
 scripts = os.path.dirname(os.path.abspath(__file__))
 scripts = scripts + '/../cbsd/python_scripts'
@@ -17,18 +20,24 @@ sys.path.insert(0, scripts)
 
 from logger import logger
 
-
+import gps_reader
+from gps_reader import *
 
 class PrimaryUser(object):
 
     def __init__(self,pu_type):
         self.pu_type = pu_type
-        self.radio = radioThread(self)
         self.channel_list = []
         self.json_decoder = json.JSONDecoder()
         self.configEditor = config_editor.ConfigEditor()
         self.ip = "localhost"
         self.primaryLogger = None
+        self.informationParser = None
+        self.parseInfo = False
+        self.location = dict()
+        self.gpsReader = GPSReader(self,port=8354)
+        self.gpsReader.start()
+
 
     def initializeParameters(self, parameters):
         pass
@@ -49,8 +58,11 @@ class PrimaryUser(object):
         self.configEditor.write_config_file(config_path)
 
     def start_radio(self):
+        self.radio = radioThread(self)
         self.radio.start()
         self.radio.join()
+        self.gpsReader.stop_gps()
+        self.gpsReader.join()
 
     def get_command(self):
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
@@ -60,6 +72,7 @@ class PrimaryUser(object):
         print json_command
         self.channel_list = json_command['channels']
         self.cornet_config = json_command['cornet_config']
+        print self.cornet_config
         if self.cornet_config != None:
             key = 'scenario_controller'
             if key in self.cornet_config:
@@ -75,6 +88,10 @@ class PrimaryUser(object):
             if 'log' in self.cornet_config and 'log_path' in self.cornet_config:
                 self.primaryLogger = logger('primary',self.cornet_config['log_path'] + '/pu')
 
+            if 'information_parser' in self.cornet_config:
+                self.informationParser = information_parser.InformationParser(self.cornet_config['information_parser'],9749)
+                self.parseInfo = True
+
         else:
             print "No SAS Provided, assuming localhost"
             self.sas_ip = "localhost"
@@ -82,6 +99,41 @@ class PrimaryUser(object):
     def log(self,key,value):
         if self.primaryLogger != None:
             self.primaryLogger.write(key,value)
+
+    def update_location(self,new_loc):
+        if bool(self.location):
+            if (self.location['latitude'] != new_loc['latitude']) or (self.location['longitude'] != new_loc['longitude']):
+                self.location = new_loc.copy()
+                #print "New Location: ", new_loc
+                self.new_location_update = True
+                print "New Location: ",self.location['latitude'], ", ", self.location['longitude']
+        else:
+            self.location = new_loc.copy()
+            self.new_location_update = True
+
+        if self.parseInfo and self.new_location_update:
+            print "##########################################################"
+            self.informationParser.addStatus('type','PU')
+            self.informationParser.addStatus('status','update')
+            current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+            self.informationParser.addStatus('time',current_time)
+            self.informationParser.addStatus('longitude',self.location['longitude'])
+            self.informationParser.addStatus('latitude',self.location['latitude'])
+            print self.informationParser.message
+            self.informationParser.sendStatus()
+            self.new_location_update = False
+
+
+    def add_installation_parameters(self,key,value):
+        pass # place holder for adding installationParam
+
+
+    def getLocation(self):
+        if(self.new_location_update):
+            self.new_location_update = False
+            return self.location
+        else:
+            return None
 
 class radioThread(threading.Thread):
 
@@ -107,8 +159,26 @@ class radioThread(threading.Thread):
         self.pu.log('run_time',self.pu.run_time)
         self.pu.log('tx_rate',self.pu.tx_rate)
         self.pu.log('tx_freq',self.pu.tx_freq)
+        if self.pu.parseInfo:
+            self.pu.informationParser.addStatus('type','PU')
+            self.pu.informationParser.addStatus('status','Starting')
+            self.pu.informationParser.addStatus('run_time',self.pu.run_time)
+            self.pu.informationParser.addStatus('tx_rate',self.pu.tx_rate)
+            self.pu.informationParser.addStatus('tx_freq',self.pu.tx_freq)
+            current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+            self.pu.informationParser.addStatus('time',current_time)
+            self.pu.informationParser.sendStatus()
+            print "-----------------Sending Status---------------------------\n"
         os.system(x_path)
         self.threadStopped = True
+        self.pu.gpsReader.stop_gps()
+        if self.pu.parseInfo:
+            self.pu.informationParser.addStatus('type','PU')
+            self.pu.informationParser.addStatus('status','Stop')
+            current_time = time.mktime(datetime.datetime.utcnow().timetuple())
+            self.pu.informationParser.addStatus('time',current_time)
+            self.pu.informationParser.sendStatus()
+
     def stop_thread(self):
         pass
 
@@ -125,16 +195,19 @@ def run_pu(pu,options):
 
 
 def main():
-    pu = PrimaryUser("interferer")
+
     parser = optparse.OptionParser()
     parser.add_option('-f', '--freq',action="store", dest="tx_freq", type = "float", help="tx frequency")
     parser.add_option('-l', '--loop',action="store_true", dest="loop", default=False, help="loop forever")
     options, args = parser.parse_args()
     if(options.loop):
         while(options.loop):
-            if not pu.radio.is_alive():
-                run_pu(pu,options)
+            pu = PrimaryUser("interferer")
+            run_pu(pu,options)
+            del pu
+            #time.sleep(20)
     else:
+        pu = PrimaryUser("interferer")
         run_pu(pu,options)
         print pu.radio.is_alive()
     #time.sleep(120)

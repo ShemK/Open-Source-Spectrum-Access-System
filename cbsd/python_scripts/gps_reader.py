@@ -11,13 +11,14 @@ import threading
 class GPSReader(threading.Thread):
 
 
-    def __init__(self,cbsd=None,port=2947,v=0):
+    def __init__(self,node=None,port=2947,v=0):
         threading.Thread.__init__(self)
         self.port = port
         self.session = gps(port=self.port,verbose=v)
+
         self.session.stream(WATCH_ENABLE|WATCH_NEWSTYLE)
         self.location = dict()
-        self.cbsd = cbsd
+        self.node = node
         self.stop = False
 
     def run(self):
@@ -29,13 +30,15 @@ class GPSReader(threading.Thread):
             if location != None:
                 self.location['longitude'] = report.get('lon')
                 self.location['latitude'] = report.get('lat')
-                if self.cbsd!=None:
-                    self.cbsd.add_installation_parameters('longitude',self.location['longitude'])
-                    self.cbsd.add_installation_parameters('latitude',self.location['latitude'])
-                    self.cbsd.update_location(self.location)
+                if self.node!=None:
+                    self.node.add_installation_parameters('longitude',self.location['longitude'])
+                    self.node.add_installation_parameters('latitude',self.location['latitude'])
+                    self.node.update_location(self.location)
             if self.stop == True:
                 break
         print "GPS Stopped"
+        self.session.close()
+        #self.session.stream(WATCH_DISABLE)
 
     def stop_gps(self):
         self.stop = True

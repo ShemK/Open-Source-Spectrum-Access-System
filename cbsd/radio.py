@@ -32,6 +32,18 @@ manual = False
 
 my_server_connection = None
 
+
+def stopEverything():
+    global stop_radio
+    stop_radio = True
+    print "Stop_sig: ", stop_radio
+    newCbsd.stop_cbsd()
+    if newCbsd.get_grant_state != "IDLE":
+        newCbsd.start_radio_thread.stopRadio()
+        newCbsd.my_heartbeat_Thread.stopThread()
+
+
+
 def handler(signum, frame):
     print 'Signal handler called with signal', signum
     global stop_crts
@@ -40,14 +52,7 @@ def handler(signum, frame):
         time.sleep(10)
         #stop_crts == True
     else:
-        #if stop_crts == False:
-        global stop_radio
-        stop_radio = True
-        print "Stop_sig: ", stop_radio
-        newCbsd.stop_cbsd()
-        if newCbsd.get_grant_state != "IDLE":
-            newCbsd.start_radio_thread.stopRadio()
-            newCbsd.my_heartbeat_Thread.stopThread()
+        stopEverything()
 
 def getCommand():
     try:
@@ -84,6 +89,10 @@ def run_radio():
         json_request =  json_encoder.encode(newCbsd.get_registrationRequestObj())
         newCbsd.clear_channels()
 
+        #if(newCbsd.isCorrectLocation()):
+        #    print "Poor Location"
+        #    stop_radio = True
+        #    sys.exit()
         #change state of cbsd
         getCommand()
         link = "http://"+newCbsd.sas_ip+"/spectrumAccessSystem/start.php"
@@ -151,6 +160,7 @@ def run_radio():
             #    start sending heartbeats
 
             print "GRANT STATE: ", newCbsd.get_grant_state()
+            print "GRANT ID: ", newCbsd.get_grantId()
             if newCbsd.get_grant_state() == "GRANTED" or newCbsd.get_grant_state() == "AUTHORIZED":
                 # NOTE: this information is already being sent by crts
                 informationParser.addStatus("type","SU")
