@@ -295,6 +295,8 @@ class JsonListener{
 
 					#echo $query;
 					$result = $this->myDBHandler->query($query);
+				} else{
+
 				}
 			}
 
@@ -409,6 +411,13 @@ class JsonListener{
 				$query = $this->create_update_query($cbsd_table,array('available' => 1),array('grantId'=>$grantId));
 				$result = $this->myDBHandler->query($query);
 				$this->updateLastActive($cbsdId);
+
+				$nullGrantID = '';
+				$nullGrantState = 'GRANTED';
+
+				$query = 'UPDATE '.$cbsd_table.' SET "grantId" = '."'".$nullGrantID."'"
+				.',available = 1 ,"grantState" = '."'".$nullGrantState."'".' WHERE "grantId" = '."'".$grantId."';";
+
 			}
 
 		}
