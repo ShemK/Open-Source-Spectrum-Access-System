@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<block>
+  <name>uhd_control</name>
+  <key>sas_uhd_control</key>
+  <category>SAS</category>
+  <import>import sas</import>
+  <make>sas.uhd_control($hop_time, $bw, $max_bw, $freq, $gain)</make>
+
+
+  <param>
+  <name>Bandwidth</name>
+  <key>bw</key>
+  <value>4e6</value>
+  <type>float</type>
+  </param>
+
+  <param>
+  <name>Total Bandwidth</name>
+  <key>max_bw</key>
+  <value>150e6</value>
+  <type>float</type>
+  </param>
+
+  <param>
+  <name>Base Frequency</name>
+  <key>freq</key>
+  <value>1e9</value>
+  <type>float</type>
+  </param>
+
+  <param>
+  <name>Receive Gain</name>
+  <key>gain</key>
+  <value>20</value>
+  <type>float</type>
+  </param>
+
+  <param>
+  <name>Hop Time</name>
+  <key>hop_time</key>
+  <value>5</value>
+  <type>float</type>
+  </param>
+
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+  <source>
+    <name>control</name>
+    <type>message</type>
+  </source>
+  <source>
+    <name>center_freq</name>
+    <type>message</type>
+  </source>
+  <source>
+    <name>bandwidth</name>
+    <type>message</type>
+  </source>
+
+  <source>
+    <name>gain</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+</block>

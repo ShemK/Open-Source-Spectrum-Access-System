@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<block>
+  <name>Sas Buffer Write</name>
+  <key>sas_sas_buffer_write</key>
+  <category>SAS</category>
+  <import>import sas</import>
+  <make>sas.sas_buffer_write($N)</make>
+  <param>
+    <name>Number of samples</name>
+    <key>N</key>
+    <value>364</value>
+    <type>int</type>
+  </param>
+
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>$N</vlen>
+  </sink>
+
+  
+  <sink>
+    <name>center_freq</name>
+    <type>message</type>
+  </sink>
+
+  <sink>
+    <name>samp_rate</name>
+    <type>message</type>
+  </sink>
+</block>

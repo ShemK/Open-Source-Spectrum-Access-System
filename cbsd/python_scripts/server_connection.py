@@ -30,13 +30,14 @@ class Server_connection(object):
     def send_request(self,message):
         if(self._connection_established == True):
             headers = {"Content-Type":"application/json"}
-        #    print "sending"
-         #   print message
+            #print "sending"
+            #print message
             self._http_connection.request("POST",self._url,message,headers)
             http_response = self._http_connection.getresponse()
             reply = http_response.read()
-	    #print("raw reply:");
-	    #print(reply);
+            #print("raw reply:")
+            #print(reply)
+
         else:
             print("The connection failed. Request cannot be made")
             self._connection_established = False

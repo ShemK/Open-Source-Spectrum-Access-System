@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<block>
+  <name>gps_reader</name>
+  <key>utils_gps_reader</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.gps_reader($port)</make>
+
+  <param>
+    <name>Port Number</name>
+    <key>port</key>
+    <type>int</type>
+  </param>
+
+  <source>
+    <name>latlong</name>
+    <type>message</type>
+    <optional>1</optional> 
+ </source>
+
+ <source>
+    <name>null</name>
+    <type>float</type>
+ </source>
+</block>

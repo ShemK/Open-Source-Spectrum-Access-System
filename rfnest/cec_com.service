@@ -1,0 +1,13 @@
+[Unit]
+Description=gets information from the cec and sends it to appropriate nodes
+
+PartOf=cec.service
+
+After=cec.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /home/rfnest/control/RFNestInfo.py
+
+[Install]
+WantedBy=cec.service

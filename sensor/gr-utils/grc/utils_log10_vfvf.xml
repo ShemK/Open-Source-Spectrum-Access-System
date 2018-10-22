@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<block>
+  <name>VOLK log10</name>
+  <key>utils_log10_vfvf</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.log10_vfvf($n)</make>
+  <param>
+    <name>Vector Length</name>
+    <key>n</key>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$n</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>$n</vlen>
+  </source>
+</block>

@@ -44,6 +44,7 @@ class cbsd_thread(threading.Thread):
                 time.sleep(self.my_Interval)
                 print("Sending Heartbeat")
                 try:
+                    self.json_request = json_encoder.encode(self.my_cbsd.get_heartbeatRequestObj())
                     self.response = self.my_server_connection.send_request(self.json_request)
                     self.my_cbsd.analyze_heartbeatResponseObj(json_decoder.decode(self.response))
                     # TODO: we need to check type of response and make good decision
@@ -66,14 +67,7 @@ class cbsd_thread(threading.Thread):
             self.stopRadio()
 
         elif self.interval_type == "grant":
-            #if(self.my_Interval > 0):
-            #    time.sleep(self.my_Interval)
-            #self.heartbeat_thread.stopThread()
-            #self.start_radio.stopThread()
             pass
-
-            #quit()
-           # sys.exit()
 
         elif self.interval_type == "start_radio":
         #    print("Nothing!")
@@ -81,12 +75,16 @@ class cbsd_thread(threading.Thread):
             if self.my_cbsd.grouped != None:
                 self.create_config_file()
                 x_path = os.path.dirname(os.path.abspath(__file__))
-                x_path = x_path + "/../../crts/crts_controller -s sas_scenarios/test"
+                x_path = x_path + "/../../crts/crts_controller -s sas_scenarios/test_"+self.my_cbsd.get_fccID()
                 os.system(x_path)
                 if self.heartbeat_thread != None:
                     self.heartbeat_thread.stop_thread = True
                 else:
                     print "No heartbeat_thread"
+
+                self.save_log_files()
+            else:
+                print "Radio not in group"
 
     def stopRadio(self):
         pids = commands.getoutput("ps -ef | grep crts_controller | grep -v grep | awk '{print $2}'").split()
@@ -148,13 +146,13 @@ class cbsd_thread(threading.Thread):
             node_string = 'node' + str(i+1)
             self.configEditor.add_to_output(node_string,nodes[i])
         self.configEditor.add_to_output('num_nodes',len(self.my_cbsd.grouped))
-        self.configEditor.add_to_output('run_time',self.my_cbsd.grantTimeLeft-5)
+        self.configEditor.add_to_output('run_time',self.my_cbsd.grantTimeLeft-5) # Shave 5 seconds from the actual grant time
 
         if not self.my_cbsd.init_sc  == None:
             self.configEditor.add_to_output('scenario_controller',self.my_cbsd.init_sc)
 
         config_path = os.path.dirname(os.path.abspath(__file__))
-        config_path = config_path + "/../../crts/scenarios/sas_scenarios/test.cfg"
+        config_path = config_path + "/../../crts/scenarios/sas_scenarios/test_" + self.my_cbsd.get_fccID() + ".cfg"
         print "Written to : ", config_path
         self.configEditor.write_config_file(config_path)
 
@@ -198,3 +196,30 @@ class cbsd_thread(threading.Thread):
         node_channel_list.append(node.copy())
 
         return node_channel_list
+
+    def save_log_files(self):
+        try:
+            if self.my_cbsd.log:
+
+                # Using Linux shell to create and delete old information
+                crts_log_path = os.path.dirname(os.path.abspath(__file__))
+                crts_log_path = crts_log_path + "/../../crts/logs/octave/*" + self.my_cbsd.get_fccID() + "*"
+                #create folder for cbsd if it does not exist
+                dest_log_path =  self.my_cbsd.log_path + "/" + self.my_cbsd.get_fccID() + "/" + self.my_cbsd.get_grantId()
+                command = "mkdir -p " + dest_log_path
+                os.system(command)
+                #create folder for specific grant
+                command = "cp " + crts_log_path + " " + dest_log_path
+                os.system(command)
+
+                #remove results older than 2 hours
+
+                rm_path = self.my_cbsd.log_path + "/" + self.my_cbsd.get_fccID() + "/*" + self.my_cbsd.get_cbsdId() + "*"
+
+                command = "find " + rm_path +" -type d -mmin +20 -exec rm -r {} \; >/dev/null 2>&1"
+                #print command
+                os.system(command)
+
+        except Exception as e:
+            print "-----------------Error moving files---------------------"
+            print e

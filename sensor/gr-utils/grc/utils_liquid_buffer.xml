@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<block>
+  <name>Liquid Shared Memory Buffer</name>
+  <key>utils_liquid_buffer</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.liquid_buffer($N)</make>
+  <param>
+    <name>Vector Length</name>
+    <key>N</key>
+    <type>int</type>
+  </param>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>$N</vlen>
+  </source>
+
+  <source>
+    <name>samp_rate</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>center_freq</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>number_of_samps</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>samp_number</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

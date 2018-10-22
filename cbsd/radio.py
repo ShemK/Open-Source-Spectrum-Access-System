@@ -5,6 +5,8 @@ import datetime
 import socket
 import signal
 import commands
+import optparse
+import math
 
 scripts = os.path.dirname(os.path.abspath(__file__))
 scripts = scripts + '/python_scripts'
@@ -22,11 +24,14 @@ import config_editor
 import information_parser
 
 #def stop():
-newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba","yap")
+
+newCbsd = None
 stop_radio = False
 stop_crts = False
+manual = False
 
 my_server_connection = None
+
 def handler(signum, frame):
     print 'Signal handler called with signal', signum
     global stop_crts
@@ -43,14 +48,15 @@ def handler(signum, frame):
         if newCbsd.get_grant_state != "IDLE":
             newCbsd.start_radio_thread.stopRadio()
             newCbsd.my_heartbeat_Thread.stopThread()
-        #else:
-        #    stop_crts = False
-            #newCbsd.my_heartbeat_Thread.stop_thread
+
 def getCommand():
     try:
         newCbsd.get_command()
     except Exception as e:
-        print "Issue communicating with controller",e
+        print "Issue communicating with controller "
+        print e
+        stop_radio = True
+        sys.exit()
 
 def register():
         global newCbsd
@@ -103,6 +109,27 @@ def run_radio():
             informationParser.addStatus("state","REGISTERED")
 
             informationParser.sendStatus()
+
+            if newCbsd.manual:
+                try:
+                    print "Please Use Low Frequency Above 3550MHz and below 3650MHz"
+                    lowFrequency = math.floor(float(input("Low Frequency: "))/10)*10e6;
+                    print "User Input in Hz: ",lowFrequency
+                    if lowFrequency < 3550e6 or lowFrequency > 3650e6:
+                        print "------------------Wrong User Low Frequency-----------------"
+                        stop_radio = True
+                        newCbsd.stop_cbsd()
+                        return
+                    else:
+                        newCbsd.clear_inquired_channels()
+                        newCbsd.clear_channels()
+                        newCbsd.add_inquired_channels(lowFrequency,lowFrequency+10e6)
+                except Exception as e:
+                    print "----------------------------Wrong User Input-----------------"
+                    stop_radio = True
+                    newCbsd.stop_cbsd()
+                    return
+
             newCbsd.sendSpectrumInquiry(my_server_connection)
             informationParser.addStatus("type","SU")
             informationParser.addStatus("state","SPECTRUM INQUIRY")
@@ -115,14 +142,14 @@ def run_radio():
             informationParser.sendStatus()
 
 
-            '''
-                Get Grant Request
-            '''
+
+            #    Get Grant Request
+
 
             newCbsd.sendGrantRequest(my_server_connection)
-            '''
-                start sending heartbeats
-            '''
+
+            #    start sending heartbeats
+
             print "GRANT STATE: ", newCbsd.get_grant_state()
             if newCbsd.get_grant_state() == "GRANTED" or newCbsd.get_grant_state() == "AUTHORIZED":
                 # NOTE: this information is already being sent by crts
@@ -143,28 +170,25 @@ def run_radio():
             my_heartbeat_Thread = newCbsd.startSendingHeartBeats(my_server_connection)
 
 
-            '''
-                start radio interface
-            '''
+
+            #    start radio interface
+
 
             start_radio_Thread = cbsd_thread.cbsd_thread(newCbsd,my_server_connection,\
                                                         "start_radio",0,config_editor = configEditor,\
                                                         heartbeat_thread = my_heartbeat_Thread);
-            '''
-             start grant timer
-            '''
+
+            # start grant timer
+
             newCbsd.startGrant(my_server_connection,start_radio_Thread)
-            if newCbsd.get_grant_state != "IDLE":
+            if newCbsd.get_grant_state() != "IDLE":
                 print "Starting Radio"
                 start_radio_Thread.start()
 
-            #start_radio_Thread.join()
-            #if(newCbsd.grantTimeLeft!=None):
-            #    time.sleep(newCbsd.grantTimeLeft)
             if newCbsd.my_heartbeat_Thread!=None:
                 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
                 my_port = 7816
-                sock.bind(("0.0.0.0",my_port))
+                sock.bind(("localhost",my_port))
                 sock.settimeout(1.0)
                 data = None
                 while data == None and stop_radio == False:
@@ -179,8 +203,7 @@ def run_radio():
             informationParser.addStatus("state","GRANT RELINQUISHED")
             informationParser.addStatus("type","SU")
             informationParser.sendStatus()
-            #newCbsd.my_heartbeat_Thread.join()
-        #server_connection.close()
+
         else:
             informationParser.addStatus("state","UNREGISTERED")
             informationParser.addStatus("type","SU")
@@ -207,19 +230,55 @@ def main():
 
     # TODO: the ability for the user to choose input parameters
     # TODO: To check if the input from the socket is a JSON Object
+    parser = optparse.OptionParser()
+    parser.add_option('-m', '--manual',action="store_true", dest="manual", default=False, help="get user input in regard to parameters")
+    parser.add_option('-l', '--lower', action="store", dest="lowFrequency", type="float",default=-1, help="Initial Low Frequency in MHz")
+    parser.add_option('-u', '--upper', action="store", dest="highFrequency", type="float", default=-1, help="Initial High Frequency in MHz")
 
+    options, args = parser.parse_args()
+    '''
+    if(options.manual):
+        options.lowFrequency = options.lowFrequency *1e6
+        options.highFrequency = options.highFrequency *1e6
+        try:
+            if options.lowFrequency < 3500e6 or options.lowFrequency > 3750e6:
+                print "Please Use Low Frequency Above 3500MHz and below 3750MHz"
+                options.lowFrequency = float(input("Low Frequency: "))*1e6;
+                if options.lowFrequency < 3500e6 or options.lowFrequency > 3750e6:
+                    print "Wrong Low Frequency"
+                    return
+            if options.highFrequency < 3500e6 or options.lowFrequency > 3750e6:
+                print "Please Use High Frequency Above 3500e6 and below 3750MHz"
+                options.lowFrequency = math.floor(float(input("High Frequency: "))/10)*10e6;
+                print "Your High Frequency: ",options.lowFrequency
+                if options.lowFrequency < 3500e6 or options.lowFrequency > 3750e6:
+                    print "Wrong High Frequency"
+                    return
+
+        except Exception as e:
+            print "Error with user inputs"
+            return
+
+    '''
     signal.signal(signal.SIGUSR1, handler)
     signal.signal(signal.SIGUSR2, handler)
     signal.signal(signal.SIGALRM, handler)
     signal.signal(signal.SIGINT, handler)
     signal.signal(signal.SIGQUIT, handler)
     global stop_radio
+    global newCbsd
+    global manual
+    manual = options.manual
+
+
+    newCbsd = cbsd.Cbsd("cbd561","A","cbd1","hask124ba","yap")
+    newCbsd.manual = manual
+
     register()
+
     while stop_radio == False:
         print "Stop: ", stop_radio
         run_radio()
-
-
 
 if __name__ == '__main__':
     main()

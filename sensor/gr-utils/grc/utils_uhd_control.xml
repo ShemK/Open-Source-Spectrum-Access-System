@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<block>
+  <name>uhd_control</name>
+  <key>utils_uhd_control</key>
+  <category>Utils</category>
+  <import>import utils</import>
+  <make>utils.uhd_control()</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+ <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+  <source>
+    <name>control</name>
+    <type>message</type>
+  </source>
+</block>
+
